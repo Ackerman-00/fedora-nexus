@@ -16,7 +16,6 @@ Starship is the minimal, blazing-fast, and infinitely customizable prompt for an
 Packaged exclusively for the Nexus repository via automated GitHub release tracking.
 
 %prep
-
 %setup -c -T
 tar xf %{SOURCE0}
 
@@ -39,7 +38,6 @@ install -d -m 0755 %{buildroot}%{fish_completions_dir}
 %{buildroot}%{_bindir}/starship completions fish > %{buildroot}%{fish_completions_dir}/starship.fish
 
 %files
-%license LICENSE
 %{_bindir}/starship
 %{bash_completions_dir}/starship
 %{zsh_completions_dir}/_starship
