@@ -1,6 +1,8 @@
+%global zig_ver 0.15.2
+
 Name:           ly
 Version:        1.3.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        A lightweight TUI (ncurses-like) display manager (Nexus Universal)
 
 License:        WTFPL
@@ -8,14 +10,17 @@ URL:            https://codeberg.org/fairyglade/ly
 Source0:        https://codeberg.org/fairyglade/ly/archive/v%{version}.tar.gz
 Source1:        ly.pam
 
+Source2:        https://ziglang.org/download/%{zig_ver}/zig-x86_64-linux-%{zig_ver}.tar.xz
+Source3:        https://ziglang.org/download/%{zig_ver}/zig-aarch64-linux-%{zig_ver}.tar.xz
+
 ExclusiveArch:  x86_64 aarch64
 
-# Fedora 43+ has the required Zig 0.15+
-BuildRequires:  zig >= 0.15.0
 BuildRequires:  kernel-devel
 BuildRequires:  pam-devel
 BuildRequires:  libxcb-devel
 BuildRequires:  systemd-rpm-macros
+BuildRequires:  tar
+BuildRequires:  xz
 
 Requires:       pam
 Requires:       xorg-x11-xauth
@@ -24,22 +29,33 @@ Requires:       brightnessctl
 
 %description
 Ly is a lightweight TUI (ncurses-like) display manager for Linux and BSD.
-Optimized for the Nexus repository, this package utilizes the native F43+ Zig compiler
-and delegates the installation of configs and systemd units entirely to the Zig build system.
+Optimized for the Nexus repository. Uses a statically injected Zig 0.15.2 compiler
+to ensure API compatibility across Fedora 42 through Rawhide, and includes PikaOS-style 
+TTY conflict resolution for Wayland environments.
 
 %prep
 %autosetup -n ly
 
-# This modifies Ly's internal systemd template before building
 sed -i '/\[Unit\]/a Conflicts=getty@tty2.service\nAfter=getty@tty2.service' res/systemd/ly.service
+
+# Unpack the correct Zig compiler based on the current build architecture
+%ifarch x86_64
+tar -xf %{SOURCE2}
+%global zig_bin ./zig-x86_64-linux-%{zig_ver}/zig
+%endif
+
+%ifarch aarch64
+tar -xf %{SOURCE3}
+%global zig_bin ./zig-aarch64-linux-%{zig_ver}/zig
+%endif
 
 %build
 # Build the release-safe binary
-zig build -Doptimize=ReleaseSafe
+%{zig_bin} build -Doptimize=ReleaseSafe
 
 %install
 # Delegate the entire installation
-DESTDIR="%{buildroot}" zig build install --prefix /usr -Doptimize=ReleaseSafe -Dinit_system=systemd
+DESTDIR="%{buildroot}" %{zig_bin} build install --prefix /usr -Doptimize=ReleaseSafe -Dinit_system=systemd
 
 # Ensure the Fedora-specific PAM configuration is used
 install -d -m 0755 %{buildroot}%{_sysconfdir}/pam.d
@@ -47,7 +63,7 @@ install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pam.d/ly
 
 %post
 %systemd_post ly.service
-# Make Ly the default display manager
+
 if [ $1 -eq 1 ]; then
     systemctl set-default graphical.target || :
     ln -sf /usr/lib/systemd/system/ly.service /etc/systemd/system/display-manager.service || :
@@ -72,8 +88,5 @@ fi
 %{_unitdir}/ly.service
 
 %changelog
-* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.3.2-5
-- Switched to native F43+ Zig compiler
-- Delegated config and systemd installation to Zig build system
-- Added TTY conflict resolution
-- Added post-install hooks to set Ly as the default display manager
+* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.3.2-6
+- Fixed SRPM architecture generation bug by explicitly defining all static compilers
