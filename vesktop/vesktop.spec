@@ -1,5 +1,7 @@
+# Disable debuginfo extraction since we are repackaging pre-compiled binaries
 %global debug_package %{nil}
 
+# Prevent RPM from trying to auto-generate dependencies from the bundled Electron libraries
 %global __requires_exclude_from ^/opt/Vesktop/.*$
 %global __provides_exclude_from ^/opt/Vesktop/.*$
 
@@ -10,7 +12,7 @@ Summary:        Custom Discord desktop client with Vencord preinstalled (Nexus O
 
 License:        GPL-3.0-or-later
 URL:            https://github.com/Vencord/Vesktop
-# Use the native upstream RPM
+# Use the native upstream RPM as our raw source payload
 Source0:        %{url}/releases/download/v%{version}/%{name}-%{version}.x86_64.rpm
 
 ExclusiveArch:  x86_64
@@ -18,7 +20,7 @@ ExclusiveArch:  x86_64
 # Required to unpack the upstream RPM natively
 BuildRequires:  cpio
 
-# Explicit dependencies
+# Explicit dependencies mapped from your Void template to Fedora
 Requires:       gtk3
 Requires:       libnotify
 Requires:       nss
@@ -75,7 +77,7 @@ chmod 0755 %{buildroot}%{_bindir}/vesktop
 %files
 %{_bindir}/vesktop
 %{_datadir}/applications/*.desktop
-%{_datadir}/icons/hicolor/*/apps/*.png
+%{_datadir}/icons/hicolor/*/apps/*.*
 /opt/Vesktop/
 # Enforce strict sandbox permissions natively
 %attr(4755, root, root) /opt/Vesktop/chrome-sandbox
