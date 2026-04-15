@@ -1,8 +1,10 @@
+%global debug_package %{nil}
+
 %global zig_ver 0.15.2
 
 Name:           ly
 Version:        1.3.2
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        A lightweight TUI (ncurses-like) display manager (Nexus Universal)
 
 License:        WTFPL
@@ -45,7 +47,7 @@ tar -xf %{SOURCE3}
 %global zig_bin ./zig-aarch64-linux-%{zig_ver}/zig
 %endif
 
-# Create the systemd service file manually to bypass Zig's broken installer
+# 2. Create the systemd service file manually
 cat << 'EOF' > ly.service
 [Unit]
 Description=TUI display manager
@@ -69,14 +71,11 @@ EOF
 %{zig_bin} build -Doptimize=ReleaseSafe
 
 %install
-# Only install the binary and config using Zig
 DESTDIR="%{buildroot}" %{zig_bin} build install --prefix /usr -Doptimize=ReleaseSafe
 
-# Manually install our custom PAM configuration
 install -d -m 0755 %{buildroot}%{_sysconfdir}/pam.d
 install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pam.d/ly
 
-# Manually install our custom systemd service file
 install -d -m 0755 %{buildroot}%{_unitdir}
 install -m 0644 ly.service %{buildroot}%{_unitdir}/ly.service
 
@@ -105,5 +104,5 @@ fi
 %{_unitdir}/ly.service
 
 %changelog
-* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.3.2-8
-- Manually generated systemd unit to bypass Zig build failures and apply TTY fixes
+* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.3.2-9
+- Disabled debug_package extraction to fix Zig build ID stripping
