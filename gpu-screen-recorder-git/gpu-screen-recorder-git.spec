@@ -1,13 +1,14 @@
-Name:           gpu-screen-recorder
-Version:        5.12.3-1@2026-04-14_1776180408
+%global commit          4d214891017fa7b893df1140d24f76defba0eb88
+%global shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+Name:           gpu-screen-recorder-git
+Version:        20260415
 Release:        1%{?dist}
-Summary:        Shadowplay-like screen recorder for Linux (Nexus Optimized)
+Summary:        Shadowplay-like screen recorder for Linux (Nexus Git Snapshot)
 
 License:        GPL-3.0-or-later
-
-# Using the AppImage mirror URL so the Python engine can track actual version tags
-URL:            https://github.com/pkgforge-dev/gpu-screen-recorder-AppImage
-Source:         https://dec05eba.com/snapshot/gpu-screen-recorder.git.%{version}.tar.gz
+URL:            https://git.dec05eba.com/gpu-screen-recorder/about
+Source0:        https://dec05eba.com/snapshot/gpu-screen-recorder.git.%{commit}.tar.gz
 
 ExclusiveArch:  x86_64 aarch64
 
@@ -37,15 +38,20 @@ BuildRequires:  systemd-rpm-macros
 Requires(post): libcap
 Requires:       libappindicator-gtk3
 
+Provides:       gpu-screen-recorder = %{version}-%{release}
+Conflicts:      gpu-screen-recorder
+
 %description
-An extremely fast hardware-accelerated screen recorder for Linux. 
+Bleeding-edge Git snapshot of gpu-screen-recorder. 
 Uses the GPU exclusively for video encoding to maintain near-zero CPU impact. 
 Optimized for the Nexus repository for peak performance on Wayland.
 
 %prep
-%autosetup -c
+
+%setup -q -n gpu-screen-recorder.git.%{commit}
 
 %build
+
 %meson -Dcapabilities=false
 %meson_build
 
@@ -53,24 +59,25 @@ Optimized for the Nexus repository for peak performance on Wayland.
 %meson_install
 
 %post
-%systemd_user_post %{name}.service
+%systemd_user_post gpu-screen-recorder.service
 
 %preun
-%systemd_user_preun %{name}.service
+%systemd_user_preun gpu-screen-recorder.service
 
 %postun
-%systemd_user_postun %{name}.service
+%systemd_user_postun gpu-screen-recorder.service
 
 %files
 %license LICENSE
 %doc README.md
-%{_bindir}/%{name}
+%{_bindir}/gpu-screen-recorder
+
 %caps(cap_sys_admin+ep) %{_bindir}/gsr-kms-server
-%{_datadir}/%{name}/
+%{_datadir}/gpu-screen-recorder/
 %{_includedir}/gsr/
-%{_userunitdir}/%{name}.service
+%{_userunitdir}/gpu-screen-recorder.service
 %{_mandir}/man1/*.1*
 
 %changelog
-* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 5.12.5-1
-- Initial Optimized Build with tagged GitHub mirror for auto-updates
+* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 20260415-1
+- Initial Automated Git Snapshot Build for Nexus
