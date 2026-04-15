@@ -28,6 +28,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          echo "==> Phase 1: Running Custom Modules (update.sh)..."
           for script in $(find . -mindepth 2 -name "update.sh"); do
             dir=$(dirname "$script")
             pushd "$dir" > /dev/null
@@ -35,6 +36,8 @@ jobs:
             popd > /dev/null
           done
 
+          echo ""
+          echo "==> Phase 2: Scanning Standard Packages via GitHub API..."
           python3 << 'EOF'
           import os, re, requests
           from pathlib import Path
@@ -44,15 +47,27 @@ jobs:
           if gh_token: headers['Authorization'] = f'token {gh_token}'
 
           for spec in Path('.').rglob('*.spec'):
+              # SAFETY CATCH: Skip packages that have their own update.sh script
+              if (spec.parent / 'update.sh').exists():
+                  continue
+                  
+              print(f"Scanning {spec.name}...")
               content = spec.read_text(encoding='utf-8')
               
-              repo_match = re.search(r'https://github\.com/([^/\n]+)/([^/\n]+?)(?:\.git|/archive|/releases|$)', content, re.IGNORECASE)
+              # Auto-detect GitHub URLs in the spec
+              repo_match = re.search(r'https://github\.com/([^/\n\s"\']+)/([^/\n\s"\']+)', content, re.IGNORECASE)
               version_match = re.search(r'^Version:\s*([0-9a-zA-Z.-]+)', content, re.MULTILINE)
               tag_match = re.search(r'%global\s+tag\s+(.+)', content)
               
-              if not repo_match: continue
+              if not repo_match: 
+                  print(f"  -> No GitHub URL found. Skipping.")
+                  continue
+                  
               owner, repo = repo_match.group(1), repo_match.group(2)
-              current_ver = version_match.group(1) if version_match else None
+              # Clean trailing URLs
+              repo = re.sub(r'(\.git|/archive|/releases)$', '', repo, flags=re.IGNORECASE)
+
+              current_ver = version_match.group(1).strip() if version_match else None
               current_tag = tag_match.group(1).strip() if tag_match else None
 
               try:
@@ -65,17 +80,27 @@ jobs:
                       new_content = content
                       changed = False
                       
-                      if current_tag and latest_tag != current_tag:
-                          new_content = re.sub(r'(%global\s+tag\s+).+', rf'\g<1>{latest_tag}', new_content)
-                          changed = True
-                      elif current_ver and latest_ver != current_ver and not current_tag:
-                          new_content = re.sub(r'(^Version:\s+).+', rf'\g<1>{latest_ver}', new_content, flags=re.MULTILINE)
-                          changed = True
+                      if current_tag:
+                          if latest_tag != current_tag:
+                              new_content = re.sub(r'(%global\s+tag\s+).+', rf'\g<1>{latest_tag}', new_content)
+                              changed = True
+                              print(f"  -> [UPDATE] {repo} changed from {current_tag} to {latest_tag}!")
+                          else:
+                              print(f"  -> [OK] {repo} is already on latest ({current_tag}).")
+                      elif current_ver:
+                          if latest_ver != current_ver:
+                              new_content = re.sub(r'(^Version:\s+).+', rf'\g<1>{latest_ver}', new_content, flags=re.MULTILINE)
+                              changed = True
+                              print(f"  -> [UPDATE] {repo} changed from {current_ver} to {latest_ver}!")
+                          else:
+                              print(f"  -> [OK] {repo} is already on latest ({current_ver}).")
                           
                       if changed:
                           spec.write_text(new_content, encoding='utf-8')
-              except Exception:
-                  pass
+                  else:
+                      print(f"  -> [ERROR] GitHub API returned {res.status_code}")
+              except Exception as e:
+                  print(f"  -> [ERROR] {e}")
           EOF
 
           if ! git diff --quiet; then
