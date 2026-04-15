@@ -1,4 +1,4 @@
-%global commit          2f8212b1227e30a3acc88f982ccdbee84a63856e
+%global commit          4ed04830c1ffc1e0fd7286b8558e8a61eec6041e
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           gpu-screen-recorder-git
