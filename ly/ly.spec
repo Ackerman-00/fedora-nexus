@@ -2,7 +2,7 @@
 
 Name:           ly
 Version:        1.3.2
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        A lightweight TUI (ncurses-like) display manager (Nexus Universal)
 
 License:        WTFPL
@@ -10,6 +10,7 @@ URL:            https://codeberg.org/fairyglade/ly
 Source0:        https://codeberg.org/fairyglade/ly/archive/v%{version}.tar.gz
 Source1:        ly.pam
 
+# SRPMs are architecture-agnostic. We MUST provide both URLs so the SRPM bundles both.
 Source2:        https://ziglang.org/download/%{zig_ver}/zig-x86_64-linux-%{zig_ver}.tar.xz
 Source3:        https://ziglang.org/download/%{zig_ver}/zig-aarch64-linux-%{zig_ver}.tar.xz
 
@@ -36,9 +37,6 @@ TTY conflict resolution for Wayland environments.
 %prep
 %autosetup -n ly
 
-sed -i '/\[Unit\]/a Conflicts=getty@tty2.service\nAfter=getty@tty2.service' res/systemd/ly.service
-
-# Unpack the correct Zig compiler based on the current build architecture
 %ifarch x86_64
 tar -xf %{SOURCE2}
 %global zig_bin ./zig-x86_64-linux-%{zig_ver}/zig
@@ -54,16 +52,18 @@ tar -xf %{SOURCE3}
 %{zig_bin} build -Doptimize=ReleaseSafe
 
 %install
-# Delegate the entire installation
+
 DESTDIR="%{buildroot}" %{zig_bin} build install --prefix /usr -Doptimize=ReleaseSafe -Dinit_system=systemd
 
 # Ensure the Fedora-specific PAM configuration is used
 install -d -m 0755 %{buildroot}%{_sysconfdir}/pam.d
 install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pam.d/ly
 
+sed -i '/\[Unit\]/a Conflicts=getty@tty2.service\nAfter=getty@tty2.service' %{buildroot}%{_unitdir}/ly.service
+
 %post
 %systemd_post ly.service
-
+# Automatically make Ly the default display manager on fresh install
 if [ $1 -eq 1 ]; then
     systemctl set-default graphical.target || :
     ln -sf /usr/lib/systemd/system/ly.service /etc/systemd/system/display-manager.service || :
@@ -88,5 +88,5 @@ fi
 %{_unitdir}/ly.service
 
 %changelog
-* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.3.2-6
-- Fixed SRPM architecture generation bug by explicitly defining all static compilers
+* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.3.2-7
+- Moved TTY sed fix to post-install phase to target dynamically generated service file
