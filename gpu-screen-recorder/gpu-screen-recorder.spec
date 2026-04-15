@@ -1,5 +1,5 @@
 Name:           gpu-screen-recorder
-Version:        5.12.5
+Version:        5.12.3-1@2026-04-14_1776180408
 Release:        1%{?dist}
 Summary:        Shadowplay-like screen recorder for Linux (Nexus Optimized)
 
