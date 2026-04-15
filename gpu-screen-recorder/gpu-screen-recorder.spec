@@ -4,8 +4,10 @@ Release:        1%{?dist}
 Summary:        Shadowplay-like screen recorder for Linux (Nexus Optimized)
 
 License:        GPL-3.0-or-later
-URL:            https://git.dec05eba.com/%{name}/about
-Source:         https://dec05eba.com/snapshot/%{name}.git.%{version}.tar.gz
+
+# Pointing to GitHub mirror so the Python CI/CD engine can track releases
+URL:            https://github.com/flathub/com.dec05eba.gpu_screen_recorder
+Source:         https://dec05eba.com/snapshot/gpu-screen-recorder.git.%{version}.tar.gz
 
 ExclusiveArch:  x86_64 aarch64
 
@@ -33,17 +35,18 @@ BuildRequires:  pkgconfig(xfixes)
 BuildRequires:  systemd-rpm-macros
 
 Requires(post): libcap
+# Ensure system tray icons work properly on Wayland/Niri
+Requires:       libappindicator-gtk3
 
 %description
 An extremely fast hardware-accelerated screen recorder for Linux. 
 Uses the GPU exclusively for video encoding to maintain near-zero CPU impact. 
-Supports H.264, HEVC, and AV1. Optimized for the Nexus repository for peak performance on Wayland.
+Optimized for the Nexus repository for peak performance on Wayland.
 
 %prep
 %autosetup -c
 
 %build
-
 %meson -Dcapabilities=false
 %meson_build
 
@@ -63,7 +66,6 @@ Supports H.264, HEVC, and AV1. Optimized for the Nexus repository for peak perfo
 %license LICENSE
 %doc README.md
 %{_bindir}/%{name}
-
 %caps(cap_sys_admin+ep) %{_bindir}/gsr-kms-server
 %{_datadir}/%{name}/
 %{_includedir}/gsr/
@@ -72,4 +74,4 @@ Supports H.264, HEVC, and AV1. Optimized for the Nexus repository for peak perfo
 
 %changelog
 * Wed Apr 15 2026 Nexus Bot <bot@github.com> - 5.12.5-1
-- Initial Optimized Build for Nexus Repository
+- Initial Optimized Build with GitHub mirror tracking for auto-updates
