@@ -2,6 +2,9 @@
 %global forgeurl    https://github.com/noctalia-dev/noctalia-shell
 %forgemeta
 
+# Disable debuginfo extraction since this package contains no compiled binaries
+%global debug_package %{nil}
+
 Name:           noctalia-shell
 Version:        %{fileref}
 Release:        %autorelease
@@ -10,6 +13,9 @@ Summary:        A sleek and minimal desktop shell thoughtfully crafted for Wayla
 License:        MIT
 URL:            %{forgeurl}
 Source0:        %{forgesource}
+
+# Architecture independent (pure scripts/QML)
+BuildArch:      noarch
 
 Requires:       noctalia-qs
 Requires:       qt6-qtmultimedia
