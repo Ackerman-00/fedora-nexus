@@ -1,13 +1,16 @@
 %global goipath         github.com/nwg-piotr/nwg-look
+
+Version:        1.0.6
+
 %gometa
 
 Name:           nwg-look
-Version:        1.0.6
 Release:        1%{?dist}
 Summary:        GTK3 settings editor adapted to work in the wlroots environment (Nexus Optimized)
 
 License:        MIT
-URL:            %{gourl}
+
+URL:            https://github.com/nwg-piotr/nwg-look
 Source0:        %{gosource}
 
 BuildRequires:  golang
@@ -23,7 +26,6 @@ BuildRequires:  pkgconfig(cairo-gobject)
 # Pure Wayland requirements
 Requires:       gtk3
 Requires:       glib2
-
 Recommends:     xcur2png
 
 %description

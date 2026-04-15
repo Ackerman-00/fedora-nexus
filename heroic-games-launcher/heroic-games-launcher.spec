@@ -33,6 +33,7 @@ Requires:       libXrandr
 Requires:       libdrm
 Requires:       hicolor-icon-theme
 Requires:       desktop-file-utils
+Requires:       libappindicator-gtk3
 
 # Native gaming ecosystem integrations
 Recommends:     mangohud
@@ -82,7 +83,7 @@ find %{buildroot}/opt/Heroic -type f -name "*.a" -delete
 %files
 %{_bindir}/heroic
 %{_datadir}/applications/*.desktop
-%{_datadir}/icons/hicolor/*/apps/*.png
+%{_datadir}/icons/hicolor/*/apps/*.*
 /opt/Heroic/
 # Enforce strict sandbox permissions natively
 %attr(4755, root, root) /opt/Heroic/chrome-sandbox
