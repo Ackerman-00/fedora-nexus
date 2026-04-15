@@ -2,7 +2,7 @@
 %global crate matugen
 
 Name:           matugen
-Version:        2.4.1
+Version:        4.1.0
 Release:        1%{?dist}
 Summary:        Material You color generation tool (Nexus Optimized)
 
