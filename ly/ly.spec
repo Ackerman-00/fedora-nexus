@@ -2,7 +2,7 @@
 
 Name:           ly
 Version:        1.3.2
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        A lightweight TUI (ncurses-like) display manager (Nexus Universal)
 
 License:        WTFPL
@@ -10,7 +10,6 @@ URL:            https://codeberg.org/fairyglade/ly
 Source0:        https://codeberg.org/fairyglade/ly/archive/v%{version}.tar.gz
 Source1:        ly.pam
 
-# SRPMs are architecture-agnostic. We MUST provide both URLs so the SRPM bundles both.
 Source2:        https://ziglang.org/download/%{zig_ver}/zig-x86_64-linux-%{zig_ver}.tar.xz
 Source3:        https://ziglang.org/download/%{zig_ver}/zig-aarch64-linux-%{zig_ver}.tar.xz
 
@@ -30,9 +29,8 @@ Requires:       brightnessctl
 
 %description
 Ly is a lightweight TUI (ncurses-like) display manager for Linux and BSD.
-Optimized for the Nexus repository. Uses a statically injected Zig 0.15.2 compiler
-to ensure API compatibility across Fedora 42 through Rawhide, and includes PikaOS-style 
-TTY conflict resolution for Wayland environments.
+Optimized for the Nexus repository. Uses a statically injected Zig compiler
+to ensure API compatibility across Fedora 42 through Rawhide.
 
 %prep
 %autosetup -n ly
@@ -47,23 +45,43 @@ tar -xf %{SOURCE3}
 %global zig_bin ./zig-aarch64-linux-%{zig_ver}/zig
 %endif
 
+# Create the systemd service file manually to bypass Zig's broken installer
+cat << 'EOF' > ly.service
+[Unit]
+Description=TUI display manager
+After=systemd-user-sessions.service plymouth-quit-wait.service
+After=getty@tty2.service
+Conflicts=getty@tty2.service
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/ly
+StandardInput=tty
+TTYPath=/dev/tty2
+TTYReset=yes
+TTYVHangup=yes
+
+[Install]
+Alias=display-manager.service
+EOF
+
 %build
-# Build the release-safe binary
 %{zig_bin} build -Doptimize=ReleaseSafe
 
 %install
+# Only install the binary and config using Zig
+DESTDIR="%{buildroot}" %{zig_bin} build install --prefix /usr -Doptimize=ReleaseSafe
 
-DESTDIR="%{buildroot}" %{zig_bin} build install --prefix /usr -Doptimize=ReleaseSafe -Dinit_system=systemd
-
-# Ensure the Fedora-specific PAM configuration is used
+# Manually install our custom PAM configuration
 install -d -m 0755 %{buildroot}%{_sysconfdir}/pam.d
 install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pam.d/ly
 
-sed -i '/\[Unit\]/a Conflicts=getty@tty2.service\nAfter=getty@tty2.service' %{buildroot}%{_unitdir}/ly.service
+# Manually install our custom systemd service file
+install -d -m 0755 %{buildroot}%{_unitdir}
+install -m 0644 ly.service %{buildroot}%{_unitdir}/ly.service
 
 %post
 %systemd_post ly.service
-# Automatically make Ly the default display manager on fresh install
 if [ $1 -eq 1 ]; then
     systemctl set-default graphical.target || :
     ln -sf /usr/lib/systemd/system/ly.service /etc/systemd/system/display-manager.service || :
@@ -71,7 +89,6 @@ fi
 
 %preun
 %systemd_preun ly.service
-# Clean up symlink on removal
 if [ $1 -eq 0 ]; then
     rm -f /etc/systemd/system/display-manager.service || :
 fi
@@ -88,5 +105,5 @@ fi
 %{_unitdir}/ly.service
 
 %changelog
-* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.3.2-7
-- Moved TTY sed fix to post-install phase to target dynamically generated service file
+* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.3.2-8
+- Manually generated systemd unit to bypass Zig build failures and apply TTY fixes
