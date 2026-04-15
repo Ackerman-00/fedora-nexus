@@ -68,7 +68,6 @@ target/release/niri completions zsh > ./_niri
 %install
 # Install the core binaries
 install -Dpm0755 target/release/niri -t %{buildroot}%{_bindir}
-install -Dpm0755 target/release/niri-msg -t %{buildroot}%{_bindir}
 install -Dpm0755 resources/niri-session -t %{buildroot}%{_bindir}
 
 # Install standard Wayland session and systemd configurations
@@ -87,7 +86,6 @@ install -Dpm0644 _niri %{buildroot}%{_datadir}/zsh/site-functions/_niri
 %doc README.md
 %doc resources/default-config.kdl
 %{_bindir}/niri
-%{_bindir}/niri-msg
 %{_bindir}/niri-session
 %{_datadir}/wayland-sessions/niri.desktop
 %{_datadir}/xdg-desktop-portal/niri-portals.conf
