@@ -5,7 +5,6 @@ Summary:        Shadowplay-like screen recorder for Linux (Nexus Optimized)
 
 License:        GPL-3.0-or-later
 URL:            https://git.dec05eba.com/%{name}/about
-
 Source:         https://dec05eba.com/snapshot/%{name}.git.%{version}.tar.gz
 
 ExclusiveArch:  x86_64 aarch64
@@ -25,7 +24,7 @@ BuildRequires:  pkgconfig(dbus-1)
 BuildRequires:  pkgconfig(libspa-0.2)
 BuildRequires:  pkgconfig(libglvnd)
 BuildRequires:  pipewire-devel
-BuildRequires:  ffmpeg-devel
+BuildRequires:  ffmpeg-free-devel
 BuildRequires:  pkgconfig(x11)
 BuildRequires:  pkgconfig(xdamage)
 BuildRequires:  pkgconfig(xcomposite)
@@ -42,7 +41,6 @@ Uses the GPU exclusively for video encoding to maintain near-zero CPU impact.
 Optimized for the Nexus repository for peak performance on Wayland.
 
 %prep
-# -c automatically handles unpredictable internal tarball folder names
 %autosetup -c
 
 %build
@@ -75,4 +73,4 @@ Optimized for the Nexus repository for peak performance on Wayland.
 
 %changelog
 * Wed Apr 15 2026 Nexus Bot <bot@github.com> - 5.12.5-1
-- Switched to stable releases matching Terra logic to fix build errors
+- Switched to ffmpeg-free-devel for native COPR build compatibility
