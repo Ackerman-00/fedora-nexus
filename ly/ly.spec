@@ -1,10 +1,9 @@
 %global debug_package %{nil}
-
 %global zig_ver 0.15.2
 
 Name:           ly
 Version:        1.3.2
-Release:        9%{?dist}
+Release:        1%{?dist}
 Summary:        A lightweight TUI (ncurses-like) display manager (Nexus Universal)
 
 License:        WTFPL
@@ -47,7 +46,7 @@ tar -xf %{SOURCE3}
 %global zig_bin ./zig-aarch64-linux-%{zig_ver}/zig
 %endif
 
-# 2. Create the systemd service file manually
+# Create the systemd service file natively with TTY fixes
 cat << 'EOF' > ly.service
 [Unit]
 Description=TUI display manager
@@ -71,11 +70,18 @@ EOF
 %{zig_bin} build -Doptimize=ReleaseSafe
 
 %install
+# Install the core binary
 DESTDIR="%{buildroot}" %{zig_bin} build install --prefix /usr -Doptimize=ReleaseSafe
 
+# Manually install the configuration file
+install -d -m 0755 %{buildroot}%{_sysconfdir}/ly
+install -m 0644 res/config.ini %{buildroot}%{_sysconfdir}/ly/config.ini
+
+# Manually install our custom PAM configuration
 install -d -m 0755 %{buildroot}%{_sysconfdir}/pam.d
 install -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pam.d/ly
 
+# Manually install our custom systemd service file
 install -d -m 0755 %{buildroot}%{_unitdir}
 install -m 0644 ly.service %{buildroot}%{_unitdir}/ly.service
 
@@ -96,7 +102,8 @@ fi
 %systemd_postun_with_restart ly.service
 
 %files
-%license res/license.md
+# Use standard %doc to pull the root license instead of specifying res/
+%license license.md
 %doc readme.md
 %config(noreplace) %{_sysconfdir}/ly/config.ini
 %config(noreplace) %{_sysconfdir}/pam.d/ly
@@ -104,5 +111,5 @@ fi
 %{_unitdir}/ly.service
 
 %changelog
-* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.3.2-9
-- Disabled debug_package extraction to fix Zig build ID stripping
+* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.3.2-10
+- Fixed config and license paths for manual installation sequence
