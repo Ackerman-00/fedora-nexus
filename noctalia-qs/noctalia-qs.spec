@@ -20,7 +20,7 @@ BuildRequires:  cmake(Qt6Svg)
 BuildRequires:  gcc-c++
 BuildRequires:  ninja-build
 BuildRequires:  qt6-qtbase-private-devel
-BuildRequires:  kf6-qqc2-desktop-style-devel
+BuildRequires:  kf6-qqc2-desktop-style
 BuildRequires:  spirv-tools
 BuildRequires:  vulkan-headers
 BuildRequires:  pkgconfig
