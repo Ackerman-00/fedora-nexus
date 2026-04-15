@@ -5,8 +5,8 @@ Summary:        Shadowplay-like screen recorder for Linux (Nexus Optimized)
 
 License:        GPL-3.0-or-later
 
-# Pointing to GitHub mirror so the Python CI/CD engine can track releases
-URL:            https://github.com/flathub/com.dec05eba.gpu_screen_recorder
+# Using the AppImage mirror URL so the Python engine can track actual version tags
+URL:            https://github.com/pkgforge-dev/gpu-screen-recorder-AppImage
 Source:         https://dec05eba.com/snapshot/gpu-screen-recorder.git.%{version}.tar.gz
 
 ExclusiveArch:  x86_64 aarch64
@@ -35,7 +35,6 @@ BuildRequires:  pkgconfig(xfixes)
 BuildRequires:  systemd-rpm-macros
 
 Requires(post): libcap
-# Ensure system tray icons work properly on Wayland/Niri
 Requires:       libappindicator-gtk3
 
 %description
@@ -74,4 +73,4 @@ Optimized for the Nexus repository for peak performance on Wayland.
 
 %changelog
 * Wed Apr 15 2026 Nexus Bot <bot@github.com> - 5.12.5-1
-- Initial Optimized Build with GitHub mirror tracking for auto-updates
+- Initial Optimized Build with tagged GitHub mirror for auto-updates
