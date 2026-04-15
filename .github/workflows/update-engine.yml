@@ -1,0 +1,94 @@
+name: Fedora Nexus Auto-Updater
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install System Dependencies
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils jq curl
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install requests
+
+      - name: Run Modular Updaters
+        id: updater
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for script in $(find . -mindepth 2 -name "update.sh"); do
+            dir=$(dirname "$script")
+            pushd "$dir" > /dev/null
+            bash update.sh
+            popd > /dev/null
+          done
+
+          python3 << 'EOF'
+          import os, re, requests
+          from pathlib import Path
+
+          gh_token = os.environ.get('GITHUB_TOKEN')
+          headers = {'Accept': 'application/vnd.github.v3+json'}
+          if gh_token: headers['Authorization'] = f'token {gh_token}'
+
+          for spec in Path('.').rglob('*.spec'):
+              content = spec.read_text(encoding='utf-8')
+              
+              repo_match = re.search(r'https://github\.com/([^/\n]+)/([^/\n]+?)(?:\.git|/archive|/releases|$)', content, re.IGNORECASE)
+              version_match = re.search(r'^Version:\s*([0-9a-zA-Z.-]+)', content, re.MULTILINE)
+              tag_match = re.search(r'%global\s+tag\s+(.+)', content)
+              
+              if not repo_match: continue
+              owner, repo = repo_match.group(1), repo_match.group(2)
+              current_ver = version_match.group(1) if version_match else None
+              current_tag = tag_match.group(1).strip() if tag_match else None
+
+              try:
+                  api_url = f"https://api.github.com/repos/{owner}/{repo}/releases/latest"
+                  res = requests.get(api_url, headers=headers, timeout=10)
+                  if res.status_code == 200:
+                      latest_tag = res.json().get('tag_name', '')
+                      latest_ver = latest_tag.lstrip('v')
+                      
+                      new_content = content
+                      changed = False
+                      
+                      if current_tag and latest_tag != current_tag:
+                          new_content = re.sub(r'(%global\s+tag\s+).+', rf'\g<1>{latest_tag}', new_content)
+                          changed = True
+                      elif current_ver and latest_ver != current_ver and not current_tag:
+                          new_content = re.sub(r'(^Version:\s+).+', rf'\g<1>{latest_ver}', new_content, flags=re.MULTILINE)
+                          changed = True
+                          
+                      if changed:
+                          spec.write_text(new_content, encoding='utf-8')
+              except Exception:
+                  pass
+          EOF
+
+          if ! git diff --quiet; then
+            echo "updates_made=true" >> $GITHUB_OUTPUT
+          else
+            echo "updates_made=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and Push
+        if: steps.updater.outputs.updates_made == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "auto-update: sync spec files to latest upstream versions"
+          git push
