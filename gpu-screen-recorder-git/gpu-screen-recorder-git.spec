@@ -9,7 +9,6 @@ Summary:        Shadowplay-like screen recorder for Linux (Nexus Git Snapshot)
 License:        GPL-3.0-or-later
 URL:            https://git.dec05eba.com/gpu-screen-recorder/about
 
-# Ask the cgit interface to dynamically generate a tarball for this specific commit
 Source0:        https://git.dec05eba.com/gpu-screen-recorder/snapshot/gpu-screen-recorder-%{commit}.tar.gz
 
 ExclusiveArch:  x86_64 aarch64
@@ -49,7 +48,7 @@ Uses the GPU exclusively for video encoding to maintain near-zero CPU impact.
 Optimized for the Nexus repository for peak performance on Wayland.
 
 %prep
-# cgit dynamically generated tarballs unpack into a folder named identically to the snapshot
+
 %autosetup -n gpu-screen-recorder-%{commit}
 
 %build
