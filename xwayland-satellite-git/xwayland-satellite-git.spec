@@ -2,7 +2,7 @@
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           xwayland-satellite-git
-Version:        20260416
+Version:        20260417
 Release:        1%{?dist}
 Summary:        Rootless Xwayland integration for Wayland compositors (Git Snapshot)
 
