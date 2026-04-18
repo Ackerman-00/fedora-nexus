@@ -1,4 +1,4 @@
-%global tag         v0.5.19
+%global tag         v0.5.20
 %global app_id      com.vysp3r.ProtonPlus
 %global forgeurl    https://github.com/vysp3r/ProtonPlus
 %forgemeta
