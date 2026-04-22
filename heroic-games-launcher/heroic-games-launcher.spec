@@ -3,7 +3,7 @@
 %global __provides_exclude_from ^/opt/Heroic/.*$
 
 Name:           heroic-games-launcher
-Version:        2.20.1
+Version:        2.21.0
 Release:        1%{?dist}
 Summary:        Open source launcher for GOG, Epic, and Amazon Games (Nexus Optimized)
 
