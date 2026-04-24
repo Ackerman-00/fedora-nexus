@@ -1,4 +1,4 @@
-%global commit          8d583fe854647951ff83a370c87c823589276e5f
+%global commit          9438f59e2b9d8deb6fcec5922f8aca18162b673c
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           niri-git
