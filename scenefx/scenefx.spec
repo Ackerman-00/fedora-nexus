@@ -1,5 +1,5 @@
 Name:           scenefx
-Version:        0.4.1
+Version:        0.4.0
 Release:        1%{?dist}
 
 Summary:        A drop-in replacement for the wlroots scene API for eye-candy effects
@@ -64,5 +64,5 @@ MESON_OPTIONS=(
 %{_libdir}/pkgconfig/%{name}-*.pc
 
 %changelog
-* Mon Apr 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.4.1-1
+* Mon Apr 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.4.0-1
 - Initial fedora-nexus baseline for scenefx
