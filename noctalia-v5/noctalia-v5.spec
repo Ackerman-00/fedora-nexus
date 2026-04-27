@@ -42,8 +42,6 @@ with no Qt or GTK dependency. This package tracks the experimental unreleased v5
 %autosetup -n noctalia-shell-%{commit}
 
 %build
-# Use standard Fedora meson macros instead of 'just' to ensure proper RPM paths 
-# (/usr/ instead of /usr/local/) and Fedora hardening compiler flags.
 %meson
 %meson_build
 
