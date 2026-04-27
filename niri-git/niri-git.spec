@@ -1,8 +1,8 @@
-%global commit          a48f2645d90589ab419e6282a87665d9686bd14d
+%global commit          a85b922919815c32a3ae34e0838830fe522d6a1c
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           niri-git
-Version:        20260426
+Version:        20260427
 Release:        1%{?dist}
 Summary:        A scrollable-tiling Wayland compositor (Nexus Optimized Git Snapshot)
 
