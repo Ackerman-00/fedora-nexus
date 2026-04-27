@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          COMMIT_HASH_PLACEHOLDER
+%global commit          95c04929c22a36437ae6510d020193720b214bc7
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         GIT_DATE_PLACEHOLDER
+%global gitdate         20260427
 
 Name:           noctalia-v5
 Version:        5.0.0^%{gitdate}git%{shortcommit}
@@ -57,6 +57,9 @@ with no Qt or GTK dependency. This package tracks the experimental unreleased v5
 %{_datadir}/noctalia/
 
 %changelog
+* Mon Apr 27 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260427git95c0492-1
+- Nightly sync with upstream v5 branch (Commit: 95c0492)
+
 * Mon Apr 27 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0-1
 - Initial fedora-nexus nightly packaging for v5 branch
 - Added assets directory to files list per upstream requirements
