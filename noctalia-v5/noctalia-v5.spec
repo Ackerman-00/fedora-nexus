@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          a240c194368a261eb540403c6ef5619343965586
+%global commit          74194de13f6aad537744212371b1912fe261cca2
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260428191225
+%global gitdate         20260428201759
 
 Name:           noctalia-v5
 Version:        5.0.0^%{gitdate}git%{shortcommit}
@@ -59,6 +59,9 @@ with no Qt or GTK dependency. This package tracks the experimental unreleased v5
 %{_datadir}/noctalia/
 
 %changelog
+* Tue Apr 28 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260428201759git74194de-1
+- Nightly sync with upstream v5 branch (Commit: 74194de)
+
 * Tue Apr 28 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260428191225gita240c19-1
 - Nightly sync with upstream v5 branch (Commit: a240c19)
 
