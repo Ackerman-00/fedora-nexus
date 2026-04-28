@@ -31,8 +31,11 @@ BuildRequires:  pam-devel
 BuildRequires:  libcurl-devel
 BuildRequires:  libwebp-devel
 
+Conflicts:      noctalia
+Conflicts:      noctalia-bin
 Conflicts:      noctalia-shell < 5.0.0
 Provides:       noctalia-shell = %{version}-%{release}
+Provides:       noctalia = %{version}-%{release}
 
 %description
 Noctalia is a lightweight Wayland shell and bar built directly on Wayland + OpenGL ES, 
@@ -42,6 +45,7 @@ with no Qt or GTK dependency. This package tracks the experimental unreleased v5
 %autosetup -n noctalia-shell-%{commit}
 
 %build
+# Let Fedora's meson macro handle LTO, optimization levels, and hardened flags automatically
 %meson
 %meson_build
 
@@ -50,13 +54,14 @@ with no Qt or GTK dependency. This package tracks the experimental unreleased v5
 
 %files
 %license LICENSE
-%doc README.md
+%doc README.md CONFIG.md
 %{_bindir}/noctalia
 %{_datadir}/noctalia/
 
 %changelog
 * Tue Apr 28 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260428git0018c88-1
 - Nightly sync with upstream v5 branch (Commit: 0018c88)
+- Added CONFIG.md to documentation per upstream PKGBUILD
 
 * Tue Apr 28 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260428git80f7da6-1
 - Nightly sync with upstream v5 branch (Commit: 80f7da6)
