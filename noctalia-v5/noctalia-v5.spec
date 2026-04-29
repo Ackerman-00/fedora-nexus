@@ -30,6 +30,9 @@ BuildRequires:  pipewire-devel
 BuildRequires:  pam-devel
 BuildRequires:  libcurl-devel
 BuildRequires:  libwebp-devel
+# New dependencies added upstream for polkit integration
+BuildRequires:  glib2-devel
+BuildRequires:  polkit-devel
 
 Conflicts:      noctalia
 Conflicts:      noctalia-bin
@@ -61,53 +64,4 @@ with no Qt or GTK dependency. This package tracks the experimental unreleased v5
 %changelog
 * Wed Apr 29 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260429125405gitfad804a-1
 - Nightly sync with upstream v5 branch (Commit: fad804a)
-
-* Wed Apr 29 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260429091532gitaed14ba-1
-- Nightly sync with upstream v5 branch (Commit: aed14ba)
-
-* Wed Apr 29 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260429042926gite033c82-1
-- Nightly sync with upstream v5 branch (Commit: e033c82)
-
-* Wed Apr 29 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260429024217gita16ec65-1
-- Nightly sync with upstream v5 branch (Commit: a16ec65)
-
-* Tue Apr 28 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260428223816git480287e-1
-- Nightly sync with upstream v5 branch (Commit: 480287e)
-
-* Tue Apr 28 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260428201759git74194de-1
-- Nightly sync with upstream v5 branch (Commit: 74194de)
-
-* Tue Apr 28 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260428191225gita240c19-1
-- Nightly sync with upstream v5 branch (Commit: a240c19)
-
-* Tue Apr 28 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260428gitbab7834-1
-- Nightly sync with upstream v5 branch (Commit: bab7834)
-
-* Tue Apr 28 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260428gitc096e3a-1
-- Nightly sync with upstream v5 branch (Commit: c096e3a)
-
-* Tue Apr 28 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260428git7b980bd-1
-- Nightly sync with upstream v5 branch (Commit: 7b980bd)
-
-* Tue Apr 28 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260428gitdad32db-1
-- Nightly sync with upstream v5 branch (Commit: dad32db)
-
-* Tue Apr 28 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260428git0018c88-1
-- Nightly sync with upstream v5 branch (Commit: 0018c88)
-- Added CONFIG.md to documentation per upstream PKGBUILD
-
-* Tue Apr 28 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260428git80f7da6-1
-- Nightly sync with upstream v5 branch (Commit: 80f7da6)
-
-* Mon Apr 27 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260427git6c26b03-1
-- Nightly sync with upstream v5 branch (Commit: 6c26b03)
-
-* Mon Apr 27 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260427gitff8c4a3-1
-- Nightly sync with upstream v5 branch (Commit: ff8c4a3)
-
-* Mon Apr 27 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260427git95c0492-1
-- Nightly sync with upstream v5 branch (Commit: 95c0492)
-
-* Mon Apr 27 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0-1
-- Initial fedora-nexus nightly packaging for v5 branch
-- Added assets directory to files list per upstream requirements
+- Added glib2-devel and polkit-devel for new polkit-agent-1 dependency
