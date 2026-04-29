@@ -1,7 +1,7 @@
 %global uuid com.mattjakeman.ExtensionManager
 
 Name:           extension-manager
-Version:        0.6.4
+Version:        0.6.5
 Release:        1%{?dist}
 Summary:        A native tool for browsing, installing, and managing GNOME Shell Extensions
 
@@ -64,6 +64,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{uuid}.desktop
 %{_datadir}/icons/hicolor/*/*/*.svg
 
 %changelog
+* Wed Apr 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.5-1
+- Auto-update to version 0.6.5
+
 * Wed Apr 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.5-1
 - Added glib2, gobject-introspection, and libxml2 dependencies
 - Injected custom distributor Meson flags
