@@ -36,7 +36,7 @@ With Extension Manager you can:
 %autosetup
 
 %build
-
+# We translate the Arch meson flags directly to Fedora, branding it for your repo
 %meson \
     -Dbacktrace=false \
     -Dpackage="Fedora" \
@@ -57,7 +57,6 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{uuid}.desktop
 %license COPYING
 %doc README.md
 %{_bindir}/extension-manager
-%{_datadir}/extension-manager/
 %{_datadir}/metainfo/%{uuid}.metainfo.xml
 %{_datadir}/applications/%{uuid}.desktop
 %{_datadir}/glib-2.0/schemas/%{uuid}.gschema.xml
@@ -65,9 +64,8 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{uuid}.desktop
 
 %changelog
 * Wed Apr 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.5-1
-- Auto-update to version 0.6.5
-
-* Wed Apr 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.5-1
+- Baseline setup based on official Arch PKGBUILD
 - Added glib2, gobject-introspection, and libxml2 dependencies
 - Injected custom distributor Meson flags
 - Enabled meson test suite in check phase
+- Fixed directory manifest error
