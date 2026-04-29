@@ -1,7 +1,7 @@
 %global uuid com.mattjakeman.ExtensionManager
 
 Name:           extension-manager
-Version:        0.6.5
+Version:        0.6.4
 Release:        1%{?dist}
 Summary:        A native tool for browsing, installing, and managing GNOME Shell Extensions
 
