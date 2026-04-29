@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          fad804a1f54c68d54d21806490fdfa20b7553428
+%global commit          660c2321d11fd370240cff19b5db59548000dadd
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260429125405
+%global gitdate         20260429140144
 
 Name:           noctalia-v5
 Version:        5.0.0^%{gitdate}git%{shortcommit}
@@ -62,6 +62,9 @@ with no Qt or GTK dependency. This package tracks the experimental unreleased v5
 %{_datadir}/noctalia/
 
 %changelog
+* Wed Apr 29 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260429140144git660c232-1
+- Nightly sync with upstream v5 branch (Commit: 660c232)
+
 * Wed Apr 29 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260429125405gitfad804a-1
 - Nightly sync with upstream v5 branch (Commit: fad804a)
 - Added glib2-devel and polkit-devel for new polkit-agent-1 dependency
