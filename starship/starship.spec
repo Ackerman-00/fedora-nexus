@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           starship
-Version:        1.25.0
+Version:        1.25.1
 Release:        1%{?dist}
 Summary:        Minimal, blazing-fast, and customizable prompt for any shell (Nexus Optimized)
 
