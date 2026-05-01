@@ -2,7 +2,7 @@
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           niri-git
-Version:        20260430
+Version:        20260501
 Release:        1%{?dist}
 Summary:        A scrollable-tiling Wayland compositor (Nexus Optimized Git Snapshot)
 
