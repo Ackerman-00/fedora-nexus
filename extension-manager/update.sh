@@ -6,8 +6,13 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 
-# Fetch the latest release tag (stripping the 'v' prefix for the spec Version)
-LATEST_VERSION=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v?([^"]+)".*/\1/')
+# Fetch the latest release tag from GitHub API
+# Inject GITHUB_TOKEN if available to bypass the strict 60/hr API rate limit
+if [ -n "$GITHUB_TOKEN" ]; then
+    LATEST_VERSION=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v?([^"]+)".*/\1/')
+else
+    LATEST_VERSION=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v?([^"]+)".*/\1/')
+fi
 
 if [ -z "$LATEST_VERSION" ]; then
     echo "Error: Failed to fetch the latest version. Check API limits or connection."
