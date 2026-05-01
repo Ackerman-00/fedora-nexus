@@ -7,17 +7,25 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream commits on $GITHUB_REPO (Branch: $BRANCH)..."
 
-# Fetch the latest commit hash and full timestamp from the v5 branch
-LATEST_COMMIT=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/commits/$BRANCH" | grep '"sha":' | head -n 1 | cut -d '"' -f 4)
+# Fetch the latest commit data from the v5 branch
+# Inject GITHUB_TOKEN if available to bypass the strict 60/hr API rate limit
+if [ -n "$GITHUB_TOKEN" ]; then
+    API_RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPO/commits/$BRANCH")
+else
+    API_RESPONSE=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/commits/$BRANCH")
+fi
 
-# FIX: Strip dashes, colons, T, and Z to create a purely ascending chronological integer (e.g., 20260428143200)
-LATEST_DATE=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/commits/$BRANCH" | grep '"date":' | head -n 1 | cut -d '"' -f 4 | sed 's/[-T:Z]//g')
+# Extract SHA and Timestamp using jq to halve our API calls
+LATEST_COMMIT=$(echo "$API_RESPONSE" | jq -r '.sha')
+LATEST_DATE_RAW=$(echo "$API_RESPONSE" | jq -r '.commit.committer.date')
 
-if [ -z "$LATEST_COMMIT" ]; then
+if [ -z "$LATEST_COMMIT" ] || [ "$LATEST_COMMIT" == "null" ]; then
     echo "Error: Failed to fetch the latest commit. Check API limits or connection."
     exit 1
 fi
 
+# Strip dashes, colons, T, and Z to create a purely ascending chronological integer (e.g., 20260428143200)
+LATEST_DATE=$(echo "$LATEST_DATE_RAW" | sed 's/[-T:Z]//g')
 SHORT_COMMIT=${LATEST_COMMIT:0:7}
 
 # Extract the current commit from the spec file
@@ -33,10 +41,19 @@ if [ "$CURRENT_COMMIT" != "$LATEST_COMMIT" ]; then
     # 2. Reset the Release field
     sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
     
-    # 3. Add Changelog entry
+    # 3. Add Changelog entry safely using awk
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
-    NEW_CHANGELOG="* $DATE $PACKAGER - 5.0.0^${LATEST_DATE}git${SHORT_COMMIT}-1\n- Nightly sync with upstream v5 branch (Commit: $SHORT_COMMIT)\n"
-    sed -i "/^%changelog/a $NEW_CHANGELOG" "$SPEC_FILE"
+    
+    awk -v date="$DATE" -v pkg="$PACKAGER" -v ldate="$LATEST_DATE" -v commit="$SHORT_COMMIT" '
+    /^%changelog/ {
+        print $0
+        print "* " date " " pkg " - 5.0.0^" ldate "git" commit "-1"
+        print "- Nightly sync with upstream v5 branch (Commit: " commit ")"
+        print ""
+        next
+    }
+    { print $0 }
+    ' "$SPEC_FILE" > "${SPEC_FILE}.tmp" && mv "${SPEC_FILE}.tmp" "$SPEC_FILE"
     
     echo "✅ Successfully patched $SPEC_FILE."
 else
