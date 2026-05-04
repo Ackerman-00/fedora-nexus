@@ -32,6 +32,7 @@ BuildRequires:  libcurl-devel
 BuildRequires:  libwebp-devel
 BuildRequires:  glib2-devel
 BuildRequires:  polkit-devel
+BuildRequires:  librsvg2-devel
 
 Conflicts:      noctalia
 Conflicts:      noctalia-bin
