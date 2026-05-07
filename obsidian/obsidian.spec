@@ -1,5 +1,5 @@
 Name:           obsidian
-Version:        1.12.6
+Version:        1.12.7
 Release:        1%{?dist}
 Summary:        A powerful knowledge base that works on top of a local folder of plain text Markdown files
 
@@ -86,5 +86,8 @@ install -m 644 %{buildroot}/opt/Obsidian/obsidian.png %{buildroot}%{_datadir}/ic
 %{_datadir}/icons/hicolor/512x512/apps/obsidian.png
 
 %changelog
+* Thu May 07 2026 Ackerman-00 <quietcraft@gmail.com> - 1.12.7-1
+- Auto-updated to 1.12.7
+
 * Thu May 07 2026 Ackerman-00 <quietcraft@gmail.com> - 1.12.7-1
 - Initial Fedora packaging via tarball for OBS
