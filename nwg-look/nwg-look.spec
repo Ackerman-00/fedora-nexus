@@ -1,6 +1,6 @@
 %global goipath         github.com/nwg-piotr/nwg-look
 
-Version:        1.0.6
+Version:        1.1.0
 
 %gometa
 
