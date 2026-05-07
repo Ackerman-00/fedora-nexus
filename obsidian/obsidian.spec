@@ -2,7 +2,7 @@
 
 Name:           obsidian
 Version:        1.12.7
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A powerful knowledge base that works on top of a local folder of plain text Markdown files
 
 License:        Commercial
@@ -53,11 +53,20 @@ cp -r resources %{buildroot}%{_libdir}/%{name}/
 # 2. Install the custom launcher script
 install -Dm755 %{SOURCE2} %{buildroot}%{_bindir}/%{name}
 
-# 3. Install the Desktop entry
-install -Dm644 obsidian.desktop %{buildroot}%{_datadir}/applications/%{app_id}.desktop
-
-sed -i 's|^Exec=obsidian|Exec=/usr/bin/obsidian|g' %{buildroot}%{_datadir}/applications/%{app_id}.desktop
-sed -i 's|^Icon=obsidian|Icon=%{app_id}|g' %{buildroot}%{_datadir}/applications/%{app_id}.desktop
+# 3. Dynamically Generate the Desktop Entry
+install -dm755 %{buildroot}%{_datadir}/applications
+cat > %{buildroot}%{_datadir}/applications/%{app_id}.desktop << EOF
+[Desktop Entry]
+Name=Obsidian
+Exec=/usr/bin/obsidian %U
+Terminal=false
+Type=Application
+Icon=%{app_id}
+StartupWMClass=obsidian
+Comment=Obsidian
+MimeType=x-scheme-handler/obsidian;
+Categories=Office;
+EOF
 
 # 4. Install the Icon directly from the tarball root
 install -Dm644 icon.png %{buildroot}%{_datadir}/pixmaps/%{app_id}.png
@@ -74,7 +83,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
 %{_libdir}/%{name}/*
 
 %changelog
-* Thu May 07 2026 Ackerman-00 <quietcraft@gmail.com> - 1.12.7-3
+* Thu May 07 2026 Ackerman-00 <quietcraft@gmail.com> - 1.12.7-4
+- Dynamically generate desktop file to bypass missing source
 - Complete rewrite: Switched to native system Electron dependency
 - Removed monolithic /opt/ installation
 - Fixed architecture-specific tarball extraction
