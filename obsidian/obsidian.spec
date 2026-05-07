@@ -57,3 +57,34 @@ idea to idea, all the time. Your second brain should work the same.
 
 %build
 # Pre-built Electron binary, no compilation needed.
+
+%install
+mkdir -p %{buildroot}/opt/Obsidian
+cp -a * %{buildroot}/opt/Obsidian/
+
+# Fix the SUID sandbox (Strict requirement for Electron apps on Linux)
+chmod 4755 %{buildroot}/opt/Obsidian/chrome-sandbox
+
+# Create the executable symlink
+mkdir -p %{buildroot}%{_bindir}
+ln -sf /opt/Obsidian/obsidian %{buildroot}%{_bindir}/obsidian
+
+# Install the Desktop entry
+mkdir -p %{buildroot}%{_datadir}/applications
+install -m 644 %{buildroot}/opt/Obsidian/obsidian.desktop %{buildroot}%{_datadir}/applications/obsidian.desktop
+sed -i 's|^Exec=obsidian|Exec=/usr/bin/obsidian|g' %{buildroot}%{_datadir}/applications/obsidian.desktop
+
+# Install the Icon
+mkdir -p %{buildroot}%{_datadir}/icons/hicolor/512x512/apps
+install -m 644 %{buildroot}/opt/Obsidian/obsidian.png %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/obsidian.png
+
+%files
+%defattr(-,root,root,-)
+/opt/Obsidian
+%{_bindir}/obsidian
+%{_datadir}/applications/obsidian.desktop
+%{_datadir}/icons/hicolor/512x512/apps/obsidian.png
+
+%changelog
+* Thu May 07 2026 Ackerman-00 <quietcraft@gmail.com> - 1.12.7-1
+- Initial Fedora packaging via tarball for OBS
