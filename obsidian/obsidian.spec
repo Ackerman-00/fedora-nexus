@@ -2,7 +2,7 @@
 
 Name:           obsidian
 Version:        1.12.7
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        A powerful knowledge base that works on top of a local folder of plain text Markdown files
 
 License:        Commercial
@@ -68,8 +68,9 @@ MimeType=x-scheme-handler/obsidian;
 Categories=Office;
 EOF
 
-# 4. Install the Icon directly from the tarball root
-install -Dm644 icon.png %{buildroot}%{_datadir}/pixmaps/%{app_id}.png
+# 4. Install the Icon safely using a dynamic finder to avoid filename crashes
+ICON_FILE=$(find . -name "*.png" | head -n 1)
+install -Dm644 "$ICON_FILE" %{buildroot}%{_datadir}/pixmaps/%{app_id}.png
 
 %check
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
@@ -83,8 +84,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
 %{_libdir}/%{name}/*
 
 %changelog
-* Thu May 07 2026 Ackerman-00 <quietcraft@gmail.com> - 1.12.7-4
+* Thu May 07 2026 Ackerman-00 <quietcraft@gmail.com> - 1.12.7-5
+- Bulletproof icon extraction using wildcard finder
 - Dynamically generate desktop file to bypass missing source
-- Complete rewrite: Switched to native system Electron dependency
+- Switched to native system Electron dependency
 - Removed monolithic /opt/ installation
-- Fixed architecture-specific tarball extraction
