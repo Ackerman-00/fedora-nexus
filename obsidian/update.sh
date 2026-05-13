@@ -1,36 +1,53 @@
 #!/bin/bash
-# update.sh for Obsidian
+# update.sh for Obsidian (Repackaging Build)
 
 SPEC_FILE="obsidian.spec"
 
-echo "Checking for latest Obsidian release..."
+echo "🔍 Checking for latest Obsidian release..."
 
-# 1. Fetch the latest release tag from the GitHub API
-# We use jq to parse the JSON and strip the 'v' prefix (e.g., v1.15.2 -> 1.15.2)
-LATEST_VERSION=$(curl -s https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest | jq -r .tag_name | sed 's/^v//')
+# 1. Fetch latest version from GitHub API
+# Using a User-Agent is good practice to avoid rate-limiting
+LATEST_VERSION=$(curl -s -H "User-Agent: Fedora-Update-Script" https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest | jq -r .tag_name | sed 's/^v//')
 
 if [ -z "$LATEST_VERSION" ] || [ "$LATEST_VERSION" == "null" ]; then
     echo "  -> [ERROR] Failed to fetch latest version from GitHub API."
     exit 1
 fi
 
-# 2. Read the current version from the .spec file
+# 2. Read current version from .spec
 CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 
-# 3. Compare and update if necessary
+# 3. Compare and update
 if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
-    echo "  -> [UPDATE] Obsidian changed from $CURRENT_VERSION to $LATEST_VERSION!"
+    echo "  -> [UPDATE] New version detected: $LATEST_VERSION (Current: $CURRENT_VERSION)"
+
+    # 4. CRITICAL: Verify the .deb source actually exists for this version
+    # This prevents your COPR from failing with a 404
+    DEB_URL="https://github.com/obsidianmd/obsidian-releases/releases/download/v${LATEST_VERSION}/obsidian_${LATEST_VERSION}_amd64.deb"
     
-    # Update the Version field
+    echo "  -> [CHECK] Verifying download link..."
+    if ! curl --output /dev/null --silent --head --fail "$DEB_URL"; then
+        echo "  -> [ERROR] .deb file for $LATEST_VERSION is not yet available on GitHub. Skipping update."
+        exit 1
+    fi
+
+    echo "  -> [ACTION] Updating $SPEC_FILE..."
+    
+    # Update Version and Reset Release to 1
+    # Note: Using exact spacing to match your clean .spec file
     sed -i "s/^Version:\s*.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
-    
-    # Reset the Release field back to 1
     sed -i "s/^Release:\s*.*/Release:        1%{?dist}/" "$SPEC_FILE"
     
-    # Add a new changelog entry at the top of the %changelog section
+    # 5. Robust Changelog Update
+    # We use a temp file to avoid the 'sed' newline headache on different shells
     DATE_STR=$(date +"%a %b %d %Y")
-    CHANGELOG_ENTRY="* $DATE_STR Ackerman-00 <quietcraft@gmail.com> - $LATEST_VERSION-1\n- Auto-updated to $LATEST_VERSION\n"
-    sed -i "/^%changelog/a $CHANGELOG_ENTRY" "$SPEC_FILE"
+    NEW_ENTRY="* $DATE_STR Ackerman-00 <quietcraft@gmail.com> - $LATEST_VERSION-1
+- Auto-updated to $LATEST_VERSION via update.sh"
+
+    # Insert the entry after the %changelog line
+    sed -i "/^%changelog/a $NEW_ENTRY" "$SPEC_FILE"
+    
+    echo "  -> [DONE] $SPEC_FILE is ready for build."
 else
     echo "  -> [OK] Obsidian is already on latest ($CURRENT_VERSION)."
 fi
