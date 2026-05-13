@@ -1,4 +1,4 @@
-%global tag         v4.7.6
+%global tag         v4.7.7
 %global forgeurl    https://github.com/noctalia-dev/noctalia-shell
 %forgemeta
 
