@@ -1,8 +1,8 @@
-%global commit          38191826cb1e5fb9051a7e141fefe4941a2b4bed
+%global commit          cd5ac3e5e04bb5a11276d3c755fa25242818e05f
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           niri-git
-Version:        20260510
+Version:        20260515
 Release:        1%{?dist}
 Summary:        A scrollable-tiling Wayland compositor (Nexus Optimized Git Snapshot)
 
@@ -96,6 +96,9 @@ install -Dpm0644 _niri %{buildroot}%{_datadir}/zsh/site-functions/_niri
 %{_datadir}/zsh/site-functions/_niri
 
 %changelog
+* Fri May 15 2026 Ackerman-00 <quietcraft@gmail.com> - 20260515-1
+- Nightly sync with upstream main branch (Commit: cd5ac3e)
+
 * Sun May 10 2026 Ackerman-00 <quietcraft@gmail.com> - 20260510-1
 - Nightly sync with upstream main branch (Commit: 3819182)
 
