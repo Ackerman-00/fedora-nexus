@@ -21,6 +21,8 @@ BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(libpcre2-8)
 BuildRequires:  scenefx-devel
 
+Requires:       xorg-x11-server-Xwayland
+
 Conflicts:      mangowc < %{version}
 Obsoletes:      mangowc < %{version}
 Provides:       mangowc = %{version}
