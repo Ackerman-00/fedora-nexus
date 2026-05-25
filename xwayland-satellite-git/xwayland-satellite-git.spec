@@ -1,8 +1,8 @@
-%global commit          3273a0fccd71da21c6362c74f3b1d1c0a89ff3ba
+%global commit          5d1efbc9dc3ab1c10160b656e0247f3325daf0f2
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           xwayland-satellite-git
-Version:        20260524
+Version:        20260525
 Release:        1%{?dist}
 Summary:        Rootless Xwayland integration for Wayland compositors (Git Snapshot)
 
@@ -68,6 +68,9 @@ install -Dpm0644 resources/xwayland-satellite.service -t %{buildroot}%{_userunit
 %{_userunitdir}/xwayland-satellite.service
 
 %changelog
+* Mon May 25 2026 Ackerman-00 <quietcraft@gmail.com> - 20260525-1
+- Nightly sync with upstream main branch (Commit: 5d1efbc)
+
 * Sun May 24 2026 Ackerman-00 <quietcraft@gmail.com> - 20260524-1
 - Nightly sync with upstream main branch (Commit: 3273a0f)
 
