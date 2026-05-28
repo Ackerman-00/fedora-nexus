@@ -1,4 +1,4 @@
-%global commit          9a6f31012d031a7fccaf607b49080ddce44f0935
+%global commit          9bd6c2cadda26450d435785815a634c320127a1c
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           niri-git
@@ -96,6 +96,9 @@ install -Dpm0644 _niri %{buildroot}%{_datadir}/zsh/site-functions/_niri
 %{_datadir}/zsh/site-functions/_niri
 
 %changelog
+* Thu May 28 2026 Ackerman-00 <quietcraft@gmail.com> - 20260528-1
+- Nightly sync with upstream main branch (Commit: 9bd6c2c)
+
 * Thu May 28 2026 Ackerman-00 <quietcraft@gmail.com> - 20260528-1
 - Nightly sync with upstream main branch (Commit: 9a6f310)
 
