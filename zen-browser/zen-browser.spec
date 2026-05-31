@@ -3,13 +3,13 @@
 %global             debug_package %{nil}
 
 Name:               zen-browser
-Version:        1.20.1b
-Release:        1%{?dist}
+Version:            1.20.1b
+Release:            1%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPLv2.0
 URL:                https://github.com/zen-browser/desktop
-Source0:            https://github.com/zen-browser/desktop/releases/download/1.20.1b/zen.linux-x86_64.tar.xz
+Source0:            https://github.com/zen-browser/desktop/releases/download/%{version}/zen.linux-x86_64.tar.xz
 Source1:            %{full_name}.desktop
 Source2:            policies.json
 Source3:            %{full_name}
@@ -45,7 +45,10 @@ install -D -m 0644 %{SOURCE1} -t %{buildroot}%{_datadir}/applications
 install -D -m 0444 %{SOURCE2} -t %{buildroot}/opt/%{application_name}/distribution
 install -D -m 0755 %{SOURCE3} -t %{buildroot}%{_bindir}
 
-patchelf --set-rpath '$ORIGIN' %{buildroot}/opt/%{application_name}/libonnxruntime.so
+# Safeguard: Only run patchelf if upstream actually shipped libonnxruntime.so in the root
+if [ -f "%{buildroot}/opt/%{application_name}/libonnxruntime.so" ]; then
+    patchelf --set-rpath '$ORIGIN' %{buildroot}/opt/%{application_name}/libonnxruntime.so
+fi
 
 ln -s ../../../../../../opt/%{application_name}/browser/chrome/icons/default/default128.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/%{full_name}.png
 ln -s ../../../../../../opt/%{application_name}/browser/chrome/icons/default/default64.png %{buildroot}%{_datadir}/icons/hicolor/64x64/apps/%{full_name}.png
@@ -54,7 +57,8 @@ ln -s ../../../../../../opt/%{application_name}/browser/chrome/icons/default/def
 ln -s ../../../../../../opt/%{application_name}/browser/chrome/icons/default/default16.png %{buildroot}%{_datadir}/icons/hicolor/16x16/apps/%{full_name}.png
 
 %post
-gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor
+# Added || : to prevent post-install scriptlet failures if the icon cache is locked
+gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %files
 %{_datadir}/applications/%{full_name}.desktop
@@ -69,6 +73,7 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor
 %changelog
 * Wed May 27 2026 Ackerman-00 <quietcraft@gmail.com> - 1.20.1b-1
 - Auto-update to upstream release 1.20.1b
+- Add patchelf safeguard for libonnxruntime.so
 
 * Sun May 24 2026 Ackerman-00 <quietcraft@gmail.com> - 1.20b-1
 - Auto-update to upstream release 1.20b
