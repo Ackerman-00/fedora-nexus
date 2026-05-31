@@ -35,6 +35,7 @@ BuildRequires:  polkit-devel
 BuildRequires:  librsvg2-devel
 BuildRequires:  libqalculate-devel
 BuildRequires:  libxml2-devel
+BuildRequires:  jemalloc-devel
 
 Conflicts:      noctalia
 Conflicts:      noctalia-bin
