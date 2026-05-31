@@ -78,6 +78,3 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor
 
 * Sat May 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.19.12b-1
 - Auto-update to upstream release 1.19.12b
-
-* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.19.8b-1
-- Initial optimized stable release build
