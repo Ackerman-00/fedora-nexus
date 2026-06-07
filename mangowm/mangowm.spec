@@ -46,12 +46,13 @@ dwl — crafted for speed, flexibility, and a customizable desktop experience.
 %doc README.md
 %license LICENSE
 %license LICENSE.wlroots
-%license LICENSE.tinywl 
-%license LICENSE.sway 
-%license LICENSE.dwm 
-%license LICENSE.dwl 
+%license LICENSE.tinywl
+%license LICENSE.sway
+%license LICENSE.dwm
+%license LICENSE.dwl
 %{_bindir}/mango
 %{_bindir}/mmsg
+%{_mandir}/man1/mmsg.1*
 %{_sysconfdir}/mango/config.conf
 %{_datadir}/wayland-sessions/mango.desktop
 %{_datadir}/xdg-desktop-portal/mango-portals.conf
