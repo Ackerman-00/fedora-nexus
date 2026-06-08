@@ -1,8 +1,10 @@
+# These will be automatically populated by update.sh
 %global commit          5d1efbc9dc3ab1c10160b656e0247f3325daf0f2
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
+%global gitdate         20260525214027
 
 Name:           xwayland-satellite-git
-Version:        20260525
+Version:        0.8.1^%{gitdate}git%{shortcommit}
 Release:        1%{?dist}
 Summary:        Rootless Xwayland integration for Wayland compositors (Git Snapshot)
 
@@ -38,13 +40,17 @@ the bleeding-edge master branch.
 %prep
 %autosetup -n xwayland-satellite-%{commit}
 
-# Dynamically fix the executable path in the systemd unit (replaces the need for a .patch file)
-sed -i 's|/usr/local/bin|/usr/bin|g' resources/xwayland-satellite.service
+# Dynamically fix the executable path in the systemd unit using system macros
+sed -i 's|/usr/local/bin|%{_bindir}|g' resources/xwayland-satellite.service
 
 # Remove vendored decoration font if it exists in the current git tree
 rm -f OpenSans-Regular.ttf
 
 %build
+# Inject Fedora system optimization variables safely for static linkage
+export CFLAGS="%{optflags} -ffat-lto-objects"
+export CXXFLAGS="%{optflags} -ffat-lto-objects"
+
 # We let Cargo handle the network fetch directly
 cargo build --release --features systemd,fontconfig
 
@@ -68,11 +74,11 @@ install -Dpm0644 resources/xwayland-satellite.service -t %{buildroot}%{_userunit
 %{_userunitdir}/xwayland-satellite.service
 
 %changelog
-* Mon May 25 2026 Ackerman-00 <quietcraft@gmail.com> - 20260525-1
+* Mon May 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.1^20260525214027git5d1efbc-1
 - Nightly sync with upstream main branch (Commit: 5d1efbc)
 
-* Sun May 24 2026 Ackerman-00 <quietcraft@gmail.com> - 20260524-1
+* Sun May 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.1^20260524000000git3273a0f-1
 - Nightly sync with upstream main branch (Commit: 3273a0f)
 
-* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 20260321-1
+* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 0.8.1^20260321000000gitoldhash-1
 - Automated Git Snapshot Build
