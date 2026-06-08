@@ -1,8 +1,10 @@
+# These will be automatically populated by update.sh
 %global commit          f717ae030fe56fc52522ebef69f17f3f09064ac4
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
+%global gitdate         20260605052852
 
 Name:           niri-git
-Version:        20260605
+Version:        26.04^%{gitdate}git%{shortcommit}
 Release:        1%{?dist}
 Summary:        A scrollable-tiling Wayland compositor (Nexus Optimized Git Snapshot)
 
@@ -44,6 +46,7 @@ Recommends:     xdg-desktop-portal-gnome
 Recommends:     gnome-keyring
 
 Provides:       niri = %{version}-%{release}
+Provides:       wayland-compositor
 Conflicts:      niri
 
 %description
@@ -55,12 +58,17 @@ Compiled specifically for the Nexus repository via automated Git snapshot. Strip
 
 %build
 # Set the commit string for the binary
-export NIRI_BUILD_COMMIT="%{version}"
+export NIRI_BUILD_COMMIT="%{shortcommit}"
+
+# Inject Fedora system optimization variables safely
+export CFLAGS="%{optflags} -ffat-lto-objects"
+export CXXFLAGS="%{optflags} -ffat-lto-objects"
 
 # Let Cargo handle the raw compilation natively
-cargo build --release
+cargo build --release --features default
 
-# Generate shell completions
+# Generate shell completions safely by isolating runtime context
+export XDG_RUNTIME_DIR=$(mktemp -d)
 target/release/niri completions bash > ./niri.bash
 target/release/niri completions fish > ./niri.fish
 target/release/niri completions zsh > ./_niri
@@ -96,38 +104,3 @@ install -Dpm0644 _niri %{buildroot}%{_datadir}/zsh/site-functions/_niri
 %{_datadir}/zsh/site-functions/_niri
 
 %changelog
-* Fri Jun 05 2026 Ackerman-00 <quietcraft@gmail.com> - 20260605-1
-- Nightly sync with upstream main branch (Commit: f717ae0)
-
-* Fri May 29 2026 Ackerman-00 <quietcraft@gmail.com> - 20260529-1
-- Nightly sync with upstream main branch (Commit: f9f43d8)
-
-* Thu May 28 2026 Ackerman-00 <quietcraft@gmail.com> - 20260528-1
-- Nightly sync with upstream main branch (Commit: 9bd6c2c)
-
-* Thu May 28 2026 Ackerman-00 <quietcraft@gmail.com> - 20260528-1
-- Nightly sync with upstream main branch (Commit: 9a6f310)
-
-* Thu May 21 2026 Ackerman-00 <quietcraft@gmail.com> - 20260521-1
-- Nightly sync with upstream main branch (Commit: 4294948)
-
-* Fri May 15 2026 Ackerman-00 <quietcraft@gmail.com> - 20260515-1
-- Nightly sync with upstream main branch (Commit: cd5ac3e)
-
-* Sun May 10 2026 Ackerman-00 <quietcraft@gmail.com> - 20260510-1
-- Nightly sync with upstream main branch (Commit: 3819182)
-
-* Fri May 08 2026 Ackerman-00 <quietcraft@gmail.com> - 20260508-1
-- Nightly sync with upstream main branch (Commit: 0200670)
-
-* Thu May 07 2026 Ackerman-00 <quietcraft@gmail.com> - 20260507-1
-- Nightly sync with upstream main branch (Commit: 9036688)
-
-* Tue May 05 2026 Ackerman-00 <quietcraft@gmail.com> - 20260505-1
-- Nightly sync with upstream main branch (Commit: 5665403)
-
-* Sat May 02 2026 Ackerman-00 <quietcraft@gmail.com> - 20260502-1
-- Nightly sync with upstream main branch (Commit: 1f07cff)
-
-* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 20260415-1
-- Initial Automated Git Snapshot Build
