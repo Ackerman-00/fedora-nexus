@@ -1,13 +1,13 @@
 #!/bin/bash
 
 SPEC_FILE="noctalia-v5.spec"
-GITHUB_REPO="noctalia-dev/noctalia-shell"
-BRANCH="v5"
+GITHUB_REPO="noctalia-dev/noctalia"
+BRANCH="main"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream commits on $GITHUB_REPO (Branch: $BRANCH)..."
 
-# Fetch the latest commit data from the v5 branch
+# Fetch the latest commit data from the main branch
 # Inject GITHUB_TOKEN if available to bypass the strict 60/hr API rate limit
 if [ -n "$GITHUB_TOKEN" ]; then
     API_RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPO/commits/$BRANCH")
@@ -48,7 +48,7 @@ if [ "$CURRENT_COMMIT" != "$LATEST_COMMIT" ]; then
     /^%changelog/ {
         print $0
         print "* " date " " pkg " - 5.0.0^" ldate "git" commit "-1"
-        print "- Nightly sync with upstream v5 branch (Commit: " commit ")"
+        print "- Nightly sync with upstream main branch (Commit: " commit ")"
         print ""
         next
     }
