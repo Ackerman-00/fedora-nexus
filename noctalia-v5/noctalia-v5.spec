@@ -1,5 +1,5 @@
 # These will be automatically populated by update.sh
-%global commit          aa420b7f077ca6c6dded999e317f776c5ba9f5c7
+%global commit          39a4a335c0000000000000000000000000000000
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20260608041201
 
@@ -10,8 +10,8 @@ Summary:        A lightweight Wayland shell and bar built on Wayland + OpenGL ES
 
 License:        MIT
 Packager:       Ackerman-00 <quietcraft@gmail.com>
-URL:            https://github.com/noctalia-dev/noctalia-shell
-Source0:        %{url}/archive/%{commit}/noctalia-shell-%{shortcommit}.tar.gz
+URL:            https://github.com/noctalia-dev/noctalia
+Source0:        %{url}/archive/%{commit}/noctalia-%{shortcommit}.tar.gz
 
 ExclusiveArch:  x86_64 aarch64
 
@@ -46,10 +46,11 @@ Provides:       noctalia = %{version}-%{release}
 
 %description
 Noctalia is a lightweight Wayland shell and bar built directly on Wayland + OpenGL ES, 
-with no Qt or GTK dependency. This package tracks the experimental unreleased v5 git branch.
+with no Qt or GTK dependency. This package tracks the bleeding-edge main branch (formerly the v5 experimental branch).
 
 %prep
-%autosetup -n noctalia-shell-%{commit}
+# The upstream tarball now extracts to noctalia-%{commit} due to the repo rename
+%autosetup -n noctalia-%{commit}
 
 %build
 # Force C++23 standard to fix the std::string_view 'contains' compiler error
@@ -72,4 +73,4 @@ export CFLAGS="%{optflags}"
 
 %changelog
 * Mon Jun 08 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260608041201gitaa420b7-1
-- Nightly sync with upstream v5 branch (Commit: aa420b7)
+- Update spec to reflect upstream repository rename to 'noctalia' and branch merge
