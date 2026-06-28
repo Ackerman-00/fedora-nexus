@@ -70,6 +70,8 @@ export CFLAGS="%{optflags}"
 %doc README.md
 %{_bindir}/noctalia
 %{_datadir}/noctalia/
+%{_datadir}/applications/dev.noctalia.Noctalia.desktop
+%{_datadir}/icons/hicolor/scalable/apps/noctalia.svg
 
 %changelog
 * Sat Jun 27 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260627191958git85dc431-1
