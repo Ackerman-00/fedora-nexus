@@ -1,5 +1,5 @@
 Name:           scenefx
-Version:        0.4.1
+Version:        0.5
 Release:        1%{?dist}
 
 Summary:        A drop-in replacement for the wlroots scene API for eye-candy effects
@@ -64,6 +64,9 @@ MESON_OPTIONS=(
 %{_libdir}/pkgconfig/%{name}-*.pc
 
 %changelog
+* Wed Jul 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5-1
+- Auto-update to version 0.5
+
 * Mon Apr 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.4.1-1
 - Auto-update to version 0.4.1
 
