@@ -49,11 +49,6 @@ dwl — crafted for speed, flexibility, and a customizable desktop experience.
 %files
 %doc README.md
 %license LICENSE
-%license LICENSE.wlroots
-%license LICENSE.tinywl
-%license LICENSE.sway
-%license LICENSE.dwm
-%license LICENSE.dwl
 %{_bindir}/mango
 %{_bindir}/mmsg
 %{_mandir}/man1/mmsg.1*
