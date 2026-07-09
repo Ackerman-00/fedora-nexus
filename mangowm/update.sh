@@ -32,12 +32,14 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     
     # 2. Auto-generate the Changelog entry
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
-    NEW_CHANGELOG="* $DATE $PACKAGER - $LATEST_VERSION-1\n- Auto-update to version $LATEST_VERSION\n"
+    NEW_CHANGELOG="* $DATE $PACKAGER - $LATEST_VERSION-1\n- Auto-update to version $LATEST_VERSION"
     
-    # 3. Inject the new Changelog right under the %changelog header
-    sed -i "/^%changelog/a $NEW_CHANGELOG" "$SPEC_FILE"
+    # 3. Wipe out old logs below %changelog and replace with the single new entry
+    sed -i '/^%changelog/,$d' "$SPEC_FILE"
+    echo "%changelog" >> "$SPEC_FILE"
+    echo -e "$NEW_CHANGELOG" >> "$SPEC_FILE"
     
-    echo "✅ Successfully patched $SPEC_FILE."
+    echo "✅ Successfully patched $SPEC_FILE and replaced the changelog history."
 else
     echo "✅ Package is already at $LATEST_VERSION. No update needed."
 fi
