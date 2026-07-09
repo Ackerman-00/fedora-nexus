@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Configuration
 SPEC_FILE="scenefx.spec"
 GITHUB_REPO="wlrfx/scenefx"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
@@ -29,21 +30,16 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     sed -i "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
     
-    # 2. Auto-generate the Changelog entry safely using awk
+    # 2. Auto-generate the Changelog entry
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
+    NEW_CHANGELOG="* $DATE $PACKAGER - $LATEST_VERSION-1\n- Auto-update to version $LATEST_VERSION"
     
-    awk -v date="$DATE" -v pkg="$PACKAGER" -v ver="$LATEST_VERSION" '
-    /^%changelog/ {
-        print $0
-        print "* " date " " pkg " - " ver "-1"
-        print "- Auto-update to version " ver
-        print ""
-        next
-    }
-    { print $0 }
-    ' "$SPEC_FILE" > "${SPEC_FILE}.tmp" && mv "${SPEC_FILE}.tmp" "$SPEC_FILE"
+    # 3. Wipe out old logs below %changelog and replace with the single new entry
+    sed -i '/^%changelog/,$d' "$SPEC_FILE"
+    echo "%changelog" >> "$SPEC_FILE"
+    echo -e "$NEW_CHANGELOG" >> "$SPEC_FILE"
     
-    echo "✅ Successfully patched $SPEC_FILE."
+    echo "✅ Successfully patched $SPEC_FILE and replaced the changelog history."
 else
     echo "✅ Package is already at $LATEST_VERSION. No update needed."
 fi
