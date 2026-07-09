@@ -12,14 +12,17 @@ BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-icccm)
-BuildRequires:  pkgconfig(wayland-protocols)
-BuildRequires:  pkgconfig(wayland-server)
-BuildRequires:  pkgconfig(wlroots-0.19)
+BuildRequires:  pkgconfig(wayland-protocols) >= 1.41
+BuildRequires:  pkgconfig(wayland-server) >= 1.23.1
+BuildRequires:  pkgconfig(wlroots-0.20)
 BuildRequires:  pkgconfig(xkbcommon)
-BuildRequires:  pkgconfig(libinput)
+BuildRequires:  pkgconfig(libinput) >= 1.27.1
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(libpcre2-8)
 BuildRequires:  pkgconfig(libcjson)
+BuildRequires:  pkgconfig(pango)
+BuildRequires:  pkgconfig(pixman-1)
+BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  scenefx-devel
 
 Requires:       xorg-x11-server-Xwayland
@@ -27,6 +30,7 @@ Requires:       xorg-x11-server-Xwayland
 Conflicts:      mangowc < %{version}
 Obsoletes:      mangowc < %{version}
 Provides:       mangowc = %{version}
+Provides:       wayland-compositor
 
 %description
 MangoWM is a modern, lightweight, high-performance Wayland compositor built on
@@ -60,28 +64,3 @@ dwl — crafted for speed, flexibility, and a customizable desktop experience.
 %changelog
 * Thu Jul 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.0-1
 - Auto-update to version 0.15.0
-
-* Tue Jun 16 2026 Ackerman-00 <quietcraft@gmail.com> - 0.14.4-1
-- Auto-update to version 0.14.4
-
-* Mon Jun 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.14.3-1
-- Auto-update to version 0.14.3
-
-* Sat Jun 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.14.2-1
-- Auto-update to version 0.14.2
-
-* Sat Jun 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.14.1-1
-- Auto-update to version 0.14.1
-
-* Fri May 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.14.0-1
-- Auto-update to version 0.14.0
-- Add cjson-devel build requirement for IPC/config parsing
-
-* Fri May 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.13.0-1
-- Auto-update to version 0.13.0
-
-* Mon Apr 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.9-1
-- Auto-update to version 0.12.9
-
-* Mon Apr 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.7-1
-- Initial fedora-nexus baseline with dynamic versioning
