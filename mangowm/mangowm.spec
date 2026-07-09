@@ -14,7 +14,7 @@ BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-icccm)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.41
 BuildRequires:  pkgconfig(wayland-server) >= 1.23.1
-BuildRequires:  pkgconfig(wlroots-0.20)
+BuildRequires:  pkgconfig(wlroots) >= 0.20
 BuildRequires:  pkgconfig(xkbcommon)
 BuildRequires:  pkgconfig(libinput) >= 1.27.1
 BuildRequires:  pkgconfig(wayland-client)
