@@ -41,21 +41,17 @@ if [ "$CURRENT_COMMIT" != "$LATEST_COMMIT" ]; then
     # 2. Reset the Release field
     sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
     
-    # 3. Add Changelog entry safely using awk
+    # 3. Wipe out old logs below %changelog and replace with the single new entry
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
     
-    awk -v date="$DATE" -v pkg="$PACKAGER" -v ldate="$LATEST_DATE" -v commit="$SHORT_COMMIT" '
-    /^%changelog/ {
-        print $0
-        print "* " date " " pkg " - 5.0.0^" ldate "git" commit "-1"
-        print "- Nightly sync with upstream main branch (Commit: " commit ")"
-        print ""
-        next
-    }
-    { print $0 }
-    ' "$SPEC_FILE" > "${SPEC_FILE}.tmp" && mv "${SPEC_FILE}.tmp" "$SPEC_FILE"
+    sed -i '/^%changelog/,$d' "$SPEC_FILE"
+    {
+        echo "%changelog"
+        echo "* $DATE $PACKAGER - 5.0.0^${LATEST_DATE}git${SHORT_COMMIT}-1"
+        echo "- Nightly sync with upstream main branch (Commit: ${SHORT_COMMIT})"
+    } >> "$SPEC_FILE"
     
-    echo "✅ Successfully patched $SPEC_FILE."
+    echo "✅ Successfully patched $SPEC_FILE and replaced the changelog history."
 else
     echo "✅ Package is already tracking the latest commit ($SHORT_COMMIT). No update needed."
 fi
