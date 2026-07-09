@@ -12,7 +12,6 @@ Source0:        %{url}/archive/%{version}.tar.gz
 BuildRequires:  cmake
 BuildRequires:  gcc
 BuildRequires:  glslang
-BuildRequires:  gnupg2
 BuildRequires:  meson >= 0.59.0
 
 BuildRequires:  pkgconfig(egl)
@@ -25,7 +24,7 @@ BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.32
 BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(wayland-server) >= 1.22
-BuildRequires:  pkgconfig(wlroots) >= 0.20
+BuildRequires:  pkgconfig(wlroots-0.20)
 BuildRequires:  pkgconfig(libglvnd)
 
 %description
@@ -67,9 +66,3 @@ MESON_OPTIONS=(
 %changelog
 * Wed Jul 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5-1
 - Auto-update to version 0.5
-
-* Mon Apr 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.4.1-1
-- Auto-update to version 0.4.1
-
-* Mon Apr 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.4.0-1
-- Initial fedora-nexus baseline for scenefx
