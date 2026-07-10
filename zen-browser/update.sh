@@ -35,19 +35,14 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     # 2. Update the download URL path in the spec file with the RAW tag
     sed -i -E "s|download/[^/]+/zen.linux-x86_64.tar.xz|download/$LATEST_TAG/zen.linux-x86_64.tar.xz|g" "$SPEC_FILE"
     
-    # 3. Auto-generate the Changelog entry safely using awk
+    # 3. Replace changelog with single entry
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
-    
-    awk -v date="$DATE" -v pkg="$PACKAGER" -v ver="$LATEST_VERSION" -v tag="$LATEST_TAG" '
-    /^%changelog/ {
-        print $0
-        print "* " date " " pkg " - " ver "-1"
-        print "- Auto-update to upstream release " tag
-        print ""
-        next
-    }
-    { print $0 }
-    ' "$SPEC_FILE" > "${SPEC_FILE}.tmp" && mv "${SPEC_FILE}.tmp" "$SPEC_FILE"
+    sed -i '/^%changelog/,$d' "$SPEC_FILE"
+    {
+        echo "%changelog"
+        echo "* $DATE $PACKAGER - $LATEST_VERSION-1"
+        echo "- Auto-update to upstream release $LATEST_TAG"
+    } >> "$SPEC_FILE"
     
     echo "✅ Successfully patched $SPEC_FILE."
 else

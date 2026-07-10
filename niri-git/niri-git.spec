@@ -106,25 +106,3 @@ install -Dpm0644 _niri %{buildroot}%{_datadir}/zsh/site-functions/_niri
 %changelog
 * Wed Jul 08 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260708145915git0777769-1
 - Nightly sync with upstream main branch (Commit: 0777769)
-
-* Wed Jul 08 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260708102058gitef5b737-1
-- Nightly sync with upstream main branch (Commit: ef5b737)
-
-* Sun Jul 05 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260705105541gita30ca79-1
-- Nightly sync with upstream main branch (Commit: a30ca79)
-
-* Thu Jun 18 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260618111104git49fc611-1
-- Nightly sync with upstream main branch (Commit: 49fc611)
-
-* Tue Jun 16 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260616053758gitfdb6d85-1
-- Nightly sync with upstream main branch (Commit: fdb6d85)
-
-* Mon Jun 15 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260615164758git188c530-1
-- Nightly sync with upstream main branch (Commit: 188c530)
-
-* Mon Jun 15 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260615095203gita4b5539-1
-- Nightly sync with upstream main branch (Commit: a4b5539)
-
-* Wed Jun 10 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260608170655git6f1a2c5-1
-- Nightly sync with upstream main branch (Commit: 6f1a2c5)
-

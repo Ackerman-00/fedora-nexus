@@ -40,20 +40,15 @@ if [ "$CURRENT_COMMIT" != "$LATEST_COMMIT" ]; then
     sed -i -E "s/^%global gitdate.*/%global gitdate         $GIT_DATE/" "$SPEC_FILE"
     sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
     
-    # 2. Auto-generate the Changelog entry matching your multi-commit nightly layout
+    # 2. Replace changelog with single entry
     DATE_STRING=$(LC_ALL=C date +"%a %b %d %Y")
     CHANGELOG_VER="${BASE_VER}^${GIT_DATE}git${SHORT_COMMIT}-1"
-    
-    awk -v date="$DATE_STRING" -v pkg="$PACKAGER" -v ver="$CHANGELOG_VER" -v commit="$SHORT_COMMIT" '
-    /^%changelog/ {
-        print $0
-        print "* " date " " pkg " - " ver
-        print "- Nightly sync with upstream main branch (Commit: " commit ")"
-        print ""
-        next
-    }
-    { print $0 }
-    ' "$SPEC_FILE" > "${SPEC_FILE}.tmp" && mv "${SPEC_FILE}.tmp" "$SPEC_FILE"
+    sed -i '/^%changelog/,$d' "$SPEC_FILE"
+    {
+        echo "%changelog"
+        echo "* $DATE_STRING $PACKAGER - $CHANGELOG_VER"
+        echo "- Nightly sync with upstream main branch (Commit: $SHORT_COMMIT)"
+    } >> "$SPEC_FILE"
     
     echo "✅ Successfully patched $SPEC_FILE."
 else

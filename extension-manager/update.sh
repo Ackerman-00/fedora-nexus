@@ -29,19 +29,14 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     sed -i "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
     
-    # 2. Auto-generate the Changelog entry safely using awk
+    # 2. Replace changelog with single entry
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
-    
-    awk -v date="$DATE" -v pkg="$PACKAGER" -v ver="$LATEST_VERSION" '
-    /^%changelog/ {
-        print $0
-        print "* " date " " pkg " - " ver "-1"
-        print "- Auto-update to version " ver
-        print ""
-        next
-    }
-    { print $0 }
-    ' "$SPEC_FILE" > "${SPEC_FILE}.tmp" && mv "${SPEC_FILE}.tmp" "$SPEC_FILE"
+    sed -i '/^%changelog/,$d' "$SPEC_FILE"
+    {
+        echo "%changelog"
+        echo "* $DATE $PACKAGER - $LATEST_VERSION-1"
+        echo "- Auto-update to version $LATEST_VERSION"
+    } >> "$SPEC_FILE"
     
     echo "✅ Successfully patched $SPEC_FILE."
 else
