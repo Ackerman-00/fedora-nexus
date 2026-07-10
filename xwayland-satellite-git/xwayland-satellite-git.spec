@@ -76,12 +76,3 @@ install -Dpm0644 resources/xwayland-satellite.service -t %{buildroot}%{_userunit
 %changelog
 * Fri Jun 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.1^20260612011343git8575d0e-1
 - Nightly sync with upstream main branch (Commit: 8575d0e)
-
-* Mon May 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.1^20260525214027git5d1efbc-1
-- Nightly sync with upstream main branch (Commit: 5d1efbc)
-
-* Sun May 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.1^20260524000000git3273a0f-1
-- Nightly sync with upstream main branch (Commit: 3273a0f)
-
-* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 0.8.1^20260321000000gitoldhash-1
-- Automated Git Snapshot Build

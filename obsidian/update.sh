@@ -38,14 +38,14 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     sed -i "s/^Version:\s*.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i "s/^Release:\s*.*/Release:        1%{?dist}/" "$SPEC_FILE"
     
-    # 5. Robust Changelog Update
-    # We use a temp file to avoid the 'sed' newline headache on different shells
+    # 5. Replace changelog with single entry
     DATE_STR=$(date +"%a %b %d %Y")
-    NEW_ENTRY="* $DATE_STR Ackerman-00 <quietcraft@gmail.com> - $LATEST_VERSION-1
-- Auto-updated to $LATEST_VERSION via update.sh"
-
-    # Insert the entry after the %changelog line
-    sed -i "/^%changelog/a $NEW_ENTRY" "$SPEC_FILE"
+    sed -i '/^%changelog/,$d' "$SPEC_FILE"
+    {
+        echo "%changelog"
+        echo "* $DATE_STR Ackerman-00 <quietcraft@gmail.com> - $LATEST_VERSION-1"
+        echo "- Auto-updated to $LATEST_VERSION via update.sh"
+    } >> "$SPEC_FILE"
     
     echo "  -> [DONE] $SPEC_FILE is ready for build."
 else
