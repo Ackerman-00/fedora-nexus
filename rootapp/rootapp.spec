@@ -52,7 +52,9 @@ Requires:       openssl-libs
 Requires:       vulkan-loader
 Requires:       nspr
 Requires:       dbus-libs
-Requires:       wayland
+Requires:       libwayland-client
+Requires:       libwayland-cursor
+Requires:       libwayland-egl
 Requires:       libdrm
 Requires:       at-spi2-atk
 
@@ -115,6 +117,7 @@ DESKTOP_EOF
 
 %changelog
 * Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.118-2
+- Fix wayland -> libwayland-{client,cursor,egl} (Fedora 44 split subpackages)
 - Use Nix-style extraction (readelf + unsquashfs -o) for correct offset
 - Add APPDIR wrapper script matching AppImage runtime environment
 - Disable brp strip/post-install to protect .NET bundle-embedded binary
