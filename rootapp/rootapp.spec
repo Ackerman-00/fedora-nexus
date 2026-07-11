@@ -17,6 +17,7 @@ Source0:        https://installer.rootapp.com/installer/Linux/X64/Root.AppImage
 BuildRequires:  binutils
 BuildRequires:  squashfs-tools
 BuildRequires:  coreutils
+BuildRequires:  python3
 
 Requires:       gtk3
 Requires:       nss
