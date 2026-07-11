@@ -17,6 +17,7 @@ ExclusiveArch:  x86_64 aarch64
 
 BuildRequires:  meson
 BuildRequires:  gcc-c++
+BuildRequires:  just
 BuildRequires:  wayland-devel
 BuildRequires:  wayland-protocols-devel
 BuildRequires:  libEGL-devel
