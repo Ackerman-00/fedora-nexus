@@ -5,7 +5,7 @@
 
 Name:           wlroots
 Version:        0.20.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A modular Wayland compositor library
 
 # Convert tilde to dash for source tag (e.g. 0.20.0~rc2 -> 0.20.0-rc2)
@@ -96,5 +96,7 @@ MESON_OPTIONS=(
 %{_libdir}/pkgconfig/wlroots-%{abi_ver}.pc
 
 %changelog
+* Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-2
+- Fixed patch for wlroots 0.20.2 API (layer_surface_role_client_commit)
 * Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-1
 - Initial package of wlroots 0.20.2 for Fedora 43
