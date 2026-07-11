@@ -1,10 +1,11 @@
 %global debug_package %{nil}
+%global __os_install_post %{nil}
 %global __requires_exclude_from ^/opt/rootapp/.*$
 %global __provides_exclude_from ^/opt/rootapp/.*$
 
 Name:           rootapp
 Version:        0.9.118
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Root App is a new Discord alternative, designed for gaming communities and large online groups
 
 License:        Proprietary
@@ -17,7 +18,6 @@ Source0:        https://installer.rootapp.com/installer/Linux/X64/Root.AppImage
 BuildRequires:  binutils
 BuildRequires:  squashfs-tools
 BuildRequires:  coreutils
-BuildRequires:  python3
 
 Requires:       gtk3
 Requires:       nss
@@ -29,8 +29,32 @@ Requires:       hicolor-icon-theme
 Requires:       zlib
 Requires:       libXScrnSaver
 Requires:       libXtst
+Requires:       libX11
+Requires:       libXi
+Requires:       libXt
+Requires:       libXinerama
+Requires:       libXrandr
+Requires:       libXcursor
+Requires:       libXcomposite
+Requires:       libXdamage
+Requires:       libXrender
+Requires:       libxkbcommon
 Requires:       mesa-libgbm
 Requires:       libsecret
+Requires:       fontconfig
+Requires:       cairo
+Requires:       pango
+Requires:       gdk-pixbuf2
+Requires:       harfbuzz
+Requires:       cups-libs
+Requires:       pulseaudio-libs
+Requires:       openssl-libs
+Requires:       vulkan-loader
+Requires:       nspr
+Requires:       dbus-libs
+Requires:       wayland
+Requires:       libdrm
+Requires:       at-spi2-atk
 
 Provides:       rootapp = %{version}-%{release}
 
@@ -41,21 +65,10 @@ large online groups.
 %prep
 %setup -c -T
 
-# Extract the Type 2 AppImage
-OFFSET=$(od -An -N8 -t u8 -j 40 %{SOURCE0} | tr -d ' ')
-MAGIC=$(dd if=%{SOURCE0} bs=1 skip=$OFFSET count=4 2>/dev/null)
-
-if [ "$MAGIC" != "hsqs" ]; then
-    OFFSET=$(python3 -c "
-with open('%{SOURCE0}', 'rb') as f:
-    d = f.read()
-    p = d.find(b'hsqs', 200000)
-    print(p if p >= 0 else 0)
-")
-fi
-
-dd if=%{SOURCE0} bs=$OFFSET skip=1 of=squashfs.img 2>/dev/null
-unsquashfs -f squashfs.img >/dev/null
+# Extract the Type 2 AppImage (Nix method using ELF section header offset)
+OFFSET=$(LC_ALL=C readelf -h %{SOURCE0} | awk 'NR==13{e_shoff=$5} NR==18{e_shentsize=$5} NR==19{e_shnum=$5} END{print e_shoff+e_shentsize*e_shnum}')
+unsquashfs -q -d squashfs-root -o "$OFFSET" %{SOURCE0}
+chmod go-w squashfs-root
 
 %build
 # Nothing to compile.
@@ -65,7 +78,12 @@ install -dm755 %{buildroot}/opt/rootapp
 cp -ar squashfs-root/* %{buildroot}/opt/rootapp/
 
 install -dm755 %{buildroot}%{_bindir}
-ln -s /opt/rootapp/AppRun %{buildroot}%{_bindir}/rootapp
+cat > %{buildroot}%{_bindir}/rootapp <<'WRAPPER_EOF'
+#!/bin/sh
+export APPDIR="/opt/rootapp"
+exec /opt/rootapp/AppRun "$@"
+WRAPPER_EOF
+chmod 755 %{buildroot}%{_bindir}/rootapp
 
 install -Dm644 squashfs-root/Root.png %{buildroot}%{_datadir}/pixmaps/rootapp.png
 install -Dm644 squashfs-root/Root.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/rootapp.png
@@ -96,5 +114,10 @@ DESKTOP_EOF
 %{_datadir}/pixmaps/rootapp.png
 
 %changelog
+* Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.118-2
+- Use Nix-style extraction (readelf + unsquashfs -o) for correct offset
+- Add APPDIR wrapper script matching AppImage runtime environment
+- Disable brp strip/post-install to protect .NET bundle-embedded binary
+- Add complete runtime Requires matching Nix FHS multiPkgs
 * Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.118-1
 - Initial package of Root App for Fedora Copr from AppImage
