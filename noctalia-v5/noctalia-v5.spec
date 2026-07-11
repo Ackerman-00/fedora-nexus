@@ -25,6 +25,7 @@ BuildRequires:  freetype-devel
 BuildRequires:  fontconfig-devel
 BuildRequires:  cairo-devel
 BuildRequires:  pango-devel
+BuildRequires:  harfbuzz-devel
 BuildRequires:  libxkbcommon-devel
 BuildRequires:  sdbus-cpp-devel
 BuildRequires:  pipewire-devel
