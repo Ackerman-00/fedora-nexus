@@ -1,35 +1,28 @@
-From 4ec4c290b04c5c87ffb7b64e590477e3a58f8547 Mon Sep 17 00:00:00 2001
-Message-ID: <4ec4c290b04c5c87ffb7b64e590477e3a58f8547.1700567169.git.agx@sigxcpu.org>
-From: =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-Date: Fri, 1 Jan 2021 13:58:55 +0100
-Subject: [PATCH] Revert "layer-shell: error on 0 dimension without anchors"
+Disable the layer-shell 0-dimension validation that breaks phosh and
+other legacy clients. This is the wlroots 0.20.2 equivalent of the
+Fedora 44 patch which wrapped the older return-based checks in #if 0.
 
-This reverts commit 8dec751a6d84335fb04288b8efab6dd5c90288d3.
-
-Revert this until phosh has a fixed release.
----
- types/wlr_layer_shell_v1.c | 2 ++
- 1 file changed, 2 insertions(+)
+In 0.20.2 the validation was refactored into
+layer_surface_role_client_commit using wlr_surface_reject_pending
+instead of early returns, so we wrap the two dimension checks
+(desired_width and desired_height without corresponding anchors).
 
 diff --git a/types/wlr_layer_shell_v1.c b/types/wlr_layer_shell_v1.c
-index 37256db6..2c722a79 100644
 --- a/types/wlr_layer_shell_v1.c
 +++ b/types/wlr_layer_shell_v1.c
-@@ -335,6 +335,7 @@ static void layer_surface_role_commit(struct wlr_surface *wlr_surface) {
- 		return;
- 	}
+@@ -358,6 +358,7 @@
+ 
+ 	uint32_t anchor = surface->pending.anchor;
  
 +#if 0
  	const uint32_t horiz = ZWLR_LAYER_SURFACE_V1_ANCHOR_LEFT |
  		ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT;
- 	if (surface->pending.desired_width == 0 &&
-@@ -354,6 +355,7 @@ static void layer_surface_role_commit(struct wlr_surface *wlr_surface) {
- 			"height 0 requested without setting top and bottom anchors");
+ 	if (surface->pending.desired_width == 0 && (anchor & horiz) != horiz) {
+@@ -376,6 +377,7 @@
  		return;
  	}
-+#endif
  
- 	if (surface->surface->unmap_commit) {
- 		layer_surface_reset(surface);
--- 
-2.42.0
++#endif
+ 	if ((anchor & surface->pending.exclusive_edge) != surface->pending.exclusive_edge) {
+ 		wlr_surface_reject_pending(wlr_surface, surface->resource,
+ 			ZWLR_LAYER_SURFACE_V1_ERROR_INVALID_EXCLUSIVE_EDGE,
