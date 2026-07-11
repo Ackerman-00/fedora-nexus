@@ -94,7 +94,6 @@ DESKTOP_EOF
 %{_datadir}/applications/rootapp.desktop
 %{_datadir}/icons/hicolor/*/apps/rootapp.png
 %{_datadir}/pixmaps/rootapp.png
-%attr(4755, root, root) /opt/rootapp/chrome-sandbox
 
 %changelog
 * Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.118-1
