@@ -5,7 +5,7 @@
 
 Name:           quickshell-git
 Version:        0.3.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Flexible toolkit for making desktop shells with QtQuick (Git Snapshot)
 
 License:        LGPL-3.0-only
@@ -19,6 +19,7 @@ BuildRequires:  ninja-build
 BuildRequires:  gcc-c++
 BuildRequires:  cli11-devel
 BuildRequires:  qt6-qtbase-devel
+BuildRequires:  qt6-qtbase-private-devel
 BuildRequires:  qt6-qtdeclarative-devel
 BuildRequires:  qt6-qtsvg-devel
 BuildRequires:  qt6-qtwayland-devel
@@ -63,7 +64,7 @@ export CXXFLAGS="%{optflags} -ffat-lto-objects"
     -D DISTRIBUTOR='Fedora' \
     -D CRASH_HANDLER=OFF \
     -D CMAKE_BUILD_TYPE=RelWithDebInfo \
-    -D INSTALL_QML_PREFIX=%{_libdir}/qt6/qml
+    -D INSTALL_QML_PREFIX=%{_lib}/qt6/qml
 
 %cmake_build
 
@@ -81,5 +82,9 @@ export CXXFLAGS="%{optflags} -ffat-lto-objects"
 %{_libdir}/qt6/qml/Quickshell/*
 
 %changelog
+* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260710015838git4df562d-2
+- Add BuildRequires: qt6-qtbase-private-devel for Qt6CorePrivate/Qt6QuickPrivate
+- Fix INSTALL_QML_PREFIX double-slash by using %%{_lib} instead of %%{_libdir}
+
 * Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260710015838git4df562d-1
 - Initial quickshell-git package tracking master branch
