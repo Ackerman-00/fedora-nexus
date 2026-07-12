@@ -5,7 +5,7 @@
 
 Name:           niri-git
 Version:        26.04^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A scrollable-tiling Wayland compositor (Nexus Optimized Git Snapshot)
 
 License:        GPL-3.0-or-later
@@ -21,6 +21,7 @@ BuildRequires:  systemd-rpm-macros
 BuildRequires:  mesa-libEGL-devel
 BuildRequires:  pkgconfig(cairo-gobject)
 BuildRequires:  pkgconfig(dbus-1)
+BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(gbm)
 BuildRequires:  pkgconfig(libdisplay-info)
 BuildRequires:  pkgconfig(libinput)
@@ -40,9 +41,11 @@ Requires:       mesa-dri-drivers
 Requires:       mesa-libEGL
 Requires:       libwayland-server
 
-# Core portal implementations required for Niri screencasting and dialogs
-Recommends:     xdg-desktop-portal-gtk
+# Core portal service (at least one backend must be installed)
+Requires:       xdg-desktop-portal
+# Screencasting (niri feature) and GTK file picker backends
 Recommends:     xdg-desktop-portal-gnome
+Recommends:     xdg-desktop-portal-gtk
 Recommends:     gnome-keyring
 
 Provides:       niri = %{version}-%{release}
@@ -104,5 +107,8 @@ install -Dpm0644 _niri %{buildroot}%{_datadir}/zsh/site-functions/_niri
 %{_datadir}/zsh/site-functions/_niri
 
 %changelog
+* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260708145915git0777769-2
+- Add missing BuildRequires: pkgconfig(glib-2.0); add Requires: xdg-desktop-portal
+
 * Wed Jul 08 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260708145915git0777769-1
 - Nightly sync with upstream main branch (Commit: 0777769)
