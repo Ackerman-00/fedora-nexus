@@ -1,6 +1,6 @@
-%global commit          e3146fa3e8bc8d2af63841786d8448e64493000c
+%global commit          f4b69943ea7fecbbeec97fac8e73af03b39be499
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260518194701
+%global gitdate         20260314152435
 
 Name:           libcava
 Version:        0.10.7^%{gitdate}git%{shortcommit}
@@ -69,5 +69,5 @@ Headers and pkg-config file for developing with libcava.
 %{_libdir}/pkgconfig/libcava.pc
 
 %changelog
-* Sun Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.10.7^20260518194701gite3146fa-1
-- Initial package for Fedora Nexus
+* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.10.7^20260314152435gitf4b6994-1
+- Nightly sync with upstream master branch (Commit: f4b6994)
