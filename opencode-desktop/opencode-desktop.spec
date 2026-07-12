@@ -9,12 +9,11 @@ Summary:        Open source AI coding agent
 
 License:        Apache-2.0
 URL:            https://github.com/anomalyco/opencode
-Source0:        https://github.com/anomalyco/opencode/releases/download/v%{version}/opencode-desktop-linux-amd64.deb
+Source0:        https://github.com/anomalyco/opencode/releases/download/v%{version}/opencode-desktop-linux-x86_64.rpm
 
 ExclusiveArch:  x86_64
 
-BuildRequires:  binutils
-BuildRequires:  tar
+BuildRequires:  cpio
 
 Requires:       gtk3
 Requires:       nss
@@ -35,8 +34,7 @@ language code generation capabilities.
 
 %prep
 %setup -c -T
-ar x %{SOURCE0}
-tar xf data.tar.xz
+rpm2cpio %{SOURCE0} | cpio -idmv
 
 %install
 rm -rf %{buildroot}
