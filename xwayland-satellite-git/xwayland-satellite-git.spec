@@ -5,7 +5,7 @@
 
 Name:           xwayland-satellite-git
 Version:        0.8.1^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Rootless Xwayland integration for Wayland compositors (Git Snapshot)
 
 License:        MPL-2.0
@@ -53,7 +53,7 @@ export CFLAGS="%{optflags} -ffat-lto-objects"
 export CXXFLAGS="%{optflags} -ffat-lto-objects"
 
 # We let Cargo handle the network fetch directly
-cargo build --frozen --release --features systemd,fontconfig
+cargo build --release --features systemd,fontconfig
 
 %install
 install -Dpm0755 target/release/xwayland-satellite -t %{buildroot}%{_bindir}
@@ -75,6 +75,10 @@ install -Dpm0644 resources/xwayland-satellite.service -t %{buildroot}%{_userunit
 %{_userunitdir}/xwayland-satellite.service
 
 %changelog
+* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.1^20260612011343git8575d0e-3
+- Remove --frozen: crates.io index not pre-cached in Copr buildroot, causes
+  offline resolution failures. Fedora Copr boots from scratch unlike GH runners.
+
 * Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.1^20260612011343git8575d0e-2
 - Add missing BuildRequires: pkgconfig(xcb); use --frozen for reproducibility
 
