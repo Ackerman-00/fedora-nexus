@@ -3,8 +3,8 @@
 %global __provides_exclude_from ^/opt/opencode-desktop/.*$
 
 Name:           opencode-desktop
-Version:        1.17.17
-Release:        2%{?dist}
+Version:        1.17.18
+Release:        3%{?dist}
 Summary:        Open source AI coding agent
 
 License:        Apache-2.0
@@ -73,6 +73,9 @@ sed -i 's/^Icon=.*/Icon=opencode-desktop/' \
 /opt/opencode-desktop/
 
 %changelog
+* Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 1.17.18-3
+- Restore 1.17.18, use RPM source, install desktop file from RPM
+
 * Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 1.17.17-2
 - Switch from DEB to RPM source; install desktop file from RPM
 
