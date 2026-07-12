@@ -25,7 +25,7 @@ BuildRequires:  qt6-qtwayland-devel
 BuildRequires:  qt6-qtshadertools-devel
 BuildRequires:  libglvnd-devel
 BuildRequires:  wayland-devel
-BuildRequires:  wayland-protocols
+BuildRequires:  wayland-protocols-devel
 BuildRequires:  libxcb-devel
 BuildRequires:  mesa-libEGL-devel
 BuildRequires:  libdrm-devel
