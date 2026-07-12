@@ -30,7 +30,7 @@ BuildRequires:  wayland-devel
 BuildRequires:  pipewire-devel
 BuildRequires:  libqalculate-devel
 BuildRequires:  aubio-devel
-BuildRequires:  cava-devel
+BuildRequires:  libcava-devel
 BuildRequires:  fftw-devel
 
 # === RUNTIME DEPENDENCIES ===
@@ -47,7 +47,7 @@ Requires:       NetworkManager
 # Hardware monitoring
 Requires:       lm_sensors
 # Audio visualiser
-Requires:       cava
+Requires:       libcava
 # Screenshot
 Requires:       swappy
 Requires:       wl-clipboard
