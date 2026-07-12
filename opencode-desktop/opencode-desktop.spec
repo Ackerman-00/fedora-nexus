@@ -3,7 +3,7 @@
 %global __provides_exclude_from ^/opt/opencode-desktop/.*$
 
 Name:           opencode-desktop
-Version:        1.17.18
+Version:        1.17.17
 Release:        1%{?dist}
 Summary:        Open source AI coding agent
 
@@ -82,5 +82,8 @@ DESKTOP_EOF
 /opt/opencode-desktop/
 
 %changelog
+* Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 1.17.17-1
+- Downgrade to 1.17.17
+
 * Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 1.17.18-1
 - Initial package of OpenCode Desktop for Fedora Copr from DEB
