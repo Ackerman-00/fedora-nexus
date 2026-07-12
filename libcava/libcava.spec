@@ -1,53 +1,46 @@
-%global commit          f4b69943ea7fecbbeec97fac8e73af03b39be499
-%global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260314152435
+%define _lto_cflags %{nil}
 
 Name:           libcava
-Version:        0.10.7^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
-Summary:        Console-based Audio Visualizer (shared library fork)
+Version:        0.10.7
+Release:        2%{?dist}
+Summary:        Fork of CAVA to build it as a shared library
 
 License:        MIT
 URL:            https://github.com/LukashonakV/cava
-Source0:        %{url}/archive/%{commit}.tar.gz
+Source0:        %{url}/archive/%{version}/cava-%{version}.tar.gz
 
 BuildRequires:  meson
+BuildRequires:  cmake
+BuildRequires:  autoconf-archive
+BuildRequires:  gcc
 BuildRequires:  pkgconfig(fftw3)
 BuildRequires:  pkgconfig(libpulse)
 BuildRequires:  pkgconfig(libpipewire-0.3)
-BuildRequires:  pkgconfig(libspa-0.2)
-BuildRequires:  desktop-file-utils
+BuildRequires:  ncurses-devel
+BuildRequires:  alsa-lib-devel
 BuildRequires:  iniparser-devel
+BuildRequires:  libglvnd-devel
+BuildRequires:  SDL2-devel
+BuildRequires:  portaudio-devel
 
 %description
-Fork of CAVA to build it as a shared library. Includes both the libcava
-shared library for development integration and the cava command-line
-audio visualizer.
+Fork of CAVA to build it as a shared library. Does not provide the
+cava executable — only the libcava shared library for integration
+into other projects (e.g. waybar).
 
 %package devel
 Summary:        Development files for libcava
 Requires:       libcava%{?_isa} = %{version}-%{release}
-Requires:       pkgconfig(fftw3)
 
 %description devel
 Headers and pkg-config file for developing with libcava.
 
 %prep
-%autosetup -n cava-%{commit}
+%autosetup -n cava-%{version}
 
 %build
 %meson \
-    -Dbuild_target=lib,exe \
-    -Dinput_pulse=enabled \
-    -Dinput_pipewire=enabled \
-    -Doutput_ncurses=disabled \
-    -Dinput_alsa=disabled \
-    -Dinput_portaudio=disabled \
-    -Dinput_sndio=disabled \
-    -Dinput_oss=disabled \
-    -Dinput_jack=disabled \
-    -Doutput_sdl=disabled \
-    -Doutput_sdl_glsl=disabled
+    -Dcava_font=false
 %meson_build
 
 %install
@@ -56,7 +49,6 @@ Headers and pkg-config file for developing with libcava.
 %files
 %license LICENSE
 %doc README.md
-%{_bindir}/cava
 %{_libdir}/libcava.so.*
 %dir %{_datadir}/cava/
 %{_datadir}/cava/*
@@ -69,5 +61,11 @@ Headers and pkg-config file for developing with libcava.
 %{_libdir}/pkgconfig/libcava.pc
 
 %changelog
-* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.10.7^20260314152435gitf4b6994-1
-- Nightly sync with upstream master branch (Commit: f4b6994)
+* Sun Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.10.7-2
+- Match upstream AUR PKGBUILD: release tarball, -Dcava_font=false only
+- Build library only (default build_target=['lib'])
+- Add all build dependencies available in Fedora main repos
+- Drop LTO
+
+* Sun Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.10.7-1
+- Initial package for Fedora Nexus
