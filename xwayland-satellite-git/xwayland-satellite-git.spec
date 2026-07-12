@@ -5,7 +5,7 @@
 
 Name:           xwayland-satellite-git
 Version:        0.8.1^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Rootless Xwayland integration for Wayland compositors (Git Snapshot)
 
 License:        MPL-2.0
@@ -24,6 +24,7 @@ BuildRequires:  pkgconfig(fontconfig)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-cursor)
 BuildRequires:  pkgconfig(wayland-server)
+BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-cursor)
 
 Requires:       xorg-x11-server-Xwayland
@@ -52,7 +53,7 @@ export CFLAGS="%{optflags} -ffat-lto-objects"
 export CXXFLAGS="%{optflags} -ffat-lto-objects"
 
 # We let Cargo handle the network fetch directly
-cargo build --release --features systemd,fontconfig
+cargo build --frozen --release --features systemd,fontconfig
 
 %install
 install -Dpm0755 target/release/xwayland-satellite -t %{buildroot}%{_bindir}
@@ -74,5 +75,8 @@ install -Dpm0644 resources/xwayland-satellite.service -t %{buildroot}%{_userunit
 %{_userunitdir}/xwayland-satellite.service
 
 %changelog
+* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.1^20260612011343git8575d0e-2
+- Add missing BuildRequires: pkgconfig(xcb); use --frozen for reproducibility
+
 * Fri Jun 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.1^20260612011343git8575d0e-1
 - Nightly sync with upstream main branch (Commit: 8575d0e)
