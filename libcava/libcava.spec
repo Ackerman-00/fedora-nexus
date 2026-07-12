@@ -41,7 +41,8 @@ Headers and pkg-config file for developing with libcava.
 %build
 %meson \
     -Dcava_font=false \
-    -Dinput_sndio=disabled
+    -Dinput_sndio=disabled \
+    -Dinput_jack=disabled
 %meson_build
 
 %install
@@ -67,7 +68,7 @@ Headers and pkg-config file for developing with libcava.
 - Build library only (default build_target=['lib'])
 - Add all build dependencies available in Fedora main repos
 - Drop LTO
-- Disable input_sndio (sndio-devel not in Fedora main repos)
+- Disable input_sndio, input_jack (deps not in Fedora main repos)
 
 * Sun Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.10.7-1
 - Initial package for Fedora Nexus
