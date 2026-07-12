@@ -5,7 +5,7 @@
 
 Name:           quickshell-git
 Version:        0.3.0^%{gitdate}git%{shortcommit}
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Flexible toolkit for making desktop shells with QtQuick (Git Snapshot)
 
 License:        LGPL-3.0-only
@@ -18,6 +18,7 @@ BuildRequires:  cmake
 BuildRequires:  ninja-build
 BuildRequires:  gcc-c++
 BuildRequires:  cli11-devel
+BuildRequires:  pkgconf-pkg-config
 BuildRequires:  qt6-qtbase-devel
 BuildRequires:  qt6-qtbase-private-devel
 BuildRequires:  qt6-qtdeclarative-devel
@@ -83,6 +84,9 @@ export CXXFLAGS="%{optflags} -ffat-lto-objects"
 %{_libdir}/qt6/qml/Quickshell/*
 
 %changelog
+* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260710015838git4df562d-4
+- Add BuildRequires: pkgconf-pkg-config for pkg-config (upstream docs)
+
 * Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260710015838git4df562d-3
 - Add BuildRequires: mesa-libgbm-devel for gbm
 
