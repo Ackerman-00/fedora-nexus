@@ -3,7 +3,7 @@
 %global __provides_exclude_from ^/opt/opencode-desktop/.*$
 
 Name:           opencode-desktop
-Version:        1.17.17
+Version:        1.17.18
 Release:        1%{?dist}
 Summary:        Open source AI coding agent
 
