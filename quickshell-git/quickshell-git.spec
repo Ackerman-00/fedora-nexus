@@ -5,7 +5,7 @@
 
 Name:           quickshell-git
 Version:        0.3.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Flexible toolkit for making desktop shells with QtQuick (Git Snapshot)
 
 License:        LGPL-3.0-only
@@ -29,6 +29,7 @@ BuildRequires:  wayland-devel
 BuildRequires:  wayland-protocols-devel
 BuildRequires:  libxcb-devel
 BuildRequires:  mesa-libEGL-devel
+BuildRequires:  mesa-libgbm-devel
 BuildRequires:  libdrm-devel
 BuildRequires:  pam-devel
 BuildRequires:  polkit-devel
@@ -82,6 +83,9 @@ export CXXFLAGS="%{optflags} -ffat-lto-objects"
 %{_libdir}/qt6/qml/Quickshell/*
 
 %changelog
+* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260710015838git4df562d-3
+- Add BuildRequires: mesa-libgbm-devel for gbm
+
 * Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260710015838git4df562d-2
 - Add BuildRequires: qt6-qtbase-private-devel for Qt6CorePrivate/Qt6QuickPrivate
 - Fix INSTALL_QML_PREFIX double-slash by using %%{_lib} instead of %%{_libdir}
