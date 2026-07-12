@@ -3,8 +3,9 @@
 %global __provides_exclude_from ^/opt/opencode-desktop/.*$
 
 Name:           opencode-desktop
-Version:        1.17.18
-Release:        1%{?dist}
+<<<<<<< HEAD
+Version:        1.17.17
+Release:        2%{?dist}
 Summary:        Open source AI coding agent
 
 License:        Apache-2.0
@@ -58,20 +59,13 @@ for size in 32 64 128; do
         %{buildroot}%{_datadir}/icons/hicolor/${size}x${size}/apps/opencode-desktop.png
 done
 
-# Install desktop file
-install -dm755 %{buildroot}%{_datadir}/applications/
-cat > %{buildroot}%{_datadir}/applications/opencode-desktop.desktop <<DESKTOP_EOF
-[Desktop Entry]
-Name=OpenCode
-Comment=Open source AI coding agent
-Exec=opencode-desktop %U
-Icon=opencode-desktop
-Terminal=false
-Type=Application
-StartupWMClass=ai.opencode.desktop
-MimeType=x-scheme-handler/opencode;
-Categories=Development;
-DESKTOP_EOF
+# Install desktop file from RPM
+install -Dm644 usr/share/applications/ai.opencode.desktop.desktop \
+    %{buildroot}%{_datadir}/applications/opencode-desktop.desktop
+sed -i 's/^Exec=.*/Exec=opencode-desktop %U/' \
+    %{buildroot}%{_datadir}/applications/opencode-desktop.desktop
+sed -i 's/^Icon=.*/Icon=opencode-desktop/' \
+    %{buildroot}%{_datadir}/applications/opencode-desktop.desktop
 
 %files
 %{_bindir}/opencode-desktop
@@ -80,8 +74,8 @@ DESKTOP_EOF
 /opt/opencode-desktop/
 
 %changelog
-* Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 1.17.17-1
-- Downgrade to 1.17.17
+* Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 1.17.17-2
+- Switch from DEB to RPM source; install desktop file from RPM
 
 * Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 1.17.18-1
 - Initial package of OpenCode Desktop for Fedora Copr from DEB
