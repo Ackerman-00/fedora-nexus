@@ -122,11 +122,13 @@ WRAPPER
 chmod 755 %{buildroot}%{_bindir}/caelestia-shell
 
 %post
-echo ""
-echo "  Caelestia Shell installed!"
-echo "  → Read the repo for IPC commands, keybinds, and usage:"
-echo "    https://github.com/Ackerman-00/caelestia-shell-mango"
-echo ""
+if [ $1 -eq 1 ]; then
+    echo ""
+    echo "  Caelestia Shell installed!"
+    echo "  → Read the repo for IPC commands, keybinds, and usage:"
+    echo "    https://github.com/Ackerman-00/caelestia-shell-mango"
+    echo ""
+fi
 
 %files
 %license LICENSE
