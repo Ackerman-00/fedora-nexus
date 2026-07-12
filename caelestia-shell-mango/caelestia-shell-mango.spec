@@ -121,6 +121,13 @@ exec /usr/bin/qs -p "%{_datadir}/caelestia-shell" "$@"
 WRAPPER
 chmod 755 %{buildroot}%{_bindir}/caelestia-shell
 
+%post
+echo ""
+echo "  Caelestia Shell installed!"
+echo "  → Read the repo for IPC commands, keybinds, and usage:"
+echo "    https://github.com/Ackerman-00/caelestia-shell-mango"
+echo ""
+
 %files
 %license LICENSE
 %doc README.md
