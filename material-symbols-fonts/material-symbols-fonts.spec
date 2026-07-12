@@ -1,6 +1,6 @@
-%global commit 6d4a1cbbb77520ad317ed5a3b26185867cc1dca8
+%global commit          c1eb6286e18cd49bec9f243e5d38a6712fcdbb0b
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global snapdate 20260515
+%global snapdate         20220108012448
 
 Name:           material-symbols-fonts
 Version:        4.0.0^%{snapdate}git%{shortcommit}
@@ -33,5 +33,5 @@ install -m 0644 -p "%{SOURCE2}" %{buildroot}%{_datadir}/fonts/%{name}/MaterialSy
 %{_datadir}/fonts/%{name}
 
 %changelog
-* Wed Jul 08 2026 Ackerman-00 <quietcraft@gmail.com> - 4.0.0^20260515git6d4a1cb-1
-- Initial package for Fedora Nexus
+* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 4.0.0^20220108012448gitc1eb628-1
+- Nightly sync with upstream main branch (Commit: c1eb628)

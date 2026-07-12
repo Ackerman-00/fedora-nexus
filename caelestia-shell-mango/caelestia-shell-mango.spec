@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          1ec8037c22e4031c6f57cd095afdb22ae0dd521f
+%global commit          2e27e12aee541a2c274ddec6e9d66101627aa785
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260713024216
+%global gitdate         20260712184444
 
 # NOTE: This package is for MangoWM only. It will NOT work with
 # other Wayland compositors (Hyprland, Sway, Niri, etc.).
@@ -146,5 +146,5 @@ chmod 755 %{buildroot}%{_bindir}/caelestia-shell
 %{_datadir}/caelestia-shell/utils/
 
 %changelog
-* Sun Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 1.0.0^20260713024216git1ec8037-1
-- Initial caelestia-shell-git package tracking main branch
+* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 1.0.0^20260712184444git2e27e12-1
+- Nightly sync with upstream main branch (Commit: 2e27e12)
