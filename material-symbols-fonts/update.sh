@@ -8,9 +8,9 @@ BASE_VER="4.0.0"
 echo "Checking for upstream updates on $GITHUB_REPO..."
 
 if [ -n "$GITHUB_TOKEN" ]; then
-    RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPO/commits?sha=main&per_page=1")
+    RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPO/commits?sha=master&per_page=1")
 else
-    RESPONSE=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/commits?sha=main&per_page=1")
+    RESPONSE=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/commits?sha=master&per_page=1")
 fi
 
 LATEST_COMMIT=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['sha'])")
@@ -40,7 +40,7 @@ if [ "$CURRENT_COMMIT" != "$LATEST_COMMIT" ]; then
     {
         echo "%changelog"
         echo "* $DATE_STRING $PACKAGER - $CHANGELOG_VER"
-        echo "- Nightly sync with upstream main branch (Commit: $SHORT_COMMIT)"
+        echo "- Nightly sync with upstream master branch (Commit: $SHORT_COMMIT)"
     } >> "$SPEC_FILE"
 
     echo "Successfully patched $SPEC_FILE."

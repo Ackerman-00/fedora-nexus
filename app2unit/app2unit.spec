@@ -3,7 +3,7 @@
 %global gitdate         20260613132640
 
 Name:           app2unit
-Version:        1.0.0^%{gitdate}git%{shortcommit}
+Version:        1.4.0^%{gitdate}git%{shortcommit}
 Release:        1%{?dist}
 Summary:        Launch desktop entries or commands as systemd user units
 
@@ -47,5 +47,5 @@ system stored on an SSD, overhead can be as short as ~0.03s.
 %{_mandir}/man1/app2unit.1*
 
 %changelog
-* Wed Jul 08 2026 Ackerman-00 <quietcraft@gmail.com> - 1.0.0^20260613132640gitdf91c75-1
+* Wed Jul 08 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.0^20260613132640gitdf91c75-1
 - Initial package for Fedora Nexus

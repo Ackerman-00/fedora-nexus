@@ -3,7 +3,7 @@
 SPEC_FILE="app2unit.spec"
 GITHUB_REPO="Vladimir-csp/app2unit"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
-BASE_VER="1.0.0"
+BASE_VER="1.4.0"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 
