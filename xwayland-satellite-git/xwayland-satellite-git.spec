@@ -1,11 +1,11 @@
 # These will be automatically populated by update.sh
-%global commit          8575d0ef55d70f9b4c46b6bffb3accf912217e1e
+%global commit          a2b5c635d8c8c99b286967658d0d177044887eb8
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260612011343
+%global gitdate         20260712222532
 
 Name:           xwayland-satellite-git
 Version:        0.8.1^%{gitdate}git%{shortcommit}
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        Rootless Xwayland integration for Wayland compositors (Git Snapshot)
 
 License:        MPL-2.0
@@ -75,12 +75,5 @@ install -Dpm0644 resources/xwayland-satellite.service -t %{buildroot}%{_userunit
 %{_userunitdir}/xwayland-satellite.service
 
 %changelog
-* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.1^20260612011343git8575d0e-3
-- Remove --frozen: crates.io index not pre-cached in Copr buildroot, causes
-  offline resolution failures. Fedora Copr boots from scratch unlike GH runners.
-
-* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.1^20260612011343git8575d0e-2
-- Add missing BuildRequires: pkgconfig(xcb); use --frozen for reproducibility
-
-* Fri Jun 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.1^20260612011343git8575d0e-1
-- Nightly sync with upstream main branch (Commit: 8575d0e)
+* Mon Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.1^20260712222532gita2b5c63-1
+- Nightly sync with upstream main branch (Commit: a2b5c63)
