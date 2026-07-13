@@ -1,7 +1,0 @@
-[Unit]
-Description=Mango WM session — activate session target for portal services
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStart=/usr/bin/systemctl --user start mango-session.target

@@ -1,20 +1,11 @@
 Name:           mangowm
 Version:        0.15.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <quietcraft@gmail.com>
 URL:            https://github.com/mangowm/mango
 Source:         %{url}/archive/%{version}.tar.gz
-# systemd user session target — enables graphical-session.target for portal services
-Source1:        mango-session.target
-Source2:        mango-session.service
-# environment.d config — makes GSETTINGS_SCHEMA_DIR and GTK_THEME available
-Source3:        60-mango.conf
-# profile.d script — ensures env vars reach compositor when launched from TTY
-Source4:        mango.sh
-# wrapper — automatically imports env + starts session target before mango
-Source5:        mango-wrapper.sh
 
 BuildRequires:  meson
 BuildRequires:  gcc
@@ -57,38 +48,22 @@ dwl — crafted for speed, flexibility, and a customizable desktop experience.
 %install
 %meson_install
 
-# Rename real mango binary → mango.real (wrapper takes its place)
-mv %{buildroot}%{_bindir}/mango %{buildroot}%{_bindir}/mango.real
-
-# Install wrapper that imports env + starts session target before mango
-install -Dpm0755 %{SOURCE5} %{buildroot}%{_bindir}/mango
-
-# Install systemd user units (mango-session.target binds to graphical-session.target)
-install -Dpm0644 %{SOURCE1} %{buildroot}%{_prefix}/lib/systemd/user/mango-session.target
-install -Dpm0644 %{SOURCE2} %{buildroot}%{_prefix}/lib/systemd/user/mango-session.service
-
-# Install environment.d config (GSETTINGS_SCHEMA_DIR + GTK_THEME fallback)
-install -Dpm0644 %{SOURCE3} %{buildroot}%{_prefix}/lib/environment.d/60-mango.conf
-
-# Install profile.d script (ensures env vars when mango is launched from TTY)
-install -Dpm0644 %{SOURCE4} %{buildroot}%{_sysconfdir}/profile.d/mango.sh
-
 %files
 %doc README.md
 %license LICENSE
 %{_bindir}/mango
-%{_bindir}/mango.real
 %{_bindir}/mmsg
 %{_mandir}/man1/mmsg.1*
 %{_sysconfdir}/mango/config.conf
 %{_datadir}/wayland-sessions/mango.desktop
 %{_datadir}/xdg-desktop-portal/mango-portals.conf
-%{_prefix}/lib/systemd/user/mango-session.target
-%{_prefix}/lib/systemd/user/mango-session.service
-%{_prefix}/lib/environment.d/60-mango.conf
-%{_sysconfdir}/profile.d/mango.sh
 
 %changelog
+* Mon Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.2-6
+- Strip back to upstream-clean packaging: remove wrapper/rename, systemd
+  session units, environment.d, and profile.d. Mango sets XDG_CURRENT_DESKTOP
+  and imports env to systemd/dbus internally via set_activation_env().
+  Select "Mango" from DM or run `mango` from TTY — no wrapper needed.
 * Mon Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.2-5
 - Fix wrapper: exec -a mango so argv[0] is "mango" instead of "mango.real"
   (fixes fastfetch WM detection showing mango.real)
