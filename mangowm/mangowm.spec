@@ -83,7 +83,8 @@ install -Dpm0644 %{SOURCE4} %{buildroot}%{_sysconfdir}/profile.d/mango.sh
 * Sun Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.2-2
 - Recommends xdg-desktop-portal and xdg-desktop-portal-gtk for portal integration
 - Add mango-session.target / mango-session.service (systemd user units)
-  to activate graphical-session.target, enabling portal services (GTK4 dark mode)
+    to activate graphical-session.target, enabling portal services (GTK4 dark mode)
+    (users add: exec-once=systemctl --user start mango-session.service)
 - Add 60-mango.conf (environment.d) to export GSETTINGS_SCHEMA_DIR and
   GTK_THEME=adw-gtk3-dark as fallback for GTK apps when portal is unavailable
 * Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.2-1

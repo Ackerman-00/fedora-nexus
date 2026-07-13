@@ -1,9 +1,8 @@
 [Unit]
-Description=Mango WM session target starter
-PartOf=mango-session.target
-Wants=mango-session.target
+Description=Mango WM session — import environment and activate session target
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/bin/true
+ExecStartPre=/usr/bin/systemctl --user import-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP
+ExecStart=/usr/bin/systemctl --user start mango-session.target
