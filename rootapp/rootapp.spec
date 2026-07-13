@@ -5,7 +5,7 @@
 
 Name:           rootapp
 Version:        0.9.118
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Root App is a new Discord alternative, designed for gaming communities and large online groups
 
 License:        Proprietary
@@ -84,8 +84,6 @@ install -dm755 %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/rootapp <<'WRAPPER_EOF'
 #!/bin/sh
 export APPDIR="/opt/rootapp"
-export AVALONIA_PLATFORM=Wayland
-export GDK_BACKEND=wayland
 exec /opt/rootapp/AppRun "$@"
 WRAPPER_EOF
 chmod 755 %{buildroot}%{_bindir}/rootapp
@@ -119,6 +117,11 @@ DESKTOP_EOF
 %{_datadir}/pixmaps/rootapp.png
 
 %changelog
+* Mon Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.118-4
+- Remove AVALONIA_PLATFORM=Wayland and GDK_BACKEND=wayland from wrapper —
+  rootapp uses DotNetBrowser which relies on Xlib/X11 interop; forcing Wayland
+  backend conflicts with the embedded Chromium and prevents the window from
+  rendering. The app runs via XWayland (provided by mango).
 * Mon Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.118-3
 - Add AVALONIA_PLATFORM=Wayland + GDK_BACKEND=wayland to wrapper (fix Wayland clipboard)
 - Add Requires: wl-clipboard for wl-copy/wl-paste clipboard bridge
