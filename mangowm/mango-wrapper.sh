@@ -1,5 +1,6 @@
 #!/bin/sh
-# Mango WM wrapper — imports Wayland env into systemd and activates session target
-systemctl --user import-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP
+# Mango WM wrapper — unset stale TTY display vars, activate session target, exec
+unset WAYLAND_DISPLAY
+unset DISPLAY
 systemctl --user start mango-session.service
 exec /usr/bin/mango.real "$@"

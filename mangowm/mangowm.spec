@@ -1,6 +1,6 @@
 Name:           mangowm
 Version:        0.15.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <quietcraft@gmail.com>
@@ -89,6 +89,12 @@ install -Dpm0644 %{SOURCE4} %{buildroot}%{_sysconfdir}/profile.d/mango.sh
 %{_sysconfdir}/profile.d/mango.sh
 
 %changelog
+* Mon Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.2-4
+- Fix wrapper: unset stale WAYLAND_DISPLAY/DISPLAY from TTY env before exec
+  (prevents wlroots from selecting Wayland backend and crashing)
+- Fix session service: import only XDG_CURRENT_DESKTOP, not stale display vars
+- Fix env.conf: remove WAYLAND_DISPLAY — wlroots sets it automatically;
+  setting it before wlroots init caused backend selection failure
 * Sun Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.2-3
 - Recommends xdg-desktop-portal and xdg-desktop-portal-gtk for portal integration
 - Add mango-session.target / mango-session.service (systemd user units)
