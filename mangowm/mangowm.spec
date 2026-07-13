@@ -1,6 +1,6 @@
 Name:           mangowm
 Version:        0.15.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <quietcraft@gmail.com>
@@ -89,7 +89,7 @@ install -Dpm0644 %{SOURCE4} %{buildroot}%{_sysconfdir}/profile.d/mango.sh
 %{_sysconfdir}/profile.d/mango.sh
 
 %changelog
-* Sun Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.2-2
+* Sun Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.2-3
 - Recommends xdg-desktop-portal and xdg-desktop-portal-gtk for portal integration
 - Add mango-session.target / mango-session.service (systemd user units)
   to activate graphical-session.target, enabling portal services (GTK4 dark mode)
