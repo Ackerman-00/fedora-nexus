@@ -1,0 +1,9 @@
+[Unit]
+Description=Mango WM session target starter
+PartOf=mango-session.target
+Wants=mango-session.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/true
