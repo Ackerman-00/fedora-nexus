@@ -1,6 +1,8 @@
 #!/bin/sh
-# Mango WM wrapper — unset stale TTY display vars, activate session target, exec
+# Mango WM wrapper — clean env, activate session target, exec with argv[0]=mango
 unset WAYLAND_DISPLAY
 unset DISPLAY
+export XDG_CURRENT_DESKTOP=mango
+export XDG_SESSION_TYPE=wayland
 systemctl --user start mango-session.service
-exec /usr/bin/mango.real "$@"
+exec -a mango /usr/bin/mango.real "$@"
