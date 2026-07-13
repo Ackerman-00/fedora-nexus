@@ -4,5 +4,4 @@ Description=Mango WM session — activate session target for portal services
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStartPre=/usr/bin/systemctl --user set-environment XDG_CURRENT_DESKTOP=mango
 ExecStart=/usr/bin/systemctl --user start mango-session.target
