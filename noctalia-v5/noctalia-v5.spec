@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          9a28579dad6e8651663f01be29b7333023b46cdb
+%global commit          ca2eb327c5558f3ca92ab099f203addab8d17f92
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260715043419
+%global gitdate         20260715122605
 
 Name:           noctalia-v5
 Version:        5.0.0^%{gitdate}git%{shortcommit}
@@ -84,5 +84,5 @@ export CFLAGS="%{optflags}"
 %{_datadir}/icons/hicolor/scalable/apps/noctalia.svg
 
 %changelog
-* Wed Jul 15 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260715043419git9a28579-1
-- Nightly sync with upstream main branch (Commit: 9a28579)
+* Wed Jul 15 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260715122605gitca2eb32-1
+- Nightly sync with upstream main branch (Commit: ca2eb32)
