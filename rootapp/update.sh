@@ -63,7 +63,27 @@ fi
 if [ "$EXTRACTED" = "1" ]; then
     ROOT="$TMPDIR/squashfs-root"
 
-    if [ -f "$ROOT/resources/app/package.json" ]; then
+    # .NET/Avalonia apps: version in sq.version (NuSpec XML)
+    if [ -z "$VERSION" ] && [ -f "$ROOT/usr/bin/sq.version" ]; then
+        VERSION=$(python3 -c "
+import xml.etree.ElementTree as ET
+try:
+    root = ET.parse('$ROOT/usr/bin/sq.version').getroot()
+    ns = {'ns': 'http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd'}
+    m = root.find('.//ns:metadata/ns:version', ns)
+    if m is not None and m.text:
+        print(m.text)
+    else:
+        m2 = root.find('.//metadata/version')
+        if m2 is not None and m2.text:
+            print(m2.text)
+except:
+    print('')
+")
+    fi
+
+    # Electron apps: version in package.json
+    if [ -z "$VERSION" ] && [ -f "$ROOT/resources/app/package.json" ]; then
         VERSION=$(python3 -c "
 import json
 try:
@@ -74,8 +94,9 @@ except:
 ")
     fi
 
-    if [ -z "$VERSION" ] && [ -f "$ROOT/AppRun" ]; then
-        VERSION=$(strings "$ROOT/AppRun" 2>/dev/null | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | head -1)
+    # Last resort: grep .NET binary for version string
+    if [ -z "$VERSION" ] && [ -f "$ROOT/usr/bin/Root" ]; then
+        VERSION=$(strings "$ROOT/usr/bin/Root" 2>/dev/null | grep -oP 'RootApp/\K[0-9]+\.[0-9]+\.[0-9]+' | head -1)
     fi
 
     if [ -z "$VERSION" ]; then
