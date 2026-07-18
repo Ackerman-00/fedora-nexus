@@ -4,8 +4,8 @@
 %global __provides_exclude_from ^/opt/rootapp/.*$
 
 Name:           rootapp
-Version:        0.9.118
-Release:        4%{?dist}
+Version:        19.2.5
+Release:        1%{?dist}
 Summary:        Root App is a new Discord alternative, designed for gaming communities and large online groups
 
 License:        Proprietary
@@ -13,7 +13,7 @@ URL:            https://www.rootapp.com
 ExclusiveArch:  x86_64
 
 Source0:        https://installer.rootapp.com/installer/Linux/X64/Root.AppImage
-# sha256: 7d0ad57e26fd235a926283224b23e1556536920c8a28e04b3ba532dc61dc6c92
+# sha256: d50d01eda97876ccb965470c982947b56ac649fa497825449efe4952b06d2526
 
 BuildRequires:  binutils
 BuildRequires:  squashfs-tools
@@ -117,19 +117,5 @@ DESKTOP_EOF
 %{_datadir}/pixmaps/rootapp.png
 
 %changelog
-* Mon Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.118-4
-- Remove AVALONIA_PLATFORM=Wayland and GDK_BACKEND=wayland from wrapper —
-  rootapp uses DotNetBrowser which relies on Xlib/X11 interop; forcing Wayland
-  backend conflicts with the embedded Chromium and prevents the window from
-  rendering. The app runs via XWayland (provided by mango).
-* Mon Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.118-3
-- Add AVALONIA_PLATFORM=Wayland + GDK_BACKEND=wayland to wrapper (fix Wayland clipboard)
-- Add Requires: wl-clipboard for wl-copy/wl-paste clipboard bridge
-* Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.118-2
-- Fix wayland -> libwayland-{client,cursor,egl} (Fedora 44 split subpackages)
-- Use Nix-style extraction (readelf + unsquashfs -o) for correct offset
-- Add APPDIR wrapper script matching AppImage runtime environment
-- Disable brp strip/post-install to protect .NET bundle-embedded binary
-- Add complete runtime Requires matching Nix FHS multiPkgs
-* Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.118-1
-- Initial package of Root App for Fedora Copr from AppImage
+* Sat Jul 18 2026 Ackerman-00 <quietcraft@gmail.com> - 19.2.5-1
+- Auto-update to 19.2.5 via update.sh
