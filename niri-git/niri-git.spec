@@ -1,11 +1,11 @@
 # These will be automatically populated by update.sh
-%global commit          0777769e719b7c9b7c980d4ea66288bfbb4da5b3
+%global commit          a528ada604f2a8985e08242df0d7dede80156395
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260708145915
+%global gitdate         20260719084507
 
 Name:           niri-git
 Version:        26.04^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        A scrollable-tiling Wayland compositor (Nexus Optimized Git Snapshot)
 
 License:        GPL-3.0-or-later
@@ -107,8 +107,5 @@ install -Dpm0644 _niri %{buildroot}%{_datadir}/zsh/site-functions/_niri
 %{_datadir}/zsh/site-functions/_niri
 
 %changelog
-* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260708145915git0777769-2
-- Add missing BuildRequires: pkgconfig(glib-2.0); add Requires: xdg-desktop-portal
-
-* Wed Jul 08 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260708145915git0777769-1
-- Nightly sync with upstream main branch (Commit: 0777769)
+* Sun Jul 19 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260719084507gita528ada-1
+- Nightly sync with upstream main branch (Commit: a528ada)
