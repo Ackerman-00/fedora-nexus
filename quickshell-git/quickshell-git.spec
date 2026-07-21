@@ -1,11 +1,11 @@
 # These will be automatically populated by update.sh
-%global commit          4df562dfb2475a9057f0f33a8db75808efad8670
+%global commit          e649d247498512464457aefcd05b73038c4e65a1
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260710015838
+%global gitdate         20260720192217
 
 Name:           quickshell-git
 Version:        0.3.0^%{gitdate}git%{shortcommit}
-Release:        4%{?dist}
+Release:        1%{?dist}
 Summary:        Flexible toolkit for making desktop shells with QtQuick (Git Snapshot)
 
 License:        LGPL-3.0-only
@@ -84,15 +84,5 @@ export CXXFLAGS="%{optflags} -ffat-lto-objects"
 %{_libdir}/qt6/qml/Quickshell/*
 
 %changelog
-* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260710015838git4df562d-4
-- Add BuildRequires: pkgconf-pkg-config for pkg-config (upstream docs)
-
-* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260710015838git4df562d-3
-- Add BuildRequires: mesa-libgbm-devel for gbm
-
-* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260710015838git4df562d-2
-- Add BuildRequires: qt6-qtbase-private-devel for Qt6CorePrivate/Qt6QuickPrivate
-- Fix INSTALL_QML_PREFIX double-slash by using %%{_lib} instead of %%{_libdir}
-
-* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260710015838git4df562d-1
-- Initial quickshell-git package tracking master branch
+* Tue Jul 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260720192217gite649d24-1
+- Nightly sync with upstream master branch (Commit: e649d24)
