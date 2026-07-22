@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          a2b5c635d8c8c99b286967658d0d177044887eb8
+%global commit          8d135d3b2854b30fd01ea6cd6c27e523dd50a839
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260712222532
+%global gitdate         20260722002452
 
 Name:           xwayland-satellite-git
 Version:        0.8.1^%{gitdate}git%{shortcommit}
@@ -75,5 +75,5 @@ install -Dpm0644 resources/xwayland-satellite.service -t %{buildroot}%{_userunit
 %{_userunitdir}/xwayland-satellite.service
 
 %changelog
-* Mon Jul 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.1^20260712222532gita2b5c63-1
-- Nightly sync with upstream main branch (Commit: a2b5c63)
+* Wed Jul 22 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.1^20260722002452git8d135d3-1
+- Nightly sync with upstream main branch (Commit: 8d135d3)
