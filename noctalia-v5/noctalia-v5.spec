@@ -47,6 +47,8 @@ BuildRequires:  tomlplusplus-devel
 BuildRequires:  md4c-devel
 BuildRequires:  json-devel
 BuildRequires:  stb-devel
+BuildRequires:  libsecret-devel
+BuildRequires:  libsodium-devel
 
 # Explicit runtime requirement for privilege escalation 
 Requires:       polkit
