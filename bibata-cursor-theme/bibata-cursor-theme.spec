@@ -26,7 +26,6 @@ mv Bibata-* %{buildroot}%{_datadir}/icons/
 
 %files
 %license LICENSE
-%doc README.md
 %{_datadir}/icons/Bibata-*
 
 %changelog
