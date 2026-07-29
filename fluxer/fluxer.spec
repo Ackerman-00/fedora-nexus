@@ -13,7 +13,6 @@ BuildRequires:  meson
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  rust-packaging
-BuildRequires:  cargo-rust-arch
 BuildRequires:  nodejs22
 BuildRequires:  nodejs22-npm
 BuildRequires:  nodejs-packaging
