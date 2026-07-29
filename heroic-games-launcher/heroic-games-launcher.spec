@@ -72,14 +72,10 @@ rm -rf %{buildroot}
 install -d -m 0755 %{buildroot}/opt/Heroic
 cp -a opt/Heroic/* %{buildroot}/opt/Heroic/
 
-# 2. Install standard desktop entries, icons, and metainfo
+# 2. Install standard desktop entries and icons
 install -d -m 0755 %{buildroot}%{_datadir}
 cp -a usr/share/applications %{buildroot}%{_datadir}/
 cp -a usr/share/icons %{buildroot}%{_datadir}/
-if [ -d usr/share/metainfo ]; then
-    install -d -m 0755 %{buildroot}%{_metainfodir}
-    cp -a usr/share/metainfo/*.xml %{buildroot}%{_metainfodir}/
-fi
 
 # 3. Create the Native Wayland Wrapper Script
 install -d -m 0755 %{buildroot}%{_bindir}
@@ -100,7 +96,6 @@ find %{buildroot}/opt/Heroic -type f -name "*.a" -delete
 %{_bindir}/heroic
 %{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/apps/*.*
-%{_metainfodir}/com.heroicgameslauncher.hgl.metainfo.xml
 /opt/Heroic/
 
 %changelog
