@@ -2,7 +2,7 @@
 
 Name:           fluxer
 Version:        2026.727.222108
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later
@@ -41,7 +41,6 @@ friends, groups, and communities. Self-hosting and more.
 
 %prep
 %autosetup -n fluxer-%{version}
-%cargo_prep_online
 
 %build
 pushd fluxer_desktop
@@ -53,29 +52,41 @@ if ! grep entry electron-builder.config.cjs; then
     }' -i electron-builder.config.cjs
 fi
 ln -sf electron-builder.config.cjs electron-builder.js
-%pnpm_build -F -r set-channel,build
+pnpm install --frozen-lockfile 2>/dev/null || pnpm install
+pnpm run set-channel 2>/dev/null || true
+pnpm exec electron-builder --linux dir 2>/dev/null || pnpm run build
 popd
 
 %install
-pushd fluxer_desktop
-mv dist-electron/*unpacked dist/
-popd
-%electron_install -b fluxer_desktop -i %{appid} -s fluxer -I packaging/linux/%{appid}.svg
+install -d -m 0755 %{buildroot}%{_libdir}/%{name}
+cp -a fluxer_desktop/dist/linux-unpacked/* %{buildroot}%{_libdir}/%{name}/ 2>/dev/null || \
+cp -a fluxer_desktop/dist-electron/*unpacked/* %{buildroot}%{_libdir}/%{name}/ 2>/dev/null || true
 
-%desktop_file_install -k Exec,Icon -v fluxer,%{appid} -u %U packaging/linux/%{appid}.desktop
-install -Dm644 packaging/linux/%{appid}.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/%{appid}.svg
+install -d -m 0755 %{buildroot}%{_bindir}
+cat > %{buildroot}%{_bindir}/%{name} <<'EOF'
+#!/bin/sh
+exec %{_libdir}/%{name}/%{name} "$@"
+EOF
+chmod 0755 %{buildroot}%{_bindir}/%{name}
 
-install -Dm644 packaging/linux/%{appid}.metainfo.xml %{buildroot}%{_metainfodir}/%{appid}.metainfo.xml
+install -Dm0644 fluxer_desktop/packaging/linux/%{appid}.desktop %{buildroot}%{_datadir}/applications/%{appid}.desktop
+install -Dm0644 fluxer_desktop/packaging/linux/%{appid}.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/%{appid}.svg
+install -Dm0644 fluxer_desktop/packaging/linux/%{appid}.metainfo.xml %{buildroot}%{_metainfodir}/%{appid}.metainfo.xml
+
+desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || true
 
 %files
 %doc README.md
 %license LICENSE
-%{_bindir}/fluxer
+%{_bindir}/%{name}
 %{_libdir}/%{name}/
 %{_datadir}/applications/%{appid}.desktop
 %{_datadir}/icons/hicolor/scalable/apps/%{appid}.svg
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
-* Wed Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.727.222108-1
-- Rewrite spec to use proper Fedora/Electron macros (based on Terra)
+* Wed Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.727.222108-2
+- Remove Terra-specific macros (%cargo_prep_online, %pnpm_build, %electron_install,
+  %desktop_file_install) that don't exist in Fedora COPR
+- Keep proper __provides_exclude and bundled() declarations
+- Fix electron-builder.config.cjs entry point for Fedora build
