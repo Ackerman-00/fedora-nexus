@@ -7,7 +7,7 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 echo "Checking for upstream releases on $GITHUB_REPO..."
 
 # Get latest tag via git ls-remote (no rate limit)
-LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | sort -V | tail -1)
+LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | grep -ivE '(beta|alpha|rc|dev|pre)' | sort -V | tail -1)
 LATEST_TAG=${LATEST_TAG#v}
 
 if [ -z "$LATEST_TAG" ]; then
