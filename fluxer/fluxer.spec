@@ -2,7 +2,7 @@
 
 Name:           fluxer
 Version:        2026.727.222108
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later
@@ -23,7 +23,7 @@ BuildRequires:  clang-devel
 BuildRequires:  pipewire-devel
 BuildRequires:  desktop-file-utils
 
-%global __provides_exclude %{__provides_exclude}|libcbor\\.so.*|libcrypto\\.so.*|libfido2\\.so.*|libudev\\.so.*|libz\\.so.*|libcap\\.so.*
+%define _debug_package %{nil}
 
 Provides:       bundled(libcap)
 Provides:       bundled(libcbor)
@@ -85,6 +85,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
+* Wed Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.727.222108-3
+- Remove recursive __provides_exclude macro causing infinite recursion on rawhide
+- Disable debug package (bundled Electron produces no debug sources)
+
 * Wed Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.727.222108-2
 - Remove Terra-specific macros (%cargo_prep_online, %pnpm_build, %electron_install,
   %desktop_file_install) that don't exist in Fedora COPR
