@@ -2,12 +2,17 @@
 %global __requires_exclude_from ^/opt/Heroic/.*$
 %global __provides_exclude_from ^/opt/Heroic/.*$
 
+%global legendary_version 0.20.43
+%global gogdl_version 1.2.1
+%global nile_version 1.1.2
+%global comet_version 0.2.0
+
 Name:           heroic-games-launcher
 Version:        2.22.0
 Release:        1%{?dist}
 Summary:        Open source launcher for GOG, Epic, and Amazon Games (Nexus Optimized)
 
-License:        GPL-3.0-or-later
+License:        GPL-3.0-only AND MIT AND BSD-3-Clause
 URL:            https://github.com/Heroic-Games-Launcher/HeroicGamesLauncher
 
 # Use the native upstream RPM
@@ -17,6 +22,7 @@ ExclusiveArch:  x86_64
 
 # Required to unpack the upstream RPM natively
 BuildRequires:  cpio
+BuildRequires:  desktop-file-utils
 
 # Explicit dependencies
 Requires:       alsa-lib
@@ -32,14 +38,20 @@ Requires:       libXdamage
 Requires:       libXrandr
 Requires:       libdrm
 Requires:       hicolor-icon-theme
-Requires:       desktop-file-utils
 Requires:       libappindicator-gtk3
+Requires:       python3
+Requires:       which
 
 # Native gaming ecosystem integrations
+Recommends:     (falcond or gamemode)
 Recommends:     mangohud
-Recommends:     protonplus
+Recommends:     umu-launcher
 
 Provides:       heroic = %{version}-%{release}
+Provides:       bundled(comet) = %{comet_version}
+Provides:       bundled(gogdl) = %{gogdl_version}
+Provides:       bundled(legendary) = %{legendary_version}
+Provides:       bundled(nile) = %{nile_version}
 
 %description
 Heroic is a Free and Open Source Epic, GOG, and Amazon Prime Games launcher.
@@ -60,10 +72,14 @@ rm -rf %{buildroot}
 install -d -m 0755 %{buildroot}/opt/Heroic
 cp -a opt/Heroic/* %{buildroot}/opt/Heroic/
 
-# 2. Install standard desktop entries and icons
+# 2. Install standard desktop entries, icons, and metainfo
 install -d -m 0755 %{buildroot}%{_datadir}
 cp -a usr/share/applications %{buildroot}%{_datadir}/
 cp -a usr/share/icons %{buildroot}%{_datadir}/
+if [ -d usr/share/metainfo ]; then
+    install -d -m 0755 %{buildroot}%{_metainfodir}
+    cp -a usr/share/metainfo/*.xml %{buildroot}%{_metainfodir}/
+fi
 
 # 3. Create the Native Wayland Wrapper Script
 install -d -m 0755 %{buildroot}%{_bindir}
@@ -84,10 +100,9 @@ find %{buildroot}/opt/Heroic -type f -name "*.a" -delete
 %{_bindir}/heroic
 %{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/apps/*.*
+%{_metainfodir}/com.heroicgameslauncher.hgl.metainfo.xml
 /opt/Heroic/
-# Enforce strict sandbox permissions natively
-%attr(4755, root, root) /opt/Heroic/chrome-sandbox
 
 %changelog
-* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 2.20.1-1
+* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 2.22.0-1
 - Initial Repackaged Wayland-Optimized Build via Upstream RPM

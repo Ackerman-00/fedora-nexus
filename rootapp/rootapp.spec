@@ -4,8 +4,8 @@
 %global __provides_exclude_from ^/opt/rootapp/.*$
 
 Name:           rootapp
-Version:        0.9.121
-Release:        1%{?dist}
+Version:        0.9.119
+Release:        2%{?dist}
 Summary:        Root App is a new Discord alternative, designed for gaming communities and large online groups
 
 License:        Proprietary
@@ -13,12 +13,13 @@ URL:            https://www.rootapp.com
 ExclusiveArch:  x86_64
 
 Source0:        https://installer.rootapp.com/installer/Linux/X64/Root.AppImage
-# sha256: 3cab1a0fb3283478c0e7c14530e061ff28f7a288df963bc580bcc069d191e59b
+# sha256: d50d01eda97876ccb965470c982947b56ac649fa497825449efe4952b06d2526
 
 BuildRequires:  binutils
 BuildRequires:  squashfs-tools
 BuildRequires:  coreutils
 
+# Core GUI toolkit
 Requires:       gtk3
 Requires:       nss
 Requires:       alsa-lib
@@ -27,6 +28,8 @@ Requires:       xdg-utils
 Requires:       at-spi2-core
 Requires:       hicolor-icon-theme
 Requires:       zlib
+
+# X11 libraries (Chromium/DotNetBrowser needs these)
 Requires:       libXScrnSaver
 Requires:       libXtst
 Requires:       libX11
@@ -38,28 +41,54 @@ Requires:       libXcursor
 Requires:       libXcomposite
 Requires:       libXdamage
 Requires:       libXrender
+
+# Wayland support
 Requires:       libxkbcommon
 Requires:       mesa-libgbm
-Requires:       libsecret
-Requires:       fontconfig
-Requires:       cairo
-Requires:       pango
-Requires:       gdk-pixbuf2
-Requires:       harfbuzz
-Requires:       cups-libs
-Requires:       pulseaudio-libs
-Requires:       openssl-libs
-Requires:       vulkan-loader
-Requires:       nspr
-Requires:       dbus-libs
-Requires:       wl-clipboard
 Requires:       libwayland-client
 Requires:       libwayland-cursor
 Requires:       libwayland-egl
 Requires:       libdrm
+
+# OpenGL/rendering (Chromium GPU acceleration)
+Requires:       libglvnd
+Requires:       mesa-libGL
+
+# Font/text rendering
+Requires:       fontconfig
+Requires:       freetype2
+Requires:       cairo
+Requires:       pango
+Requires:       harfbuzz
+Requires:       icu
+
+# Image handling
+Requires:       gdk-pixbuf2
+
+# Audio/printing
+Requires:       cups-libs
+Requires:       pulseaudio-libs
+
+# Security/crypto
+Requires:       openssl-libs
+Requires:       vulkan-loader
+Requires:       nspr
+
+# D-Bus
+Requires:       dbus-libs
+
+# Secret storage
+Requires:       libsecret
+
+# Clipboard
+Requires:       wl-clipboard
+
+# Accessibility
 Requires:       at-spi2-atk
 
 Provides:       rootapp = %{version}-%{release}
+Provides:       root-app = %{version}-%{release}
+Conflicts:      root-app
 
 %description
 Root App is a new Discord alternative, designed for gaming communities and
@@ -84,6 +113,17 @@ install -dm755 %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/rootapp <<'WRAPPER_EOF'
 #!/bin/sh
 export APPDIR="/opt/rootapp"
+
+# Detect Wayland and enable native Ozone backend for DotNetBrowser/Chromium
+# Without this, Chromium falls back to XWayland which causes rendering issues
+if [ -n "$WAYLAND_DISPLAY" ]; then
+    export CHROMIUM_FLAGS="${CHROMIUM_FLAGS} --ozone-platform=wayland"
+    # Chromium sandbox needs user namespaces on Linux
+    if [ -f /proc/sys/kernel/unprivileged_userns_clone ]; then
+        echo 1 > /proc/sys/kernel/unprivileged_userns_clone 2>/dev/null || true
+    fi
+fi
+
 exec /opt/rootapp/AppRun "$@"
 WRAPPER_EOF
 chmod 755 %{buildroot}%{_bindir}/rootapp
@@ -91,8 +131,10 @@ chmod 755 %{buildroot}%{_bindir}/rootapp
 install -Dm644 squashfs-root/Root.png %{buildroot}%{_datadir}/pixmaps/rootapp.png
 install -Dm644 squashfs-root/Root.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/rootapp.png
 
+# Remove chrome-sandbox SUID bit — DotNetBrowser bundles its own Chromium sandbox.
+# Setting SUID root on chrome-sandbox is a known CVE vector (CVE-2021-38003 etc).
 if [ -f %{buildroot}/opt/rootapp/chrome-sandbox ]; then
-    chmod 4755 %{buildroot}/opt/rootapp/chrome-sandbox
+    rm -f %{buildroot}/opt/rootapp/chrome-sandbox
 fi
 
 install -dm755 %{buildroot}%{_datadir}/applications/
@@ -117,5 +159,10 @@ DESKTOP_EOF
 %{_datadir}/pixmaps/rootapp.png
 
 %changelog
-* Fri Jul 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.121-1
-- Auto-update to 0.9.121 via update.sh
+* Tue Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.119-2
+- Added missing dependencies: libglvnd, mesa-libGL, icu, freetype2
+- Added Provides/Conflicts for root-app
+- Removed chrome-sandbox SUID bit (security CVE vector)
+
+* Sat Jul 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.119-1
+- Auto-update to 0.9.119 via update.sh
