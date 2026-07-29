@@ -2,28 +2,28 @@
 # update.sh for Obsidian (Repackaging Build)
 
 SPEC_FILE="obsidian.spec"
+GITHUB_REPO="obsidianmd/obsidian-releases"
 
-echo "🔍 Checking for latest Obsidian release..."
+echo "Checking for latest Obsidian release..."
 
-# 1. Fetch latest version from GitHub API
-# Using a User-Agent is good practice to avoid rate-limiting
-LATEST_VERSION=$(curl -s -H "User-Agent: Fedora-Update-Script" https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest | jq -r .tag_name | sed 's/^v//')
+# Get latest tag via git ls-remote (no rate limit)
+LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | sort -V | tail -1)
+LATEST_VERSION=$(echo "$LATEST_TAG" | sed 's/^v//')
 
-if [ -z "$LATEST_VERSION" ] || [ "$LATEST_VERSION" == "null" ]; then
-    echo "  -> [ERROR] Failed to fetch latest version from GitHub API."
+if [ -z "$LATEST_VERSION" ]; then
+    echo "  -> [ERROR] Failed to fetch latest tag."
     exit 1
 fi
 
-# 2. Read current version from .spec
+# Read current version from .spec
 CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 
-# 3. Compare and update
+# Compare and update
 if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     echo "  -> [UPDATE] New version detected: $LATEST_VERSION (Current: $CURRENT_VERSION)"
 
-    # 4. CRITICAL: Verify the .deb source actually exists for this version
-    # This prevents your COPR from failing with a 404
-    DEB_URL="https://github.com/obsidianmd/obsidian-releases/releases/download/v${LATEST_VERSION}/obsidian_${LATEST_VERSION}_amd64.deb"
+    # Verify the .deb source actually exists for this version
+    DEB_URL="https://github.com/$GITHUB_REPO/releases/download/v${LATEST_VERSION}/obsidian_${LATEST_VERSION}_amd64.deb"
     
     echo "  -> [CHECK] Verifying download link..."
     if ! curl --output /dev/null --silent --head --fail "$DEB_URL"; then
@@ -34,11 +34,10 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     echo "  -> [ACTION] Updating $SPEC_FILE..."
     
     # Update Version and Reset Release to 1
-    # Note: Using exact spacing to match your clean .spec file
     sed -i "s/^Version:\s*.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i "s/^Release:\s*.*/Release:        1%{?dist}/" "$SPEC_FILE"
     
-    # 5. Replace changelog with single entry
+    # Replace changelog with single entry
     DATE_STR=$(date +"%a %b %d %Y")
     sed -i '/^%changelog/,$d' "$SPEC_FILE"
     {

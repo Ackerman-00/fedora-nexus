@@ -20,7 +20,7 @@ BuildRequires:  pkgconfig(libinput) >= 1.27.1
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(libpcre2-8)
 BuildRequires:  pkgconfig(libcjson)
-BuildRequires:  pkgconfig(pango)
+BuildRequires:  pkgconfig(pangocairo)
 BuildRequires:  pkgconfig(pixman-1)
 BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  scenefx-devel
@@ -29,9 +29,11 @@ Requires:       xorg-x11-server-Xwayland
 Recommends:     xdg-desktop-portal >= 1.18
 Recommends:     xdg-desktop-portal-gtk
 
-Conflicts:      mangowc < %{version}
-Obsoletes:      mangowc < %{version}
-Provides:       mangowc = %{version}
+%global mangowc_ver 0.12.5-1
+
+Conflicts:      mangowc < %{mangowc_ver}
+Obsoletes:      mangowc < %{mangowc_ver}
+Provides:       mangowc = %{mangowc_ver}
 Provides:       wayland-compositor
 
 %description
@@ -59,5 +61,8 @@ dwl — crafted for speed, flexibility, and a customizable desktop experience.
 %{_datadir}/xdg-desktop-portal/mango-portals.conf
 
 %changelog
-* Sat Jul 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.5-1
-- Auto-update to version 0.15.5
+* Tue Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.5-1
+- Update to version 0.15.5
+
+* Sun Jul 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.4-1
+- Auto-update to version 0.15.4

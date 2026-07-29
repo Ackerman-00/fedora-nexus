@@ -6,14 +6,12 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 
-if [ -n "$GITHUB_TOKEN" ]; then
-    LATEST_VERSION=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v?([^"]+)".*/\1/')
-else
-    LATEST_VERSION=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v?([^"]+)".*/\1/')
-fi
+# Get latest tag via git ls-remote (no rate limit)
+LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | sort -V | tail -1)
+LATEST_VERSION=$(echo "$LATEST_TAG" | sed 's/^v//')
 
 if [ -z "$LATEST_VERSION" ]; then
-    echo "Error: Failed to fetch the latest version. Check API limits or connection."
+    echo "Error: Failed to fetch latest tag."
     exit 1
 fi
 
@@ -25,11 +23,12 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
-    NEW_CHANGELOG="* $DATE $PACKAGER - $LATEST_VERSION-1\n- Auto-update to version $LATEST_VERSION"
-
     sed -i '/^%changelog/,$d' "$SPEC_FILE"
-    echo "%changelog" >> "$SPEC_FILE"
-    echo -e "$NEW_CHANGELOG" >> "$SPEC_FILE"
+    {
+        echo "%changelog"
+        echo "* $DATE $PACKAGER - $LATEST_VERSION-1"
+        echo "- Auto-update to version $LATEST_VERSION"
+    } >> "$SPEC_FILE"
 
     echo "Successfully patched $SPEC_FILE."
 else

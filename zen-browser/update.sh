@@ -6,13 +6,8 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 
-# Fetch the absolute latest stable release tag directly from GitHub API
-# Inject GITHUB_TOKEN if available to bypass the strict 60/hr API rate limit
-if [ -n "$GITHUB_TOKEN" ]; then
-    LATEST_TAG=$(curl -sL -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPO/releases/latest" | jq -r '.tag_name')
-else
-    LATEST_TAG=$(curl -sL "https://api.github.com/repos/$GITHUB_REPO/releases/latest" | jq -r '.tag_name')
-fi
+# Get latest tag via git ls-remote (no rate limit)
+LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | sort -V | tail -1)
 
 if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" == "null" ]; then
     echo "Error: Failed to fetch Zen Browser version from GitHub. Check API limits or connection."

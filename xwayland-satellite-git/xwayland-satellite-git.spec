@@ -4,7 +4,7 @@
 %global gitdate         20260722002452
 
 Name:           xwayland-satellite-git
-Version:        0.8.1^%{gitdate}git%{shortcommit}
+Version:        0.8.2^%{gitdate}git%{shortcommit}
 Release:        1%{?dist}
 Summary:        Rootless Xwayland integration for Wayland compositors (Git Snapshot)
 
@@ -75,5 +75,5 @@ install -Dpm0644 resources/xwayland-satellite.service -t %{buildroot}%{_userunit
 %{_userunitdir}/xwayland-satellite.service
 
 %changelog
-* Wed Jul 22 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.1^20260722002452git8d135d3-1
+* Wed Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.2^20260722002452git8d135d3-1
 - Nightly sync with upstream main branch (Commit: 8d135d3)

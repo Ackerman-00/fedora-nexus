@@ -7,11 +7,9 @@ Summary:        Fork of CAVA to build it as a shared library
 
 License:        MIT
 URL:            https://github.com/LukashonakV/cava
-Source0:        %{url}/archive/%{version}/cava-%{version}.tar.gz
+Source0:        %{url}/archive/%{version}.tar.gz
 
 BuildRequires:  meson
-BuildRequires:  cmake
-BuildRequires:  autoconf-archive
 BuildRequires:  gcc
 BuildRequires:  pkgconfig(fftw3)
 BuildRequires:  pkgconfig(libpulse)
@@ -36,10 +34,11 @@ Requires:       libcava%{?_isa} = %{version}-%{release}
 Headers and pkg-config file for developing with libcava.
 
 %prep
-%autosetup %autosetup -n cava-%{version}
+%autosetup -n cava-%{version}
 
 %build
 %meson \
+    -Dbuild_target=lib \
     -Dcava_font=false \
     -Dinput_sndio=disabled \
     -Dinput_jack=disabled

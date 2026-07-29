@@ -6,28 +6,12 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream releases on $GITHUB_REPO..."
 
-if [ -n "$GITHUB_TOKEN" ]; then
-    RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPO/releases/latest")
-else
-    RESPONSE=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/releases/latest")
-fi
-
-LATEST_TAG=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin)['tag_name'])" 2>/dev/null)
-
-if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" == "null" ]; then
-    echo "No release found, checking tags..."
-    if [ -n "$GITHUB_TOKEN" ]; then
-        RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPO/tags?per_page=1")
-    else
-        RESPONSE=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/tags?per_page=1")
-    fi
-    LATEST_TAG=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['name'])" 2>/dev/null)
-fi
-
+# Get latest tag via git ls-remote (no rate limit)
+LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | sort -V | tail -1)
 LATEST_TAG=${LATEST_TAG#v}
 
-if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" == "null" ]; then
-    echo "Error: Failed to fetch tags from $GITHUB_REPO."
+if [ -z "$LATEST_TAG" ]; then
+    echo "Error: Failed to fetch latest tag."
     exit 1
 fi
 

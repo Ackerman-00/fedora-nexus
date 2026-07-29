@@ -3,32 +3,36 @@
 SPEC_FILE="caelestia-shell-mango.spec"
 GITHUB_REPO="Ackerman-00/caelestia-shell-mango"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
-BASE_VER="1.0.0"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 
-if [ -n "$GITHUB_TOKEN" ]; then
-    RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPO/commits?sha=main&per_page=1")
-else
-    RESPONSE=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/commits?sha=main&per_page=1")
-fi
+# Get HEAD commit via git ls-remote (no rate limit)
+LATEST_COMMIT=$(git ls-remote https://github.com/$GITHUB_REPO.git HEAD 2>/dev/null | awk '{print $1}')
 
-LATEST_COMMIT=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['sha'])")
-COMMIT_DATE_RAW=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['commit']['committer']['date'])")
-
-if [ -z "$LATEST_COMMIT" ] || [ "$LATEST_COMMIT" == "null" ]; then
-    echo "Error: Failed to fetch commits from $GITHUB_REPO. Check API limits or connection."
+if [ -z "$LATEST_COMMIT" ]; then
+    echo "Error: Failed to fetch HEAD commit."
     exit 1
 fi
 
-GIT_DATE=$(echo "$COMMIT_DATE_RAW" | sed 's/[^0-9]//g' | cut -c1-14)
 SHORT_COMMIT=${LATEST_COMMIT:0:7}
 
 CURRENT_COMMIT=$(grep -E "^%global commit" "$SPEC_FILE" | awk '{print $3}')
 
 if [ "$CURRENT_COMMIT" != "$LATEST_COMMIT" ]; then
     echo "Update found: ${CURRENT_COMMIT:0:7} -> $SHORT_COMMIT"
-    echo "Commit Timestamp: $GIT_DATE"
+
+    # Fetch commit date via API (needs token for rate limits)
+    if [ -n "$GITHUB_TOKEN" ]; then
+        GIT_DATE=$(curl -sL -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPO/commits/$LATEST_COMMIT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('commit',{}).get('committer',{}).get('date',''))" 2>/dev/null | sed 's/[^0-9]//g' | cut -c1-14)
+    else
+        GIT_DATE=$(curl -sL "https://api.github.com/repos/$GITHUB_REPO/commits/$LATEST_COMMIT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('commit',{}).get('committer',{}).get('date',''))" 2>/dev/null | sed 's/[^0-9]//g' | cut -c1-14)
+    fi
+
+    if [ -z "$GIT_DATE" ]; then
+        GIT_DATE=$(grep "^%global gitdate" "$SPEC_FILE" | awk '{print $3}')
+    fi
+
+    BASE_VER=$(grep "^Version:" "$SPEC_FILE" | awk '{print $2}' | sed 's/\^.*//')
 
     sed -i -E "s/^%global commit.*/%global commit          $LATEST_COMMIT/" "$SPEC_FILE"
     sed -i -E "s/^%global gitdate.*/%global gitdate         $GIT_DATE/" "$SPEC_FILE"

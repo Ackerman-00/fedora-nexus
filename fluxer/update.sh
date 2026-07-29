@@ -1,7 +1,7 @@
 #!/bin/bash
 
-SPEC_FILE="mangowm.spec"
-GITHUB_REPO="mangowm/mango"
+SPEC_FILE="fluxer.spec"
+GITHUB_REPO="fluxerapp/fluxer"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
@@ -28,7 +28,7 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     {
         echo "%changelog"
         echo "* $DATE $PACKAGER - $LATEST_VERSION-1"
-        echo "- Auto-update to version $LATEST_VERSION"
+        echo "- Update to version $LATEST_VERSION"
     } >> "$SPEC_FILE"
 
     echo "Successfully patched $SPEC_FILE."
