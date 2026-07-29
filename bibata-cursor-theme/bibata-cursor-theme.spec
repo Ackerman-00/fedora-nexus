@@ -16,7 +16,7 @@ popular cursor sets in the Linux community and is now available for free
 on Windows as well, with multiple color and size options.
 
 %prep
-%autosetup -n Bibata -a 0
+tar xf %{SOURCE0}
 
 %build
 
@@ -25,6 +25,8 @@ install -d -m 0755 %{buildroot}%{_datadir}/icons
 mv Bibata-* %{buildroot}%{_datadir}/icons/
 
 %files
+%license LICENSE
+%doc README.md
 %{_datadir}/icons/Bibata-*
 
 %changelog
