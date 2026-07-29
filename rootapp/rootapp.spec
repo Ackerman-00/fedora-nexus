@@ -4,8 +4,8 @@
 %global __provides_exclude_from ^/opt/rootapp/.*$
 
 Name:           rootapp
-Version:        0.9.119
-Release:        2%{?dist}
+Version:        0.9.121
+Release:        1%{?dist}
 Summary:        Root App is a new Discord alternative, designed for gaming communities and large online groups
 
 License:        Proprietary
@@ -13,7 +13,7 @@ URL:            https://www.rootapp.com
 ExclusiveArch:  x86_64
 
 Source0:        https://installer.rootapp.com/installer/Linux/X64/Root.AppImage
-# sha256: d50d01eda97876ccb965470c982947b56ac649fa497825449efe4952b06d2526
+# sha256: 3cab1a0fb3283478c0e7c14530e061ff28f7a288df963bc580bcc069d191e59b
 
 BuildRequires:  binutils
 BuildRequires:  squashfs-tools
@@ -159,10 +159,5 @@ DESKTOP_EOF
 %{_datadir}/pixmaps/rootapp.png
 
 %changelog
-* Tue Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.119-2
-- Added missing dependencies: libglvnd, mesa-libGL, icu, freetype2
-- Added Provides/Conflicts for root-app
-- Removed chrome-sandbox SUID bit (security CVE vector)
-
-* Sat Jul 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.119-1
-- Auto-update to 0.9.119 via update.sh
+* Wed Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.121-1
+- Auto-update to 0.9.121 via update.sh
