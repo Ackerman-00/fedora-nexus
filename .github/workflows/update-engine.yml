@@ -2,7 +2,7 @@ name: Fedora Nexus Auto-Updater
 
 on:
   schedule:
-    - cron: '30 4,16 * * *'  # Off the hour to avoid delays (04:30, 16:30 UTC)
+    - cron: '0 */2 * * *'  # Every 2 hours
   workflow_dispatch:
 
 permissions:
