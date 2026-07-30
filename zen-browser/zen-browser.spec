@@ -3,13 +3,13 @@
 %global             debug_package %{nil}
 
 Name:               zen-browser
-Version:        1.21.9b
+Version:        1.21.10b
 Release:        1%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPLv2.0
 URL:                https://github.com/zen-browser/desktop
-Source0:            https://github.com/zen-browser/desktop/releases/download/%{version}/zen.linux-x86_64.tar.xz
+Source0:            https://github.com/zen-browser/desktop/releases/download/1.21.10b/zen.linux-x86_64.tar.xz
 Source1:            %{full_name}.desktop
 Source2:            policies.json
 Source3:            %{full_name}
@@ -81,11 +81,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
-* Sat Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 1.21.9b-1
-- Update to 1.21.9b (44 CVEs patched, Firefox 153.0)
-- Add /usr/bin/zen convenience symlink
-- Add pixmaps icon for legacy apps
-- Fix desktop file (remove invalid shebang)
-
-* Fri Jul 17 2026 Ackerman-00 <quietcraft@gmail.com> - 1.21.8b-1
-- Auto-update to upstream release 1.21.8b
+* Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 1.21.10b-1
+- Auto-update to upstream release 1.21.10b
