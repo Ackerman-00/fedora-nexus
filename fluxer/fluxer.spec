@@ -2,7 +2,7 @@
 
 Name:           fluxer
 Version:        2026.727.222108
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later
@@ -24,6 +24,7 @@ BuildRequires:  pipewire-devel
 BuildRequires:  desktop-file-utils
 
 %define _debug_package %{nil}
+%undefine _debugsource_packages
 
 Provides:       bundled(libcap)
 Provides:       bundled(libcbor)
@@ -54,7 +55,8 @@ fi
 ln -sf electron-builder.config.cjs electron-builder.js
 pnpm install --frozen-lockfile 2>/dev/null || pnpm install
 pnpm run set-channel 2>/dev/null || true
-pnpm exec electron-builder --linux dir 2>/dev/null || pnpm run build
+pnpm run build
+pnpm exec electron-builder --linux dir
 popd
 
 %install
@@ -85,6 +87,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
+* Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.727.222108-4
+- Undefine _debugsource_packages for Fedora 44 (RPM 4.20+ split _debug_package)
+- Run pnpm build before electron-builder to ensure native addons are built
+
 * Wed Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.727.222108-3
 - Remove recursive __provides_exclude macro causing infinite recursion on rawhide
 - Disable debug package (bundled Electron produces no debug sources)
