@@ -2,7 +2,7 @@
 
 Name:           fluxer
 Version:        2026.724.203709
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
@@ -12,7 +12,7 @@ Source0:        https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm
 Requires:       (falcond or gamemode)
 Requires:       mangohud
 
-%__debug_install_post %{nil}
+%global __debug_install_post %{nil}
 
 %description
 Fluxer is a free and open source instant messaging and VoIP platform built for
@@ -53,6 +53,6 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %{_datadir}/icons/hicolor/512x512/apps/%{appid}.png
 
 %changelog
-* Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.724.203709-1
-- Repackage upstream pre-built RPM instead of building from source
-- Install to /usr/lib/fluxer (FHS-compliant) with /usr/bin wrapper
+* Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.724.203709-2
+- Fix __debug_install_post syntax (needs %global, not bare macro)
+- Disable find-debuginfo via %global __debug_install_post %%{nil} for pre-built binaries
