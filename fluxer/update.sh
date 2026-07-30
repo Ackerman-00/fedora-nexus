@@ -16,14 +16,10 @@ fi
 CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 
 if [ "$CURRENT_VERSION" != "$VERSION" ]; then
-    echo "Update found: $CURRENT_VERSION -> $VERSION"
-
-    echo "Downloading upstream RPM..."
-    curl -sL -o "fluxer-app-${VERSION}-x86_64.rpm" "$API_URL"
+    echo "Update available: $CURRENT_VERSION -> $VERSION"
 
     sed -i "s/^Version:.*/Version:        $VERSION/" "$SPEC_FILE"
     sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
-    sed -i "s/^Source0:.*/Source0:        fluxer-app-${VERSION}-x86_64.rpm/" "$SPEC_FILE"
 
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
     sed -i '/^%changelog/,$d' "$SPEC_FILE"
