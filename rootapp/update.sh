@@ -50,7 +50,7 @@ with open('$TMPDIR/Root.AppImage', 'rb') as f:
     if [ -d "$TMPDIR/squashfs-root" ]; then
         EXTRACTED=1
     fi
-# Method 2: try --appimage-extract
+# Method 2: Python-based extract (fallback when unsquashfs not available)
 elif command -v python3 &>/dev/null; then
     chmod +x "$TMPDIR/Root.AppImage"
     cd "$TMPDIR"
@@ -59,6 +59,7 @@ elif command -v python3 &>/dev/null; then
         EXTRACTED=1
     fi
 fi
+
 
 if [ "$EXTRACTED" = "1" ]; then
     ROOT="$TMPDIR/squashfs-root"
@@ -94,16 +95,19 @@ except:
 ")
     fi
 
-    # Last resort: grep .NET binary for version string
-    if [ -z "$VERSION" ] && [ -f "$ROOT/usr/bin/Root" ]; then
-        VERSION=$(strings "$ROOT/usr/bin/Root" 2>/dev/null | grep -oP 'RootApp/\K[0-9]+\.[0-9]+\.[0-9]+' | head -1)
-    fi
-
-    if [ -z "$VERSION" ]; then
-        VERSION=$(grep -rI '"[0-9]\+\.[0-9]\+\.[0-9]\+"' "$ROOT" 2>/dev/null | head -3 | sed 's/.*"\([0-9]*\.[0-9]*\.[0-9]*\)".*/\1/' | head -1)
-    fi
+    # No wildcard recursive grep — it picks up dependency versions (e.g. Stripe billing SDK "19.2.5")
+    # sq.version is the ONLY authoritative source for .NET/Avalonia app versions.
 
     rm -rf "$TMPDIR/squashfs-root" "$TMPDIR/squashfs.img"
+fi
+
+# Validate extracted version (reject implausible values like dependency versions)
+if [ -n "$VERSION" ]; then
+    MAJOR="${VERSION%%.*}"
+    if [ "$MAJOR" -gt 5 ] 2>/dev/null; then
+        echo "ERROR: Extracted version $VERSION has implausible major version $MAJOR"
+        VERSION=""
+    fi
 fi
 
 # Update spec

@@ -5,7 +5,7 @@
 
 Name:           rootapp
 Version:        0.9.121
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Root App is a new Discord alternative, designed for gaming communities and large online groups
 
 License:        Proprietary
@@ -28,8 +28,9 @@ Requires:       xdg-utils
 Requires:       at-spi2-core
 Requires:       hicolor-icon-theme
 Requires:       zlib
+Requires:       glib2
 
-# X11 libraries (Chromium/DotNetBrowser needs these)
+# X11 libraries (DotNetBrowser/Chromium needs these)
 Requires:       libXScrnSaver
 Requires:       libXtst
 Requires:       libX11
@@ -41,6 +42,9 @@ Requires:       libXcursor
 Requires:       libXcomposite
 Requires:       libXdamage
 Requires:       libXrender
+Requires:       libXext
+Requires:       libXfixes
+Requires:       libxcb
 
 # Wayland support
 Requires:       libxkbcommon
@@ -50,17 +54,19 @@ Requires:       libwayland-cursor
 Requires:       libwayland-egl
 Requires:       libdrm
 
-# OpenGL/rendering (Chromium GPU acceleration)
+# OpenGL/rendering (DotNetBrowser GPU acceleration)
 Requires:       libglvnd
 Requires:       mesa-libGL
+Requires:       mesa-libEGL
 
 # Font/text rendering
 Requires:       fontconfig
-Requires:       freetype2
+Requires:       freetype
 Requires:       cairo
 Requires:       pango
 Requires:       harfbuzz
 Requires:       icu
+Requires:       libexpat
 
 # Image handling
 Requires:       gdk-pixbuf2
@@ -80,11 +86,12 @@ Requires:       dbus-libs
 # Secret storage
 Requires:       libsecret
 
-# Clipboard
-Requires:       wl-clipboard
-
 # Accessibility
 Requires:       at-spi2-atk
+
+# System
+Requires:       systemd-libs
+Requires:       libatomic
 
 Provides:       rootapp = %{version}-%{release}
 Provides:       root-app = %{version}-%{release}
@@ -113,17 +120,6 @@ install -dm755 %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/rootapp <<'WRAPPER_EOF'
 #!/bin/sh
 export APPDIR="/opt/rootapp"
-
-# Detect Wayland and enable native Ozone backend for DotNetBrowser/Chromium
-# Without this, Chromium falls back to XWayland which causes rendering issues
-if [ -n "$WAYLAND_DISPLAY" ]; then
-    export CHROMIUM_FLAGS="${CHROMIUM_FLAGS} --ozone-platform=wayland"
-    # Chromium sandbox needs user namespaces on Linux
-    if [ -f /proc/sys/kernel/unprivileged_userns_clone ]; then
-        echo 1 > /proc/sys/kernel/unprivileged_userns_clone 2>/dev/null || true
-    fi
-fi
-
 exec /opt/rootapp/AppRun "$@"
 WRAPPER_EOF
 chmod 755 %{buildroot}%{_bindir}/rootapp
@@ -159,5 +155,11 @@ DESKTOP_EOF
 %{_datadir}/pixmaps/rootapp.png
 
 %changelog
+* Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.121-2
+- Fix freetype2 -> freetype dependency (Fedora package name)
+- Add missing X11 deps: libXext, libXfixes, libxcb
+- Add mesa-libEGL, libexpat, glib2, systemd-libs, libatomic
+- Remove wl-clipboard (clipboard handled by Avalonia via X11/Wayland directly)
+
 * Wed Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.121-1
 - Auto-update to 0.9.121 via update.sh
