@@ -7,7 +7,7 @@ Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
 URL:            https://fluxer.app
-Source0:        fluxer-app-%{version}-x86_64.rpm
+Source0:        https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm
 
 Requires:       (falcond or gamemode)
 Requires:       mangohud
