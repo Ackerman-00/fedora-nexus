@@ -2,7 +2,7 @@
 
 Name:           fluxer
 Version:        2026.724.203709
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
@@ -36,9 +36,17 @@ chmod 0755 %{buildroot}%{_bindir}/%{name}
 install -Dm0644 usr/share/applications/fluxer.desktop \
     %{buildroot}%{_datadir}/applications/%{appid}.desktop
 
-for size in 256 512; do
-    install -Dm0644 usr/share/icons/hicolor/${size}x${size}/apps/fluxer.png \
-        %{buildroot}%{_datadir}/icons/hicolor/${size}x${size}/apps/%{appid}.png
+# Fix Exec= and Icon= for our relocation
+sed -i 's|^Exec=.*|Exec=%{_bindir}/%{name} %U|' \
+    %{buildroot}%{_datadir}/applications/%{appid}.desktop
+sed -i 's|^Icon=.*|Icon=%{appid}|' \
+    %{buildroot}%{_datadir}/applications/%{appid}.desktop
+
+# Install all available icon sizes
+for iconpath in usr/share/icons/hicolor/*/apps/fluxer.png; do
+    size=$(echo "$iconpath" | cut -d/ -f5)
+    install -Dm0644 "$iconpath" \
+        %{buildroot}%{_datadir}/icons/hicolor/${size}/apps/%{appid}.png
 done
 
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || true
@@ -49,9 +57,12 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %{_bindir}/%{name}
 %{_libdir}/%{name}/
 %{_datadir}/applications/%{appid}.desktop
-%{_datadir}/icons/hicolor/256x256/apps/%{appid}.png
-%{_datadir}/icons/hicolor/512x512/apps/%{appid}.png
+%{_datadir}/icons/hicolor/*/apps/%{appid}.png
 
 %changelog
+* Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.724.203709-5
+- Fix desktop file Exec and Icon paths after relocation
+- Install all icon sizes from upstream RPM
+
 * Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.724.203709-4
 - Fix RPM 6 auto-generated debugsource subpackage: use _enable_debug_packages 0 instead of _debuginfo_policy none
