@@ -12,8 +12,7 @@ Source0:        https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm
 Requires:       (falcond or gamemode)
 Requires:       mangohud
 
-%define _debug_package %{nil}
-%undefine _debugsource_packages
+%__debug_install_post %{nil}
 
 %description
 Fluxer is a free and open source instant messaging and VoIP platform built for
