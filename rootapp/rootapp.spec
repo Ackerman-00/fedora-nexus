@@ -5,7 +5,7 @@
 
 Name:           rootapp
 Version:        0.9.121
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Root App is a new Discord alternative, designed for gaming communities and large online groups
 
 License:        Proprietary
@@ -27,7 +27,7 @@ Requires:       libnotify
 Requires:       xdg-utils
 Requires:       at-spi2-core
 Requires:       hicolor-icon-theme
-Requires:       zlib
+Requires:       zlib-ng-compat
 Requires:       glib2
 
 # X11 libraries (DotNetBrowser/Chromium needs these)
@@ -66,7 +66,7 @@ Requires:       cairo
 Requires:       pango
 Requires:       harfbuzz
 Requires:       icu
-Requires:       libexpat
+Requires:       expat
 
 # Image handling
 Requires:       gdk-pixbuf2
@@ -155,11 +155,8 @@ DESKTOP_EOF
 %{_datadir}/pixmaps/rootapp.png
 
 %changelog
-* Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.121-2
-- Fix freetype2 -> freetype dependency (Fedora package name)
-- Add missing X11 deps: libXext, libXfixes, libxcb
-- Add mesa-libEGL, libexpat, glib2, systemd-libs, libatomic
-- Remove wl-clipboard (clipboard handled by Avalonia via X11/Wayland directly)
+* Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.121-3
+- Fix libexpat -> expat, zlib -> zlib-ng-compat (Fedora package names)
 
 * Wed Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.121-1
 - Auto-update to 0.9.121 via update.sh
