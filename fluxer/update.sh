@@ -1,37 +1,39 @@
 #!/bin/bash
 
 SPEC_FILE="fluxer.spec"
-GITHUB_REPO="fluxerapp/fluxer"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+API_URL="https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm"
 
-echo "Checking for upstream updates on $GITHUB_REPO..."
+echo "Checking for upstream updates..."
 
-# Get latest tag via git ls-remote (no rate limit)
-LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | sort -V | tail -1)
-LATEST_VERSION=$(echo "$LATEST_TAG" | sed 's/^v//')
+VERSION=$(curl -sI "$API_URL" | grep -i "^X-Fluxer-Version:" | awk '{print $2}' | tr -d '\r')
 
-if [ -z "$LATEST_VERSION" ]; then
-    echo "Error: Failed to fetch latest tag."
+if [ -z "$VERSION" ]; then
+    echo "Error: Failed to fetch upstream version."
     exit 1
 fi
 
 CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 
-if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
-    echo "Update found: $CURRENT_VERSION -> $LATEST_VERSION"
+if [ "$CURRENT_VERSION" != "$VERSION" ]; then
+    echo "Update found: $CURRENT_VERSION -> $VERSION"
 
-    sed -i "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
+    echo "Downloading upstream RPM..."
+    curl -sL -o "fluxer-app-${VERSION}-x86_64.rpm" "$API_URL"
+
+    sed -i "s/^Version:.*/Version:        $VERSION/" "$SPEC_FILE"
     sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
+    sed -i "s/^Source0:.*/Source0:        fluxer-app-${VERSION}-x86_64.rpm/" "$SPEC_FILE"
 
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
     sed -i '/^%changelog/,$d' "$SPEC_FILE"
     {
         echo "%changelog"
-        echo "* $DATE $PACKAGER - $LATEST_VERSION-1"
-        echo "- Update to version $LATEST_VERSION"
+        echo "* $DATE $PACKAGER - $VERSION-1"
+        echo "- Update to version $VERSION"
     } >> "$SPEC_FILE"
 
-    echo "Successfully patched $SPEC_FILE."
+    echo "Successfully updated to $VERSION."
 else
-    echo "Package is already at $LATEST_VERSION. No update needed."
+    echo "Package is already at $VERSION. No update needed."
 fi

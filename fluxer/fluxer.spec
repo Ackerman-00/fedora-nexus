@@ -1,102 +1,59 @@
 %global appid app.fluxer.Fluxer
 
 Name:           fluxer
-Version:        2026.727.222108
-Release:        4%{?dist}
+Version:        2026.724.203709
+Release:        1%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
-License:        AGPL-3.0-or-later
+License:        AGPL-3.0-or-later AND BSD
 URL:            https://fluxer.app
-Source0:        https://github.com/fluxerapp/fluxer/archive/refs/tags/%{version}.tar.gz
+Source0:        fluxer-app-%{version}-x86_64.rpm
 
-BuildRequires:  rust-packaging
-BuildRequires:  nodejs
-BuildRequires:  nodejs-npm
-BuildRequires:  nodejs-packaging
-BuildRequires:  pnpm
-BuildRequires:  xorg-x11-proto-devel
-BuildRequires:  pkgconfig(openssl)
-BuildRequires:  pkgconfig(libfido2)
-BuildRequires:  pkgconfig(glib-2.0)
-BuildRequires:  pkgconfig(libudev)
-BuildRequires:  clang-devel
-BuildRequires:  pipewire-devel
-BuildRequires:  desktop-file-utils
+Requires:       (falcond or gamemode)
+Requires:       mangohud
 
 %define _debug_package %{nil}
 %undefine _debugsource_packages
-
-Provides:       bundled(libcap)
-Provides:       bundled(libcbor)
-Provides:       bundled(libfido2)
-Provides:       bundled(libudev)
-Provides:       bundled(openssl)
-Provides:       bundled(zlib)
-
-Recommends:     (falcond or gamemode)
-Recommends:     mangohud
 
 %description
 Fluxer is a free and open source instant messaging and VoIP platform built for
 friends, groups, and communities. Self-hosting and more.
 
 %prep
-%autosetup -n fluxer-%{version}
-
-%build
-pushd fluxer_desktop
-export BUILD_CHANNEL=stable
-export NODE_ENV=production
-if ! grep entry electron-builder.config.cjs; then
-    sed '/desktop:/,/}/{/desktop:/a entry:{
-    /\}/a },
-    }' -i electron-builder.config.cjs
-fi
-ln -sf electron-builder.config.cjs electron-builder.js
-pnpm install --frozen-lockfile 2>/dev/null || pnpm install
-pnpm run set-channel 2>/dev/null || true
-pnpm run build
-pnpm exec electron-builder --linux dir
-popd
+%setup -T -c
+rpm2cpio %{SOURCE0} | cpio -idmv
 
 %install
-install -d -m 0755 %{buildroot}%{_libdir}/%{name}
-cp -a fluxer_desktop/dist/linux-unpacked/* %{buildroot}%{_libdir}/%{name}/ 2>/dev/null || \
-cp -a fluxer_desktop/dist-electron/*unpacked/* %{buildroot}%{_libdir}/%{name}/ 2>/dev/null || true
+mkdir -p %{buildroot}%{_libdir}/%{name}
+cp -a opt/Fluxer/* %{buildroot}%{_libdir}/%{name}/
 
-install -d -m 0755 %{buildroot}%{_bindir}
+mkdir -p %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/%{name} <<'EOF'
 #!/bin/sh
 exec %{_libdir}/%{name}/%{name} "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/%{name}
 
-install -Dm0644 fluxer_desktop/packaging/linux/%{appid}.desktop %{buildroot}%{_datadir}/applications/%{appid}.desktop
-install -Dm0644 fluxer_desktop/packaging/linux/%{appid}.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/%{appid}.svg
-install -Dm0644 fluxer_desktop/packaging/linux/%{appid}.metainfo.xml %{buildroot}%{_metainfodir}/%{appid}.metainfo.xml
+install -Dm0644 usr/share/applications/fluxer.desktop \
+    %{buildroot}%{_datadir}/applications/%{appid}.desktop
+
+for size in 256 512; do
+    install -Dm0644 usr/share/icons/hicolor/${size}x${size}/apps/fluxer.png \
+        %{buildroot}%{_datadir}/icons/hicolor/${size}x${size}/apps/%{appid}.png
+done
 
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || true
 
 %files
-%doc README.md
-%license LICENSE
+%license opt/Fluxer/LICENSE.electron.txt
+%doc opt/Fluxer/LICENSES.chromium.html
 %{_bindir}/%{name}
 %{_libdir}/%{name}/
 %{_datadir}/applications/%{appid}.desktop
-%{_datadir}/icons/hicolor/scalable/apps/%{appid}.svg
-%{_metainfodir}/%{appid}.metainfo.xml
+%{_datadir}/icons/hicolor/256x256/apps/%{appid}.png
+%{_datadir}/icons/hicolor/512x512/apps/%{appid}.png
 
 %changelog
-* Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.727.222108-4
-- Undefine _debugsource_packages for Fedora 44 (RPM 4.20+ split _debug_package)
-- Run pnpm build before electron-builder to ensure native addons are built
-
-* Wed Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.727.222108-3
-- Remove recursive __provides_exclude macro causing infinite recursion on rawhide
-- Disable debug package (bundled Electron produces no debug sources)
-
-* Wed Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.727.222108-2
-- Remove Terra-specific macros (%cargo_prep_online, %pnpm_build, %electron_install,
-  %desktop_file_install) that don't exist in Fedora COPR
-- Keep proper __provides_exclude and bundled() declarations
-- Fix electron-builder.config.cjs entry point for Fedora build
+* Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.724.203709-1
+- Repackage upstream pre-built RPM instead of building from source
+- Install to /usr/lib/fluxer (FHS-compliant) with /usr/bin wrapper
