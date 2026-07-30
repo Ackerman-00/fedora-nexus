@@ -2,8 +2,8 @@
 %global debug_package %{nil}
 
 Name:           obsidian
-Version:        1.12.7
-Release:        7%{?dist}
+Version:        1.13.4
+Release:        1%{?dist}
 Summary:        A powerful knowledge base that works on top of a local folder of plain text Markdown files
 
 License:        Commercial
@@ -79,8 +79,5 @@ ln -sf /opt/Obsidian/obsidian %{buildroot}%{_bindir}/obsidian
 %doc %{_datadir}/doc/obsidian/
 
 %changelog
-* Wed May 13 2026 Ackerman-00 <quietcraft@gmail.com> - 1.12.7-7
-- Pivoted to repackaging the official .deb release for perfect asset integration
-- Implemented robust ar/tar extraction to handle upstream compression changes
-- Bypassed manual .desktop and icon extraction
-- Reverted installation path to standard /opt/Obsidian monolithic structure
+* Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 1.13.4-1
+- Auto-updated to 1.13.4 via update.sh
