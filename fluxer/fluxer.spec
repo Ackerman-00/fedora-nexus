@@ -54,5 +54,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 
 %changelog
 * Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.724.203709-2
-- Fix __debug_install_post syntax (needs %global, not bare macro)
-- Disable find-debuginfo via %global __debug_install_post %%{nil} for pre-built binaries
+- Fix __debug_install_post syntax (needs global prefix, not bare macro)
+- Disable find-debuginfo for pre-built upstream binaries
