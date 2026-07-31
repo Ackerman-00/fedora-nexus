@@ -5,7 +5,7 @@
 
 Name:           opencode-desktop
 Version:        1.18.10
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Open source AI coding agent
 
 License:        MIT
@@ -30,6 +30,7 @@ Requires:       libXcomposite
 Requires:       libXdamage
 Requires:       libxkbcommon
 Requires:       libsecret
+Requires:       ripgrep
 Recommends:     libappindicator-gtk3
 
 Provides:       opencode = %{version}-%{release}
@@ -110,6 +111,9 @@ sed -i 's|^Exec=.*|Exec=%{_bindir}/opencode-desktop %U|' \
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
+* Fri Jul 31 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.10-3
+- Add ripgrep runtime dependency (sidecar spawns rg)
+
 * Fri Jul 31 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.10-2
 - Repackage from upstream .deb payload with bundled Electron
 - Disable broken auto-updater (prune app-update.yml)
