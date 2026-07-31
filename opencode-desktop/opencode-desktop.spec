@@ -5,15 +5,15 @@
 
 Name:           opencode-desktop
 Version:        1.18.10
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open source AI coding agent
 
 License:        MIT
 URL:            https://opencode.ai
-Source0:        https://github.com/anomalyco/opencode/releases/download/v%{version}/opencode-desktop-linux-x86_64.rpm
+Source0:        https://github.com/anomalyco/opencode/releases/download/v%{version}/opencode-desktop-linux-amd64.deb
 
 ExclusiveArch:  x86_64
-BuildRequires:  cpio
+BuildRequires:  python3
 
 Requires:       gtk3
 Requires:       libnotify
@@ -29,6 +29,8 @@ Requires:       mesa-libgbm
 Requires:       libXcomposite
 Requires:       libXdamage
 Requires:       libxkbcommon
+Requires:       libsecret
+Recommends:     libappindicator-gtk3
 
 Provides:       opencode = %{version}-%{release}
 Obsoletes:      opencode < %{version}
@@ -38,13 +40,38 @@ OpenCode is an open source agent that helps you write and run code with any AI m
 
 %prep
 %setup -c -T
-rpm2cpio %{SOURCE0} | cpio -idmv
+python3 - <<'PYEOF'
+import io, sys, tarfile
+
+src = "%{SOURCE0}"
+dst = "."
+with open(src, "rb") as f:
+    assert f.read(8) == b"!<arch>\n", "not an ar archive"
+    while True:
+        hdr = f.read(60)
+        if len(hdr) < 60:
+            break
+        name = hdr[:16].decode().strip()
+        size = int(hdr[48:58].decode().strip())
+        payload = f.read(size)
+        if size % 2:
+            f.read(1)
+        if name == "data.tar.xz/" or name == "data.tar.xz":
+            tarfile.open(fileobj=io.BytesIO(payload), mode="r:xz").extractall(dst)
+            sys.exit(0)
+    sys.exit("data.tar.xz not found in %s" % src)
+PYEOF
 
 %install
 rm -rf %{buildroot}
 
 install -d -m 0755 %{buildroot}/opt/OpenCode
 cp -a opt/OpenCode/* %{buildroot}/opt/OpenCode/
+
+rm -rf %{buildroot}/opt/OpenCode/resources/apparmor-profile
+rm -f %{buildroot}/opt/OpenCode/resources/app-update.yml
+rm -f %{buildroot}/opt/OpenCode/resources/app.asar.unpacked/node_modules/@msgpackr-extract/msgpackr-extract-linux-x64/*.musl.node
+rm -rf %{buildroot}/opt/OpenCode/resources/app.asar.unpacked/node_modules/@parcel/watcher-linux-x64-musl
 
 install -d -m 0755 %{buildroot}%{_datadir}
 cp -a usr/share/applications %{buildroot}%{_datadir}/
@@ -54,10 +81,17 @@ cp -a usr/share/metainfo %{buildroot}%{_datadir}/
 install -d -m 0755 %{buildroot}%{_bindir}
 cat <<-'EOF' > %{buildroot}%{_bindir}/opencode-desktop
 #!/bin/sh
-if [ "$XDG_SESSION_TYPE" = "wayland" ] || [ -n "$WAYLAND_DISPLAY" ]; then
-    exec /opt/OpenCode/ai.opencode.desktop --ozone-platform-hint=wayland "$@"
+flags="--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true --wayland-text-input-version=3"
+conf="${XDG_CONFIG_HOME:-$HOME/.config}/opencode-desktop-flags.conf"
+if [ -r "$conf" ]; then
+    while IFS= read -r line; do
+        case "$line" in
+            ''|\#*) continue ;;
+        esac
+        flags="$flags $line"
+    done < "$conf"
 fi
-exec /opt/OpenCode/ai.opencode.desktop "$@"
+exec /opt/OpenCode/ai.opencode.desktop $flags "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/opencode-desktop
 
@@ -76,5 +110,11 @@ sed -i 's|^Exec=.*|Exec=%{_bindir}/opencode-desktop %U|' \
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
+* Fri Jul 31 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.10-2
+- Repackage from upstream .deb payload with bundled Electron
+- Disable broken auto-updater (prune app-update.yml)
+- Add flags.conf support and Wayland ozone flags to launcher
+- Prune apparmor-profile, docs and musl prebuilds
+
 * Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.10-1
 - Auto-update to version 1.18.10
