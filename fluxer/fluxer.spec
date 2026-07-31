@@ -1,8 +1,8 @@
 %global appid app.fluxer.Fluxer
 
 Name:           fluxer
-Version:        2026.724.203709
-Release:        5%{?dist}
+Version:        2026.730.194153
+Release:        1%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
@@ -60,9 +60,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %{_datadir}/icons/hicolor/*/apps/%{appid}.png
 
 %changelog
-* Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.724.203709-5
-- Fix desktop file Exec and Icon paths after relocation
-- Install all icon sizes from upstream RPM
-
-* Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.724.203709-4
-- Fix RPM 6 auto-generated debugsource subpackage: use _enable_debug_packages 0 instead of _debuginfo_policy none
+* Fri Jul 31 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.730.194153-1
+- Update to version 2026.730.194153
