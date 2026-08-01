@@ -10,7 +10,7 @@
 
 Name:           localsend
 Version:        1.17.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        An open source cross-platform alternative to AirDrop
 
 License:        GPL-3.0
@@ -25,7 +25,10 @@ BuildRequires:  binutils
 BuildRequires:  tar
 
 # Explicit dependencies mapped from the upstream DEB to Fedora
-Requires:       libappindicator-gtk3
+# (libappindicator3-1 | libayatana-appindicator3-1, gir1.2-appindicator3-0.1 |
+#  gir1.2-ayatanaappindicator3-0.1 -> libayatana-appindicator-gtk3,
+#  libayatana-ido3-0.4-0 -> libayatana-ido-gtk3, xdg-user-dirs, libc6 -> glibc)
+Requires:       libayatana-appindicator-gtk3
 Requires:       libayatana-ido-gtk3
 Requires:       xdg-user-dirs
 
@@ -69,5 +72,8 @@ chmod 0755 %{buildroot}%{_bindir}/localsend_app
 %{_datadir}/localsend_app/
 
 %changelog
+* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1.17.0-2
+- Fix runtime deps: use libayatana-appindicator-gtk3 (app crashed without it)
+
 * Sun Aug 02 2026 Nexus Bot <bot@github.com> - 1.17.0-1
 - Initial Repackaged Build via Upstream DEB
