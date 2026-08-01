@@ -65,8 +65,8 @@ Or **[browse all packages online](https://copr.fedorainfracloud.org/coprs/ackerm
 
 ## Build status
 
-Automated COPR builds triggered on every push to `master`.
+Automated COPR builds triggered on every push to `main`.
 
 | Branch | Build |
 |---|---|
-| `master` | [![Build status](https://copr.fedorainfracloud.org/coprs/ackerman/nexus/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/ackerman/nexus/) |
+| `main` | [![Build status](https://copr.fedorainfracloud.org/coprs/ackerman/nexus/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/ackerman/nexus/) |
