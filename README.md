@@ -70,4 +70,4 @@ Automated COPR builds triggered on every push to `main`.
 
 | Branch | Build |
 |---|---|
-| `main` | [![Build status](https://copr.fedorainfracloud.org/coprs/ackerman/nexus/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/ackerman/nexus/) |
+| `main` | [![Build status](https://img.shields.io/badge/dynamic/json?color=brightgreen&label=copr%20build&query=items.0.state&suffix=%20(fedora-43/44/rawhide)&url=https%3A%2F%2Fcopr.fedorainfracloud.org%2Fapi_3%2Fbuild%2Flist%3Fownername%3Dackerman%26projectname%3Dnexus%26limit%3D1)](https://copr.fedorainfracloud.org/coprs/ackerman/nexus/builds/) |
