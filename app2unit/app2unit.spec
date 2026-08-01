@@ -1,9 +1,9 @@
-%global commit          f736e7391ad4e63ea4dda3d0e405ed8c2187a4d4
+%global commit          47e23ec6ab9e97bbe335c32fb640744a29bf32f7
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260731192939
+%global gitdate         20260801195144
 
 Name:           app2unit
-Version:        1.4.3^%{gitdate}git%{shortcommit}
+Version:        1.4.4^%{gitdate}git%{shortcommit}
 Release:        1%{?dist}
 Summary:        Launch desktop entries or commands as systemd user units
 
@@ -47,5 +47,5 @@ system stored on an SSD, overhead can be as short as ~0.03s.
 %{_mandir}/man1/app2unit.1*
 
 %changelog
-* Fri Jul 31 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.3^20260731192939gitf736e73-1
-- Nightly sync with upstream master branch (Commit: f736e73)
+* Sat Aug 01 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.4^20260801195144git47e23ec-1
+- Nightly sync with upstream master branch (Commit: 47e23ec)
