@@ -44,6 +44,7 @@ Or **[browse all packages online](https://copr.fedorainfracloud.org/coprs/ackerm
 | **fluxer** | Free & open-source instant messaging and VoIP | `sudo dnf install fluxer` |
 | **heroic-games-launcher** | Open-source game launcher (Epic/GOG/Amazon) | `sudo dnf install heroic-games-launcher` |
 | **libcava** | Audio visualizer library | `sudo dnf install libcava` |
+| **localsend** | Cross-platform AirDrop alternative (LAN file sharing) | `sudo dnf install localsend` |
 | **mangowm** | Tiling Wayland compositor | `sudo dnf install mangowm` |
 | **material-symbols-fonts** | Material Symbols icon font | `sudo dnf install material-symbols-fonts` |
 | **matugen** | Material You color generator | `sudo dnf install matugen` |
