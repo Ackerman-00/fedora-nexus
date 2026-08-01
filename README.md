@@ -3,7 +3,7 @@
 [![COPR](https://img.shields.io/badge/COPR-ackerman/nexus-0055CC?style=for-the-badge&logo=fedora)](https://copr.fedorainfracloud.org/coprs/ackerman/nexus/)
 [![Last build](https://copr.fedorainfracloud.org/coprs/ackerman/nexus/package/zen-browser/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/ackerman/nexus/package/zen-browser/)
 
-**Bleeding-edge Wayland & gaming packages for Fedora 44+**
+**Bleeding-edge Wayland & gaming packages for Fedora 43/44/rawhide**
 
 Curated packages optimized for minimal Wayland compositors (Niri, Mangowm) and high-performance gaming. Recipes live in [fedora-nexus](https://github.com/Ackerman-00/fedora-nexus).
 
