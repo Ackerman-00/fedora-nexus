@@ -1,0 +1,65 @@
+name: opencode-schedule
+
+on:
+  schedule:
+    - cron: '30 */2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+
+concurrency:
+  group: opencode-schedule
+  cancel-in-progress: true
+
+jobs:
+  opencode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Run opencode
+        uses: anomalyco/opencode/github@latest
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+        with:
+          model: opencode/deepseek-v4-flash-free
+          prompt: |
+            You are the automated maintainer of the fedora-nexus COPR repository
+            (https://github.com/Ackerman-00/fedora-nexus). A scheduled check just ran.
+            Investigate and fix any failures. Work autonomously.
+
+            STEPS:
+            1. Check COPR build health. Query the COPR API:
+               - GET https://copr.fedorainfracloud.org/api_3/coprs/ackerman/nexus/packages
+               - Also try https://copr.fedorainfracloud.org/api_3/coprs/ackerman/nexus/builds
+               List every package whose latest build status is NOT "succeeded" (e.g.
+               failed, canceled, skipped). Also note the failure reason/URL if available.
+            2. Check this repo's recent GitHub Actions runs for failures
+               (https://api.github.com/repos/Ackerman-00/fedora-nexus/actions/runs).
+            3. Check open issues (https://api.github.com/repos/Ackerman-00/fedora-nexus/issues)
+               and triage them: reproduce, diagnose, and fix what you can.
+            4. For each failure you can act on:
+               - Read the package directory (spec file, update.sh) under the failing
+                 package's folder.
+               - Web search the UPSTREAM project (GitHub repo, release page, changelog)
+                 to find the correct source URL, version, tag, or patch that fixes the
+                 failure. Verify URLs are real and current (today is Aug 2026).
+               - Update the spec file / update.sh / source references accordingly.
+               - Keep changes minimal and consistent with the repo's existing style.
+            5. Test what you can locally in this runner (e.g. run update.sh for the
+               affected packages, validate spec syntax, check URLs resolve).
+            6. If you made changes, commit them on a new branch and open a Pull Request
+               titled "fix: repair failed builds/issues" with a summary of each failure
+               and its fix. If no fixes were needed, do nothing.
