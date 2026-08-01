@@ -4,8 +4,8 @@
 %global __provides_exclude_from ^/opt/OpenCode/.*$
 
 Name:           opencode-desktop
-Version:        1.18.10
-Release:        3%{?dist}
+Version:        1.18.11
+Release:        1%{?dist}
 Summary:        Open source AI coding agent
 
 License:        MIT
@@ -111,14 +111,5 @@ sed -i 's|^Exec=.*|Exec=%{_bindir}/opencode-desktop %U|' \
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
-* Fri Jul 31 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.10-3
-- Add ripgrep runtime dependency (sidecar spawns rg)
-
-* Fri Jul 31 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.10-2
-- Repackage from upstream .deb payload with bundled Electron
-- Disable broken auto-updater (prune app-update.yml)
-- Add flags.conf support and Wayland ozone flags to launcher
-- Prune apparmor-profile, docs and musl prebuilds
-
-* Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.10-1
-- Auto-update to version 1.18.10
+* Sat Aug 01 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.11-1
+- Auto-update to version 1.18.11
