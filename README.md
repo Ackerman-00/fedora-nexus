@@ -35,7 +35,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 25 packages</summary>
+<summary>Click to expand — 26 packages</summary>
 
 <br />
 
@@ -47,6 +47,7 @@ sudo dnf install <package-name>
 | `cascadia-code-nerd-fonts` | Cascadia Code patched with Nerd Fonts icons | Stable |
 | `extension-manager` | Native tool for browsing and managing GNOME Shell Extensions | Stable |
 | `fluxer` | Free and open source instant messaging and VoIP platform | Stable |
+| `gpu-screen-recorder` | Shadowplay-like screen recorder for Linux (NVIDIA/AMD/Intel) | Stable |
 | `heroic-games-launcher` | Open source launcher for GOG, Epic, and Amazon Games | Stable |
 | `libcava` | Fork of CAVA built as a shared library | Stable |
 | `localsend` | Open source cross-platform AirDrop alternative | Stable |
