@@ -2,14 +2,14 @@
 
 Name:           fluxer
 Version:        2026.731.153836
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
 URL:            https://fluxer.app
 Source0:        https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm
 
-Requires:       (falcond or gamemode)
+Requires:       gamemode
 Requires:       mangohud
 
 %global _enable_debug_packages 0
@@ -60,5 +60,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %{_datadir}/icons/hicolor/*/apps/%{appid}.png
 
 %changelog
+* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.731.153836-2
+- Replace nonexistent falcond with gamemode in Requires
+
 * Fri Jul 31 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.731.153836-1
 - Update to version 2026.731.153836
