@@ -6,12 +6,12 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 
-# Get latest tag via git ls-remote (no rate limit)
-LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | sort -V | tail -1)
+# Get latest release tag via GitHub API (tags without a release must be ignored)
+LATEST_TAG=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/releases/latest" | python3 -c "import json,sys; print(json.load(sys.stdin).get('tag_name',''))")
 LATEST_VERSION=$(echo "$LATEST_TAG" | sed 's/^v//')
 
 if [ -z "$LATEST_VERSION" ]; then
-    echo "Error: Failed to fetch latest tag."
+    echo "Error: Failed to fetch latest release."
     exit 1
 fi
 
