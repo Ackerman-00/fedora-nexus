@@ -9,7 +9,7 @@
 
 Name:           heroic-games-launcher
 Version:        2.22.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Open source launcher for GOG, Epic, and Amazon Games (Nexus Optimized)
 
 License:        GPL-3.0-only AND MIT AND BSD-3-Clause
@@ -24,11 +24,15 @@ ExclusiveArch:  x86_64
 BuildRequires:  cpio
 BuildRequires:  desktop-file-utils
 
-# Explicit dependencies
+# Explicit dependencies (matching upstream RPM runtime Requires)
 Requires:       alsa-lib
 Requires:       atk
+Requires:       at-spi2-core
 Requires:       cups-libs
 Requires:       gtk3
+Requires:       libnotify
+Requires:       libuuid
+Requires:       libXtst
 Requires:       mesa-libgbm
 Requires:       nss
 Requires:       libXScrnSaver
@@ -41,6 +45,7 @@ Requires:       hicolor-icon-theme
 Requires:       libappindicator-gtk3
 Requires:       python3
 Requires:       which
+Requires:       xdg-utils
 
 # Native gaming ecosystem integrations
 Recommends:     gamemode
@@ -98,6 +103,10 @@ find %{buildroot}/opt/Heroic -type f -name "*.a" -delete
 /opt/Heroic/
 
 %changelog
+* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.0-3
+- Add missing runtime Requires declared by the upstream RPM (at-spi2-core,
+  libnotify, libuuid, libXtst, xdg-utils)
+
 * Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.0-2
 - Drop nonexistent umu-launcher Recommends and replace nonexistent falcond with
   gamemode in the native gaming ecosystem Recommends

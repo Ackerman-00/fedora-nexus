@@ -7,7 +7,7 @@
 
 Name:           vesktop
 Version:        1.6.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Custom Discord desktop client with Vencord preinstalled (Nexus Optimized)
 
 License:        GPL-3.0-or-later
@@ -28,7 +28,7 @@ Requires:       libXScrnSaver
 Requires:       libXtst
 Requires:       xdg-utils
 Requires:       at-spi2-core
-Requires:       util-linux-core
+Requires:       libuuid
 Requires:       libsecret
 Requires:       mesa-libgbm
 Requires:       alsa-lib
@@ -83,5 +83,8 @@ chmod 0755 %{buildroot}%{_bindir}/vesktop
 %attr(4755, root, root) /opt/Vesktop/chrome-sandbox
 
 %changelog
+* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.5-2
+- Replace util-linux-core with libuuid to match upstream RPM runtime Requires
+
 * Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.6.5-1
 - Initial Repackaged Wayland-Optimized Build via Upstream RPM

@@ -3,7 +3,7 @@
 
 Name:           obsidian
 Version:        1.13.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A powerful knowledge base that works on top of a local folder of plain text Markdown files
 
 License:        Commercial
@@ -22,12 +22,19 @@ BuildRequires:  tar
 BuildRequires:  xz
 BuildRequires:  zstd
 
-# Core runtime dependencies for Electron on Linux 
+# Core runtime dependencies for Electron on Linux (matching upstream deb Depends)
 Requires:       zlib
 Requires:       nss
 Requires:       alsa-lib
 Requires:       gtk3
 Requires:       hicolor-icon-theme
+Requires:       at-spi2-core
+Requires:       libnotify
+Requires:       libsecret
+Requires:       libuuid
+Requires:       libXScrnSaver
+Requires:       libXtst
+Requires:       xdg-utils
 
 %description
 Obsidian is a powerful knowledge base that works on top of a local folder 
@@ -79,5 +86,9 @@ ln -sf /opt/Obsidian/obsidian %{buildroot}%{_bindir}/obsidian
 %doc %{_datadir}/doc/obsidian/
 
 %changelog
+* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1.13.4-2
+- Add missing runtime Requires declared by the upstream deb Depends (at-spi2-core,
+  libnotify, libsecret, libuuid, libXScrnSaver, libXtst, xdg-utils)
+
 * Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 1.13.4-1
 - Auto-updated to 1.13.4 via update.sh
