@@ -61,7 +61,7 @@ dwl — crafted for speed, flexibility, and a customizable desktop experience.
 %{_datadir}/xdg-desktop-portal/mango-portals.conf
 
 %changelog
-* Tue Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.5-1
+* Wed Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.5-1
 - Update to version 0.15.5
 
 * Sun Jul 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.4-1
