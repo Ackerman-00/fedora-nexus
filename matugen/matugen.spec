@@ -3,7 +3,7 @@
 
 Name:           matugen
 Version:        4.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Material You color generation tool (Nexus Optimized)
 
 # Full license audit of vendors and core logic
@@ -16,7 +16,6 @@ ExclusiveArch:  x86_64 aarch64
 BuildRequires:  cargo
 BuildRequires:  rust
 BuildRequires:  gcc-c++
-BuildRequires:  pkgconfig(openssl)
 
 %description
 Matugen is a Material You color generation tool that supports templates. 
@@ -39,6 +38,10 @@ install -Dpm0755 target/release/matugen -t %{buildroot}%{_bindir}/
 %{_bindir}/matugen
 
 %changelog
+* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 4.1.0-2
+- Drop dead BuildRequires pkgconfig(openssl) (no openssl crate in Cargo.lock;
+  matugen uses rustls for TLS)
+
 * Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 4.1.0-1
 - Update to version 4.1.0
 
