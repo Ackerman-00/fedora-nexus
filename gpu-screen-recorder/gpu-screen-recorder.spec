@@ -1,6 +1,6 @@
 Name:           gpu-screen-recorder
 Version:        5.15.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A shadowplay-like screen recorder for Linux. The fastest screen recorder for Linux
 
 License:        GPL-3.0-or-later
@@ -41,8 +41,8 @@ Requires:       libglvnd
 Requires:       mesa-libGL
 Requires:       mesa-libEGL
 Requires:       libxcb
-Requires:       wayland-libs-client
-Requires:       libpulse
+Requires:       pulseaudio-libs
+Requires:       libwayland-client
 Requires(post): libcap
 
 %description
@@ -83,5 +83,9 @@ setcap cap_sys_admin+ep %{_bindir}/gsr-kms-server 2>/dev/null || true
 /usr/lib/modprobe.d/gsr-nvidia.conf
 
 %changelog
+* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 5.15.3-2
+- Replace nonexistent libpulse and wayland-libs-client Requires with the real
+  pulseaudio-libs and libwayland-client packages so the package can be installed
+
 * Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 5.15.3-1
 - Initial package of gpu-screen-recorder 5.15.3 for Fedora

@@ -44,5 +44,8 @@ install -d -m 0755 %{buildroot}%{fish_completions_dir}
 %{fish_completions_dir}/starship.fish
 
 %changelog
+* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1.26.0-1
+- Update to version 1.26.0
+
 * Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.24.2-1
 - Initial Automated Release Build utilizing native Fedora completion macros

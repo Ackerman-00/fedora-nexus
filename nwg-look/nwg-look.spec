@@ -5,7 +5,7 @@ Version:        1.1.1
 %gometa
 
 Name:           nwg-look
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        GTK3 settings editor adapted to work in the wlroots environment (Nexus Optimized)
 
 License:        MIT
@@ -26,7 +26,6 @@ BuildRequires:  pkgconfig(cairo-gobject)
 # Pure Wayland requirements
 Requires:       gtk3
 Requires:       glib2
-Recommends:     xcur2png
 
 %description
 nwg-look is a GTK3 settings editor, designed to work properly in wlroots-based Wayland environments.
@@ -53,5 +52,11 @@ make build
 %{_datadir}/pixmaps/nwg-look.svg
 
 %changelog
+* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1.1.1-2
+- Drop dead Recommends on xcur2png, which is not packaged in Fedora
+
+* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1.1.1-1
+- Update to version 1.1.1
+
 * Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.0.6-1
 - Initial Optimized Native Go Build
