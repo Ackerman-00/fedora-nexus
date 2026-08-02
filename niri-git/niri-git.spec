@@ -4,6 +4,7 @@
 %global gitdate         20260802200721
 
 Name:           niri-git
+Epoch:          1
 Version:        26.04^%{gitdate}git%{shortcommit}
 Release:        1%{?dist}
 Summary:        A scrollable-tiling Wayland compositor (Nexus Optimized Git Snapshot)
@@ -107,5 +108,9 @@ install -Dpm0644 _niri %{buildroot}%{_datadir}/zsh/site-functions/_niri
 %{_datadir}/zsh/site-functions/_niri
 
 %changelog
+* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1:26.04^20260802200721gitfeb3e43-1
+- Bump Epoch to 1 so current ^gitdate snapshots sort above the legacy
+  2026MMDD-dated builds (dnf was installing the stale 20260605 snapshot)
+
 * Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260802200721gitfeb3e43-1
 - Nightly sync with upstream main branch (Commit: feb3e43)

@@ -4,6 +4,7 @@
 %global gitdate         20260722002452
 
 Name:           xwayland-satellite-git
+Epoch:          1
 Version:        0.8.2^%{gitdate}git%{shortcommit}
 Release:        1%{?dist}
 Summary:        Rootless Xwayland integration for Wayland compositors (Git Snapshot)
@@ -75,5 +76,9 @@ install -Dpm0644 resources/xwayland-satellite.service -t %{buildroot}%{_userunit
 %{_userunitdir}/xwayland-satellite.service
 
 %changelog
+* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1:0.8.2^20260722002452git8d135d3-1
+- Bump Epoch to 1 so current ^gitdate snapshots sort above the legacy
+  2026MMDD-dated builds (dnf was installing the stale 20260525 snapshot)
+
 * Wed Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.2^20260722002452git8d135d3-1
 - Nightly sync with upstream main branch (Commit: 8d135d3)
