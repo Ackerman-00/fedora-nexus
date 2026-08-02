@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/Ackerman-00/fedora-nexus/main/assets/fedora-mark.svg" width="80" />
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Fedora_logo.svg/330px-Fedora_logo.svg.png?_=20091128031656" width="80" />
 
 <h1>fedora-nexus</h1>
 
