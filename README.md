@@ -1,73 +1,119 @@
-# ⚡ Nexus
+<div align="center">
 
+<img src="https://getfedora.org/static/images/fedora-mark.svg" width="80" />
+
+<h1>fedora-nexus</h1>
+
+<p>A self-updating RPM repository for Fedora, powered by COPR.</p>
+
+[![Build](https://img.shields.io/github/actions/workflow/status/Ackerman-00/fedora-nexus/update-engine.yml?style=for-the-badge&label=AUTO-UPDATE&logo=github&logoColor=white)](https://github.com/Ackerman-00/fedora-nexus/actions)
+&nbsp;
 [![COPR](https://img.shields.io/badge/COPR-ackerman/nexus-0055CC?style=for-the-badge&logo=fedora)](https://copr.fedorainfracloud.org/coprs/ackerman/nexus/)
-[![Last build](https://copr.fedorainfracloud.org/coprs/ackerman/nexus/package/zen-browser/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/ackerman/nexus/package/zen-browser/)
 
-**Bleeding-edge Wayland & gaming packages for Fedora 43/44/rawhide**
+<p><sup>Recipes live in this repo · Built on COPR · Drop-in native RPM repo</sup></p>
 
-Curated packages optimized for minimal Wayland compositors (Niri, Mangowm) and high-performance gaming. Recipes live in [fedora-nexus](https://github.com/Ackerman-00/fedora-nexus).
-
-> [!TIP]
-> Enabled packages update automatically — just run `sudo dnf upgrade` as usual.
+</div>
 
 ---
 
-## Installation
+## ⚡ Quick Setup
+
+**① Enable the repository**
 
 ```bash
-# 1. Enable the repository
 sudo dnf copr enable ackerman/nexus
-
-# 2. Install a package (example)
-sudo dnf install zen-browser
 ```
 
-### List available packages
+**② Install a package**
 
 ```bash
-dnf repoquery --repoid=copr:copr.fedorainfracloud.org:ackerman:nexus
+sudo dnf install <package-name>
 ```
 
-Or **[browse all packages online](https://copr.fedorainfracloud.org/coprs/ackerman/nexus/packages/)**.
+---
+
+## 📦 Packages
+
+<details>
+<summary>Click to expand — 25 packages</summary>
+
+<br />
+
+| Package | Description | Type |
+|---------|-------------|:----:|
+| `app2unit` | Launch desktop entries or commands as systemd user units | Stable |
+| `bibata-cursor-theme` | Open source, compact, and material designed cursor set | Stable |
+| `caelestia-shell-mango` | Desktop shell for MangoWM | Stable |
+| `cascadia-code-nerd-fonts` | Cascadia Code patched with Nerd Fonts icons | Stable |
+| `extension-manager` | Native tool for browsing and managing GNOME Shell Extensions | Stable |
+| `fluxer` | Free and open source instant messaging and VoIP platform | Stable |
+| `heroic-games-launcher` | Open source launcher for GOG, Epic, and Amazon Games | Stable |
+| `libcava` | Fork of CAVA built as a shared library | Stable |
+| `localsend` | Open source cross-platform AirDrop alternative | Stable |
+| `mangowm` | Modern, lightweight, high-performance Wayland compositor built on dwl | Stable |
+| `material-symbols-fonts` | Material Symbols variable icon font by Google | Stable |
+| `matugen` | Material You color generation tool | Stable |
+| `niri-git` | Scrollable-tiling Wayland compositor (Git Snapshot) | Git |
+| `nwg-look` | GTK3 settings editor adapted for the wlroots environment | Stable |
+| `obsidian` | Knowledge base over a local folder of plain-text Markdown files | Stable |
+| `opencode-desktop` | Open source AI coding agent | Stable |
+| `protonplus` | Modern compatibility tools manager | Stable |
+| `quickshell-git` | Flexible toolkit for desktop shells with QtQuick (Git Snapshot) | Git |
+| `rootapp` | Discord alternative for gaming communities and large online groups | Stable |
+| `scenefx` | Drop-in wlroots scene API replacement with eye-candy effects | Stable |
+| `starship` | Minimal, blazing-fast, customizable prompt for any shell | Stable |
+| `vesktop` | Custom Discord client with Vencord preinstalled | Stable |
+| `wlroots` | Modular Wayland compositor library | Stable |
+| `xwayland-satellite-git` | Rootless Xwayland integration for Wayland compositors (Git Snapshot) | Git |
+| `zen-browser` | Privacy-focused Firefox fork | Stable |
+
+> `Git` packages track upstream HEAD and rebuild on every new commit.
+
+</details>
 
 ---
 
-## Packages
+## 🔄 Staying Updated
 
-| Package | Description | Install |
-|---|---|---|
-| **app2unit** | Convert `.desktop` files to systemd user services | `sudo dnf install app2unit` |
-| **bibata-cursor-theme** | Modern cursor theme | `sudo dnf install bibata-cursor-theme` |
-| **caelestia-shell-mango** | Niri/Mangowm shell config | `sudo dnf install caelestia-shell-mango` |
-| **cascadia-code-nerd-fonts** | Cascadia Code with Nerd Fonts patches | `sudo dnf install cascadia-code-nerd-fonts` |
-| **extension-manager** | Manage GNOME Shell extensions | `sudo dnf install extension-manager` |
-| **fluxer** | Free & open-source instant messaging and VoIP | `sudo dnf install fluxer` |
-| **heroic-games-launcher** | Open-source game launcher (Epic/GOG/Amazon) | `sudo dnf install heroic-games-launcher` |
-| **libcava** | Audio visualizer library | `sudo dnf install libcava` |
-| **localsend** | Cross-platform AirDrop alternative (LAN file sharing) | `sudo dnf install localsend` |
-| **mangowm** | Tiling Wayland compositor | `sudo dnf install mangowm` |
-| **material-symbols-fonts** | Material Symbols icon font | `sudo dnf install material-symbols-fonts` |
-| **matugen** | Material You color generator | `sudo dnf install matugen` |
-| **niri-git** | Scrollable-tiling Wayland compositor | `sudo dnf install niri-git` |
-| **nwg-look** | GTK settings editor for Wayland | `sudo dnf install nwg-look` |
-| **obsidian** | Knowledge base / note-taking app | `sudo dnf install obsidian` |
-| **opencode-desktop** | AI coding agent | `sudo dnf install opencode-desktop` |
-| **protonplus** | Proton-GE manager | `sudo dnf install protonplus` |
-| **quickshell-git** | Qt-based Wayland shell | `sudo dnf install quickshell-git` |
-| **rootapp** | Run GUI apps as root via Polkit | `sudo dnf install rootapp` |
-| **scenefx** | Eye-candy effects for wlroots | `sudo dnf install scenefx` |
-| **starship** | Minimal, fast shell prompt | `sudo dnf install starship` |
-| **vesktop** | Custom Discord client with Vencord | `sudo dnf install vesktop` |
-| **wlroots** | Modular Wayland compositor library | `sudo dnf install wlroots` |
-| **xwayland-satellite-git** | XWayland launcher with grantlee | `sudo dnf install xwayland-satellite-git` |
-| **zen-browser** | Privacy-focused Firefox fork | `sudo dnf install zen-browser` |
+No extra steps — packages update with your system:
+
+```bash
+sudo dnf upgrade
+```
 
 ---
 
-## Build status
+## 🛠 Troubleshooting
 
-Automated COPR builds triggered on every push to `main`.
+<details>
+<summary><b>Repository not found</b></summary>
+<br />
+Verify the COPR is enabled:
+<br /><br />
+<pre>sudo dnf copr enable ackerman/nexus</pre>
+</details>
 
-| Branch | Build |
-|---|---|
-| `main` | [![Build status](https://img.shields.io/badge/dynamic/json?color=brightgreen&label=copr%20build&query=items.0.state&suffix=%20(fedora-43/44/rawhide)&url=https%3A%2F%2Fcopr.fedorainfracloud.org%2Fapi_3%2Fbuild%2Flist%3Fownername%3Dackerman%26projectname%3Dnexus%26limit%3D1)](https://copr.fedorainfracloud.org/coprs/ackerman/nexus/builds/) |
+<details>
+<summary><b>Package not found</b></summary>
+<br />
+Only <code>x86_64</code> is currently supported. If a package is missing, it may be failing to build — check the
+<a href="https://copr.fedorainfracloud.org/coprs/ackerman/nexus/">COPR project page</a>.
+</details>
+
+---
+
+## 🤝 Contributing
+
+Want a package added, or spotted something broken?
+
+- **[Open an issue](https://github.com/Ackerman-00/fedora-nexus/issues/new)** — request a new package or report a build failure
+- **[Submit a PR](https://github.com/Ackerman-00/fedora-nexus/pulls)** — add your own spec under `<package>/<package>.spec`
+- **Package updates** are handled automatically by the workflow — no need to bump versions manually
+
+---
+
+<div align="center">
+
+Made with 🖤 by [Ackerman-00](https://github.com/Ackerman-00) &nbsp;·&nbsp; Powered by [Fedora](https://fedoraproject.org)
+
+</div>
