@@ -2,13 +2,16 @@
 
 SPEC_FILE="gpu-screen-recorder.spec"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
-ATOM_URL="https://git.dec05eba.com/gpu-screen-recorder/atom/?h=master"
+GIT_URL="https://git.dec05eba.com/gpu-screen-recorder/"
 
 echo "Checking for upstream updates..."
 
-# The upstream is a self-hosted cgit. Version releases appear as commit
-# titles matching a numeric version (e.g. "5.15.3") in the master atom feed.
-LATEST_VERSION=$(curl -s "$ATOM_URL" | grep -oE '<title>[0-9]+\.[0-9]+\.[0-9]+</title>' | sed -E 's/<[^>]+>//g' | sort -V | tail -1)
+# The upstream is a self-hosted cgit behind an Anubis anti-bot challenge on
+# the refs/tags pages, but the project summary page lists every release tag
+# (e.g. "<a href='/gpu-screen-recorder/tag/?h=5.15.3'>5.15.3</a>"). Parse the
+# highest numeric version from there instead of the atom feed (commit titles
+# are no longer version-numbered).
+LATEST_VERSION=$(curl -sL "$GIT_URL" | grep -oE 'tag/\?h=[0-9]+\.[0-9]+\.[0-9]+' | sed 's|tag/?h=||' | sort -V | tail -1)
 
 if [ -z "$LATEST_VERSION" ]; then
     echo "Error: Failed to fetch upstream version."

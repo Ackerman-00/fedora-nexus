@@ -39,5 +39,8 @@ install -Dpm0755 target/release/matugen -t %{buildroot}%{_bindir}/
 %{_bindir}/matugen
 
 %changelog
+* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 4.1.0-1
+- Update to version 4.1.0
+
 * Wed Apr 15 2026 Nexus Bot <bot@github.com> - 2.4.1-1
 - Initial Optimized Native Rust Build for Nexus Repository

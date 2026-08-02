@@ -9,7 +9,7 @@
 
 Name:           heroic-games-launcher
 Version:        2.22.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open source launcher for GOG, Epic, and Amazon Games (Nexus Optimized)
 
 License:        GPL-3.0-only AND MIT AND BSD-3-Clause
@@ -43,9 +43,8 @@ Requires:       python3
 Requires:       which
 
 # Native gaming ecosystem integrations
-Recommends:     (falcond or gamemode)
+Recommends:     gamemode
 Recommends:     mangohud
-Recommends:     umu-launcher
 
 Provides:       heroic = %{version}-%{release}
 Provides:       bundled(comet) = %{comet_version}
@@ -99,5 +98,9 @@ find %{buildroot}/opt/Heroic -type f -name "*.a" -delete
 /opt/Heroic/
 
 %changelog
+* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.0-2
+- Drop nonexistent umu-launcher Recommends and replace nonexistent falcond with
+  gamemode in the native gaming ecosystem Recommends
+
 * Wed Apr 15 2026 Nexus Bot <bot@github.com> - 2.22.0-1
 - Initial Repackaged Wayland-Optimized Build via Upstream RPM

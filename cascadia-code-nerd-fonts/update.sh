@@ -6,8 +6,13 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 
-# Get latest release tag via GitHub API (tags without a release must be ignored)
-LATEST_TAG=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/releases/latest" | python3 -c "import json,sys; print(json.load(sys.stdin).get('tag_name',''))")
+# Get latest release tag via GitHub API (tags without a release must be ignored).
+# Use GITHUB_TOKEN when available to avoid unauthenticated rate limits.
+if [ -n "$GITHUB_TOKEN" ]; then
+    LATEST_TAG=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPO/releases/latest" | python3 -c "import json,sys; print(json.load(sys.stdin).get('tag_name',''))")
+else
+    LATEST_TAG=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/releases/latest" | python3 -c "import json,sys; print(json.load(sys.stdin).get('tag_name',''))")
+fi
 LATEST_VERSION=$(echo "$LATEST_TAG" | sed 's/^v//')
 
 if [ -z "$LATEST_VERSION" ]; then
