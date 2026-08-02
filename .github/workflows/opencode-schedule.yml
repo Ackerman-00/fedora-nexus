@@ -27,7 +27,7 @@ jobs:
       actions: write
       id-token: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.1.0
         with:
           persist-credentials: false
 
@@ -60,10 +60,16 @@ jobs:
               IS how you trigger a rebuild.
             - COPR API v3 (no auth needed for public reads):
                 Project:    GET https://copr.fedorainfracloud.org/api_3/project?ownername=ackerman&projectname=nexus
+                Packages:   GET https://copr.fedorainfracloud.org/api_3/package/list?ownername=ackerman&projectname=nexus
+                            (every package in the COPR project - for reconciling
+                             against repo dirs and README)
                 Builds:     GET https://copr.fedorainfracloud.org/api_3/build/list?ownername=ackerman&projectname=nexus&limit=20
+                            (add &packagename=<pkg> to filter one package)
                 Build logs: GET https://copr.fedorainfracloud.org/api_3/build/<id> (use the logs/chroot URLs from it)
-              Build states you care about: succeeded / failed / canceled / running.
-              Per-chroot states are under the build's "chroots" field.
+              Build states you care about: pending / starting / running /
+              succeeded / failed / canceled / skipped.
+              Per-chroot states are under the build's "chroots" field (list of
+              chroot objects, each with "name" like fedora-44-x86_64 and "state").
             - TOKENS: `git push` authenticates with the OpenCode App token, which has
               contents + workflows write, so you CAN modify .github/workflows/* and push
               straight to main. `gh` commands use the runner's GITHUB_TOKEN, which has
@@ -83,6 +89,209 @@ jobs:
             200 (`curl -sI`), checksums match (download + sha256sum), and look for known
             build fixes/patches upstream. NEVER trust a version, URL, checksum, or fix
             you have not verified online.
+            - GITHUB API RATE LIMITS: unauthenticated api.github.com requests are
+              limited to 60/hour - you will hit this in a long run. Always send
+              `-H "Authorization: token $GITHUB_TOKEN"` on GitHub API calls, or
+              prefer `gh api <path>` which authenticates automatically and gets
+              5000/hour. If a curl call starts returning 403 rate-limit JSON, switch
+              to `gh api` immediately. COPR API is not rate-limited the same way
+              and needs no auth for reads.
+
+            NO-CHURN VERIFICATION (MANDATORY, applies to every step below). You
+            must NEVER push a version/commit if it was already pushed and built
+            before. Past runs in sibling repos repeatedly re-synced the same
+            upstream commit (e.g. niri-git, xwayland-satellite-git), generating
+            churn commits and useless rebuilds. Before bumping or touching ANY
+            package:
+              a. CHECK GIT LOG FIRST. For the package in question run
+                 `git log --oneline -15 -- <pkg>/` and `git show <most-recent
+                 auto-update commit> -- <pkg>/`. If a previous commit already
+                 carries the SAME upstream commit SHA / tag / version you are
+                 about to push, STOP: do not bump, do not add a %changelog
+                 entry, do not push. The package is already current.
+              b. CHECK COPR FOR WHAT WAS ALREADY BUILT. COPR auto-builds from
+                 main, so its build list is authoritative for "what got out":
+                 GET https://copr.fedorainfracloud.org/api_3/build/list?ownername=ackerman&projectname=nexus&packagename=<pkg>
+                 If the latest build for that package used the same spec
+                 version/commit and succeeded, do NOT trigger another rebuild
+                 by pushing, unless the build actually failed.
+              c. A %changelog entry is only allowed when the version/commit
+                 actually changed. Never add a "sync" entry for a commit
+                 already in git log or already built in COPR.
+              d. FIX BROKEN UPDATERS, don't work around them. If update.sh
+                 regenerates churn (same version, new changelog entry) because
+                 of a flawed up-to-date guard, fix the script so it exits 0
+                 when the spec already matches upstream. The correct guard is
+                 a pure version/commit comparison - never require local
+                 artifact files (tarballs, vendor.tar.xz, cargo_config) to
+                 exist: they are gitignored and never present in CI checkouts.
+                 Apply the same fix to every update.sh with the same flaw.
+              e. AUDIT REPEATED AUTO-UPDATE COMMITS. If you see 3+ consecutive
+                 auto-update commits touching only changelog entries for the
+                 same version, treat it as a bug in the pipeline/update.sh,
+                 fix the root cause, and collapse the duplicate changelog
+                 entries so only one exists per actual update.
+
+            PACKAGE DEPENDENCY DEEP AUDIT (MANDATORY - "TEAR EVERY PACKAGE
+            APART" sweep; applies to every package, every run). You must not
+            trust that a spec is complete just because it builds. Chain-of-
+            verification protocol: draft a dependency list from the spec,
+            independently derive the TRUE list from upstream, then reconcile -
+            never trust either alone.
+              a. OPEN THE PACKAGE. Read the FULL spec (every BuildRequires /
+                 Requires / BuildConflicts, every %global, Source URLs), the
+                 %changelog, and update.sh. Download the Source0 tarball into
+                 the working tree (gitignored, safe) and EXTRACT it. Do not
+                 reason about dependencies from memory - inspect the actual
+                 upstream files:
+                 - Rust: Cargo.toml / Cargo.lock (+ vendor dir if present)
+                 - Node: package.json / pnpm-lock.yaml / yarn.lock
+                 - C/C++: meson.build / CMakeLists.txt / Makefile / configure.ac
+                 - Python: pyproject.toml / setup.py / requirements.txt
+                 - Go: go.mod
+                  - Anything else: install docs, Dockerfile, CI workflows.
+                 For AppImage-based packages (rootapp, obsidian, vesktop,
+                 zen-browser, localsend, ...) tear the AppImage apart EXACTLY
+                 like the rootapp note below describes - unsquashfs with the
+                 ELF section-header offset, then read version + dependencies
+                 from inside (X-AppImage-Version in the .desktop, bundled
+                 package.json / app.asar / lib64/*.so, AppRun scripts). For
+                 .deb-sourced packages, extract with `ar x` + `tar -xf
+                 data.tar.*` and inspect the payload the same way. NEVER
+                 guess what is inside a binary package - open it.
+              b. DERIVE THE TRUE BUILD DEPENDENCY LIST from those files.
+                 Every direct dependency the upstream build needs MUST have a
+                 matching BuildRequires (or be satisfied by vendored/bundled
+                 copy - note it explicitly).
+              c. COMPARE against the spec: missing BuildRequires/Requires,
+                 and Requires that no longer exist upstream. MISSING deps = a
+                 bug. Fix it.
+              d. WEB-SEARCH-VERIFY EVERYTHING before adding a single
+                 BuildRequires: the dependency must be real and must exist in
+                 Fedora's repos under that exact name. Check
+                 https://packages.fedoraproject.org/pkgs/<name>/ (returns 404
+                 if it does not exist), or query the Fedora repo metadata
+                 inside a container:
+                 dnf -y --setopt=gpgcheck=0 --setopt=install_weak_deps=False \
+                     install /path/to/built-<pkg>.rpm   # real resolve test, or
+                 dnf repoquery --whatprovides 'libFoo.so.1()(64bit)'  # find provider
+                 If the dep is not packaged in Fedora at all, do NOT invent
+                 it - report and move on. If it is a Rust crate already
+                 vendored (vendor.tar.xz), it needs NO BuildRequires, but the
+                 crate list must match Cargo.lock - regenerate vendor
+                 tarballs when the lock changes.
+              e. ALSO AUDIT RUNTIME Requires (shared libs via ldd of the
+                 built binary, desktop-file helpers, themes, fonts, portal
+                 services) and DROP dead/unneeded deps (rot). Keep the spec
+                 minimal and correct.
+              f. APPLY AND VERIFY: add the deps (alphabetized, following spec
+                 conventions), commit, push (triggers COPR), and verify the
+                 build: an added dep that does not resolve is worse than
+                 none. Retry up to 3 times, then revert and file an issue.
+              g. MANDATORY DELIVERABLE - dependency audit table for EVERY
+                 package: | package | upstream deps found | in spec |
+                 missing/added | extra/dropped | status |
+                 status in: deps-verified / deps-fixed / blocked-(reason).
+                 If any package is missing from this table, the run is not
+                 finished. State confidence (high/medium/low) for anything
+                 not fully verified, and why.
+
+            KNOWN PACKAGE-SPECIFIC NOTE (rootapp): rootapp is a proprietary
+            AppImage from https://installer.rootapp.com/installer/Linux/X64/Root.AppImage
+            (no GitHub releases/tags - the version comes from INSIDE the
+            AppImage). Authoritative references, in priority order:
+              1. THIS REPO: fedora-nexus rootapp/ (rootapp.spec + update.sh).
+                 The fedora-nexus packaging was personally tested and patched
+                 by the repo owner - it IS the source of truth; opensuse-nexus
+                 mirrors it, not the other way around.
+              2. COPR: https://copr.fedorainfracloud.org/coprs/ackerman/nexus/package/rootapp/
+                 (shows the exact built NVRs; the site may show a bot-check
+                 page - retry or use the API endpoints above)
+              3. TEAR THE APPIMAGE ITSELF APART: download the AppImage,
+                 extract it (unsquashfs with the ELF section-header offset as
+                 the spec's %prep does), and read the real version from
+                 inside: X-AppImage-Version in the .desktop, bundled
+                 package.json/app.asar metadata, or binary version strings.
+                 Also compare sha256 of the downloaded AppImage against the
+                 spec's pinned `# sha256:` comment - matching means the same
+                 binary is packaged.
+            Do NOT trust the AUR rootapp-bin version (it lags) and do NOT
+            trust "19.2.5" (bogus string extracted from a binary). Keep the
+            version in sync with what the AppImage itself reports.
+
+            INSTALL-VERIFICATION SWEEP (MANDATORY - `dnf install <pkg>` MUST
+            work on a real Fedora machine, not just build in COPR). A COPR
+            "succeeded" state only proves the package COMPILES - it does NOT
+            prove it INSTALLS. Specs with wrong Requires names (borrowed from
+            other distros, outdated, or renamed upstream) make COPR build
+            fine while users hit "nothing provides 'X' needed by <pkg>".
+            Catch this BEFORE users do.
+              a. DOWNLOAD THE BUILT RPM from COPR's download server:
+                 https://download.copr.fedorainfracloud.org/results/ackerman/nexus/<chroot>/<pkg>-<ver>.fc<rel>.x86_64.rpm
+                 (chroot = fedora-43-x86_64 / fedora-44-x86_64 /
+                 fedora-rawhide-x86_64; list the directory with curl to find
+                 the exact filename)
+              b. REAL INSTALL TEST IN A CLEAN FEDORA CONTAINER. You need a
+                 working container runtime on the runner. Docker is
+                 preinstalled on the ubuntu-latest runner, but VERIFY it
+                 first: `docker version` (and `docker run --rm hello-world`
+                 once to confirm the daemon works; on GitHub runners no sudo
+                 is needed). If docker is missing, broken, or the daemon is
+                 down, INSTALL it yourself:
+                 sudo apt-get update && sudo apt-get install -y docker.io
+                 sudo systemctl start docker
+                 (or `sudo apt-get install -y podman` and use `podman run`
+                 with the same arguments). Never skip the container test
+                 because the runtime is missing - install it. Then spin up a
+                 fresh Fedora container matching a COPR chroot, enable the
+                 ackerman/nexus copr, and ACTUALLY INSTALL the built RPM:
+                 docker run --rm -v "$PWD:/rpms" registry.fedoraproject.org/fedora:44 \
+                   bash -lc '
+                     dnf -y --setopt=gpgcheck=0 install dnf-plugins-core
+                     dnf -y --setopt=gpgcheck=0 copr enable ackerman/nexus
+                     dnf -y --setopt=gpgcheck=0 --setopt=install_weak_deps=False \
+                         install /rpms/<pkg>-*.fc44.x86_64.rpm
+                     rpm -V <pkg>
+                     ldd "$(command -v <pkg>)"
+                   '
+                 Repeat for fedora:43 and fedora:rawhide (rawhide's dnf5 uses
+                 `dnf5 copr enable`, same result). If dnf errors with
+                 "nothing provides 'X'" or "No match for argument" - the
+                 install test FAILED and the package is NOT done. If docker
+                 is unavailable, fall back to:
+                 dnf repoquery --requires <built-rpm>   # list resolved requires
+                 dnf download --resolve <pkg>          # does every dep resolve?
+              c. MAP WRONG NAMES TO THE REAL FEDORA PACKAGE. For every
+                 failing Requires find the actual provider:
+                 dnf repoquery --whatprovides 'libFoo.so.1()(64bit)'
+                 and search https://packages.fedoraproject.org/pkgs/<name>/.
+                 ALSO WEB-SEARCH the package name to prove it is real:
+                 `Fedora <name> package` - confirm it exists in Fedora's
+                 repos and is not a name borrowed from another distro, a
+                 typo, or something only in a third-party repo (Packages
+                 Fedora, Fedora Wiki, repology.org as cross-check). RULE: prefer soname-based Requires like
+                 `Requires: libFoo.so.1()(64bit)` (version-agnostic) over
+                 package names, and only use a named package after dnf
+                 confirmed it exists. NEVER copy a Requires list from another
+                 distro's spec blindly.
+              d. FIX, REBUILD, RETEST. Fix the spec, commit, push (triggers
+                 COPR), wait for the build, download the new RPM and re-run
+                 the container install test until dnf installs it cleanly AND
+                 the app launches (run --version/--help; exit 0 = smoke test
+                 passed).
+              e. SCOPE: install-test EVERY package you touched this run
+                 (mandatory before you consider the fix done) plus a rotating
+                 spot-check of untouched packages (>=5 per run, rotating
+                 until the whole repo is covered). Pure -devel/library or
+                 headless-only packages still get the install test; only the
+                 runtime smoke test may be skipped, with the reason recorded.
+              f. MANDATORY DELIVERABLE - install-test table in your final
+                 summary, one row per package tested:
+                 | package | COPR build | dnf install test | smoke test |
+                 status |
+                 status in: installable / fixed / broken-(dep) /
+                 blocked-(reason). Any package you changed but did not
+                 install-test is an unfinished package.
 
             Then work autonomously, in this priority order:
 
@@ -136,7 +345,8 @@ jobs:
                  (see STEP D) - but resolve any disagreement against the real upstream,
                  never against a sibling repo.
                If wrong or stale, update the spec Version + Source0/checksum and add a
-               .changes entry describing the fix.
+               %changelog entry in the spec describing the fix (Fedora specs have
+               no separate .changes file - the changelog lives in the spec itself).
 
                STEP D - CROSS-REPO CONSISTENCY CHECK (OPTIONAL, NEVER AUTHORITATIVE).
                The AUTHORITATIVE version of any package is its REAL upstream project
@@ -268,6 +478,8 @@ jobs:
               successful COPR build.
             - No churn: only touch packages that are actually broken, missing, or
               outdated. Do not bump versions gratuitously.
+            - Never echo, print, commit, or paste OPENCODE_API_KEY /
+              GITHUB_TOKEN values anywhere (terminal output, issues, files, logs).
             - Don't get stuck: cap retries at 3 per package and escalate unresolvable
               problems via issues.
             - End every run with a concise final summary: what you fixed, which issues
