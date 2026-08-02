@@ -1,5 +1,5 @@
 Name:           cascadia-code-nerd-fonts
-Version:        3.4.0
+Version:        3.5.0
 Release:        1%{?dist}
 Summary:        Cascadia Code patched with Nerd Fonts icons
 License:        OFL-1.1
@@ -25,5 +25,5 @@ install -m 0644 -p *.ttf %{buildroot}%{_datadir}/fonts/%{name}/
 %{_datadir}/fonts/%{name}
 
 %changelog
-* Wed Jul 08 2026 Ackerman-00 <quietcraft@gmail.com> - 3.4.0-1
-- Initial package for Fedora Nexus
+* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 3.5.0-1
+- Auto-update to version 3.5.0
