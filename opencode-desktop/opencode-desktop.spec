@@ -5,7 +5,7 @@
 
 Name:           opencode-desktop
 Version:        1.18.11
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open source AI coding agent
 
 License:        MIT
@@ -30,6 +30,7 @@ Requires:       libXcomposite
 Requires:       libXdamage
 Requires:       libxkbcommon
 Requires:       libsecret
+Requires:       mesa-libgbm
 Requires:       ripgrep
 Recommends:     libappindicator-gtk3
 
@@ -111,5 +112,9 @@ sed -i 's|^Exec=.*|Exec=%{_bindir}/opencode-desktop %U|' \
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
+* Mon Aug 03 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.11-2
+- Add missing runtime Requires mesa-libgbm (libgbm.so.1 NEEDED by the bundled
+  Electron binary)
+
 * Sat Aug 01 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.11-1
 - Auto-update to version 1.18.11

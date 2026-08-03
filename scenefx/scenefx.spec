@@ -1,6 +1,6 @@
 Name:           scenefx
 Version:        0.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        A drop-in replacement for the wlroots scene API for eye-candy effects
 URL:            https://github.com/wlrfx/scenefx
@@ -25,6 +25,7 @@ BuildRequires:  pkgconfig(wayland-protocols) >= 1.32
 BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(wayland-server) >= 1.22
 BuildRequires:  pkgconfig(wlroots-0.20)
+BuildRequires:  pkgconfig(xkbcommon) >= 1.8.0
 BuildRequires:  pkgconfig(libglvnd)
 
 %description
@@ -64,5 +65,9 @@ MESON_OPTIONS=(
 %{_libdir}/pkgconfig/%{name}-*.pc
 
 %changelog
+* Mon Aug 03 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5-2
+- Add missing BuildRequires pkgconfig(xkbcommon) >= 1.8.0 (hard dependency in
+  meson.build; previously resolved only via meson fallback)
+
 * Wed Jul 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5-1
 - Auto-update to version 0.5

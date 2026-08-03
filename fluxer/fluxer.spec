@@ -2,18 +2,20 @@
 
 Name:           fluxer
 Version:        2026.731.153836
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
 URL:            https://fluxer.app
 Source0:        https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm
 
-Requires:       gamemode
-Requires:       mangohud
+Requires:       at-spi2-core
+Requires:       gtk3
 Requires:       libXScrnSaver
 Requires:       libnotify
+Requires:       libXtst
 Requires:       libuuid
+Requires:       nss
 Requires:       xdg-utils
 
 %global _enable_debug_packages 0
@@ -64,6 +66,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %{_datadir}/icons/hicolor/*/apps/%{appid}.png
 
 %changelog
+* Mon Aug 03 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.731.153836-4
+- Match upstream rpm runtime Requires: add at-spi2-core, gtk3, libXtst, nss;
+  drop unrelated gamemode/mangohud
+
 * Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.731.153836-3
 - Add missing dlopen'd runtime Requires declared by upstream (libXScrnSaver,
   libnotify, libuuid, xdg-utils)
