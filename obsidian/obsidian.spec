@@ -3,7 +3,7 @@
 
 Name:           obsidian
 Version:        1.13.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A powerful knowledge base that works on top of a local folder of plain text Markdown files
 
 License:        Commercial
@@ -34,6 +34,7 @@ Requires:       libsecret
 Requires:       libuuid
 Requires:       libXScrnSaver
 Requires:       libXtst
+Requires:       mesa-libgbm
 Requires:       xdg-utils
 
 %description
@@ -86,6 +87,10 @@ ln -sf /opt/Obsidian/obsidian %{buildroot}%{_bindir}/obsidian
 %doc %{_datadir}/doc/obsidian/
 
 %changelog
+* Mon Aug 03 2026 Ackerman-00 <quietcraft@gmail.com> - 1.13.4-3
+- Add missing runtime Requires mesa-libgbm (libgbm.so.1) needed by the
+  bundled Electron binary; caught by container install test
+
 * Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1.13.4-2
 - Add missing runtime Requires declared by the upstream deb Depends (at-spi2-core,
   libnotify, libsecret, libuuid, libXScrnSaver, libXtst, xdg-utils)
