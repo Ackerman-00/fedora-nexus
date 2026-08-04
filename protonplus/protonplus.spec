@@ -28,6 +28,7 @@ BuildRequires:  pkgconfig(libarchive)
 BuildRequires:  pkgconfig(libsoup-3.0)
 
 Requires:       hicolor-icon-theme
+Requires:       vulkan-loader
 
 %description
 ProtonPlus is a modern compatibility tools manager for Linux. It allows you to easily manage and update various compatibility tools like Proton, Wine, DXVK, and VKD3D across different launchers.
