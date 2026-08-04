@@ -1,6 +1,6 @@
 Name:           gpu-screen-recorder
 Version:        5.15.3
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A shadowplay-like screen recorder for Linux. The fastest screen recorder for Linux
 
 License:        GPL-3.0-or-later
@@ -35,6 +35,7 @@ BuildRequires:  pkgconfig(xcomposite)
 BuildRequires:  pkgconfig(xdamage)
 BuildRequires:  pkgconfig(xfixes)
 BuildRequires:  pkgconfig(xrandr)
+BuildRequires:  pkgconfig(vulkan)
 BuildRequires:  vulkan-headers
 
 Requires:       libglvnd
@@ -84,6 +85,12 @@ setcap cap_sys_admin+ep %{_bindir}/gsr-kms-server 2>/dev/null || true
 /usr/lib/modprobe.d/gsr-nvidia.conf
 
 %changelog
+* Tue Aug 04 2026 Ackerman-00 <quietcraft@gmail.com> - 5.15.3-4
+- Add missing BuildRequires: pkgconfig(vulkan) (vulkan-loader-devel) so the
+  linker can resolve libvulkan.so.1 needed by libplacebo (transitive dep of
+  libavfilter); the -3 build failed on all chroots with ld: libvulkan.so.1
+  not found
+
 * Mon Aug 04 2026 Ackerman-00 <quietcraft@gmail.com> - 5.15.3-3
 - Add missing runtime dependency: vulkan-loader (libvulkan.so.1)
 
