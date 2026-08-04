@@ -4,8 +4,8 @@
 %global __provides_exclude_from ^/opt/OpenCode/.*$
 
 Name:           opencode-desktop
-Version:        1.18.11
-Release:        2%{?dist}
+Version:        1.18.12
+Release:        1%{?dist}
 Summary:        Open source AI coding agent
 
 License:        MIT
@@ -112,9 +112,5 @@ sed -i 's|^Exec=.*|Exec=%{_bindir}/opencode-desktop %U|' \
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
-* Mon Aug 03 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.11-2
-- Add missing runtime Requires mesa-libgbm (libgbm.so.1 NEEDED by the bundled
-  Electron binary)
-
-* Sat Aug 01 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.11-1
-- Auto-update to version 1.18.11
+* Tue Aug 04 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.12-1
+- Auto-update to version 1.18.12
