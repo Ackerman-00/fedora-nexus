@@ -20,16 +20,16 @@ fi
 
 echo "Latest upstream version: $LATEST_VERSION"
 
-# Verify the snapshot tarball actually exists for that version
-if ! curl -s -o /dev/null --fail "https://dec05eba.com/snapshot/gpu-screen-recorder.git.${LATEST_VERSION}.tar.gz"; then
-    echo "Error: Snapshot tarball for $LATEST_VERSION is not available. Aborting."
-    exit 1
-fi
-
 CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 
 if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     echo "Update available: $CURRENT_VERSION -> $LATEST_VERSION"
+
+    # Verify the snapshot tarball actually exists for that version
+    if ! curl -s -o /dev/null --fail "https://dec05eba.com/snapshot/gpu-screen-recorder.git.${LATEST_VERSION}.tar.gz"; then
+        echo "Error: Snapshot tarball for $LATEST_VERSION is not available. Aborting."
+        exit 1
+    fi
 
     sed -i "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
