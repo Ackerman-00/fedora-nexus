@@ -127,13 +127,15 @@ else
     sed -i "/^Source0:/a # sha256:  $NEW_SHA" "$SPEC_FILE"
 fi
 
-# Update changelog
-DATE=$(LC_ALL=C date +"%a %b %d %Y")
-sed -i '/^%changelog/,$d' "$SPEC_FILE"
-{
-    echo "%changelog"
-    echo "* $DATE $PACKAGER - $VERSION-1"
-    echo "- Auto-update to $VERSION via update.sh"
-} >> "$SPEC_FILE"
+# Only update changelog if version or sha actually changed
+if [ "$VERSION" != "$CURRENT_VERSION" ] || [ "$NEW_SHA" != "$CURRENT_SHA" ]; then
+    DATE=$(LC_ALL=C date +"%a %b %d %Y")
+    sed -i '/^%changelog/,$d' "$SPEC_FILE"
+    {
+        echo "%changelog"
+        echo "* $DATE $PACKAGER - $VERSION-1"
+        echo "- Auto-update to $VERSION via update.sh"
+    } >> "$SPEC_FILE"
+fi
 
 echo "Spec file updated to version $VERSION."
