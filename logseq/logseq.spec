@@ -10,6 +10,7 @@ URL:            https://logseq.com/
 ExclusiveArch:  x86_64
 
 # Official Linux x86_64 payload (same files the AppImage wraps)
+# sha256: 981bf1f37403685ef83223193795d29bb0729b50929d543c2c4bce771e307a17
 Source0:        https://github.com/logseq/logseq/releases/download/%{version}/Logseq-linux-x86_64-%{version}.zip
 # Official icon from the matching release tag
 Source1:        https://raw.githubusercontent.com/logseq/logseq/%{version}/resources/icons/logseq.png
