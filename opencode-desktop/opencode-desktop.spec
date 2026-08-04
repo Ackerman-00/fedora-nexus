@@ -30,7 +30,6 @@ Requires:       libXcomposite
 Requires:       libXdamage
 Requires:       libxkbcommon
 Requires:       libsecret
-Requires:       mesa-libgbm
 Requires:       ripgrep
 Recommends:     libappindicator-gtk3
 
