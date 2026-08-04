@@ -773,8 +773,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set +e
-          # Never fail the run from this step. GITHUB_TOKEN expires after 1h on
-          # long runs, so pushes may 401 - that is fine, the next run retries.
+          # Never fail the run from this step. Re-assert GITHUB_TOKEN into the
+          # remote URL so fetch/push still work after opencode clobbers git
+          # config mid-run; if auth still fails, the next run retries.
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git fetch origin --prune || true
           for ref in $(git for-each-ref --format='%(refname:short)' 'refs/remotes/origin/opencode/schedule-*'); do
             echo "Deleting stray branch: ${ref#origin/}"
