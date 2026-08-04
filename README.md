@@ -35,7 +35,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 26 packages</summary>
+<summary>Click to expand — 27 packages</summary>
 
 <br />
 
@@ -51,6 +51,7 @@ sudo dnf install <package-name>
 | `heroic-games-launcher` | Open source launcher for GOG, Epic, and Amazon Games | Stable |
 | `libcava` | Fork of CAVA built as a shared library | Stable |
 | `localsend` | Open source cross-platform AirDrop alternative | Stable |
+| `logseq` | Privacy-first, local-first knowledge management and collaboration platform | Stable |
 | `mangowm` | Modern, lightweight, high-performance Wayland compositor built on dwl | Stable |
 | `material-symbols-fonts` | Material Symbols variable icon font by Google | Stable |
 | `matugen` | Material You color generation tool | Stable |
