@@ -752,8 +752,18 @@ jobs:
           path: ~/.local/share/opencode/log/
           if-no-files-found: ignore
 
+  cleanup:
+    runs-on: ubuntu-latest
+    if: always()
+    needs: opencode
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v6.1.0
+
       - name: Open failure issue
-        if: failure()
+        if: needs.opencode.result == 'failure'
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -767,19 +777,10 @@ jobs:
           fi
 
       - name: Clean up stray opencode/schedule branches
-        if: always()
         shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          set +e
-          # Never fail the run from this step. Re-assert GITHUB_TOKEN into the
-          # remote URL so fetch/push still work after opencode clobbers git
-          # config mid-run; if auth still fails, the next run retries.
-          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git fetch origin --prune || true
+          git fetch origin --prune
           for ref in $(git for-each-ref --format='%(refname:short)' 'refs/remotes/origin/opencode/schedule-*'); do
             echo "Deleting stray branch: ${ref#origin/}"
-            git push origin --delete "${ref#origin/}" 2>/dev/null || true
+            git push origin --delete "${ref#origin/}" || true
           done
-          exit 0
