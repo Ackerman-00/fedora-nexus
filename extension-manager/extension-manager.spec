@@ -2,7 +2,7 @@
 
 Name:           extension-manager
 Version:        0.6.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A native tool for browsing, installing, and managing GNOME Shell Extensions
 
 License:        GPL-3.0-or-later
@@ -23,6 +23,8 @@ BuildRequires:  pkgconfig(libadwaita-1)
 BuildRequires:  pkgconfig(libsoup-3.0)
 BuildRequires:  pkgconfig(json-glib-1.0)
 BuildRequires:  pkgconfig(libxml-2.0)
+
+Requires:       vulkan-loader
 
 %description
 A native tool for browsing, installing, and managing GNOME Shell Extensions.
@@ -63,6 +65,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{uuid}.desktop
 %{_datadir}/icons/hicolor/*/*/*.svg
 
 %changelog
+* Mon Aug 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.5-2
+- Add missing runtime dependency: vulkan-loader (libvulkan.so.1)
+
 * Wed Apr 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.5-1
 - Baseline setup based on official Arch PKGBUILD
 - Added glib2, gobject-introspection, and libxml2 dependencies
