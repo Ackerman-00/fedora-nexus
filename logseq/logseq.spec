@@ -18,6 +18,10 @@ Source1:        https://raw.githubusercontent.com/logseq/logseq/%{version}/resou
 # Disable automatic dependency generation to prevent RPM from tracking bundled Electron .so files
 AutoReqProv:    no
 
+# The bundled Electron payload ships node binaries whose build-time runpaths point
+# at the CI builder path; skip the rpath check (same fix as localsend).
+%global __brp_check_rpaths %{nil}
+
 BuildRequires:  unzip
 
 # Core runtime dependencies for Electron on Linux (matching the Obsidian package)
