@@ -769,9 +769,15 @@ jobs:
       - name: Clean up stray opencode/schedule branches
         if: always()
         shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git fetch origin --prune
+          set +e
+          # Never fail the run from this step. GITHUB_TOKEN expires after 1h on
+          # long runs, so pushes may 401 - that is fine, the next run retries.
+          git fetch origin --prune || true
           for ref in $(git for-each-ref --format='%(refname:short)' 'refs/remotes/origin/opencode/schedule-*'); do
             echo "Deleting stray branch: ${ref#origin/}"
-            git push origin --delete "${ref#origin/}" || true
+            git push origin --delete "${ref#origin/}" 2>/dev/null || true
           done
+          exit 0
