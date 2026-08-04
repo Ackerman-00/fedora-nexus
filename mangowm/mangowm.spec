@@ -26,6 +26,7 @@ BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  scenefx-devel
 
 Requires:       xorg-x11-server-Xwayland
+Requires:       vulkan-loader
 Recommends:     xdg-desktop-portal >= 1.18
 Recommends:     xdg-desktop-portal-gtk
 
@@ -61,6 +62,10 @@ dwl — crafted for speed, flexibility, and a customizable desktop experience.
 %{_datadir}/xdg-desktop-portal/mango-portals.conf
 
 %changelog
+* Tue Aug 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.6-2
+- Add missing runtime Requires vulkan-loader (libvulkan.so.1) needed by the
+  bundled libwlroots-0.20.so; caught by container install smoke test
+
 * Mon Aug 03 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.6-1
 - Auto-update to version 0.15.6
 
