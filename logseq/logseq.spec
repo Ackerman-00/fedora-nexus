@@ -18,10 +18,8 @@ Source1:        https://raw.githubusercontent.com/logseq/logseq/%{version}/resou
 # Disable automatic dependency generation to prevent RPM from tracking bundled Electron .so files
 AutoReqProv:    no
 
-# The bundled Electron payload ships node binaries whose build-time runpaths point
-# at the CI builder path; skip the rpath check (same fix as localsend).
-%global __brp_check_rpaths %{nil}
-
+BuildRequires:  binutils
+BuildRequires:  patchelf
 BuildRequires:  unzip
 
 # Core runtime dependencies for Electron on Linux (matching the Obsidian package)
@@ -64,7 +62,17 @@ cp -a logseq chrome-sandbox chrome_crashpad_handler libEGL.so libGLESv2.so \
     vk_swiftshader_icd.json icudtl.dat LICENSE.electron.txt LICENSES.chromium.html \
     %{buildroot}/opt/logseq/
 
-# 2. Create the global executable symlink
+# 2. Strip build-machine RUNPATHs baked into bundled native addons (they point at
+#    the upstream CI path and trip check-rpaths error 0002). All NEEDED libs of
+#    these addons resolve from the system, so removing the RUNPATH is safe.
+find %{buildroot}/opt/logseq/resources/app.asar.unpacked -type f \( -name '*.node' -o -name '*.so' \) -print0 |
+while IFS= read -r -d '' f; do
+    if readelf -d "$f" 2>/dev/null | grep -q 'RUNPATH'; then
+        patchelf --remove-rpath "$f"
+    fi
+done
+
+# 3. Create the global executable symlink
 install -dm755 %{buildroot}%{_bindir}
 ln -sf /opt/logseq/logseq %{buildroot}%{_bindir}/logseq
 
@@ -96,5 +104,9 @@ install -m644 %{SOURCE1} %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/logs
 %{_datadir}/icons/hicolor/512x512/apps/logseq.png
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.1-2
+- Fix build: strip build-machine RUNPATH from bundled @zvec native addon
+  (check-rpaths 0002); add BuildRequires binutils/patchelf
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.1-1
 - Initial package: Logseq 2.0.1 (DB version), official Linux x86_64 payload
