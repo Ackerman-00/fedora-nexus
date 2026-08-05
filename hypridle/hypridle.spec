@@ -2,7 +2,7 @@
 
 Name:           hypridle
 Version:        0.1.8
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Hyprland's idle daemon
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hypridle
@@ -14,6 +14,7 @@ Packager:       Ackerman-00 <quietcraft@gmail.com>
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
 BuildRequires:  systemd-rpm-macros
+BuildRequires:  pkgconfig(libsystemd)
 BuildRequires:  cmake(hyprwayland-scanner)
 BuildRequires:  pkgconfig(hyprland-protocols)
 BuildRequires:  pkgconfig(hyprlang)
@@ -61,5 +62,8 @@ rm %{buildroot}%{_datadir}/hypr/hypridle.conf
 %systemd_user_postun %{name}.service
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.8-2
+- Add missing BuildRequires: pkgconfig(libsystemd) for sd-bus detection
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.8-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)
