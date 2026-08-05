@@ -205,6 +205,45 @@ jobs:
                  fix the root cause, and collapse the duplicate changelog
                  entries so only one exists per actual update.
 
+            RELEASE REVISION DISCIPLINE (MANDATORY - "BUMP OR USERS NEVER GET
+            IT"). COPR only publishes a new RPM when the NVR
+            (Name-Version-Release) differs from what is already built. A fix
+            that keeps Version AND Release the same produces NO new package -
+            users keep the broken one forever, even if the spec in git is
+            "fixed". Follow rpm convention (rpm-version(7)) exactly:
+              a. VERSION CHANGED (a real upstream update, or a refreshed commit
+                 for -git/-snapshot packages): set `Release: 1%{?dist}`. New
+                 upstream code always starts fresh at revision 1.
+              b. ANYTHING ELSE CHANGED FOR THE SAME VERSION (fixing
+                 BuildRequires, Requires, checksums, patches, Source URLs,
+                 macros, or rebuilding for a dependency/ABI/rawhide wave):
+                 INCREMENT the existing Release integer:
+                 Release: 1%{?dist} -> 2%{?dist} -> 3%{?dist} -> ...
+                 Read the CURRENT Release line in the spec first and add 1 to
+                 the integer before %{?dist}. Never leave Release unchanged,
+                 and never reset it to 1 while Version stays the same.
+              c. KEEP %changelog IN SYNC. Every Release bump must come with a
+                 %changelog entry describing the change, and every %changelog
+                 entry you add must be for the CURRENT (newest) Release
+                 number. A Release bump without a changelog entry - or a
+                 changelog entry without a Release bump - is a bug.
+              d. VERIFY THE NVR IS ACTUALLY NEW BEFORE PUSHING. Check the COPR
+                 build list for the package (GET
+                 .../build/list?...&packagename=<pkg>): if the latest
+                 successful build already carries the NVR you are about to
+                 push, stop (see NO-CHURN VERIFICATION above).
+              e. GIT-BASED PACKAGES (niri-git, xwayland-satellite-git,
+                 hyprland-plugins, hyprland-contrib, ...): a refreshed commit
+                 is a new upstream state, so update.sh sets Release: 1%{?dist}
+                 for it - but a SPEC-ONLY FIX for the SAME pinned commit must
+                 bump the revision 1 -> 2 -> 3 per (b). Never rebuild a
+                 spec-only fix under the old Release number.
+              f. THIS RULE APPLIES TO EVERY COMMIT THAT TOUCHES A SPEC: fixes
+                 for failed COPR builds (priority 1), the version accuracy
+                 sweep (priority 2), dependency audits, install-test fixes,
+                 rawhide ABI-wave rebuilds - all of them. A rebuilt package
+                 whose Release was not bumped is an incomplete fix.
+
             PACKAGE DEPENDENCY DEEP AUDIT (MANDATORY - "TEAR EVERY PACKAGE
             APART" sweep; applies to every package, every run). You must not
             trust that a spec is complete just because it builds. Chain-of-
@@ -460,6 +499,67 @@ jobs:
                patching. Repair the spec file / update.sh so it is consistent and
                correct. If the repo's own automation in .github/workflows/* is causing
                failures, fix the workflow script too.
+
+               a. WEBHOOK-FIRING VERIFICATION (MANDATORY - the COPR<->GitHub
+                  webhook is the ONLY thing that turns your pushes into builds,
+                  and there is no read API for it: it is configured in the COPR
+                  web UI only, so you CANNOT fetch its state from
+                  api_3/webhooks - that endpoint does not exist). Verify it
+                  empirically instead, every time you push a fix:
+                    - BEFORE push: record the newest build id for the package
+                      (GET .../build/list?...&packagename=<pkg>&order=DESC).
+                    - PUSH the fix to main.
+                    - AFTER push: re-query the build list. The webhook works
+                      only if a NEW build appeared for that package shortly
+                      after the push. A "skipped" state is NORMAL and means the
+                      webhook fired but the NVR did not change - that is the
+                      smell to watch for: if your fix kept Release the same
+                      (violating RELEASE REVISION DISCIPLINE), COPR will "skip"
+                      it and users never get the fix. "skipped" therefore equals
+                      "fix not shipped" - fix the Release and push again.
+                 - If builds for OTHER packages/apps keep appearing when you
+                  push but THIS package never builds even after several pushes,
+                  treat the webhook/source-type config for that package as
+                  broken: the webhook URL in COPR project Settings -> Webhooks
+                  (github/<id>/<uuid>/) may be dead or the package source type
+                  may not be scm/github. You cannot repair it via the unauthed
+                  API - record the problem in .opencode-relay.md, keep main
+                  clean, and file an issue titled "COPR webhook not firing for
+                  <pkg>" with the evidence (push SHAs vs build list timestamps).
+                 - FINAL GATE CHECK: in your final summary state for EVERY
+                  package you pushed how the webhook was confirmed (post-push
+                  build id), or name it as an unverified gap.
+
+               b. REPRODUCE FAILED BUILDS LOCALLY IN DOCKER BEFORE PUSHING A
+                  FIX (MANDATORY when a build failed - never fix blind and
+                  push, guessing). Waiting on the COPR queue wastes a full push
+                  cycle per guess. Instead, once you have a hypothesis, BUILD
+                  the package in a clean Fedora container matching the failing
+                  chroot and PROVE the fix compiles there before you commit:
+                  docker run --rm -v "$PWD:/srv" \
+                    registry.fedoraproject.org/fedora:<N> bash -lc '
+                      dnf -y --setopt=gpgcheck=0 install dnf-plugins-core rpm-build
+                      dnf -y --setopt=gpgcheck=0 copr enable ackerman/nexus
+                      cd /srv/<pkg>
+                      dnf -y --setopt=gpgcheck=0 builddep <pkg>.spec
+                      rpmbuild -bb <pkg>.spec
+                    '
+                  (chroot = the failing one, see CURRENT FEDORA RELEASES;
+                  substitutes the %{version}/%{commit} macros in %prep/URLs
+                  automatically). Then also INSTALL-test the locally built RPM
+                  per the INSTALL-VERIFICATION SWEEP below - a package that
+                  builds locally AND installs cleanly from the COPR repo can be
+                  pushed with high confidence. If the local rebuild uses the
+                  ackerman/nexus copr for deps, it also proves the dependency
+                  chain resolves in the real repo - catch "nothing provides"
+                  before users do. Building locally is NOT a substitute for the
+                  real COPR build (different chroot flags, older repo snapshots)
+                  - the COPR build is still the authority for "shipped", local
+                  is only the accelerator for "fixed".
+                 - Never push a changed spec for a previously-failing build
+                   without having at least attempted this local rebuild (or
+                   writing in the relay/issue why it was impossible, e.g. no
+                   container runtime after install attempts).
 
             2. VERIFY VERSION ACCURACY OF EVERY PACKAGE - FULL INVENTORY SWEEP.
                This step is MANDATORY and must cover 100% of packages in this repo, one
