@@ -1,6 +1,6 @@
 Name:           hyprpicker
 Version:        0.4.7
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A wlroots-compatible Wayland color picker
 # LICENSE: BSD-3-Clause
 # protocols/wlr-layer-shell-unstable-v1.xml: HPND-sell-variant
@@ -46,5 +46,8 @@ Recommends:     wl-clipboard
 %{_mandir}/man1/%{name}.1.*
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.4.7-2
+- Rebuild against hyprutils 0.14.0 (soname change)
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.4.7-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)

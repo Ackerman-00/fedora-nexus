@@ -1,6 +1,6 @@
 Name:           hyprsunset
 Version:        0.4.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        An application to enable a blue-light filter on Hyprland
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprsunset
@@ -44,5 +44,8 @@ BuildRequires:  pkgconfig(wayland-protocols)
 %{_userunitdir}/%{name}.service
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.4.0-2
+- Rebuild against hyprutils 0.14.0 (soname change)
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.4.0-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)

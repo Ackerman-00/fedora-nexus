@@ -14,7 +14,7 @@
 
 Name:           hyprland-plugins
 Version:        0.1^%{bumpver}.git%{shortcommit0}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Official plugins for Hyprland
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprland-plugins
@@ -70,6 +70,9 @@ done
 %files
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^1.git00862ca-2
+- Rebuild: hyprland now available in COPR repo
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^1.git00862ca-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)
 - Builds against hyprland 0.56.2

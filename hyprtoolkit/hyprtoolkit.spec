@@ -1,6 +1,6 @@
 Name:           hyprtoolkit
 Version:        0.5.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A modern C++ Wayland-native GUI toolkit
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprtoolkit
@@ -63,5 +63,8 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.4-2
+- Rebuild: aquamarine and hyprgraphics now available in COPR repo
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.4-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)

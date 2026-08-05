@@ -2,7 +2,7 @@
 
 Name:           hypridle
 Version:        0.1.8
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Hyprland's idle daemon
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hypridle
@@ -62,6 +62,9 @@ rm %{buildroot}%{_datadir}/hypr/hypridle.conf
 %systemd_user_postun %{name}.service
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.8-3
+- Rebuild: hyprlang now rebuilt against hyprutils 0.14.0
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.8-2
 - Add missing BuildRequires: pkgconfig(libsystemd) for sd-bus detection
 

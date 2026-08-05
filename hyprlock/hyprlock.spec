@@ -2,7 +2,7 @@
 
 Name:           hyprlock
 Version:        0.9.6
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Hyprland's GPU-accelerated screen locking utility
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprlock
@@ -66,6 +66,9 @@ rm %{buildroot}%{_datadir}/hypr/%{name}.conf
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.6-3
+- Rebuild: hyprlang now rebuilt against hyprutils 0.14.0
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.6-2
 - Add missing BuildRequires: pkgconfig(libsystemd) for sd-bus detection
 

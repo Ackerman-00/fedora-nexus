@@ -3,7 +3,7 @@
 Name:           xdg-desktop-portal-hyprland
 Epoch:          1
 Version:        1.4.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        xdg-desktop-portal backend for hyprland
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/xdg-desktop-portal-hyprland
@@ -74,5 +74,8 @@ tar -xf %{SOURCE1} -C subprojects/sdbus-cpp --strip=1
 %{_userunitdir}/%{name}.service
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 1:1.4.1-2
+- Rebuild: hyprland now available in COPR repo
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 1:1.4.1-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)
