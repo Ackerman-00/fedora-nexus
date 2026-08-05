@@ -35,20 +35,43 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 27 packages</summary>
+<summary>Click to expand — 51 packages</summary>
 
 <br />
 
 | Package | Description | Type |
 |---------|-------------|:----:|
 | `app2unit` | Launch desktop entries or commands as systemd user units | Stable |
+| `aquamarine` | Light-weight rendering backend library for Hyprland | Stable |
 | `bibata-cursor-theme` | Open source, compact, and material designed cursor set | Stable |
 | `caelestia-shell-mango` | Desktop shell for MangoWM | Stable |
 | `cascadia-code-nerd-fonts` | Cascadia Code patched with Nerd Fonts icons | Stable |
 | `extension-manager` | Native tool for browsing and managing GNOME Shell Extensions | Stable |
 | `fluxer` | Free and open source instant messaging and VoIP platform | Stable |
+| `glaze` | Extremely fast, in memory, JSON and interface library | Stable |
 | `gpu-screen-recorder` | Shadowplay-like screen recorder for Linux (NVIDIA/AMD/Intel) | Stable |
 | `heroic-games-launcher` | Open source launcher for GOG, Epic, and Amazon Games | Stable |
+| `hyprcursor` | The hyprland cursor format, library and utilities | Stable |
+| `hyprgraphics` | Hyprland graphics / resource utilities | Stable |
+| `hypridle` | Hyprland's idle daemon | Stable |
+| `hyprlang` | The official implementation library for the hypr config language | Stable |
+| `hyprland` | Dynamic tiling Wayland compositor that doesn't sacrifice on its looks | Stable |
+| `hyprland-contrib` | Community scripts and utilities for Hypr projects | Git |
+| `hyprland-guiutils` | Hyprland GUI utilities (welcome, run, dialog, update screens) | Stable |
+| `hyprland-plugins` | Official plugins for Hyprland | Git |
+| `hyprland-protocols` | Wayland protocol extensions for Hyprland | Stable |
+| `hyprland-qt-support` | Qt6 QML style provider for hypr* apps | Stable |
+| `hyprlock` | Hyprland's GPU-accelerated screen locking utility | Stable |
+| `hyprpaper` | Blazing fast wayland wallpaper utility with IPC controls | Stable |
+| `hyprpicker` | A wlroots-compatible Wayland color picker | Stable |
+| `hyprpolkitagent` | A simple polkit authentication agent for Hyprland | Stable |
+| `hyprqt6engine` | Qt6 Theme Provider for Hyprland | Stable |
+| `hyprsunset` | An application to enable a blue-light filter on Hyprland | Stable |
+| `hyprsysteminfo` | An application to display information about the running system | Stable |
+| `hyprtoolkit` | A modern C++ Wayland-native GUI toolkit | Stable |
+| `hyprutils` | Hyprland utilities library used across the ecosystem | Stable |
+| `hyprwayland-scanner` | A Hyprland implementation of wayland-scanner, in and for C++ | Stable |
+| `hyprwire` | A fast and consistent wire protocol for IPC | Stable |
 | `libcava` | Fork of CAVA built as a shared library | Stable |
 | `localsend` | Open source cross-platform AirDrop alternative | Stable |
 | `logseq` | Privacy-first, local-first knowledge management and collaboration platform | Stable |
@@ -66,6 +89,7 @@ sudo dnf install <package-name>
 | `starship` | Minimal, blazing-fast, customizable prompt for any shell | Stable |
 | `vesktop` | Custom Discord client with Vencord preinstalled | Stable |
 | `wlroots` | Modular Wayland compositor library | Stable |
+| `xdg-desktop-portal-hyprland` | xdg-desktop-portal backend for hyprland | Stable |
 | `xwayland-satellite-git` | Rootless Xwayland integration for Wayland compositors (Git Snapshot) | Git |
 | `zen-browser` | Privacy-focused Firefox fork | Stable |
 
