@@ -9,7 +9,7 @@ License:        BSD-3-Clause AND BSD-2-Clause AND HPND-sell-variant AND LGPL-2.1
 
 Name:           hyprland
 Version:        0.56.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its looks
 URL:            https://github.com/hyprwm/Hyprland
 Source0:        %{url}/releases/download/v%{version}/source-v%{version}.tar.gz
@@ -22,7 +22,7 @@ hyprdeps = {
     "cmake",
     "gcc-c++",
     "ninja-build",
-    "glslang",
+    "glslang-devel",
     "muParser-devel",
     "glaze-static",
     "pkgconfig(aquamarine)",
@@ -197,6 +197,9 @@ rm -f %{buildroot}%{_datadir}/wayland-sessions/hyprland-uwsm.desktop
 %{_rpmconfigdir}/macros.d/macros.hyprland
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.56.2-4
+- Fix BuildRequires: glslang-devel (was glslang, missing cmake config)
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.56.2-3
 - Rebuild: COPR repo now has aquamarine, hyprtoolkit, hyprwire
 
