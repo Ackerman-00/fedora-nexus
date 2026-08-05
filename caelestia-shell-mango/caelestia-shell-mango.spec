@@ -8,7 +8,7 @@
 
 Name:           caelestia-shell-mango
 Version:        1.0.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Desktop shell for MangoWM
 
 License:        GPL-3.0-only
@@ -155,5 +155,8 @@ fi
 %{_datadir}/caelestia-shell/utils/
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 1.0.0^20260712195454gitbd43cb2-2
+- Rebuild against libcava 1.0.0 (soname bump to libcava.so.1 fixes install conflict with old libcava 0.10.7)
+
 * Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 1.0.0^20260712195454gitbd43cb2-1
 - Nightly sync with upstream main branch (Commit: bd43cb2)
