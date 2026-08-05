@@ -1,6 +1,6 @@
 Name:           hyprgraphics
 Version:        0.5.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Hyprland graphics / resource utilities
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprgraphics
@@ -62,5 +62,8 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.1-2
+- Rebuild: hyprutils 0.14.0 now available in COPR repo (fixes missing memory/Casts.hpp)
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.1-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)

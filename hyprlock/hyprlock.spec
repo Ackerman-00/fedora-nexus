@@ -2,7 +2,7 @@
 
 Name:           hyprlock
 Version:        0.9.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Hyprland's GPU-accelerated screen locking utility
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprlock
@@ -27,6 +27,7 @@ BuildRequires:  pkgconfig(pangocairo)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-egl)
 BuildRequires:  pkgconfig(wayland-protocols)
+BuildRequires:  pkgconfig(libsystemd)
 BuildRequires:  pkgconfig(xkbcommon)
 
 Provides:       bundled(sdbus-cpp) = %{sdbus_version}
@@ -65,5 +66,8 @@ rm %{buildroot}%{_datadir}/hypr/%{name}.conf
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.6-2
+- Add missing BuildRequires: pkgconfig(libsystemd) for sd-bus detection
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.6-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)

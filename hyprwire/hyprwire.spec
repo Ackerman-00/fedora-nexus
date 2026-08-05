@@ -1,6 +1,6 @@
 Name:           hyprwire
 Version:        0.3.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A fast and consistent wire protocol for IPC
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprwire
@@ -51,5 +51,8 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/%{name}-scanner.pc
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.1-2
+- Rebuild: hyprutils 0.14.0 now available in COPR repo
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.1-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)
