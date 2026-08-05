@@ -1,6 +1,6 @@
 Name:           hyprpolkitagent
 Version:        0.1.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A simple polkit authentication agent for Hyprland
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprpolkitagent
@@ -48,5 +48,8 @@ A simple polkit authentication agent for Hyprland, written in Qt/QML.
 %{_userunitdir}/%{name}.service
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.3-2
+- Rebuild against hyprutils 0.14.0 (soname change)
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.3-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)

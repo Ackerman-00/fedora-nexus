@@ -1,6 +1,6 @@
 Name:           hyprsysteminfo
 Version:        0.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        An application to display information about the running system
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprsysteminfo
@@ -53,5 +53,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/applications/%{name}.desktop
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-2
+- Rebuild: hyprtoolkit now available in COPR repo
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)

@@ -1,6 +1,6 @@
 Name:           hyprlang
 Version:        0.6.8
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The official implementation library for the hypr config language
 License:        LGPL-3.0-only
 URL:            https://github.com/hyprwm/hyprlang
@@ -45,5 +45,8 @@ sed 's/.*/%{version}/' -i VERSION
 %{_libdir}/pkgconfig/hyprlang.pc
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.8-2
+- Rebuild against hyprutils 0.14.0 (soname change)
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.8-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)

@@ -1,6 +1,6 @@
 Name:           hyprcursor
 Version:        0.1.13
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The hyprland cursor format, library and utilities
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprcursor
@@ -49,5 +49,8 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.13-2
+- Rebuild against hyprutils 0.14.0 (soname change)
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.13-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)
