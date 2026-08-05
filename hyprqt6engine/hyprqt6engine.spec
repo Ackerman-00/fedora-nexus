@@ -1,6 +1,6 @@
 Name:           hyprqt6engine
 Version:        0.1.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Qt6 Theme Provider for Hyprland
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprqt6engine
@@ -43,6 +43,9 @@ BuildRequires:  qt6-qtbase-private-devel
 %{_qt6_plugindir}/styles/libhypr-style.so
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0-4
+- Rebuild: COPR repo now has rebuilt hyprlang 0.6.8-2 with .so.13
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0-3
 - Rebuild: hyprlang now rebuilt against hyprutils 0.14.0
 

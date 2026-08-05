@@ -2,7 +2,7 @@
 
 Name:           hypridle
 Version:        0.1.8
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Hyprland's idle daemon
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hypridle
@@ -62,6 +62,9 @@ rm %{buildroot}%{_datadir}/hypr/hypridle.conf
 %systemd_user_postun %{name}.service
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.8-4
+- Rebuild: COPR repo now has rebuilt hyprlang 0.6.8-2 with .so.13
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.8-3
 - Rebuild: hyprlang now rebuilt against hyprutils 0.14.0
 

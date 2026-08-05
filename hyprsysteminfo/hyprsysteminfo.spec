@@ -1,6 +1,6 @@
 Name:           hyprsysteminfo
 Version:        0.2.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        An application to display information about the running system
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprsysteminfo
@@ -53,6 +53,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/applications/%{name}.desktop
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-3
+- Rebuild: COPR repo now has hyprtoolkit 0.5.4-2
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-2
 - Rebuild: hyprtoolkit now available in COPR repo
 
