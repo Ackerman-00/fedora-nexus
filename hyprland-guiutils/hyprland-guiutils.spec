@@ -1,6 +1,6 @@
 Name:           hyprland-guiutils
 Version:        0.2.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Hyprland GUI utilities
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprland-guiutils
@@ -43,6 +43,9 @@ Obsoletes:      hyprland-qtutils <= 0.1.5
 %{_bindir}/hyprland-welcome
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.2-3
+- Rebuild: COPR repo now has hyprtoolkit 0.5.4-2
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.2-2
 - Rebuild: hyprtoolkit now available in COPR repo
 

@@ -1,6 +1,6 @@
 Name:           hyprpaper
 Version:        0.8.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Blazing fast wayland wallpaper utility with IPC controls
 # LICENSE: BSD-3-Clause
 # protocols/wlr-layer-shell-unstable-v1.xml: HPND-sell-variant
@@ -56,6 +56,9 @@ wlroots-based compositors, though.
 %{_userunitdir}/%{name}.service
 
 %changelog
+* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.4-3
+- Rebuild: COPR repo now has hyprtoolkit and hyprwire
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.4-2
 - Rebuild: hyprtoolkit and hyprwire now available in COPR repo
 
