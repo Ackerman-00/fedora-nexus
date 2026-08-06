@@ -35,7 +35,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 53 packages</summary>
+<summary>Click to expand — 54 packages</summary>
 
 <br />
 
@@ -90,6 +90,7 @@ sudo dnf install <package-name>
 | `scenefx` | Drop-in wlroots scene API replacement with eye-candy effects | Stable |
 | `starship` | Minimal, blazing-fast, customizable prompt for any shell | Stable |
 | `vesktop` | Custom Discord client with Vencord preinstalled | Stable |
+| `waypaper` | GUI wallpaper manager for Wayland and Xorg Linux systems | Stable |
 | `wlroots` | Modular Wayland compositor library | Stable |
 | `xdg-desktop-portal-hyprland` | xdg-desktop-portal backend for hyprland | Stable |
 | `xwayland-satellite-git` | Rootless Xwayland integration for Wayland compositors (Git Snapshot) | Git |
