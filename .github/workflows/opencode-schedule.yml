@@ -53,7 +53,7 @@ jobs:
           export PATH="$HOME/.opencode/bin:$PATH"
           for model in "opencode/deepseek-v4-flash-free" "opencode/mimo-v2.5-free" "opencode/laguna-s-2.1-free" "opencode/big-pickle"; do
             echo "=== opencode run attempt with $model ==="
-            MODEL="$model" opencode github run && exit 0
+            MODEL="$model" opencode run -m "$model" --dangerously-skip-permissions --agent=build --print-logs "$PROMPT" && exit 0
             echo "=== attempt with $model failed (exit $?) - trying next ==="
             sleep 15
           done
@@ -501,22 +501,33 @@ jobs:
                failures, fix the workflow script too.
 
                a. WEBHOOK-FIRING VERIFICATION (MANDATORY - the COPR<->GitHub
-                  webhook is the ONLY thing that turns your pushes into builds,
-                  and there is no read API for it: it is configured in the COPR
-                  web UI only, so you CANNOT fetch its state from
-                  api_3/webhooks - that endpoint does not exist). Verify it
-                  empirically instead, every time you push a fix:
-                    - BEFORE push: record the newest build id for the package
-                      (GET .../build/list?...&packagename=<pkg>&order=DESC).
-                    - PUSH the fix to main.
-                    - AFTER push: re-query the build list. The webhook works
-                      only if a NEW build appeared for that package shortly
-                      after the push. A "skipped" state is NORMAL and means the
-                      webhook fired but the NVR did not change - that is the
-                      smell to watch for: if your fix kept Release the same
-                      (violating RELEASE REVISION DISCIPLINE), COPR will "skip"
-                      it and users never get the fix. "skipped" therefore equals
-                      "fix not shipped" - fix the Release and push again.
+                  webhook is the ONLY thing that turns your pushes into builds).
+                  READ THE WEBHOOK DIRECTLY INSTEAD OF GUESSING: GitHub records
+                  every configured webhook and its delivery history, so you can
+                  SEE the connection itself:
+                    - List the repo's webhooks:
+                      `gh api repos/Ackerman-00/fedora-nexus/hooks --paginate`
+                      The COPR hook is the one whose config.url contains
+                      "copr.fedorainfracloud.org/webhooks/github". Confirm it
+                      exists and is "active": tab the JSON.
+                    - Inspect recent deliveries for that hook id:
+                      `gh api repos/Ackerman-00/fedora-nexus/hooks/<id>/deliveries`
+                      then read the actual delivery payloads/status
+                      (`.../hooks/<id>/deliveries/<delivery_id>`): you can see
+                      whether COPR ACKNOWLEDGED each push you made (status 200
+                      / 2xx = delivered). This is empirical proof the webhook
+                      connection is alive - not a guess.
+                    - Also confirm the COPR side empirically every time you push
+                      a fix: BEFORE push record the newest build id for the
+                      package (GET .../build/list?...&packagename=<pkg>); PUSH
+                      to main; AFTER push re-query the build list - the webhook
+                      works only if a NEW build appeared shortly after the push.
+                      A "skipped" state is NORMAL and means the webhook fired
+                      but the NVR did not change - that is the smell to watch:
+                      if your fix kept Release the same (violating RELEASE
+                      REVISION DISCIPLINE), COPR will "skip" it and users never
+                      get the fix. "skipped" therefore equals "fix not shipped"
+                      - fix the Release and push again.
                  - If builds for OTHER packages/apps keep appearing when you
                   push but THIS package never builds even after several pushes,
                   treat the webhook/source-type config for that package as
@@ -525,10 +536,12 @@ jobs:
                   may not be scm/github. You cannot repair it via the unauthed
                   API - record the problem in .opencode-relay.md, keep main
                   clean, and file an issue titled "COPR webhook not firing for
-                  <pkg>" with the evidence (push SHAs vs build list timestamps).
+                  <pkg>" with the evidence (delivery history + push SHAs vs
+                  build list timestamps).
                  - FINAL GATE CHECK: in your final summary state for EVERY
-                  package you pushed how the webhook was confirmed (post-push
-                  build id), or name it as an unverified gap.
+                  package you pushed the webhook delivery id/status AND the
+                  post-push build id that proves it, or name it as an
+                  unverified gap.
 
                b. REPRODUCE FAILED BUILDS LOCALLY IN DOCKER BEFORE PUSHING A
                   FIX (MANDATORY when a build failed - never fix blind and
@@ -876,6 +889,16 @@ jobs:
           else
             echo "failure issue for today already open - skipping"
           fi
+
+      - name: Close stale opencode/schedule-* PRs
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for pr in $(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq '.[] | select(.head.ref | startswith("opencode/schedule-")) | .number'); do
+            echo "Closing stale PR #${pr} (opencode integration branch; changes land via direct pushes to main)"
+            gh pr close "$pr" --comment "Automatically closed: this PR came from the scheduled-run integration branch. Changes are delivered by direct pushes to main (COPR webhook builds on main pushes only)." || true
+          done
 
       - name: Clean up stray opencode/schedule branches
         shell: bash
