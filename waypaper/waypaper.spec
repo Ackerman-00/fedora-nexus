@@ -1,6 +1,6 @@
 Name:           waypaper
 Version:        2.8
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        GUI wallpaper manager for Wayland and Xorg Linux systems
 
 License:        GPL-3.0-only AND MIT AND BSD-2-Clause
@@ -60,6 +60,9 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 %{_mandir}/man1/waypaper.1.gz
 
 %changelog
+* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-5
+- Rebuild to fix COPR build from stale force-pushed commit
+
 * Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-4
 - Fix imageio_ffmpeg sdist extraction: --strip-components=2 stripped the
   imageio_ffmpeg/ directory level, scattering the module files into the
