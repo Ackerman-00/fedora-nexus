@@ -1,6 +1,6 @@
 Name:           awww
 Version:        0.12.1
-Release:        1%{?dist}
+Release:        3%{?dist}
 Summary:        Efficient animated wallpaper daemon for Wayland, controlled at runtime
 
 License:        GPL-3.0-only AND MIT AND Apache-2.0 AND MPL-2.0 AND BSD-3-Clause AND ISC
@@ -14,6 +14,7 @@ BuildRequires:  rust
 BuildRequires:  gcc-c++
 BuildRequires:  pkgconf
 BuildRequires:  pkgconfig(wayland-client)
+BuildRequires:  pkgconfig(wayland-protocols)
 BuildRequires:  libxkbcommon-devel
 BuildRequires:  lz4-devel
 BuildRequires:  systemd-rpm-macros
@@ -26,7 +27,7 @@ buffer, and it supports a large number of image formats as well as video
 files.
 
 %prep
-%autosetup -n awww
+%autosetup -n awww-%{version}
 
 %build
 export CARGO_NET_OFFLINE=false
@@ -43,6 +44,13 @@ install -Dpm 0644 contrib/systemd/awww-daemon.service %{buildroot}%{_userunitdir
 %{_userunitdir}/awww-daemon.service
 
 %changelog
+* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.1-3
+- Fix autosetup: tarball extracts to awww-0.12.1/, not awww/
+
+* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.1-2
+- Add pkgconfig(wayland-protocols) BuildRequires: waybackend-scanner
+  build-script needs pkg-config --variable=pkgdatadir wayland-protocols
+
 * Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.1-1
 - Use committed source tarball (codeberg archive endpoint down, HTTP 504/timeout)
 - Initial package
