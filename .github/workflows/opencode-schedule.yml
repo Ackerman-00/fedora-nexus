@@ -51,7 +51,7 @@ jobs:
         shell: bash
         run: |
           export PATH="$HOME/.opencode/bin:$PATH"
-          for model in "opencode/deepseek-v4-flash-free" "opencode/mimo-v2.5-free" "opencode/laguna-s-2.1-free" "opencode/big-pickle"; do
+          for model in "opencode/deepseek-v4-flash-free" "opencode/big-pickle" "opencode/mimo-v2.5-free" "opencode/laguna-s-2.1-free"; do
             echo "=== opencode run attempt with $model ==="
             MODEL="$model" opencode run -m "$model" --dangerously-skip-permissions --agent=build --print-logs "$PROMPT" && exit 0
             echo "=== attempt with $model failed (exit $?) - trying next ==="
