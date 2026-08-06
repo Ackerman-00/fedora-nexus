@@ -179,6 +179,39 @@ jobs:
                  checks EACH one. A conclusion that survives its own attack is
                  done; one you cannot attack is faith, not evidence.
 
+            INCREMENTAL DELIVERY - PUSH ONE VERIFIED FIX AT A TIME (MANDATORY).
+            NEVER accumulate fixes to push in one batch at the end of the run,
+            and NEVER wait for all packages to build before pushing. The repo
+            is LIVE and COPR auto-builds from main on every push, so each fix
+            should ship the moment it is verified:
+              a. ONE PACKAGE PER CYCLE. Pick the single most important broken
+                 package, fix it, and complete its FULL verification (docker
+                 rpmbuild + install test) before touching the next.
+              b. PUSH THE MOMENT IT VERIFIES. As soon as that one package
+                 passes docker rpmbuild + install test, stage ONLY that
+                 package's files, `git fetch origin && git pull --rebase
+                 origin main`, commit one atomic commit for that package, and
+                 `git push` immediately. Do NOT wait for other packages, do
+                 not wait on slow/flaky source downloads, and never hold a
+                 verified fix hostage to a blocked one.
+              c. BLOCKED PACKAGES MUST NOT BLOCK PUSHES. If a package cannot
+                 be verified (unreachable upstream, unsolvable build error),
+                 record it in the relay/issue and move to the next package -
+                 already-verified fixes must keep flowing to main.
+              d. PACKAGE MISSING DEPENDENCIES YOURSELF. If a fix or new
+                 version needs a package/artifact not in this repo (missing
+                 runtime dep, build-time tool, upstream companion), DO NOT
+                 block - create the missing package's .spec and update.sh
+                 yourself, verify it in docker exactly like any other
+                 package, and push it as its own commit BEFORE the dependent
+                 fix. The repo is the source of truth: if something is
+                 missing, you create it.
+              e. THE COMPLETION MARKER IS THE LAST ACTION, NOT A GATE ON
+                 PUSHES. The opencode-complete-$RUN_ID.md marker proves the
+                 run finished its summary; it must never delay, batch, or
+                 withhold already-verified fixes. Verified fixes are pushed as
+                 they finish, marker last.
+
             NO-CHURN VERIFICATION (MANDATORY, applies to every step below). You
             must NEVER push a version/commit if it was already pushed and built
             before. Past runs in sibling repos repeatedly re-synced the same
@@ -560,10 +593,13 @@ jobs:
                   chroot and PROVE the fix compiles there before you commit:
                   docker run --rm -v "$PWD:/srv" \
                     registry.fedoraproject.org/fedora:<N> bash -lc '
-                      dnf -y --setopt=gpgcheck=0 install dnf-plugins-core rpm-build
+                      dnf -y --setopt=gpgcheck=0 install dnf-plugins-core rpm-build rpmdevtools
                       dnf -y --setopt=gpgcheck=0 copr enable ackerman/nexus
                       cd /srv/<pkg>
                       dnf -y --setopt=gpgcheck=0 builddep <pkg>.spec
+                      mkdir -p /root/rpmbuild/{SOURCES,BUILD,BUILDROOT,RPMS,SRPMS,SPECS}
+                      for i in 1 2 3; do spectool -g -C /root/rpmbuild/SOURCES <pkg>.spec && break; sleep 5; done
+                      ls -la /root/rpmbuild/SOURCES
                       rpmbuild -bb <pkg>.spec
                     '
                   (chroot = the failing one, see CURRENT FEDORA RELEASES;
