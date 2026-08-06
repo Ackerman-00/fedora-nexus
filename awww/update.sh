@@ -2,6 +2,7 @@
 
 SPEC_FILE="awww.spec"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+UPSTREAM_URL="https://codeberg.org/LGFae/awww"
 
 echo "Checking for upstream updates on codeberg.org/LGFae/awww..."
 
@@ -25,6 +26,26 @@ fi
 
 echo "Updating: $CURRENT_VERSION -> $VERSION"
 
+echo "Fetching source archive for $LATEST_TAG via git (codeberg archive endpoint is unreliable)..."
+TMP_DIR=$(mktemp -d)
+if ! git clone --depth 1 --branch "$LATEST_TAG" "$UPSTREAM_URL.git" "$TMP_DIR/src" 2>/dev/null; then
+    echo "Error: failed to clone $UPSTREAM_URL.git at tag $LATEST_TAG."
+    rm -rf "$TMP_DIR"
+    exit 1
+fi
+
+if ! (cd "$TMP_DIR/src" && git archive --format=tar.gz --prefix="awww-$VERSION/" -o "$TMP_DIR/awww-$VERSION.tar.gz" HEAD); then
+    echo "Error: failed to generate source archive for $VERSION."
+    rm -rf "$TMP_DIR"
+    exit 1
+fi
+
+rm -f awww-*.tar.gz
+mv "$TMP_DIR/awww-$VERSION.tar.gz" "./awww-$VERSION.tar.gz"
+rm -rf "$TMP_DIR"
+
+ls -la awww-*.tar.gz
+
 sed -i "s/^Version:.*/Version:        $VERSION/" "$SPEC_FILE"
 sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
@@ -36,4 +57,4 @@ sed -i '/^%changelog/,$d' "$SPEC_FILE"
     echo "- Update to version $VERSION"
 } >> "$SPEC_FILE"
 
-echo "Successfully patched $SPEC_FILE."
+echo "Successfully patched $SPEC_FILE. Commit awww-$VERSION.tar.gz together with the spec."
