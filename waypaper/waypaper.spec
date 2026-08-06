@@ -46,10 +46,10 @@ tar -xzf %{SOURCE2} --strip-components=1 imageio_ffmpeg-0.6.0/imageio_ffmpeg
 %install
 %pyproject_install
 # Strip vendored deps from wheel metadata so RPM doesn't auto-generate
-# python3.14dist(screeninfo)/imageio-ffmpeg requires (they're vendored, not packaged)
-DISTINFO=%{python3_sitelib}/waypaper-%{version}.dist-info
-sed -i '/^Requires-Dist: screeninfo$/d' "$DISTINFO/METADATA"
-sed -i '/^Requires-Dist: imageio-ffmpeg$/d' "$DISTINFO/METADATA"
+# unresolvable python3.Xdist(screeninfo)/imageio-ffmpeg requires
+for f in %{buildroot}%{python3_sitelib}/waypaper-*.dist-info/METADATA; do
+  [ -f "$f" ] && sed -i '/^Requires-Dist: screeninfo$/d' "$f" && sed -i '/^Requires-Dist: imageio-ffmpeg$/d' "$f" || true
+done
 install -Dpm 0644 data/waypaper.desktop %{buildroot}%{_datadir}/applications/waypaper.desktop
 install -Dpm 0644 data/waypaper.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/waypaper.svg
 install -Dpm 0644 data/waypaper.1.gz %{buildroot}%{_mandir}/man1/waypaper.1.gz
