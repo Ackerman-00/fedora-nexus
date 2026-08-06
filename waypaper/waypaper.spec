@@ -52,6 +52,7 @@ cp -a screeninfo %{buildroot}%{python3_sitelib}/
 cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 
 %files
+%{_bindir}/waypaper
 %{python3_sitelib}/waypaper/
 %{python3_sitelib}/waypaper-%{version}.dist-info/
 %{python3_sitelib}/screeninfo/
