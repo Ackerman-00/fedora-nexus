@@ -1,6 +1,6 @@
-%global commit0 00862ca3e2908857f9660adbba1b2d55796aaa43
+%global commit0 a9eaa5263ae64291c1711c43bd5602c4a8b88c7c
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
-%global bumpver 1
+%global bumpver 2
 %global hyprland_ver 0.56.2
 
 %global __provides_exclude_from ^(%{_libdir}/hyprland/.*\\.so)$
@@ -14,7 +14,7 @@
 
 Name:           hyprland-plugins
 Version:        0.1^%{bumpver}.git%{shortcommit0}
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        Official plugins for Hyprland
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprland-plugins
@@ -70,12 +70,6 @@ done
 %files
 
 %changelog
-* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^1.git00862ca-3
-- Rebuild: COPR repo now has hyprland 0.56.2-2
-
-* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^1.git00862ca-2
-- Rebuild: hyprland now available in COPR repo
-
-* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^1.git00862ca-1
-- Initial packaging for Fedora Nexus (Nexus Optimized)
+* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^2.gita9eaa52-1
+- Sync with upstream main branch (Commit: a9eaa52)
 - Builds against hyprland 0.56.2
