@@ -52,16 +52,18 @@ cp -a screeninfo %{buildroot}%{python3_sitelib}/
 cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 
 %files
-%pyproject_save_files waypaper
-%{python3_sitelib}/screeninfo
-%{python3_sitelib}/imageio_ffmpeg
+%{python3_sitelib}/waypaper/
+%{python3_sitelib}/waypaper-%{version}.dist-info/
+%{python3_sitelib}/screeninfo/
+%{python3_sitelib}/imageio_ffmpeg/
 %{_datadir}/applications/waypaper.desktop
 %{_iconsdir}/hicolor/scalable/apps/waypaper.svg
 %{_mandir}/man1/waypaper.1.gz
 
 %changelog
 * Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-5
-- Rebuild to fix COPR build from stale force-pushed commit
+- Fix pyproject-rpm-macros 1.22 compatibility: replace %pyproject_save_files
+  with explicit file listings to fix "Trailing backslash" RPM errors
 
 * Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-4
 - Fix imageio_ffmpeg sdist extraction: --strip-components=2 stripped the
