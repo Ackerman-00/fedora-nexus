@@ -35,7 +35,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 54 packages</summary>
+<summary>Click to expand — 55 packages</summary>
 
 <br />
 
@@ -89,6 +89,7 @@ sudo dnf install <package-name>
 | `rootapp` | Discord alternative for gaming communities and large online groups | Stable |
 | `scenefx` | Drop-in wlroots scene API replacement with eye-candy effects | Stable |
 | `starship` | Minimal, blazing-fast, customizable prompt for any shell | Stable |
+| `stoat-desktop` | Open source, user-first chat platform desktop client | Stable |
 | `vesktop` | Custom Discord client with Vencord preinstalled | Stable |
 | `waypaper` | GUI wallpaper manager for Wayland and Xorg Linux systems | Stable |
 | `wlroots` | Modular Wayland compositor library | Stable |
