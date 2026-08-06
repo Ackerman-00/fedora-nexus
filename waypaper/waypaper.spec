@@ -11,9 +11,6 @@ Source2:        https://files.pythonhosted.org/packages/source/i/imageio-ffmpeg/
 
 BuildArch:      noarch
 
-%global __requires_exclude_from ^%{python3_sitelib}/(screeninfo|imageio_ffmpeg)/.*$
-%global __provides_exclude_from ^%{python3_sitelib}/(screeninfo|imageio_ffmpeg)/.*$
-
 BuildRequires:  pyproject-rpm-macros
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
@@ -48,6 +45,11 @@ tar -xzf %{SOURCE2} --strip-components=1 imageio_ffmpeg-0.6.0/imageio_ffmpeg
 
 %install
 %pyproject_install
+# Strip vendored deps from wheel metadata so RPM doesn't auto-generate
+# python3.14dist(screeninfo)/imageio-ffmpeg requires (they're vendored, not packaged)
+DISTINFO=%{python3_sitelib}/waypaper-%{version}.dist-info
+sed -i '/^Requires-Dist: screeninfo$/d' "$DISTINFO/METADATA"
+sed -i '/^Requires-Dist: imageio-ffmpeg$/d' "$DISTINFO/METADATA"
 install -Dpm 0644 data/waypaper.desktop %{buildroot}%{_datadir}/applications/waypaper.desktop
 install -Dpm 0644 data/waypaper.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/waypaper.svg
 install -Dpm 0644 data/waypaper.1.gz %{buildroot}%{_mandir}/man1/waypaper.1.gz
@@ -68,7 +70,8 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 * Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-5
 - Fix pyproject-rpm-macros 1.22 compatibility: replace %pyproject_save_files
   with explicit file listings
-- Exclude vendored screeninfo/imageio_ffmpeg from auto-dependency generation
+- Strip vendored screeninfo/imageio-ffmpeg from wheel METADATA to prevent
+  RPM auto-generating unresolvable python3.14dist() requires
 
 * Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-4
 - Fix imageio_ffmpeg sdist extraction: --strip-components=2 stripped the
