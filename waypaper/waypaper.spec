@@ -11,6 +11,9 @@ Source2:        https://files.pythonhosted.org/packages/source/i/imageio-ffmpeg/
 
 BuildArch:      noarch
 
+%global __requires_exclude_from ^%{python3_sitelib}/(screeninfo|imageio_ffmpeg)/.*$
+%global __provides_exclude_from ^%{python3_sitelib}/(screeninfo|imageio_ffmpeg)/.*$
+
 BuildRequires:  pyproject-rpm-macros
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
@@ -64,7 +67,8 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 %changelog
 * Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-5
 - Fix pyproject-rpm-macros 1.22 compatibility: replace %pyproject_save_files
-  with explicit file listings to fix "Trailing backslash" RPM errors
+  with explicit file listings
+- Exclude vendored screeninfo/imageio_ffmpeg from auto-dependency generation
 
 * Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-4
 - Fix imageio_ffmpeg sdist extraction: --strip-components=2 stripped the
