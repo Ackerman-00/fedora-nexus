@@ -1,6 +1,6 @@
 Name:           waypaper
 Version:        2.8
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        GUI wallpaper manager for Wayland and Xorg Linux systems
 
 License:        GPL-3.0-only AND MIT AND BSD-2-Clause
@@ -25,6 +25,7 @@ Requires:       python3-platformdirs
 Requires:       python3-pillow
 Requires:       python3-imageio
 Requires:       (ffmpeg or ffmpeg-free)
+Requires:       gobject-introspection
 Requires:       gtk3
 
 %description
@@ -67,6 +68,11 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 %{_mandir}/man1/waypaper.1.gz
 
 %changelog
+* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-7
+- Add Requires: gobject-introspection (provides xlib-2.0.typelib needed by
+  python3-gobject's gi import of Gdk, fixing "Typelib file for namespace
+  'xlib', version '2.0' not found" crash on launch)
+
 * Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-6
 - Use boolean requires (ffmpeg or ffmpeg-free): installs on stock Fedora
   (ffmpeg-free) and on RPM Fusion systems (full ffmpeg) without conflicts
