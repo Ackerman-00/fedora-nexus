@@ -1,6 +1,6 @@
 Name:           waypaper
 Version:        2.8
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        GUI wallpaper manager for Wayland and Xorg Linux systems
 
 License:        GPL-3.0-only AND MIT AND BSD-2-Clause
@@ -24,7 +24,7 @@ Requires:       python3-gobject
 Requires:       python3-platformdirs
 Requires:       python3-pillow
 Requires:       python3-imageio
-Requires:       ffmpeg-free
+Requires:       (ffmpeg or ffmpeg-free)
 Requires:       gtk3
 
 %description
@@ -67,6 +67,10 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 %{_mandir}/man1/waypaper.1.gz
 
 %changelog
+* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-6
+- Use boolean requires (ffmpeg or ffmpeg-free): installs on stock Fedora
+  (ffmpeg-free) and on RPM Fusion systems (full ffmpeg) without conflicts
+
 * Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-5
 - Fix pyproject-rpm-macros 1.22 compatibility: replace %pyproject_save_files
   with explicit file listings
