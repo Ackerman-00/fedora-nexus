@@ -7,7 +7,7 @@
 
 Name:           stoat-desktop
 Version:        1.4.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open source, user-first chat platform desktop client
 
 License:        AGPL-3.0-only AND MIT AND BSD-2-Clause
@@ -62,10 +62,9 @@ install -d -m 0755 %{buildroot}/opt/Stoat
 cp -a Stoat-linux-x64/* %{buildroot}/opt/Stoat/
 
 # 2. Install desktop entry, icon and metainfo
-install -d -m 0755 %{buildroot}%{_datadir}
-cp -a %{SOURCE1} %{buildroot}%{_datadir}/applications/
+install -Dpm 0644 %{SOURCE1} %{buildroot}%{_datadir}/applications/chat.stoat.StoatDesktop.desktop
 install -Dpm 0644 %{SOURCE2} %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/chat.stoat.StoatDesktop.png
-cp -a %{SOURCE3} %{buildroot}%{_datadir}/metainfo/
+install -Dpm 0644 %{SOURCE3} %{buildroot}%{_datadir}/metainfo/chat.stoat.StoatDesktop.metainfo.xml
 
 # 3. Create the Wayland-aware wrapper script
 install -d -m 0755 %{buildroot}%{_bindir}
@@ -89,5 +88,8 @@ chmod 0755 %{buildroot}%{_bindir}/stoat-desktop
 %attr(4755, root, root) /opt/Stoat/chrome-sandbox
 
 %changelog
+* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.2-2
+- Fix %install: use install -Dpm for desktop/metainfo to create parent dirs
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.2-1
 - Initial package
