@@ -35,7 +35,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 51 packages</summary>
+<summary>Click to expand — 53 packages</summary>
 
 <br />
 
@@ -43,6 +43,7 @@ sudo dnf install <package-name>
 |---------|-------------|:----:|
 | `app2unit` | Launch desktop entries or commands as systemd user units | Stable |
 | `aquamarine` | Light-weight rendering backend library for Hyprland | Stable |
+| `awww` | Efficient animated wallpaper daemon for Wayland, controlled at runtime | Stable |
 | `bibata-cursor-theme` | Open source, compact, and material designed cursor set | Stable |
 | `caelestia-shell-mango` | Desktop shell for MangoWM | Stable |
 | `cascadia-code-nerd-fonts` | Cascadia Code patched with Nerd Fonts icons | Stable |
@@ -78,6 +79,7 @@ sudo dnf install <package-name>
 | `mangowm` | Modern, lightweight, high-performance Wayland compositor built on dwl | Stable |
 | `material-symbols-fonts` | Material Symbols variable icon font by Google | Stable |
 | `matugen` | Material You color generation tool | Stable |
+| `mpvpaper` | Video wallpaper program for wlroots based Wayland compositors | Stable |
 | `niri-git` | Scrollable-tiling Wayland compositor (Git Snapshot) | Git |
 | `nwg-look` | GTK3 settings editor adapted for the wlroots environment | Stable |
 | `obsidian` | Knowledge base over a local folder of plain-text Markdown files | Stable |
