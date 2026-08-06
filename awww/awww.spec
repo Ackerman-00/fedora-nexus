@@ -5,7 +5,7 @@ Summary:        Efficient animated wallpaper daemon for Wayland, controlled at r
 
 License:        GPL-3.0-only AND MIT AND Apache-2.0 AND MPL-2.0 AND BSD-3-Clause AND ISC
 URL:            https://codeberg.org/LGFae/awww
-Source0:        https://codeberg.org/LGFae/awww/archive/v%{version}.tar.gz
+Source0:        awww-%{version}.tar.gz
 
 ExclusiveArch:  x86_64 aarch64
 
@@ -43,5 +43,6 @@ install -Dpm 0644 contrib/systemd/awww-daemon.service %{buildroot}%{_userunitdir
 %{_userunitdir}/awww-daemon.service
 
 %changelog
-* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.1-1
+* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.1-1
+- Use committed source tarball (codeberg archive endpoint down, HTTP 504/timeout)
 - Initial package
