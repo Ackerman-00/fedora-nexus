@@ -668,36 +668,68 @@ jobs:
                fix the cause. If update.sh scripts are broken (bad URL parsing, missing
                versions), fix them so the auto-updater works again.
 
-            4. REVIEW ALL OPEN ISSUES like a human maintainer.
+            4. REVIEW ALL OPEN ISSUES like a human maintainer - AND REPLY.
                GET https://api.github.com/repos/Ackerman-00/fedora-nexus/issues (state=open,
-               no pull requests). For each issue:
+               no pull requests). EVERY open issue MUST get a reply - silence
+               is not an option. For each issue:
                - Read it fully, reproduce or diagnose it, and web-search for context.
-               - Fix what you can: edit the spec/update.sh/workflow, commit to main, push
-                 (triggers COPR builds), and verify the COPR build succeeds.
-               - When the fix is VERIFIED (COPR build succeeded for all chroots), CLOSE
-                 the issue with a comment summarizing the root cause, the fix (commit
-                 sha), and the passing COPR build id, e.g. "Fixed by <sha>; COPR build
-                 <id> succeeded."
-               - If you cannot fix it yet, leave a detailed diagnosis comment and keep
-                 the issue open.
+               - DETERMINE WHO IS RIGHT. If the issue is a genuine packaging bug
+                 (missing dep, wrong version, broken build, broken install, broken
+                 update.sh): fix it. If it is USER ERROR (missing system package,
+                 user not enabling the COPR, wrong config, misunderstanding of how
+                 the package works, feature request that is already implemented):
+                 say so clearly and kindly, explain what the user should do instead,
+                 and close the issue as completed/not-planned with the explanation.
+                 NEVER let a user-error issue rot open without an answer.
+               - When you fix a genuine bug: edit the spec/update.sh/workflow, commit
+                 to main, push (triggers COPR builds), and verify the COPR build
+                 succeeds. When VERIFIED (COPR build succeeded for all chroots),
+                 CLOSE the issue with a comment summarizing the root cause, the fix
+                 (commit sha), and the passing COPR build id, e.g. "Fixed by <sha>;
+                 COPR build <id> succeeded."
+               - If you cannot fix it yet, leave a detailed diagnosis comment
+                 (what you tried, what you found, what blocks the fix) and keep the
+                 issue open. State clearly whether it is a bug or user error.
+               - EVERY issue you close gets a closing comment with the verdict
+                 (fixed / not-a-bug / user error / duplicate) and the evidence.
+                 Use `gh issue close <n> --comment "<verdict and evidence>"`.
+               - Reply on issues WITH `gh issue comment <n>` even before any fix,
+                 so the reporter always gets a response from this run.
 
-            5. REVIEW ALL OPEN PULL REQUESTS like a human maintainer.
+            5. REVIEW ALL OPEN PULL REQUESTS like a human maintainer - AND DECIDE.
                GET https://api.github.com/repos/Ackerman-00/fedora-nexus/pulls (state=open).
-               For each PR:
-               - Read the full diff (`gh pr diff <n>`, plus the files/comments API) and
-                 the PR body.
-               - VERIFY with web search: the new/updated version exists upstream, source
-                 URLs are reachable, checksums are correct, and the spec is well-formed.
-               - To verify it builds, either push the PR branch to main temporarily is
-                 NOT acceptable; instead trigger a COPR build for the PR's packages only
-                 if you can, otherwise merge first and let COPR build. Prefer: if the
-                 change is clearly correct and low-risk, merge with squash
-                 (`gh pr merge <n> --squash --delete-branch`) and then verify the COPR
-                 build that the push triggers. If the build then fails, fix it
+               For each PR: you are the maintainer - review it, test it, and
+               merge / request changes / close it. Do NOT leave it hanging for a
+               human. EVERY PR gets a comment with your verdict and reasoning.
+               - Read the full diff (`gh pr diff <n>`, plus the files/comments API)
+                 and the PR body.
+               - VERIFY with web search: the new/updated version exists upstream,
+                 source URLs are reachable, checksums are correct, and the spec is
+                 well-formed (rpmspec -P if available).
+               - SELF-TEST BEFORE DECIDING (MANDATORY): build the PR's changes
+                 yourself, exactly as the COPR would - checkout the PR branch
+                 locally, run `rpmbuild -bb` (or the container repro flow in
+                 section 1b) in a CLEAN Fedora container for every chroot branch,
+                 and install-test the built RPM. The PR is only mergeable if the
+                 build AND install pass in your repro. Use
+                 `gh pr checkout <n>` (or fetch the head ref) to get the changes.
+               - MERGE: if the change is clearly correct, low-risk, builds cleanly
+                 and installs in your clean-container repro - merge with squash
+                 (`gh pr merge <n> --squash --delete-branch`), then verify the COPR
+                 build that the merge triggers. If that build then fails, fix it
                  immediately in a follow-up commit.
-               - If the change is wrong or risky, leave a clear comment explaining what
-                 to fix and keep the PR open. Only close a PR outright if it is clearly
-                 broken or abandoned.
+               - REQUEST CHANGES: if the change is mostly right but has issues
+                 (missing checksum, bad URL, missing BuildRequires, wrong
+                 version format, no changelog entry), leave a precise comment
+                 listing exactly what to fix and keep the PR open.
+               - CLOSE: if the change is wrong, broken, duplicates an existing
+                 fix already on main, is based on a version that does not exist,
+                 or the author has abandoned it - close it with a clear comment
+                 explaining why (do not be rude; be factual).
+               - NEVER merge on "it probably builds". Evidence required: your
+                 clean-container build+install output, then the COPR build id after
+                 the merge. If you cannot test it for any reason, say so in the
+                 comment and do not merge.
 
             6. MAINTAIN DOCUMENTATION & GENERAL REPO HEALTH.
                You have FULL control over this repository: you may edit any file that
