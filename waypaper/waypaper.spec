@@ -22,7 +22,7 @@ BuildRequires:  gzip
 
 Requires:       python3-gobject
 Requires:       python3-platformdirs
-Requires:       python3-Pillow
+Requires:       python3-pillow
 Requires:       python3-imageio
 Requires:       ffmpeg-free
 Requires:       gtk3
