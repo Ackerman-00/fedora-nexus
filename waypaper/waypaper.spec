@@ -1,6 +1,6 @@
 Name:           waypaper
 Version:        2.8
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        GUI wallpaper manager for Wayland and Xorg Linux systems
 
 License:        GPL-3.0-only AND MIT AND BSD-2-Clause
@@ -16,6 +16,7 @@ BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-wheel
 BuildRequires:  python3-build
+BuildRequires:  python3-pip
 BuildRequires:  python3-installer
 BuildRequires:  gzip
 
@@ -59,6 +60,10 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 %{_mandir}/man1/waypaper.1.gz
 
 %changelog
+* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-3
+- Add python3-pip BuildRequire: %pyproject_wheel imports pip to install
+  build-system requires in its temp env
+
 * Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-2
 - Fetch vendored screeninfo and imageio-ffmpeg from PyPI sdists via
   remote Source1/Source2 URLs (auto-downloaded by COPR) instead of
