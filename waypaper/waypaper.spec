@@ -1,6 +1,6 @@
 Name:           waypaper
 Version:        2.8
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        GUI wallpaper manager for Wayland and Xorg Linux systems
 
 License:        GPL-3.0-only AND MIT AND BSD-2-Clause
@@ -38,7 +38,7 @@ imageio-ffmpeg falls back to the system ffmpeg binary.
 %prep
 %autosetup
 tar -xzf %{SOURCE1} --strip-components=1 screeninfo-0.8.1/screeninfo
-tar -xzf %{SOURCE2} --strip-components=2 imageio_ffmpeg-0.6.0/imageio_ffmpeg
+tar -xzf %{SOURCE2} --strip-components=1 imageio_ffmpeg-0.6.0/imageio_ffmpeg
 
 %build
 %pyproject_wheel
@@ -60,6 +60,11 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 %{_mandir}/man1/waypaper.1.gz
 
 %changelog
+* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-4
+- Fix imageio_ffmpeg sdist extraction: --strip-components=2 stripped the
+  imageio_ffmpeg/ directory level, scattering the module files into the
+  top-level build dir and breaking the %install copy
+
 * Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-3
 - Add python3-pip BuildRequire: %pyproject_wheel imports pip to install
   build-system requires in its temp env
