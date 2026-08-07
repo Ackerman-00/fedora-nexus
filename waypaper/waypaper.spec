@@ -1,6 +1,6 @@
 Name:           waypaper
 Version:        2.8
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        GUI wallpaper manager for Wayland and Xorg Linux systems
 
 License:        GPL-3.0-only AND MIT AND BSD-2-Clause
@@ -27,6 +27,10 @@ Requires:       python3-imageio
 Requires:       (ffmpeg or ffmpeg-free)
 Requires:       gobject-introspection
 Requires:       gtk3
+# waypaper shells out to pgrep/pkill (procps-ng) and killall (psmisc) to
+# detect and stop running wallpaper backends (changer.py, options.py, app.py)
+Requires:       procps-ng
+Requires:       psmisc
 
 %description
 Waypaper is a GUI wallpaper manager for Wayland and Xorg Linux systems. It
@@ -68,6 +72,14 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 %{_mandir}/man1/waypaper.1.gz
 
 %changelog
+* Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-8
+- Add Requires: procps-ng and psmisc. waypaper invokes pgrep/pkill and
+  killall to detect and stop running wallpaper backends
+  (changer.py seek_and_destroy, options.py get_monitor_names_with_*,
+  app.py hyprpaper/mpvpaper/gslapper kill paths). Neither tool is part of
+  a minimal Fedora install, so backend detection failed with
+  "Exception: [Errno 2] No such file or directory: 'pgrep'"
+
 * Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-7
 - Add Requires: gobject-introspection (provides xlib-2.0.typelib needed by
   python3-gobject's gi import of Gdk, fixing "Typelib file for namespace
