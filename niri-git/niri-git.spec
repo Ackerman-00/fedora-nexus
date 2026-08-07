@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          feb3e43f1475e0865bb89cbd1e898b34d1d2ccf6
+%global commit          59a10015610bb7d068a82ce1c386fcd8b44f6c52
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260802200721
+%global gitdate         20260807194758
 
 Name:           niri-git
 Epoch:          1
@@ -108,9 +108,5 @@ install -Dpm0644 _niri %{buildroot}%{_datadir}/zsh/site-functions/_niri
 %{_datadir}/zsh/site-functions/_niri
 
 %changelog
-* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1:26.04^20260802200721gitfeb3e43-1
-- Bump Epoch to 1 so current ^gitdate snapshots sort above the legacy
-  2026MMDD-dated builds (dnf was installing the stale 20260605 snapshot)
-
-* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260802200721gitfeb3e43-1
-- Nightly sync with upstream main branch (Commit: feb3e43)
+* Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260807194758git59a1001-1
+- Nightly sync with upstream main branch (Commit: 59a1001)
