@@ -1,8 +1,20 @@
 %global appid app.fluxer.Fluxer
 
+# Fluxer ships a private copy of the Electron/Chromium runtime under
+# %%{_libdir}/fluxer. Those bundled .so files must never be advertised as
+# system-wide Provides (they would let dnf pick fluxer as the provider of
+# e.g. libvulkan.so.1 for unrelated packages), nor must their internal
+# linkage become system Requires.
+%global __provides_exclude_from ^%{_libdir}/%{name}/.*$
+# With the bundled Provides pruned, the only auto-Require that used to be
+# satisfied by fluxer itself (libffmpeg.so, an Electron-private library) must
+# be dropped too, otherwise the package becomes uninstallable. All other
+# auto-generated Requires are real system libraries and are kept.
+%global __requires_exclude ^libffmpeg\\.so.*$
+
 Name:           fluxer
 Version:        2026.731.153836
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
@@ -66,6 +78,17 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %{_datadir}/icons/hicolor/*/apps/%{appid}.png
 
 %changelog
+* Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.731.153836-5
+- Stop leaking bundled Electron/Chromium libraries as system-wide Provides.
+  fluxer shipped libvulkan.so.1, libEGL.so, libGLESv2.so, libffmpeg.so and
+  libvk_swiftshader.so from %%{_libdir}/fluxer as RPM Provides, so dnf could
+  resolve an unrelated dependency on libvulkan.so.1 by pulling in the whole
+  406 MiB fluxer package instead of vulkan-loader (observed: installing
+  mpvpaper dragged in fluxer, and mpvpaper still failed to start because the
+  bundled loader is not in the linker path). Add __provides_exclude_from for
+  %%{_libdir}/fluxer and drop the now self-unsatisfiable libffmpeg.so
+  auto-Require.
+
 * Mon Aug 03 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.731.153836-4
 - Match upstream rpm runtime Requires: add at-spi2-core, gtk3, libXtst, nss;
   drop unrelated gamemode/mangohud
