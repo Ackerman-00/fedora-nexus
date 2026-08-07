@@ -2,7 +2,7 @@
 
 Name:           logseq
 Version:        2.0.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A privacy-first, local-first platform for knowledge management and collaboration
 
 License:        AGPL-3.0-only
@@ -36,6 +36,10 @@ Requires:       libXScrnSaver
 Requires:       libXtst
 Requires:       mesa-libgbm
 Requires:       xdg-utils
+# @zvec/bindings-linux-x64 (the bundled DiskANN vector-search engine used by
+# Logseq 2.x search) is dlopen'd at runtime and links against libaio.so.1.
+# AutoReqProv is off for this package, so it must be listed explicitly.
+Requires:       libaio
 
 %description
 Logseq is a privacy-first, open-source platform for knowledge management and
@@ -104,6 +108,16 @@ install -m644 %{SOURCE1} %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/logs
 %{_datadir}/icons/hicolor/512x512/apps/logseq.png
 
 %changelog
+* Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.1-2
+- Add Requires: libaio. The bundled @zvec/bindings-linux-x64 DiskANN plugin
+  (resources/app.asar.unpacked/node_modules/@zvec/bindings-linux-x64/
+  libzvec_diskann_plugin.so, dlopen'd by zvec_node_binding.node) links
+  against libaio.so.1, which is not part of a minimal Fedora install:
+    ldd .../libzvec_diskann_plugin.so -> libaio.so.1 => not found
+  This package sets AutoReqProv: no, so the dependency was never generated
+  automatically. Provider confirmed with
+  dnf repoquery --whatprovides 'libaio.so.1()(64bit)' -> libaio
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.1-2
 - Fix build: strip build-machine RUNPATH from bundled @zvec native addon
   (check-rpaths 0002); add BuildRequires binutils/patchelf
