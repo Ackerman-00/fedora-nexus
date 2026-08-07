@@ -73,10 +73,10 @@ sudo dnf install <package-name>
 | `hyprutils` | Hyprland utilities library used across the ecosystem | Stable |
 | `hyprwayland-scanner` | A Hyprland implementation of wayland-scanner, in and for C++ | Stable |
 | `hyprwire` | A fast and consistent wire protocol for IPC | Stable |
+| `lazyvim-git` | Neovim setup for lazy people (Git Snapshot) | Git |
 | `libcava` | Fork of CAVA built as a shared library | Stable |
 | `localsend` | Open source cross-platform AirDrop alternative | Stable |
 | `logseq` | Privacy-first, local-first knowledge management and collaboration platform | Stable |
-| `lazyvim-git` | Neovim setup for lazy people (Git Snapshot) | Git |
 | `mangowm` | Modern, lightweight, high-performance Wayland compositor built on dwl | Stable |
 | `material-symbols-fonts` | Material Symbols variable icon font by Google | Stable |
 | `matugen` | Material You color generation tool | Stable |
