@@ -4,7 +4,7 @@
 
 Name:           hyprland-contrib
 Version:        0.1^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Community scripts and utilities for Hypr projects
 BuildArch:      noarch
 License:        MIT
@@ -28,6 +28,9 @@ Recommends:     hdrop
 %package -n grimblast
 Summary:        A helper for screenshots within hyprland
 Requires:       grim slurp wl-clipboard jq /usr/bin/notify-send hyprpicker /usr/bin/gdbus
+# killhyprpicker() uses pidof + pkill; hyprctl is used to query the active window
+Requires:       procps-ng
+Requires:       /usr/bin/hyprctl
 
 %description -n grimblast
 %{summary}.
@@ -39,6 +42,8 @@ Requires:       grim slurp wl-clipboard jq /usr/bin/notify-send hyprpicker /usr/
 %package -n hyprprop
 Summary:        An xprop replacement for hyprland
 Requires:       slurp jq
+# upstream header documents hyprctl as a hard requirement
+Requires:       /usr/bin/hyprctl
 
 %description -n hyprprop
 %{summary}.
@@ -50,6 +55,10 @@ Requires:       slurp jq
 %package -n scratchpad
 Summary:        Send focused window to a special workspace named scratchpad
 Requires:       jq
+# basicChecks() requires hyprctl and pgrep; the menu handling uses killall
+Requires:       /usr/bin/hyprctl
+Requires:       procps-ng
+Requires:       psmisc
 Recommends:     /usr/bin/notify-send
 
 %description -n scratchpad
@@ -71,6 +80,11 @@ Requires:       socat
 
 %package -n try_swap_workspace
 Summary:        Move arbitrary workspace to arbitrary monitor and swap workspaces
+# parses hyprctl -j output with jq; basicChecks() uses hyprctl and pgrep -x
+Requires:       jq
+Requires:       /usr/bin/hyprctl
+Requires:       procps-ng
+Recommends:     /usr/bin/notify-send
 
 %description -n try_swap_workspace
 %{summary}.
@@ -81,6 +95,8 @@ Summary:        Move arbitrary workspace to arbitrary monitor and swap workspace
 %package -n hdrop
 Summary:        Emulates the main feature of tdrop in Hyprland
 Requires:       jq
+# drives the compositor entirely through hyprctl (22 call sites)
+Requires:       /usr/bin/hyprctl
 Recommends:     /usr/bin/notify-send
 
 %description -n hdrop
@@ -106,5 +122,23 @@ done
 %doc README.md
 
 %changelog
+* Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^20260630092427git3dcbce7-2
+- Fix missing runtime dependencies of the contrib scripts (verified against
+  upstream commit 3dcbce7):
+  * grimblast: add procps-ng (killhyprpicker() uses `pidof -q hyprpicker &&
+    pkill hyprpicker`, grimblast:27 - previously failed with
+    "grimblast: line 27: pidof: command not found") and /usr/bin/hyprctl
+  * hyprprop: add /usr/bin/hyprctl (documented as required in the script
+    header, 5 call sites)
+  * scratchpad: add /usr/bin/hyprctl, procps-ng (basicChecks() `pgrep
+    Hyprland`, scratchpad:55) and psmisc (`killall` on the menu cmd,
+    scratchpad:101)
+  * try_swap_workspace: had NO Requires at all - add jq (parses `hyprctl -j`
+    output), /usr/bin/hyprctl and procps-ng (`pgrep -x Hyprland`,
+    try_swap_workspace:51) plus a notify-send Recommends
+  * hdrop: add /usr/bin/hyprctl (22 call sites)
+  hyprctl is expressed as a file dependency on /usr/bin/hyprctl (provided by
+  hyprland) so it stays valid if the binary moves package.
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^20260630092400git3dcb981-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)
