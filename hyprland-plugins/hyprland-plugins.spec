@@ -1,6 +1,6 @@
-%global commit0 a9eaa5263ae64291c1711c43bd5602c4a8b88c7c
+%global commit0 00862ca3e2908857f9660adbba1b2d55796aaa43
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
-%global bumpver 2
+%global bumpver 3
 %global hyprland_ver 0.56.2
 
 %global __provides_exclude_from ^(%{_libdir}/hyprland/.*\\.so)$
@@ -70,6 +70,7 @@ done
 %files
 
 %changelog
-* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^2.gita9eaa52-1
-- Sync with upstream main branch (Commit: a9eaa52)
-- Builds against hyprland 0.56.2
+* Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^3.git00862ca-1
+- Pin to hyprland 0.56.2 compat commit 00862ca (last hyprpm pin for 0.56.2)
+  Fixes build: main-HEAD a9eaa52 requires hyprland/src/keybinds/Manager.hpp
+  which is not present in hyprland 0.56.2 (uses src/managers/KeybindManager.hpp).
