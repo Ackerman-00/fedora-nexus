@@ -1,6 +1,6 @@
 Name:           gpu-screen-recorder
-Version:        5.15.3
-Release:        4%{?dist}
+Version:        6.0.0
+Release:        1%{?dist}
 Summary:        A shadowplay-like screen recorder for Linux. The fastest screen recorder for Linux
 
 License:        GPL-3.0-or-later
@@ -76,27 +76,18 @@ setcap cap_sys_admin+ep %{_bindir}/gsr-kms-server 2>/dev/null || true
 %license LICENSE
 %doc README.md
 %{_bindir}/gpu-screen-recorder
+%{_bindir}/gsr-cli
 %{_bindir}/gsr-kms-server
 %{_includedir}/gsr/plugin.h
 %{_datadir}/gpu-screen-recorder
 %{_mandir}/man1/gpu-screen-recorder.1*
+%{_mandir}/man1/gsr-cli.1*
 %{_mandir}/man1/gsr-kms-server.1*
 /usr/lib/systemd/user/%{name}.service
 /usr/lib/modprobe.d/gsr-nvidia.conf
 
 %changelog
-* Tue Aug 04 2026 Ackerman-00 <quietcraft@gmail.com> - 5.15.3-4
-- Add missing BuildRequires: pkgconfig(vulkan) (vulkan-loader-devel) so the
-  linker can resolve libvulkan.so.1 needed by libplacebo (transitive dep of
-  libavfilter); the -3 build failed on all chroots with ld: libvulkan.so.1
-  not found
-
-* Mon Aug 04 2026 Ackerman-00 <quietcraft@gmail.com> - 5.15.3-3
-- Add missing runtime dependency: vulkan-loader (libvulkan.so.1)
-
-* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 5.15.3-2
-- Replace nonexistent libpulse and wayland-libs-client Requires with the real
-  pulseaudio-libs and libwayland-client packages so the package can be installed
-
-* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 5.15.3-1
-- Initial package of gpu-screen-recorder 5.15.3 for Fedora
+* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 6.0.0-1
+- Update to version 6.0.0
+- 6.0.0 ships a new gsr-cli binary + man page; add to %files (fixes
+  "Installed (but unpackaged) file(s)" build error)
