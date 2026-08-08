@@ -4,7 +4,7 @@
 
 Name:           hyprland-contrib
 Version:        0.1^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Community scripts and utilities for Hypr projects
 BuildArch:      noarch
 License:        MIT
@@ -60,6 +60,10 @@ Requires:       /usr/bin/hyprctl
 Requires:       procps-ng
 Requires:       psmisc
 Recommends:     /usr/bin/notify-send
+# scratchpad:8 hardcodes `rofi -dmenu -i -p scratchpad` as the default menu
+# used by -g/-l to pick a window. It is overridable with -m, so this is a
+# Recommends rather than a hard Requires.
+Recommends:     rofi
 
 %description -n scratchpad
 %{summary}.
@@ -122,6 +126,13 @@ done
 %doc README.md
 
 %changelog
+* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^20260630092427git3dcbce7-3
+- scratchpad: add Recommends: rofi. scratchpad:8 hardcodes
+  `_menu_cmd="rofi -dmenu -i -p scratchpad"`, which is what -g/-l pipe the
+  client list into (scratchpad:128) and what -g kills first (scratchpad:101).
+  Without rofi installed the window picker silently produces no selection.
+  Recommends (not Requires) because -m overrides the menu program.
+
 * Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^20260630092427git3dcbce7-2
 - Fix missing runtime dependencies of the contrib scripts (verified against
   upstream commit 3dcbce7):
