@@ -8,7 +8,7 @@
 
 Name:           caelestia-shell-mango
 Version:        2.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Desktop shell for MangoWM
 
 License:        GPL-3.0-only
@@ -55,7 +55,8 @@ Requires:       NetworkManager
 # Hardware monitoring
 Requires:       lm_sensors
 # Clipboard manager (modules/launcher/services/Clipboard.qml)
-Requires:       cliphist
+# cliphist is only packaged in Fedora >= 44; keep F43 installable
+Requires:       (cliphist if fedora-release >= 44)
 # Screen recording (modules/utilities/Content.qml record card)
 Requires:       gpu-screen-recorder
 # Screenshot
@@ -171,5 +172,9 @@ fi
 %{_datadir}/caelestia-shell/utils/
 
 %changelog
+* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260808162358git50fec11-2
+- Make cliphist a conditional requirement (cliphist only exists in Fedora >= 44;
+  without this the package is uninstallable on Fedora 43)
+
 * Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260808162358git50fec11-1
 - Nightly sync with upstream main branch (Commit: 50fec11)

@@ -8,7 +8,7 @@
 
 Name:           caelestia-cli-mango
 Version:        2.0.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The main control script for the Caelestia dotfiles (MangoWM)
 
 License:        GPL-3.0-only
@@ -36,7 +36,9 @@ Requires:       grim
 Requires:       slurp
 # Clipboard
 Requires:       wl-clipboard
-Requires:       cliphist
+# cliphist is only packaged in Fedora >= 44; keep F43 installable (clipboard
+# history is a helper feature - hard-failing the install on F43 is worse)
+Requires:       (cliphist if fedora-release >= 44)
 Requires:       fuzzel
 # Launcher
 Requires:       app2unit
@@ -82,6 +84,10 @@ install -Dpm 0644 completions/caelestia.fish %{buildroot}%{_datadir}/fish/vendor
 %license LICENSE
 
 %changelog
+* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0-3
+- Make cliphist a conditional requirement (cliphist only exists in Fedora >= 44;
+  without this the package is uninstallable on Fedora 43)
+
 * Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0-2
 - Add BuildRequires: python3-pip (COPR %pyproject_wheel failed: no pip module in buildroot)
 
