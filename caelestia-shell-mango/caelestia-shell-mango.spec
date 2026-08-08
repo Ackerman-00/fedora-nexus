@@ -7,8 +7,8 @@
 # other Wayland compositors (Hyprland, Sway, Niri, etc.).
 
 Name:           caelestia-shell-mango
-Version:        1.0.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Version:        2.0.0
+Release:        1%{?dist}
 Summary:        Desktop shell for MangoWM
 
 License:        GPL-3.0-only
@@ -42,15 +42,31 @@ Requires:       quickshell-git
 Requires:       app2unit
 # Audio
 Requires:       pipewire
+# Audio visualiser (beattracker links libaubio.so.5; pulls fftw + portaudio transitively)
+Requires:       aubio-lib
+Requires:       libcava
+# Monitor brightness (DDC) for displays without a backlight interface
+Requires:       ddcutil
+# Colour scheme/wallpaper/record via the CLI (services/Colours.qml, Wallpapers.qml,
+# modules/controlcenter/appearance, launcher Schemes.qml, utils/SysInfo.qml)
+Recommends:     caelestia-cli-mango >= 2.0.0
 # Network
 Requires:       NetworkManager
 # Hardware monitoring
 Requires:       lm_sensors
-# Audio visualiser
-Requires:       libcava
+# Clipboard manager (modules/launcher/services/Clipboard.qml)
+Requires:       cliphist
+# Screen recording (modules/utilities/Content.qml record card)
+Requires:       gpu-screen-recorder
 # Screenshot
 Requires:       swappy
 Requires:       wl-clipboard
+# Active-window preview (components/images/MangoWindow.qml: grim -T <toplevel>)
+Requires:       grim
+# VPN status (services/VPN.qml: ip link show)
+Requires:       iproute
+# Keyboard layout switching (modules/bar/popouts/kblayout/KbLayoutModel.qml)
+Requires:       setxkbmap
 # Notifications
 Requires:       libnotify
 # Process monitoring
@@ -102,7 +118,7 @@ export CXXFLAGS="%{optflags} -ffat-lto-objects"
     -DINSTALL_LIBDIR=%{_libdir}/caelestia \
     -DINSTALL_QMLDIR=%{_qt6_qmldir} \
     -DINSTALL_QSCONFDIR=%{_datadir}/caelestia-shell \
-    -DVERSION=1.0.0 \
+    -DVERSION=2.0.0 \
     -DGIT_REVISION=%{shortcommit} \
     -DDISTRIBUTOR=fedora-copr
 
@@ -155,6 +171,12 @@ fi
 %{_datadir}/caelestia-shell/utils/
 
 %changelog
+* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0-1
+- Release 2.0.0 (tagged v2.0.0 in caelestia-shell-mango).
+- Fix runtime deps: add aubio-lib (beattracker links libaubio.so.5), cliphist
+  (clipboard manager), ddcutil (monitor brightness), gpu-screen-recorder
+  (record card). portaudio/fftw come transitively via libcava/aubio-lib.
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 1.0.0^20260712195454gitbd43cb2-2
 - Rebuild against libcava 1.0.0 (soname bump to libcava.so.1 fixes install conflict with old libcava 0.10.7)
 
