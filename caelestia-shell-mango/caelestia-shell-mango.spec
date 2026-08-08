@@ -1,14 +1,14 @@
 # These will be automatically populated by update.sh
-%global commit          50fec11b9a3ad083a68d9727098094f52a827335
+%global commit          1c2a34359c4258d38c9d78496735a44dc24b57bd
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260808162358
+%global gitdate         20260808172149
 
 # NOTE: This package is for MangoWM only. It will NOT work with
 # other Wayland compositors (Hyprland, Sway, Niri, etc.).
 
 Name:           caelestia-shell-mango
 Version:        2.0.0
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Desktop shell for MangoWM
 
 License:        GPL-3.0-only
@@ -172,9 +172,5 @@ fi
 %{_datadir}/caelestia-shell/utils/
 
 %changelog
-* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260808162358git50fec11-2
-- Make cliphist a conditional requirement (cliphist only exists in Fedora >= 44;
-  without this the package is uninstallable on Fedora 43)
-
-* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260808162358git50fec11-1
-- Nightly sync with upstream main branch (Commit: 50fec11)
+* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260808172149git1c2a343-1
+- Nightly sync with upstream main branch (Commit: 1c2a343)
