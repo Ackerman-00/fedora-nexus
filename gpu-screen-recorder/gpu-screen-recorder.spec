@@ -1,6 +1,6 @@
 Name:           gpu-screen-recorder
 Version:        6.0.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A shadowplay-like screen recorder for Linux. The fastest screen recorder for Linux
 
 License:        GPL-3.0-or-later
@@ -48,6 +48,12 @@ Requires:       vulkan-loader
 # dlopen()ed at runtime by src/image_writer.c for JPEG screenshots; the code
 # falls back to the bundled stb encoder if absent, so this is optional.
 Recommends:     turbojpeg
+# Used only by the optional helper scripts shipped in
+# %{_datadir}/gpu-screen-recorder/scripts: xdotool (window selection, 5
+# scripts), pactl (list-sinks.sh) and ffmpeg (twitch-stream-local-copy.sh).
+Recommends:     xdotool
+Recommends:     /usr/bin/pactl
+Recommends:     (ffmpeg or ffmpeg-free)
 
 %description
 GPU Screen Recorder is a shadowplay-like screen recorder for Linux. It can
@@ -87,6 +93,15 @@ on both X11 and Wayland.
 /usr/lib/modprobe.d/gsr-nvidia.conf
 
 %changelog
+* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 6.0.0-3
+- Recommend the helper tools the shipped scripts in
+  %%{_datadir}/gpu-screen-recorder/scripts actually invoke but which nothing
+  pulled in: xdotool (used by interactive.sh, record-application-name.sh,
+  record-save-application-name.sh, replay-application-name.sh and
+  toggle-recording-selected.sh), /usr/bin/pactl (list-sinks.sh) and ffmpeg
+  (twitch-stream-local-copy.sh). Weak deps because the main recorder works
+  without them.
+
 * Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 6.0.0-2
 - Declare gsr-kms-server's CAP_SYS_ADMIN with %%caps() in %%files instead of
   running setcap from %%post. The scriptlet changed the file behind rpm's
