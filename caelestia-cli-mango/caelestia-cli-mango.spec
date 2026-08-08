@@ -8,7 +8,7 @@
 
 Name:           caelestia-cli-mango
 Version:        2.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The main control script for the Caelestia dotfiles (MangoWM)
 
 License:        GPL-3.0-only
@@ -20,6 +20,7 @@ BuildArch:      noarch
 BuildRequires:  python3-devel
 BuildRequires:  pyproject-rpm-macros
 BuildRequires:  python3-hatchling
+BuildRequires:  python3-pip
 
 # === RUNTIME DEPENDENCIES ===
 # Compositor (MangoWM only!)
@@ -81,6 +82,9 @@ install -Dpm 0644 completions/caelestia.fish %{buildroot}%{_datadir}/fish/vendor
 %license LICENSE
 
 %changelog
+* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0-2
+- Add BuildRequires: python3-pip (COPR %pyproject_wheel failed: no pip module in buildroot)
+
 * Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0-1
 - Initial package (commit 5c443b5): MangoWM port of caelestia CLI.
   Requires python3-materialyoucolor for scheme generation.
