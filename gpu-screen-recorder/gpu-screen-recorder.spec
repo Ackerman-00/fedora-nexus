@@ -1,6 +1,6 @@
 Name:           gpu-screen-recorder
 Version:        6.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A shadowplay-like screen recorder for Linux. The fastest screen recorder for Linux
 
 License:        GPL-3.0-or-later
@@ -45,7 +45,9 @@ Requires:       libxcb
 Requires:       pulseaudio-libs
 Requires:       libwayland-client
 Requires:       vulkan-loader
-Requires(post): libcap
+# dlopen()ed at runtime by src/image_writer.c for JPEG screenshots; the code
+# falls back to the bundled stb encoder if absent, so this is optional.
+Recommends:     turbojpeg
 
 %description
 GPU Screen Recorder is a shadowplay-like screen recorder for Linux. It can
@@ -63,12 +65,6 @@ on both X11 and Wayland.
 %install
 %meson_install
 
-%post
-# Grant gsr-kms-server the admin capability so monitor capture works without
-# a password prompt (KMS backend, no desktop portal). Best-effort; ignored if
-# the filesystem does not support capabilities.
-setcap cap_sys_admin+ep %{_bindir}/gsr-kms-server 2>/dev/null || true
-
 %check
 %meson_test || true
 
@@ -77,7 +73,11 @@ setcap cap_sys_admin+ep %{_bindir}/gsr-kms-server 2>/dev/null || true
 %doc README.md
 %{_bindir}/gpu-screen-recorder
 %{_bindir}/gsr-cli
-%{_bindir}/gsr-kms-server
+# gsr-kms-server needs CAP_SYS_ADMIN so monitor capture works without a
+# password prompt (KMS backend, no desktop portal). Declaring it via %%caps
+# keeps the capability in rpm's own file metadata, so "rpm -V" stays clean;
+# a %%post setcap would set it behind rpm's back and always report "P".
+%caps(cap_sys_admin=ep) %{_bindir}/gsr-kms-server
 %{_includedir}/gsr/plugin.h
 %{_datadir}/gpu-screen-recorder
 %{_mandir}/man1/gpu-screen-recorder.1*
@@ -87,6 +87,16 @@ setcap cap_sys_admin+ep %{_bindir}/gsr-kms-server 2>/dev/null || true
 /usr/lib/modprobe.d/gsr-nvidia.conf
 
 %changelog
+* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 6.0.0-2
+- Declare gsr-kms-server's CAP_SYS_ADMIN with %%caps() in %%files instead of
+  running setcap from %%post. The scriptlet changed the file behind rpm's
+  back, so every install left "rpm -V gpu-screen-recorder" reporting
+  "........P /usr/bin/gsr-kms-server". Drops the now-unneeded
+  Requires(post): libcap.
+- Recommend turbojpeg: src/image_writer.c dlopen()s libturbojpeg.so.0 for
+  fast JPEG screenshot output and falls back to the bundled stb encoder when
+  it is absent, so it is optional rather than a hard Requires.
+
 * Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 6.0.0-1
 - Update to version 6.0.0
 - 6.0.0 ships a new gsr-cli binary + man page; add to %files (fixes
