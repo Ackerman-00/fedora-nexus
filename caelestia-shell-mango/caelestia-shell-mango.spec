@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          bd43cb21fd614877058adfd028e226684321fa2d
+%global commit          50fec11b9a3ad083a68d9727098094f52a827335
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260712195454
+%global gitdate         20260808162358
 
 # NOTE: This package is for MangoWM only. It will NOT work with
 # other Wayland compositors (Hyprland, Sway, Niri, etc.).
@@ -171,14 +171,5 @@ fi
 %{_datadir}/caelestia-shell/utils/
 
 %changelog
-* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0-1
-- Release 2.0.0 (tagged v2.0.0 in caelestia-shell-mango).
-- Fix runtime deps: add aubio-lib (beattracker links libaubio.so.5), cliphist
-  (clipboard manager), ddcutil (monitor brightness), gpu-screen-recorder
-  (record card). portaudio/fftw come transitively via libcava/aubio-lib.
-
-* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 1.0.0^20260712195454gitbd43cb2-2
-- Rebuild against libcava 1.0.0 (soname bump to libcava.so.1 fixes install conflict with old libcava 0.10.7)
-
-* Sun Jul 12 2026 Ackerman-00 <quietcraft@gmail.com> - 1.0.0^20260712195454gitbd43cb2-1
-- Nightly sync with upstream main branch (Commit: bd43cb2)
+* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260808162358git50fec11-1
+- Nightly sync with upstream main branch (Commit: 50fec11)
