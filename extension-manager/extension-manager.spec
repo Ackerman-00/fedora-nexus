@@ -65,7 +65,7 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{uuid}.desktop
 %{_datadir}/icons/hicolor/*/*/*.svg
 
 %changelog
-* Mon Aug 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.5-2
+* Tue Aug 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.5-2
 - Add missing runtime dependency: vulkan-loader (libvulkan.so.1)
 
 * Wed Apr 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.5-1
