@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          8d135d3b2854b30fd01ea6cd6c27e523dd50a839
+%global commit          3bc915f09dd62bb2651a715114f9d140344bc6c1
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260722002452
+%global gitdate         20260808203058
 
 Name:           xwayland-satellite-git
 Epoch:          1
@@ -76,9 +76,5 @@ install -Dpm0644 resources/xwayland-satellite.service -t %{buildroot}%{_userunit
 %{_userunitdir}/xwayland-satellite.service
 
 %changelog
-* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1:0.8.2^20260722002452git8d135d3-1
-- Bump Epoch to 1 so current ^gitdate snapshots sort above the legacy
-  2026MMDD-dated builds (dnf was installing the stale 20260525 snapshot)
-
-* Wed Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.2^20260722002452git8d135d3-1
-- Nightly sync with upstream main branch (Commit: 8d135d3)
+* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.2^20260808203058git3bc915f-1
+- Nightly sync with upstream main branch (Commit: 3bc915f)
