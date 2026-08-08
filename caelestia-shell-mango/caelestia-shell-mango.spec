@@ -7,7 +7,7 @@
 # other Wayland compositors (Hyprland, Sway, Niri, etc.).
 
 Name:           caelestia-shell-mango
-Version:        2.0.0
+Version:        2.0.0^%{gitdate}git%{shortcommit}
 Release:        1%{?dist}
 Summary:        Desktop shell for MangoWM
 
@@ -173,4 +173,6 @@ fi
 
 %changelog
 * Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260808172149git1c2a343-1
+- Switch NVR to caret version (BASE^gitdategitSHORT) so refreshed-commit builds
+  sort above the previous release (fixes dnf never upgrading past 2.0.0-2).
 - Nightly sync with upstream main branch (Commit: 1c2a343)

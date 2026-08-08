@@ -35,7 +35,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 56 packages</summary>
+<summary>Click to expand — 58 packages</summary>
 
 <br />
 
@@ -45,6 +45,7 @@ sudo dnf install <package-name>
 | `aquamarine` | Light-weight rendering backend library for Hyprland | Stable |
 | `awww` | Efficient animated wallpaper daemon for Wayland, controlled at runtime | Stable |
 | `bibata-cursor-theme` | Open source, compact, and material designed cursor set | Stable |
+| `caelestia-cli-mango` | The main control script for the Caelestia dotfiles (MangoWM) | Stable |
 | `caelestia-shell-mango` | Desktop shell for MangoWM | Stable |
 | `cascadia-code-nerd-fonts` | Cascadia Code patched with Nerd Fonts icons | Stable |
 | `extension-manager` | Native tool for browsing and managing GNOME Shell Extensions | Stable |
@@ -86,6 +87,7 @@ sudo dnf install <package-name>
 | `obsidian` | Knowledge base over a local folder of plain-text Markdown files | Stable |
 | `opencode-desktop` | Open source AI coding agent | Stable |
 | `protonplus` | Modern compatibility tools manager | Stable |
+| `python3-materialyoucolor` | Material You color generation algorithms (pure Python + C++ quantizer) | Stable |
 | `quickshell-git` | Flexible toolkit for desktop shells with QtQuick (Git Snapshot) | Git |
 | `rootapp` | Discord alternative for gaming communities and large online groups | Stable |
 | `scenefx` | Drop-in wlroots scene API replacement with eye-candy effects | Stable |
