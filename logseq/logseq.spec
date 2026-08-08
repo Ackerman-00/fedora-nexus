@@ -2,7 +2,7 @@
 
 Name:           logseq
 Version:        2.0.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A privacy-first, local-first platform for knowledge management and collaboration
 
 License:        AGPL-3.0-only
@@ -108,6 +108,12 @@ install -m644 %{SOURCE1} %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/logs
 %{_datadir}/icons/hicolor/512x512/apps/logseq.png
 
 %changelog
+* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.1-3
+- Correct changelog bookkeeping: the Aug 05 check-rpaths entry was labelled
+  2.0.1-2 although the spec's Release was still 1 at that commit (89a9846),
+  which left two different entries claiming 2.0.1-2. Relabelled to 2.0.1-1
+  so each entry names the Release it actually shipped as.
+
 * Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.1-2
 - Add Requires: libaio. The bundled @zvec/bindings-linux-x64 DiskANN plugin
   (resources/app.asar.unpacked/node_modules/@zvec/bindings-linux-x64/
@@ -118,9 +124,7 @@ install -m644 %{SOURCE1} %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/logs
   automatically. Provider confirmed with
   dnf repoquery --whatprovides 'libaio.so.1()(64bit)' -> libaio
 
-* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.1-2
-- Fix build: strip build-machine RUNPATH from bundled @zvec native addon
-  (check-rpaths 0002); add BuildRequires binutils/patchelf
-
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.1-1
 - Initial package: Logseq 2.0.1 (DB version), official Linux x86_64 payload
+- Fix build: strip build-machine RUNPATH from bundled @zvec native addon
+  (check-rpaths 0002); add BuildRequires binutils/patchelf
