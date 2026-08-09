@@ -24,6 +24,17 @@ CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 
 if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     echo "Update found: $CURRENT_VERSION -> $LATEST_VERSION"
+
+    # A release can exist before all of its assets finished uploading (nerd-fonts
+    # publishes ~70 archives one by one). Bumping onto a version whose archive is
+    # missing pins a Source0 that 404s and breaks every rebuild of that NVR.
+    ASSET_URL="https://github.com/$GITHUB_REPO/releases/download/v${LATEST_VERSION}/CascadiaCode.tar.xz"
+    echo "  -> [CHECK] Verifying $ASSET_URL"
+    if ! curl --output /dev/null --silent --location --head --fail "$ASSET_URL"; then
+        echo "  -> [SKIP] Release asset for $LATEST_TAG is not published (yet). Keeping $CURRENT_VERSION."
+        exit 0
+    fi
+
     sed -i "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 

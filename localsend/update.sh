@@ -23,6 +23,16 @@ CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     echo "Update found: $CURRENT_VERSION -> $LATEST_VERSION"
 
+    # A tag can exist before its release asset is uploaded (and upstreams do
+    # delete assets when re-running a release). Bumping onto a tag whose .deb is
+    # missing pins a Source0 that 404s and breaks every rebuild of that NVR.
+    DEB_URL="https://github.com/$GITHUB_REPO/releases/download/$LATEST_TAG/LocalSend-$LATEST_VERSION-linux-x86-64.deb"
+    echo "  -> [CHECK] Verifying $DEB_URL"
+    if ! curl --output /dev/null --silent --location --head --fail "$DEB_URL"; then
+        echo "  -> [SKIP] Release asset for $LATEST_TAG is not published (yet). Keeping $CURRENT_VERSION."
+        exit 0
+    fi
+
     # 1. Update the Version and Release fields
     sed -i -E "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"

@@ -25,6 +25,16 @@ fi
 
 echo "Updating: $CURRENT_VERSION -> $VERSION"
 
+# A tag can exist before its release asset is uploaded (and upstreams do delete
+# assets when re-running a release). Bumping onto a tag whose asset is missing
+# pins a Source0 that 404s and breaks every rebuild of that NVR.
+ASSET_URL="https://github.com/$GITHUB_REPO/releases/download/v${VERSION}/Bibata.tar.xz"
+echo "  -> [CHECK] Verifying $ASSET_URL"
+if ! curl --output /dev/null --silent --location --head --fail "$ASSET_URL"; then
+    echo "  -> [SKIP] Release asset for $LATEST_TAG is not published (yet). Keeping $CURRENT_VERSION."
+    exit 0
+fi
+
 sed -i "s/^Version:.*/Version:        $VERSION/" "$SPEC_FILE"
 sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
