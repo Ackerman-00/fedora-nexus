@@ -12,13 +12,13 @@
 %global             __requires_exclude ^lib(gkcodecs|lgpllibs|mozavutil|mozgtk|mozsandbox|mozsqlite3|mozwayland)\\.so.*$
 
 Name:               zen-browser
-Version:        1.21.13b
-Release:        1%{?dist}
+Version:        1.21.12b
+Release:        3%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPLv2.0
 URL:                https://github.com/zen-browser/desktop
-Source0:            https://github.com/zen-browser/desktop/releases/download/1.21.13b/zen.linux-x86_64.tar.xz
+Source0:            https://github.com/zen-browser/desktop/releases/download/1.21.12b/zen.linux-x86_64.tar.xz
 Source1:            %{full_name}.desktop
 Source2:            policies.json
 Source3:            %{full_name}
@@ -90,5 +90,9 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
-* Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.21.13b-1
-- Auto-update to upstream release 1.21.13b
+* Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.21.12b-3
+- Fix wrong version: upstream deleted the 1.21.13b release (tag, release
+  record and source assets all removed); Source0 for 1.21.13b 404s, so any
+  rebuild would fail. Revert to current upstream latest 1.21.12b (release
+  assets verified present). Bump Release 1 -> 3 (1.21.12b-1/-2 already
+  built) so the NVR is new and ships.
