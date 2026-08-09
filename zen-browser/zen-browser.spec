@@ -12,13 +12,13 @@
 %global             __requires_exclude ^lib(gkcodecs|lgpllibs|mozavutil|mozgtk|mozsandbox|mozsqlite3|mozwayland)\\.so.*$
 
 Name:               zen-browser
-Version:        1.21.12b
-Release:        2%{?dist}
+Version:        1.21.13b
+Release:        1%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPLv2.0
 URL:                https://github.com/zen-browser/desktop
-Source0:            https://github.com/zen-browser/desktop/releases/download/1.21.12b/zen.linux-x86_64.tar.xz
+Source0:            https://github.com/zen-browser/desktop/releases/download/1.21.13b/zen.linux-x86_64.tar.xz
 Source1:            %{full_name}.desktop
 Source2:            policies.json
 Source3:            %{full_name}
@@ -90,14 +90,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
-* Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 1.21.12b-2
-- Stop leaking the bundled Gecko runtime under /opt/zen as system-wide RPM
-  Provides (libxul.so, libnss3.so, libnspr4.so, libssl3.so, libsmime3.so,
-  libsoftokn3.so, libfreeblpriv3.so, libmozav*, libonnxruntime.so.1, ...).
-  With the nexus repo enabled, dnf could resolve an unrelated dependency on
-  e.g. libnss3.so with the whole browser instead of Fedora's nss. Add
-  __provides_exclude_from for /opt/zen and exclude the seven internal-only
-  auto-Requires that were previously satisfied by those leaked Provides.
-
-* Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 1.21.12b-1
-- Auto-update to upstream release 1.21.12b
+* Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.21.13b-1
+- Auto-update to upstream release 1.21.13b
