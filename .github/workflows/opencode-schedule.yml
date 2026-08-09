@@ -492,6 +492,26 @@ jobs:
                   blocked-(reason). Any package you changed but did not
                   install-test is an unfinished package.
 
+            KNOWN COPR BUG - IGNORE, DO NOT REPORT (MANDATORY). The published
+            COPR repodata for ackerman/nexus contains ghost RPMs from a
+            deleted package: noctalia-shell and noctalia-qs (+ their -debug*
+            subpackages), leftover on COPR's storage after the package records
+            were deleted. They exist in NO git directory, NO COPR package
+            record, and NO COPR build record - they are not our packages and
+            cannot be fixed or deleted from our side (no owner-level COPR
+            access exists in CI, and COPR only deletes what its DB still
+            knows about). They will eventually require a COPR admin purge.
+              a. NEVER try to install, download, delete, rebuild, or "fix"
+                 noctalia-* in any sweep. Treat them as absent.
+              b. NEVER open an issue or report about noctalia-* (or any
+                 ghost/orphan RPM in the COPR repodata) - this is a known,
+                 acknowledged COPR infrastructure bug, not a repo problem.
+              c. If issue #7 ("Stale noctalia-shell / noctalia-qs packages
+                 in COPR") is still open, CLOSE it as "not our bug - COPR
+                 infrastructure issue; owner declined to pursue admin purge".
+              d. The install-verification sweep must test every package the
+                 git repo ships - never the ghost RPMs COPR leaks.
+
             CURRENT FEDORA RELEASES - DISCOVER EVERY RUN, NEVER HARDCODE.
             The Fedora lifecycle rotates twice a year: a new release GA's
             every ~6 months, the N-2 release goes EOL ~1 month after the
