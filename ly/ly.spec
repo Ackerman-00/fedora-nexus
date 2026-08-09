@@ -93,6 +93,26 @@ install -pm0644 zig-pkg/%{termbox2_hash}/LICENSE %{buildroot}%{_licensedir}/ly/L
 %{_sbindir}/semanage fcontext -m -t xdm_exec_t %{_bindir}/ly 2>/dev/null || :
 %{_sbindir}/restorecon %{_bindir}/ly 2>/dev/null || :
 
+# One-time enable instructions on fresh installs (not on upgrades)
+if [ "$1" -eq 1 ]; then
+    echo
+    echo "================================================================"
+    echo "  ly is installed but NOT enabled as your display manager yet."
+    echo
+    echo "  Enable it with:"
+    echo "    sudo systemctl enable ly@tty2.service"
+    if [ "$(systemctl get-default 2>/dev/null)" = "multi-user.target" ]; then
+        echo "  Your system boots to multi-user.target - switch to graphical.target:"
+        echo "    sudo systemctl set-default graphical.target"
+    fi
+    echo "  Start it right away with:"
+    echo "    sudo systemctl start ly@tty2.service"
+    echo
+    echo "  Tip: disable getty on the same tty to avoid conflicts:"
+    echo "    sudo systemctl disable getty@tty2.service"
+    echo "================================================================"
+fi
+
 %preun
 %systemd_preun ly@.service ly-kmsconvt@.service
 
@@ -132,3 +152,6 @@ fi
   systemd service scriptlets, SELinux xdm_exec_t fcontext rule
 - br: zig-srpm-macros dropped (Fedora 43/44 ship only zig-rpm-macros; its
   sole macro %%zig_arches is already provided there)
+- %post prints one-time enable instructions on fresh install
+  (systemctl enable ly@tty2.service, graphical.target hint when default
+  target is multi-user, getty@tty2 disable tip)
