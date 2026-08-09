@@ -6,7 +6,7 @@ API_URL="https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm"
 
 echo "Checking for upstream updates..."
 
-VERSION=$(curl -sI "$API_URL" | grep -i "^X-Fluxer-Version:" | awk '{print $2}' | tr -d '\r')
+VERSION=$(curl -sI --max-time 15 -A "Mozilla/5.0" "$API_URL" | grep -i "^X-Fluxer-Version:" | awk '{print $2}' | tr -d '\r')
 
 if [ -z "$VERSION" ]; then
     echo "Error: Failed to fetch upstream version."
