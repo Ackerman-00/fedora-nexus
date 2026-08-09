@@ -7,7 +7,7 @@
 
 Name:           ly
 Version:        1.4.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Lightweight TUI display manager
 
 License:        WTFPL AND MIT
@@ -145,6 +145,11 @@ fi
 %config(noreplace) %{_sysconfdir}/ly/lang/*.ini
 
 %changelog
+* Mon Aug 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.1-2
+- Release bump for the %post one-time enable-instructions message added by
+  the owner; with Release still at 1 the NVR was identical to the already
+  built 1.4.1-1 and COPR canceled the rebuild (fix would never ship).
+
 * Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.1-1
 - Initial package: ly 1.4.1 (Zig rewrite line, built with zig 0.16)
 - Modeled on the Fedora rawhide ly spec: bundled Zig deps via upstream
@@ -152,6 +157,3 @@ fi
   systemd service scriptlets, SELinux xdm_exec_t fcontext rule
 - br: zig-srpm-macros dropped (Fedora 43/44 ship only zig-rpm-macros; its
   sole macro %%zig_arches is already provided there)
-- %post prints one-time enable instructions on fresh install
-  (systemctl enable ly@tty2.service, graphical.target hint when default
-  target is multi-user, getty@tty2 disable tip)
