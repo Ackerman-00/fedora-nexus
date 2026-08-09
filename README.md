@@ -35,7 +35,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 59 packages</summary>
+<summary>Click to expand — 61 packages</summary>
 
 <br />
 
@@ -53,6 +53,7 @@ sudo dnf install <package-name>
 | `fluxer` | Free and open source instant messaging and VoIP platform | Stable |
 | `glaze` | Extremely fast, in memory, JSON and interface library | Stable |
 | `gpu-screen-recorder` | Shadowplay-like screen recorder for Linux (NVIDIA/AMD/Intel) | Stable |
+| `helium-browser` | Private, fast, and honest web browser | Stable |
 | `heroic-games-launcher` | Open source launcher for GOG, Epic, and Amazon Games | Stable |
 | `hyprcursor` | The hyprland cursor format, library and utilities | Stable |
 | `hyprgraphics` | Hyprland graphics / resource utilities | Stable |
@@ -79,6 +80,7 @@ sudo dnf install <package-name>
 | `libcava` | Fork of CAVA built as a shared library | Stable |
 | `localsend` | Open source cross-platform AirDrop alternative | Stable |
 | `logseq` | Privacy-first, local-first knowledge management and collaboration platform | Stable |
+| `ly` | Lightweight TUI display manager | Stable |
 | `mangowm` | Modern, lightweight, high-performance Wayland compositor built on dwl | Stable |
 | `material-symbols-fonts` | Material Symbols variable icon font by Google | Stable |
 | `matugen` | Material You color generation tool | Stable |
