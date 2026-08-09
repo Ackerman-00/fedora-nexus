@@ -22,7 +22,19 @@ CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 
 if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     echo "Update found: $CURRENT_VERSION -> $LATEST_VERSION"
-    
+
+    # A tag can exist long before (or after) its release assets do: zen's release
+    # workflow pushes the tag first and uploads the tarball at the end, and it has
+    # been observed DELETING the assets when a release build is re-run. Bumping on
+    # a tag whose asset is missing produces a spec whose Source0 404s, so every
+    # COPR rebuild of that NVR fails. Only bump once the tarball really exists.
+    TARBALL_URL="https://github.com/$GITHUB_REPO/releases/download/$LATEST_TAG/zen.linux-x86_64.tar.xz"
+    echo "  -> [CHECK] Verifying $TARBALL_URL"
+    if ! curl --output /dev/null --silent --location --head --fail "$TARBALL_URL"; then
+        echo "  -> [SKIP] Release assets for $LATEST_TAG are not published (yet). Keeping $CURRENT_VERSION."
+        exit 0
+    fi
+
     # 1. Update the Version and Release fields
     sed -i -E "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
