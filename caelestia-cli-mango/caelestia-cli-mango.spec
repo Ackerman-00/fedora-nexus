@@ -1,14 +1,19 @@
 # These will be automatically populated by update.sh
-%global commit          5c443b504b355dfe16c015144b60d96e4074413c
+%global commit          875edaa232583b024d6eaab841291a232d953d2a
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260808212545
+%global gitdate         20260809020901
+
+# Upstream has no releases/tags; it is tracked by commit. The python project
+# version (pyproject.toml) stays 2.0.0, so the .dist-info directory is named
+# after %%{pyver}, NOT the rpm %%{version} (which carries the ^gitdate suffix).
+%global pyver           2.0.0
 
 # NOTE: This package is for MangoWM only. It will NOT work with
 # Hyprland setups (no Hyprland IPC coupling; uses mmsg).
 
 Name:           caelestia-cli-mango
-Version:        2.0.0
-Release:        3%{?dist}
+Version:        %{pyver}^%{gitdate}git%{shortcommit}
+Release:        1%{?dist}
 Summary:        The main control script for the Caelestia dotfiles (MangoWM)
 
 License:        GPL-3.0-only
@@ -78,12 +83,20 @@ install -Dpm 0644 completions/caelestia.fish %{buildroot}%{_datadir}/fish/vendor
 %files
 %{_bindir}/caelestia
 %{python3_sitelib}/caelestia/
-%{python3_sitelib}/caelestia-%{version}.dist-info/
+%{python3_sitelib}/caelestia-%{pyver}.dist-info/
 %{_datadir}/fish/vendor_completions.d/caelestia.fish
 %doc README.md
 %license LICENSE
 
 %changelog
+* Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260809020901git875edaa-1
+- Switch to the commit-tracking caret version scheme (2.0.0^<gitdate>git<sha>).
+  Upstream has no releases/tags, so the auto-updater's GitHub-release scanner
+  returned 404 and the pinned commit could never be refreshed; the package was
+  frozen at 5c443b5. Add the missing update.sh so new commits are picked up.
+- dist-info path now uses %%{pyver} (pyproject version stays 2.0.0).
+- Sync to commit 875edaa (emoji data update).
+
 * Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0-3
 - Make cliphist a conditional requirement (cliphist only exists in Fedora >= 44;
   without this the package is uninstallable on Fedora 43)
