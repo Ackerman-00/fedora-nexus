@@ -112,7 +112,7 @@ sudo dnf install <package-name>
 No extra steps — packages update with your system:
 
 ```bash
-sudo dnf upgrade
+sudo dnf update --refresh
 ```
 
 ---
