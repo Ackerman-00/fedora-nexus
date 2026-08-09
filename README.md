@@ -35,7 +35,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 58 packages</summary>
+<summary>Click to expand — 59 packages</summary>
 
 <br />
 
@@ -48,6 +48,7 @@ sudo dnf install <package-name>
 | `caelestia-cli-mango` | The main control script for the Caelestia dotfiles (MangoWM) | Stable |
 | `caelestia-shell-mango` | Desktop shell for MangoWM | Stable |
 | `cascadia-code-nerd-fonts` | Cascadia Code patched with Nerd Fonts icons | Stable |
+| `cliphist` | Wayland clipboard manager with support for multimedia | Stable |
 | `extension-manager` | Native tool for browsing and managing GNOME Shell Extensions | Stable |
 | `fluxer` | Free and open source instant messaging and VoIP platform | Stable |
 | `glaze` | Extremely fast, in memory, JSON and interface library | Stable |
