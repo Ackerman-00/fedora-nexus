@@ -13,7 +13,7 @@
 
 Name:           caelestia-cli-mango
 Version:        %{pyver}^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The main control script for the Caelestia dotfiles (MangoWM)
 
 License:        GPL-3.0-only
@@ -41,9 +41,9 @@ Requires:       grim
 Requires:       slurp
 # Clipboard
 Requires:       wl-clipboard
-# cliphist is only packaged in Fedora >= 44; keep F43 installable (clipboard
-# history is a helper feature - hard-failing the install on F43 is worse)
-Requires:       (cliphist if fedora-release >= 44)
+# cliphist is missing from Fedora 43, but this repo now ships it for every
+# supported release, so it can be required unconditionally again.
+Requires:       cliphist
 Requires:       fuzzel
 # Launcher
 Requires:       app2unit
@@ -89,6 +89,11 @@ install -Dpm 0644 completions/caelestia.fish %{buildroot}%{_datadir}/fish/vendor
 %license LICENSE
 
 %changelog
+* Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260809020901git875edaa-2
+- Require cliphist unconditionally again: this repo now packages cliphist
+  0.7.0 for every supported release, so the "(cliphist if fedora-release >= 44)"
+  guard silently left Fedora 43 users without clipboard history.
+
 * Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260809020901git875edaa-1
 - Switch to the commit-tracking caret version scheme (2.0.0^<gitdate>git<sha>).
   Upstream has no releases/tags, so the auto-updater's GitHub-release scanner
