@@ -1,0 +1,19 @@
+--- a/build.zig
++++ b/build.zig
+@@ -63,13 +63,15 @@
+ 
+     const exe = b.addExecutable(.{
+         .name = "ly",
+         .root_module = b.createModule(.{
+             .root_source_file = b.path("src/main.zig"),
+             .target = target,
+             .optimize = optimize,
+             .link_libc = true,
+         }),
+         .use_llvm = true,
+     });
++    exe.pie = true;
++
+ 
+     const ly_ui = b.dependency("ly_ui", .{
+         .target = target,
