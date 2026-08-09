@@ -2,14 +2,14 @@
 %global __requires_exclude_from ^/opt/Heroic/.*$
 %global __provides_exclude_from ^/opt/Heroic/.*$
 
-%global legendary_version 0.20.43
-%global gogdl_version 1.2.1
-%global nile_version 1.1.2
+%global legendary_version 0.21.0
+%global gogdl_version 1.3.0
+%global nile_version 1.2.0
 %global comet_version 0.2.0
 
 Name:           heroic-games-launcher
 Version:        2.22.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Open source launcher for GOG, Epic, and Amazon Games (Nexus Optimized)
 
 License:        GPL-3.0-only AND MIT AND BSD-3-Clause
@@ -103,6 +103,13 @@ find %{buildroot}/opt/Heroic -type f -name "*.a" -delete
 /opt/Heroic/
 
 %changelog
+* Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.1-4
+- Update to upstream 2.22.1 (the auto-updater bumped Version without a
+  changelog entry; Release continues from the already-published 2.22.1-3
+  so the upgrade path is not broken)
+- Refresh bundled() Provides to what the 2.22.1 artifact actually ships:
+  legendary 0.21.0, gogdl 1.3.0, nile 1.2.0 (comet unchanged at 0.2.0)
+
 * Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.0-3
 - Add missing runtime Requires declared by the upstream RPM (at-spi2-core,
   libnotify, libuuid, libXtst, xdg-utils)
