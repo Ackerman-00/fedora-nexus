@@ -6,7 +6,7 @@
 
 Name:           protonplus
 Version:        %{fileref}
-Release:        %autorelease
+Release:        2%{?dist}
 Summary:        A modern compatibility tools manager
 ExclusiveArch:  x86_64
 
@@ -19,13 +19,18 @@ BuildRequires:  meson >= 1.0.0
 BuildRequires:  vala
 BuildRequires:  desktop-file-utils
 BuildRequires:  libappstream-glib
+BuildRequires:  pkgconfig(appstream)
+BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(gee-0.8)
+BuildRequires:  pkgconfig(gio-unix-2.0)
 BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(gtk4)
 BuildRequires:  pkgconfig(json-glib-1.0)
 BuildRequires:  pkgconfig(libadwaita-1) >= 1.6
 BuildRequires:  pkgconfig(libarchive)
+BuildRequires:  pkgconfig(libnotify)
 BuildRequires:  pkgconfig(libsoup-3.0)
+BuildRequires:  pkgconfig(sdl3) >= 3.2.0
 
 Requires:       hicolor-icon-theme
 Requires:       vulkan-loader
@@ -58,4 +63,8 @@ ProtonPlus is a modern compatibility tools manager for Linux. It allows you to e
 %{_metainfodir}/%{app_id}.metainfo.xml
 
 %changelog
-%autochangelog
+* Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.0-2
+- Add missing BuildRequires for upstream 0.6.0 (sdl3, appstream, cairo,
+  gio-unix-2.0, libnotify); the auto-updater bumped the tag but the build
+  failed because meson could not find these new dependencies
+- Replace %autorelease with an explicit Release so the NVR changed
