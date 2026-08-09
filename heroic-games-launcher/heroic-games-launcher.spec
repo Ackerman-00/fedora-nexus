@@ -8,7 +8,7 @@
 %global comet_version 0.2.0
 
 Name:           heroic-games-launcher
-Version:        2.22.0
+Version:        2.22.1
 Release:        3%{?dist}
 Summary:        Open source launcher for GOG, Epic, and Amazon Games (Nexus Optimized)
 
