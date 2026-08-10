@@ -16,7 +16,6 @@ permissions:
   pull-requests: write
   issues: write
   actions: write
-  workflows: write
   id-token: write
 
 concurrency:
@@ -32,7 +31,6 @@ jobs:
       pull-requests: write
       issues: write
       actions: write
-      workflows: write
       id-token: write
     steps:
       - uses: actions/checkout@v6.1.0
@@ -113,14 +111,19 @@ jobs:
               succeeded / failed / canceled / skipped.
               Per-chroot states are under the build's "chroots" field (list of
               chroot objects, each with "name" like fedora-44-x86_64 and "state").
-            - TOKENS: `git push` authenticates with the OpenCode App token, which has
-              contents + workflows write, so you CAN modify .github/workflows/* and push
-              straight to main (a workflow step also configures global git credentials, so ALL
-              git pushes - including the action's own end-of-run branch push -
-              authenticate with GITHUB_TOKEN). `gh` commands use the runner's
-              GITHUB_TOKEN, which has
-              actions write (inspect/watch GitHub Actions runs), pull-requests write
-              (merge), and issues write (open/close). Just use `gh` normally. Always
+            - TOKENS & WORKFLOW-FILE RULE: `git push` authenticates with GITHUB_TOKEN, which has
+              contents, issues, pull-requests, and actions write, but NOT the `workflows`
+              scope: GitHub HARD-REJECTS any push or API write that creates or updates
+              files under .github/workflows/ even if the spec/other files in the same commit
+              are fine (error: "refusing to allow a GitHub App to create or update workflow
+              ... without workflows permission"). Also NEVER add `workflows: write` to a
+              workflow's permissions block - that key is INVALID for GITHUB_TOKEN and
+              GitHub's validator rejects the ENTIRE workflow file, killing every run of it.
+              If a workflow file genuinely needs changing: (a) describe the exact problem
+              in .opencode-relay.md and open an issue with the full diff in the body (the
+              owner applies it manually, as done for the SANE_TAG guard), or (b) propose it
+              in a README/relay note. Never attempt the push itself; it will always fail.
+              All other pushes (specs, README, relay, etc.) work normally - always
               `git fetch origin && git pull --rebase origin main` before pushing.
             - GIT IDENTITY (MANDATORY): git author identity is ALREADY configured in this
               environment as `opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com>`
@@ -1011,7 +1014,6 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
-      workflows: write
     steps:
       - uses: actions/checkout@v6.1.0
 
