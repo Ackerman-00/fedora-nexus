@@ -2,8 +2,8 @@
 %global debug_package %{nil}
 
 Name:           obsidian
-Version:        1.13.4
-Release:        3%{?dist}
+Version:        1.13.6
+Release:        1%{?dist}
 Summary:        A powerful knowledge base that works on top of a local folder of plain text Markdown files
 
 License:        Commercial
@@ -87,13 +87,5 @@ ln -sf /opt/Obsidian/obsidian %{buildroot}%{_bindir}/obsidian
 %doc %{_datadir}/doc/obsidian/
 
 %changelog
-* Mon Aug 03 2026 Ackerman-00 <quietcraft@gmail.com> - 1.13.4-3
-- Add missing runtime Requires mesa-libgbm (libgbm.so.1) needed by the
-  bundled Electron binary; caught by container install test
-
-* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1.13.4-2
-- Add missing runtime Requires declared by the upstream deb Depends (at-spi2-core,
-  libnotify, libsecret, libuuid, libXScrnSaver, libXtst, xdg-utils)
-
-* Thu Jul 30 2026 Ackerman-00 <quietcraft@gmail.com> - 1.13.4-1
-- Auto-updated to 1.13.4 via update.sh
+* Mon Aug 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.13.6-1
+- Auto-updated to 1.13.6 via update.sh
