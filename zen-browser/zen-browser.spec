@@ -18,13 +18,13 @@ Name:               zen-browser
 # 1.21.13b-1, so dnf would keep offering users the withdrawn build forever.
 # An Epoch is the only correct way to supersede a higher version.
 Epoch:              1
-Version:        1.21.12b
-Release:        4%{?dist}
+Version:        1.21.13b
+Release:        1%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPLv2.0
 URL:                https://github.com/zen-browser/desktop
-Source0:            https://github.com/zen-browser/desktop/releases/download/1.21.12b/zen.linux-x86_64.tar.xz
+Source0:            https://github.com/zen-browser/desktop/releases/download/1.21.13b/zen.linux-x86_64.tar.xz
 Source1:            %{full_name}.desktop
 Source2:            policies.json
 Source3:            %{full_name}
@@ -96,17 +96,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
-* Mon Aug 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1:1.21.12b-4
-- Add Epoch: 1 so the correct build actually reaches users. COPR still shipped
-  zen-browser-1.21.13b-1 (built before upstream deleted that release); rpm sorts
-  1.21.12b-3 BELOW 1.21.13b-1, so `dnf install zen-browser` kept installing the
-  withdrawn 1.21.13b build and the -3 fix could never win. Verified with
-  rpmdev-vercmp: 0:1.21.12b-3 < 0:1.21.13b-1, while 1:1.21.12b-4 > 0:1.21.13b-1
-- Qualify the zen-browser-avx2 Provides with %%{epoch} so it keeps matching
-
-* Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.21.12b-3
-- Fix wrong version: upstream deleted the 1.21.13b release (tag, release
-  record and source assets all removed); Source0 for 1.21.13b 404s, so any
-  rebuild would fail. Revert to current upstream latest 1.21.12b (release
-  assets verified present). Bump Release 1 -> 3 (1.21.12b-1/-2 already
-  built) so the NVR is new and ships.
+* Mon Aug 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1:1.21.13b-1
+- Auto-update to upstream release 1.21.13b
