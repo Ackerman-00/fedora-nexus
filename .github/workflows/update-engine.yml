@@ -69,6 +69,15 @@ jobs:
           if gh_token:
               headers['Authorization'] = f'token {gh_token}'
 
+          # An RPM Version may not contain '-' (rpm-version(7)); several of these specs
+          # derive Version straight from the upstream tag (%forgemeta -> %{fileref}), so
+          # a re-roll tag like "v0.6.1-1" produced an unparsable spec and a hard COPR
+          # failure (build 10841179). Only accept plain dotted release tags here.
+          SANE_TAG = re.compile(r'^v?[0-9]+(\.[0-9]+)*$')
+
+          def tag_is_sane(tag):
+              return bool(tag) and bool(SANE_TAG.match(tag))
+
           for spec in Path('.').rglob('*.spec'):
               if (spec.parent / 'update.sh').exists():
                   continue
@@ -96,6 +105,11 @@ jobs:
                   if res.status_code == 200:
                       latest_tag = res.json().get('tag_name', '')
                       latest_ver = latest_tag.lstrip('v')
+
+                      if not tag_is_sane(latest_tag):
+                          print(f"  -> [SKIP] upstream tag {latest_tag!r} is not a plain dotted version "
+                                f"(illegal in an RPM Version). Leaving spec untouched.")
+                          continue
 
                       new_content = content
                       changed = False
