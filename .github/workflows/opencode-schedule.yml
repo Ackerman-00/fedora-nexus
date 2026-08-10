@@ -73,6 +73,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELAY: ${{ github.event.inputs.relay || 'false' }}
           RUN_ID: ${{ github.run_id }}
+          GIT_AUTHOR_NAME: opencode-agent[bot]
+          GIT_AUTHOR_EMAIL: 41898282+opencode-agent[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: opencode-agent[bot]
+          GIT_COMMITTER_EMAIL: 41898282+opencode-agent[bot]@users.noreply.github.com
           PROMPT: |
             You are the FULLY AUTONOMOUS maintainer of fedora-nexus
             (https://github.com/Ackerman-00/fedora-nexus), a self-updating RPM
@@ -116,6 +120,15 @@ jobs:
               actions write (inspect/watch GitHub Actions runs), pull-requests write
               (merge), and issues write (open/close). Just use `gh` normally. Always
               `git fetch origin && git pull --rebase origin main` before pushing.
+            - GIT IDENTITY (MANDATORY): git author identity is ALREADY configured in this
+              environment as `opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com>`
+              (both via git config and GIT_AUTHOR_*/GIT_COMMITTER_* env vars). Before creating
+              ANY commit, reuse the existing identity as-is. NEVER run
+              `git config user.name` / `git config user.email`, NEVER invent or guess
+              noreply email addresses (e.g. opencode@users.noreply.github.com maps to a real
+              human's GitHub account and will misattribute your commits as that person), and
+              NEVER set a commit author that is not `opencode-agent[bot]`. Verify with
+              `git config --get user.name` / `git config --get user.email` if unsure.
 
             First, read this repository thoroughly: list every package directory, study
             the spec files and update.sh scripts (version/source URLs/checksums/macros),
