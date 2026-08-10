@@ -12,8 +12,14 @@
 %global             __requires_exclude ^lib(gkcodecs|lgpllibs|mozavutil|mozgtk|mozsandbox|mozsqlite3|mozwayland)\\.so.*$
 
 Name:               zen-browser
+# Upstream DELETED the 1.21.13b release after we had already shipped
+# zen-browser-1.21.13b-1 to COPR. Reverting the spec to the real current
+# release (1.21.12b) is not enough: 1.21.12b-3 sorts BELOW the withdrawn
+# 1.21.13b-1, so dnf would keep offering users the withdrawn build forever.
+# An Epoch is the only correct way to supersede a higher version.
+Epoch:              1
 Version:        1.21.12b
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPLv2.0
@@ -31,7 +37,7 @@ Recommends:         (gnome-browser-connector if gnome-shell)
 
 Requires(post):     gtk-update-icon-cache
 Conflicts:          zen-browser-avx2
-Provides:           zen-browser-avx2 = %{version}-%{release}
+Provides:           zen-browser-avx2 = %{epoch}:%{version}-%{release}
 Obsoletes:          zen-browser-avx2 < 1.0.2.b.3-3
 
 %description
@@ -90,6 +96,14 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
+* Mon Aug 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1:1.21.12b-4
+- Add Epoch: 1 so the correct build actually reaches users. COPR still shipped
+  zen-browser-1.21.13b-1 (built before upstream deleted that release); rpm sorts
+  1.21.12b-3 BELOW 1.21.13b-1, so `dnf install zen-browser` kept installing the
+  withdrawn 1.21.13b build and the -3 fix could never win. Verified with
+  rpmdev-vercmp: 0:1.21.12b-3 < 0:1.21.13b-1, while 1:1.21.12b-4 > 0:1.21.13b-1
+- Qualify the zen-browser-avx2 Provides with %%{epoch} so it keeps matching
+
 * Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.21.12b-3
 - Fix wrong version: upstream deleted the 1.21.13b release (tag, release
   record and source assets all removed); Source0 for 1.21.13b 404s, so any

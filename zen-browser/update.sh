@@ -38,6 +38,12 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     # 1. Update the Version and Release fields
     sed -i -E "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
+
+    # The spec carries Epoch: 1 because upstream once deleted a release we had
+    # already shipped (1.21.13b) and only an Epoch could supersede it. Keep the
+    # Epoch on every future bump - dropping it would make new builds sort BELOW
+    # the epoch'd ones and users would never get the update.
+    EPOCH=$(grep -E "^Epoch:" "$SPEC_FILE" | awk '{print $2}')
     
     # 2. Update the download URL path in the spec file with the RAW tag
     sed -i -E "s|download/[^/]+/zen.linux-x86_64.tar.xz|download/$LATEST_TAG/zen.linux-x86_64.tar.xz|g" "$SPEC_FILE"
@@ -47,7 +53,7 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     sed -i '/^%changelog/,$d' "$SPEC_FILE"
     {
         echo "%changelog"
-        echo "* $DATE $PACKAGER - $LATEST_VERSION-1"
+        echo "* $DATE $PACKAGER - ${EPOCH:+$EPOCH:}$LATEST_VERSION-1"
         echo "- Auto-update to upstream release $LATEST_TAG"
     } >> "$SPEC_FILE"
     
