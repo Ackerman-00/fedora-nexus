@@ -5,7 +5,7 @@
 
 Name:           opencode-desktop
 Version:        1.18.16
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open source AI coding agent
 
 License:        MIT
@@ -147,5 +147,22 @@ sed -i 's|^Exec=.*|Exec=%{_bindir}/opencode-desktop %U|' \
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
+* Mon Aug 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.16-2
+- Restore changelog entries lost by auto-updater (1.18.15-2 XDG fix docs)
+
 * Mon Aug 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.16-1
 - Auto-update to version 1.18.16
+
+* Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.15-2
+- Fix hard freeze when opening the project folder picker (GTK file dialog)
+- The freeze was caused by a broken XDG_DATA_DIRS (only flatpak dirs) which
+  disabled ALL gdk-pixbuf image decoding on Fedora 44 (glycin-based loaders):
+  GTK then hit a fatal assertion while rendering dialog icons and the app
+  deadlocked inside crashpad (uninterruptible D-state), requiring a reboot.
+- Launcher now always includes /usr/local/share:/usr/share in XDG_DATA_DIRS
+- Launcher starts graphical-session.target + xdg-desktop-portal if available
+- Ship systemd user drop-in allowing graphical-session.target to be started
+- Add Requires: xdg-desktop-portal, xdg-desktop-portal-gtk, glycin-libs
+
+* Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.15-1
+- Auto-update to version 1.18.15
