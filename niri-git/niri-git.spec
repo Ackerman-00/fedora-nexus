@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          97c96a13829ec74c83e976c2ea34e7cc717b02ec
+%global commit          464d45daa229f16934399ceb16e94783ed2c241c
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260810135827
+%global gitdate         20260810152026
 
 Name:           niri-git
 Epoch:          1
@@ -108,5 +108,5 @@ install -Dpm0644 _niri %{buildroot}%{_datadir}/zsh/site-functions/_niri
 %{_datadir}/zsh/site-functions/_niri
 
 %changelog
-* Mon Aug 10 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260810135827git97c96a1-1
-- Nightly sync with upstream main branch (Commit: 97c96a1)
+* Mon Aug 10 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260810152026git464d45d-1
+- Nightly sync with upstream main branch (Commit: 464d45d)
