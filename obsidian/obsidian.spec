@@ -3,7 +3,7 @@
 
 Name:           obsidian
 Version:        1.13.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A powerful knowledge base that works on top of a local folder of plain text Markdown files
 
 License:        Commercial
@@ -81,11 +81,16 @@ ln -sf /opt/Obsidian/obsidian %{buildroot}%{_bindir}/obsidian
 %defattr(-,root,root,-)
 %{_bindir}/obsidian
 /opt/Obsidian/
-%{_datadir}/applications/obsidian.desktop
+%{_datadir}/applications/%{app_id}.desktop
 %{_datadir}/icons/hicolor/*/apps/obsidian.png
 # Include doc directory if upstream continues to package it
 %doc %{_datadir}/doc/obsidian/
 
 %changelog
+* Mon Aug 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.13.6-2
+- Fix build for 1.13.6: upstream renamed the desktop file to
+  md.obsidian.Obsidian.desktop (was obsidian.desktop); bump Release to 2
+  so the fixed RPM gets built and shipped
+
 * Mon Aug 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.13.6-1
 - Auto-updated to 1.13.6 via update.sh
