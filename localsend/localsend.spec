@@ -5,12 +5,12 @@
 %global __brp_check_rpaths %{nil}
 
 # Prevent RPM from trying to auto-generate dependencies from the bundled Flutter libraries
-%global __requires_exclude_from ^/usr/share/localsend_app/.*$
-%global __provides_exclude_from ^/usr/share/localsend_app/.*$
+%global __requires_exclude_from ^%{_libdir}/localsend_app/.*$
+%global __provides_exclude_from ^%{_libdir}/localsend_app/.*$
 
 Name:           localsend
 Version:        1.18.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        An open source cross-platform alternative to AirDrop
 
 License:        GPL-3.0
@@ -45,7 +45,14 @@ extracts the upstream DEB payload.
 %setup -c -T
 # Rip open the upstream DEB natively
 ar x %{SOURCE0}
-tar xf data.tar.xz
+# Upstream switched from data.tar.xz (<=1.17.0) to data.tar.zst (>=1.18.0);
+# detect whichever data archive the .deb actually contains and extract it.
+for data_archive in data.tar.zst data.tar.xz data.tar.gz; do
+    if [ -f "$data_archive" ]; then
+        tar xf "$data_archive"
+        break
+    fi
+done
 
 %build
 # No compilation required for pre-built binaries
@@ -53,15 +60,22 @@ tar xf data.tar.xz
 %install
 rm -rf %{buildroot}
 
-# 1. Install the main application folder and standard desktop entries
+# 1. Install standard desktop entries and icons
 install -d -m 0755 %{buildroot}%{_datadir}
 cp -a usr/share/* %{buildroot}%{_datadir}/
 
-# 2. Create the launcher wrapper (upstream DEB ships no /usr/bin entry)
+# 2. Install the application tree (binary + bundled lib/ + data/).
+#    Upstream moved the app from usr/share/localsend_app (pre-1.18) to
+#    opt/localsend_app in v1.18.0. The binary uses $ORIGIN/lib RUNPATH, so
+#    the binary and its lib/ directory MUST stay adjacent.
+install -d -m 0755 %{buildroot}%{_libdir}
+cp -a opt/localsend_app %{buildroot}%{_libdir}/localsend_app
+
+# 3. Create the launcher wrapper (upstream DEB ships no /usr/bin entry)
 install -d -m 0755 %{buildroot}%{_bindir}
 cat <<-'EOF' > %{buildroot}%{_bindir}/localsend_app
 #!/bin/sh
-exec /usr/share/localsend_app/localsend_app "$@"
+exec %{_libdir}/localsend_app/localsend_app "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/localsend_app
 
@@ -69,8 +83,8 @@ chmod 0755 %{buildroot}%{_bindir}/localsend_app
 %{_bindir}/localsend_app
 %{_datadir}/applications/localsend_app.desktop
 %{_datadir}/icons/hicolor/*/apps/localsend_app.png
-%{_datadir}/localsend_app/
+%{_libdir}/localsend_app/
 
 %changelog
-* Tue Aug 11 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.0-1
-- Auto-update to upstream release v1.18.0
+* Tue Aug 11 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.0-2
+- Fix %%prep: upstream switched DEB data archive from data.tar.xz to data.tar.zst in v1.18.0; detect format dynamically
