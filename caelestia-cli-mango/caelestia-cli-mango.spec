@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          875edaa232583b024d6eaab841291a232d953d2a
+%global commit          be548562464e1a6bd69bd3a64675822e83b97c5d
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260809020901
+%global gitdate         20260811125152
 
 # Upstream has no releases/tags; it is tracked by commit. The python project
 # version (pyproject.toml) stays 2.0.0, so the .dist-info directory is named
@@ -13,7 +13,7 @@
 
 Name:           caelestia-cli-mango
 Version:        %{pyver}^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        The main control script for the Caelestia dotfiles (MangoWM)
 
 License:        GPL-3.0-only
@@ -89,26 +89,5 @@ install -Dpm 0644 completions/caelestia.fish %{buildroot}%{_datadir}/fish/vendor
 %license LICENSE
 
 %changelog
-* Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260809020901git875edaa-2
-- Require cliphist unconditionally again: this repo now packages cliphist
-  0.7.0 for every supported release, so the "(cliphist if fedora-release >= 44)"
-  guard silently left Fedora 43 users without clipboard history.
-
-* Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260809020901git875edaa-1
-- Switch to the commit-tracking caret version scheme (2.0.0^<gitdate>git<sha>).
-  Upstream has no releases/tags, so the auto-updater's GitHub-release scanner
-  returned 404 and the pinned commit could never be refreshed; the package was
-  frozen at 5c443b5. Add the missing update.sh so new commits are picked up.
-- dist-info path now uses %%{pyver} (pyproject version stays 2.0.0).
-- Sync to commit 875edaa (emoji data update).
-
-* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0-3
-- Make cliphist a conditional requirement (cliphist only exists in Fedora >= 44;
-  without this the package is uninstallable on Fedora 43)
-
-* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0-2
-- Add BuildRequires: python3-pip (COPR %pyproject_wheel failed: no pip module in buildroot)
-
-* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0-1
-- Initial package (commit 5c443b5): MangoWM port of caelestia CLI.
-  Requires python3-materialyoucolor for scheme generation.
+* Tue Aug 11 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260811125152gitbe54856-1
+- Nightly sync with upstream main branch (Commit: be54856)
