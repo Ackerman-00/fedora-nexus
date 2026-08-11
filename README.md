@@ -106,6 +106,9 @@ sudo dnf install <package-name>
 | `zen-browser` | Privacy-focused Firefox fork | Stable |
 
 > `Git` packages track upstream HEAD and rebuild on every new commit.
+>
+> `hyprlauncher` and `hyprshutdown` are packaged and build-verified, but pending COPR
+> registration by the project owner — until then they are not yet installable from the repo.
 
 </details>
 
