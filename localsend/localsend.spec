@@ -9,14 +9,14 @@
 %global __provides_exclude_from ^/usr/share/localsend_app/.*$
 
 Name:           localsend
-Version:        1.17.0
-Release:        2%{?dist}
+Version:        1.18.0
+Release:        1%{?dist}
 Summary:        An open source cross-platform alternative to AirDrop
 
 License:        GPL-3.0
 URL:            https://github.com/localsend/localsend
 # Use the upstream DEB as our raw source payload
-Source0:        %{url}/releases/download/v%{version}/LocalSend-%{version}-linux-x86-64.deb
+Source0:        %{url}/releases/download/v1.18.0/LocalSend-1.18.0-linux-x86-64.deb
 
 ExclusiveArch:  x86_64
 
@@ -72,8 +72,5 @@ chmod 0755 %{buildroot}%{_bindir}/localsend_app
 %{_datadir}/localsend_app/
 
 %changelog
-* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1.17.0-2
-- Fix runtime deps: use libayatana-appindicator-gtk3 (app crashed without it)
-
-* Sun Aug 02 2026 Nexus Bot <bot@github.com> - 1.17.0-1
-- Initial Repackaged Build via Upstream DEB
+* Tue Aug 11 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.0-1
+- Auto-update to upstream release v1.18.0
