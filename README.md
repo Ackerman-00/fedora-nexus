@@ -35,7 +35,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 63 packages</summary>
+<summary>Click to expand — 64 packages</summary>
 
 <br />
 
@@ -51,6 +51,7 @@ sudo dnf install <package-name>
 | `cliphist` | Wayland clipboard manager with support for multimedia | Stable |
 | `extension-manager` | Native tool for browsing and managing GNOME Shell Extensions | Stable |
 | `fluxer` | Free and open source instant messaging and VoIP platform | Stable |
+| `ghostty` | Fast, feature-rich, cross-platform terminal emulator (Deb repackage) | Stable |
 | `glaze` | Extremely fast, in memory, JSON and interface library | Stable |
 | `gpu-screen-recorder` | Shadowplay-like screen recorder for Linux (NVIDIA/AMD/Intel) | Stable |
 | `helium-browser` | Private, fast, and honest web browser | Stable |
