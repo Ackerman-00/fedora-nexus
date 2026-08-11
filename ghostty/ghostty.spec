@@ -21,7 +21,7 @@
 
 Name:           ghostty
 Version:        %{ghostty_version}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A fast, feature-rich, and cross-platform terminal emulator
 
 License:        MIT
@@ -39,6 +39,10 @@ BuildRequires:  binutils
 BuildRequires:  tar
 BuildRequires:  xz
 BuildRequires:  zstd
+
+# Defines %{_userunitdir} (usr/lib/systemd/user), used for the bundled
+# per-user systemd unit
+BuildRequires:  systemd-rpm-macros
 
 # Runtime dependencies mapped from the upstream DEB's Depends field
 # (libadwaita-1-0 -> libadwaita, libc6 -> glibc, libfontconfig1 -> fontconfig,
@@ -100,6 +104,7 @@ cp -a usr/lib/systemd/user/app-com.mitchellh.ghostty.service %{buildroot}%{_user
 # 4. Install all desktop integration data (applications, icons, completions,
 #    locale, man pages, metainfo, terminfo, themes, editor integrations...)
 #    minus the Debian-specific doc/ directory.
+install -d -m 0755 %{buildroot}%{_datadir}
 cp -a usr/share/* %{buildroot}%{_datadir}/
 rm -rf %{buildroot}%{_datadir}/doc
 
@@ -130,6 +135,10 @@ rm -rf %{buildroot}%{_datadir}/doc
 %{_datadir}/zsh/vendor-completions/_ghostty
 
 %changelog
+* Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 1.3.1-2
+- Fix COPR build (10850831): add BuildRequires: systemd-rpm-macros so
+  %{_userunitdir} expands, and create %{_datadir} before copying usr/share/*
+
 * Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 1.3.1-1
 - Initial packaging: repackage the official community-built Ubuntu .deb of
   ghostty 1.3.1 (mkasberg/ghostty-ubuntu PPA release 1.3.1-0-ppa2, noble
