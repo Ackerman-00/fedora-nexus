@@ -35,7 +35,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 61 packages</summary>
+<summary>Click to expand — 63 packages</summary>
 
 <br />
 
@@ -59,6 +59,7 @@ sudo dnf install <package-name>
 | `hyprgraphics` | Hyprland graphics / resource utilities | Stable |
 | `hypridle` | Hyprland's idle daemon | Stable |
 | `hyprlang` | The official implementation library for the hypr config language | Stable |
+| `hyprlauncher` | A multipurpose and versatile launcher / picker for Hyprland | Stable |
 | `hyprland` | Dynamic tiling Wayland compositor that doesn't sacrifice on its looks | Stable |
 | `hyprland-contrib` | Community scripts and utilities for Hypr projects | Git |
 | `hyprland-guiutils` | Hyprland GUI utilities (welcome, run, dialog, update screens) | Stable |
@@ -71,6 +72,7 @@ sudo dnf install <package-name>
 | `hyprpolkitagent` | A simple polkit authentication agent for Hyprland | Stable |
 | `hyprqt6engine` | Qt6 Theme Provider for Hyprland | Stable |
 | `hyprsunset` | An application to enable a blue-light filter on Hyprland | Stable |
+| `hyprshutdown` | A graceful shutdown utility for Hyprland | Stable |
 | `hyprsysteminfo` | An application to display information about the running system | Stable |
 | `hyprtoolkit` | A modern C++ Wayland-native GUI toolkit | Stable |
 | `hyprutils` | Hyprland utilities library used across the ecosystem | Stable |
