@@ -7,7 +7,7 @@
 # other Wayland compositors (Hyprland, Sway, Niri, etc.).
 
 Name:           caelestia-shell-mango
-Version:        2.0.0^%{gitdate}git%{shortcommit}
+Version:        2.1.0^%{gitdate}git%{shortcommit}
 Release:        1%{?dist}
 Summary:        Desktop shell for MangoWM
 
