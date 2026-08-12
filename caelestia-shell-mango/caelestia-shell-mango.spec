@@ -8,7 +8,7 @@
 
 Name:           caelestia-shell-mango
 Version:        2.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Desktop shell for MangoWM
 
 License:        GPL-3.0-only
@@ -47,6 +47,9 @@ Requires:       aubio-lib
 Requires:       libcava
 # Monitor brightness (DDC) for displays without a backlight interface
 Requires:       ddcutil
+# Backlight brightness for displays WITH a backlight interface
+# (Brightness.qml: brightnessctl s, brightnessctl g/m)
+Requires:       brightnessctl
 # Colour scheme/wallpaper/record via the CLI (services/Colours.qml, Wallpapers.qml,
 # modules/controlcenter/appearance, launcher Schemes.qml, utils/SysInfo.qml)
 Recommends:     caelestia-cli-mango >= 2.0.0
@@ -173,5 +176,9 @@ fi
 %{_datadir}/caelestia-shell/utils/
 
 %changelog
-* Tue Aug 11 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260811081721gitcae55ed-1
+* Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.0^20260811081721gitcae55ed-2
+- Require brightnessctl: Brightness.qml falls back to brightnessctl for
+  displays that present a backlight interface (ddcutil covers DDC-only panels)
+
+* Tue Aug 11 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.0^20260811081721gitcae55ed-1
 - Nightly sync with upstream main branch (Commit: cae55ed)
