@@ -1,6 +1,6 @@
 Name:           hyprsysteminfo
 Version:        0.2.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        An application to display information about the running system
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprsysteminfo
@@ -11,27 +11,16 @@ Packager:       Ackerman-00 <quietcraft@gmail.com>
 BuildRequires:  cmake
 BuildRequires:  desktop-file-utils
 BuildRequires:  gcc-c++
-BuildRequires:  cmake(Qt6Quick)
-BuildRequires:  cmake(Qt6QuickControls2)
-BuildRequires:  cmake(Qt6WaylandClient)
-BuildRequires:  cmake(Qt6Widgets)
 BuildRequires:  glaze-static
-BuildRequires:  qt6-qtbase-private-devel
-BuildRequires:  wayland-devel
 BuildRequires:  pkgconfig(hyprutils)
 BuildRequires:  pkgconfig(hyprtoolkit)
 BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  pkgconfig(libpci)
 BuildRequires:  pkgconfig(pixman-1)
 
-Requires:       /usr/bin/lscpu
-Requires:       /usr/bin/lspci
-Requires:       /usr/bin/free
-Requires:       hyprland-qt-support%{?_isa}
-
 %description
-A tiny Qt6/QML application to display information about the running system,
-or copy diagnostics data, without the terminal.
+A tiny hyprtoolkit/Wayland application to display information about the running
+system, or copy diagnostics data, without the terminal.
 
 %prep
 %autosetup -p1
@@ -53,6 +42,11 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/applications/%{name}.desktop
 
 %changelog
+* Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-4
+- Drop stale Qt6/QML BuildRequires and lscpu/lspci/free/hyprland-qt-support
+  Requires: upstream v0.2.0 is a hyprtoolkit-based rewrite that reads
+  /proc and /sys and uses libpci directly (no Qt, no shelled-out tools)
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-3
 - Rebuild: COPR repo now has hyprtoolkit 0.5.4-2
 
