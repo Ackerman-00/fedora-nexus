@@ -2,7 +2,7 @@
 %global             helium_base /opt/helium
 
 Name:               helium-browser
-Version:        0.15.3.1
+Version:        0.15.4.1
 Release:        1%{?dist}
 Summary:            Private, fast, and honest web browser
 
@@ -86,7 +86,5 @@ esac
 %{_datadir}/icons/hicolor/256x256/apps/helium.png
 
 %changelog
-* Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.3.1-1
-- Initial package: Helium 0.15.3.1, official x86_64 binary tarball into /opt/helium
-- br: No apparmor integration (Fedora uses SELinux); scriptlets follow the
-  Fedora icon-cache/desktop-database template
+* Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.4.1-1
+- Auto-update to upstream release 0.15.4.1
