@@ -2,8 +2,8 @@
 %global debug_package %{nil}
 
 Name:           obsidian
-Version:        1.13.6
-Release:        2%{?dist}
+Version:        1.13.7
+Release:        1%{?dist}
 Summary:        A powerful knowledge base that works on top of a local folder of plain text Markdown files
 
 License:        Commercial
@@ -87,10 +87,5 @@ ln -sf /opt/Obsidian/obsidian %{buildroot}%{_bindir}/obsidian
 %doc %{_datadir}/doc/obsidian/
 
 %changelog
-* Mon Aug 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.13.6-2
-- Fix build for 1.13.6: upstream renamed the desktop file to
-  md.obsidian.Obsidian.desktop (was obsidian.desktop); bump Release to 2
-  so the fixed RPM gets built and shipped
-
-* Mon Aug 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.13.6-1
-- Auto-updated to 1.13.6 via update.sh
+* Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 1.13.7-1
+- Auto-updated to 1.13.7 via update.sh
