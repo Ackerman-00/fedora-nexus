@@ -1,4 +1,4 @@
-%global tag         v0.6.2
+%global tag         v0.6.3
 %global app_id      com.vysp3r.ProtonPlus
 %global forgeurl    https://github.com/vysp3r/ProtonPlus
 %forgemeta
@@ -63,16 +63,5 @@ ProtonPlus is a modern compatibility tools manager for Linux. It allows you to e
 %{_metainfodir}/%{app_id}.metainfo.xml
 
 %changelog
-* Mon Aug 10 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.2-1
-- Update to upstream 0.6.2
-- The auto-updater had picked up the intermediate tag v0.6.1-1, whose dash is an
-  illegal character in an RPM Version, so COPR could not even parse the spec
-  (build 10841179: "line 8: Illegal char '-' (0x2d) in: Version: 0.6.1-1")
-- Add an update.sh that skips tags which are not plain dotted versions, so the
-  generic scanner can never wedge this package again
-
-* Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.0-2
-- Add missing BuildRequires for upstream 0.6.0 (sdl3, appstream, cairo,
-  gio-unix-2.0, libnotify); the auto-updater bumped the tag but the build
-  failed because meson could not find these new dependencies
-- Replace %autorelease with an explicit Release so the NVR changed
+* Tue Aug 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.3-1
+- Update to version 0.6.3
