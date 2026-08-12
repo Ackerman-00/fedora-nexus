@@ -1,6 +1,6 @@
 Name:           hyprpaper
 Version:        0.8.4
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Blazing fast wayland wallpaper utility with IPC controls
 # LICENSE: BSD-3-Clause
 # protocols/wlr-layer-shell-unstable-v1.xml: HPND-sell-variant
@@ -25,6 +25,7 @@ BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  pkgconfig(libmagic)
 BuildRequires:  pkgconfig(pango)
 BuildRequires:  pkgconfig(pangocairo)
+BuildRequires:  pkgconfig(pixman-1)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols)
 
@@ -56,6 +57,10 @@ wlroots-based compositors, though.
 %{_userunitdir}/%{name}.service
 
 %changelog
+* Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.4-4
+- Add explicit BuildRequires pkgconfig(pixman-1): upstream CMakeLists
+  requires pixman-1 in its pkg_check_modules
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.4-3
 - Rebuild: COPR repo now has hyprtoolkit and hyprwire
 
