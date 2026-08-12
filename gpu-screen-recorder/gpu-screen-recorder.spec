@@ -1,6 +1,6 @@
 Name:           gpu-screen-recorder
 Version:        6.0.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A shadowplay-like screen recorder for Linux. The fastest screen recorder for Linux
 
 License:        GPL-3.0-or-later
@@ -50,10 +50,14 @@ Requires:       vulkan-loader
 Recommends:     turbojpeg
 # Used only by the optional helper scripts shipped in
 # %{_datadir}/gpu-screen-recorder/scripts: xdotool (window selection, 5
-# scripts), pactl (list-sinks.sh) and ffmpeg (twitch-stream-local-copy.sh).
+# scripts), pactl (list-sinks.sh), ffmpeg (twitch-stream-local-copy.sh),
+# psmisc/killall (start/stop/toggle/save scripts) and libnotify/notify-send
+# (status notifications in the save/toggle scripts).
 Recommends:     xdotool
 Recommends:     /usr/bin/pactl
 Recommends:     (ffmpeg or ffmpeg-free)
+Recommends:     psmisc
+Recommends:     /usr/bin/notify-send
 
 %description
 GPU Screen Recorder is a shadowplay-like screen recorder for Linux. It can
@@ -93,6 +97,11 @@ on both X11 and Wayland.
 /usr/lib/modprobe.d/gsr-nvidia.conf
 
 %changelog
+* Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 6.0.0-4
+- Recommend psmisc (killall) and libnotify (notify-send): both are invoked
+  by the shipped helper scripts (start-stop-recording.sh, save-recording.sh,
+  save-replay.sh, toggle-recording*.sh, record-save-application-name.sh)
+
 * Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 6.0.0-3
 - Recommend the helper tools the shipped scripts in
   %%{_datadir}/gpu-screen-recorder/scripts actually invoke but which nothing
