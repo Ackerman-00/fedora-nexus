@@ -13,7 +13,7 @@
 
 Name:           caelestia-cli-mango
 Version:        %{pyver}^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The main control script for the Caelestia dotfiles (MangoWM)
 
 License:        GPL-3.0-only
@@ -35,6 +35,8 @@ Requires:       caelestia-shell-mango >= 2.0.0
 # Notifications
 Requires:       libnotify
 Requires:       glib2
+# File-manager reveal (subcommands/record.py: dbus-send org.freedesktop.FileManager1)
+Requires:       dbus-tools
 # Screenshots
 Requires:       swappy
 Requires:       grim
@@ -89,5 +91,9 @@ install -Dpm 0644 completions/caelestia.fish %{buildroot}%{_datadir}/fish/vendor
 %license LICENSE
 
 %changelog
+* Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260811125152gitbe54856-2
+- Require dbus-tools: subcommands/record.py invokes dbus-send to reveal
+  files in the file manager (org.freedesktop.FileManager1)
+
 * Tue Aug 11 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260811125152gitbe54856-1
 - Nightly sync with upstream main branch (Commit: be54856)
