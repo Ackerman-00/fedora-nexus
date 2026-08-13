@@ -6,7 +6,7 @@
 %global __provides_exclude_from ^/opt/freebuff/.*$
 
 Name:           freebuff
-Version:        0.0.55
+Version:        0.0.57
 Release:        1%{?dist}
 Summary:        The free coding agent for your desktop
 
@@ -106,8 +106,5 @@ install -m644 squashfs-root/usr/share/icons/hicolor/512x512/apps/@codebufffreebu
 %attr(4755, root, root) /opt/freebuff/chrome-sandbox
 
 %changelog
-* Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.55-1
-- Initial package: Freebuff Desktop 0.0.55 (Electron 33 / Chromium 130)
-- Repackaged from the official Linux AppImage; bundled Bun runtime and
-  ripgrep keep the orchestrator self-contained
-- Keep the Chromium sandbox functional via the setuid chrome-sandbox helper
+* Thu Aug 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.57-1
+- Auto-updated to 0.0.57 via update.sh
