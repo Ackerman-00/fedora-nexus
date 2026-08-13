@@ -1,6 +1,6 @@
 Name:           hyprutils
 Version:        0.14.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Hyprland utilities library used across the ecosystem
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprutils
@@ -43,5 +43,9 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Thu Aug 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.14.1-2
+- Fix changelog to reflect the 0.14.1 update (was stale at 0.14.0)
+* Thu Aug 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.14.1-1
+- Update to version 0.14.1
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.14.0-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)
