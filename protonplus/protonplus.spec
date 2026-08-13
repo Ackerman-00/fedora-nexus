@@ -1,4 +1,4 @@
-%global tag         v0.6.3
+%global tag         v0.6.4
 %global app_id      com.vysp3r.ProtonPlus
 %global forgeurl    https://github.com/vysp3r/ProtonPlus
 %forgemeta
@@ -63,5 +63,5 @@ ProtonPlus is a modern compatibility tools manager for Linux. It allows you to e
 %{_metainfodir}/%{app_id}.metainfo.xml
 
 %changelog
-* Tue Aug 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.3-1
-- Update to version 0.6.3
+* Thu Aug 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.4-1
+- Update to version 0.6.4
