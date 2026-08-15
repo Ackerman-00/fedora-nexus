@@ -1,6 +1,6 @@
 Name:           hyprpaper
 Version:        0.8.4
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Blazing fast wayland wallpaper utility with IPC controls
 # LICENSE: BSD-3-Clause
 # protocols/wlr-layer-shell-unstable-v1.xml: HPND-sell-variant
@@ -57,6 +57,12 @@ wlroots-based compositors, though.
 %{_userunitdir}/%{name}.service
 
 %changelog
+* Sat Aug 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.4-5
+- Rebuild: restore fc44 build that failed during the mass rebuild because
+  pkgconfig(hyprtoolkit)/pkgconfig(hyprwire) were temporarily unavailable
+  from the COPR repo and fedora 44 base repos shipped a conflicting older
+  hyprutils; hyprtoolkit 0.5.4-3 and hyprwire 0.3.1-2 are now published
+
 * Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.4-4
 - Add explicit BuildRequires pkgconfig(pixman-1): upstream CMakeLists
   requires pixman-1 in its pkg_check_modules
