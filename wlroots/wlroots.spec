@@ -5,7 +5,7 @@
 
 Name:           wlroots
 Version:        0.20.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A modular Wayland compositor library
 
 # Convert tilde to dash for source tag (e.g. 0.20.0~rc2 -> 0.20.0-rc2)
@@ -13,7 +13,9 @@ Summary:        A modular Wayland compositor library
 
 License:        MIT
 URL:            https://gitlab.freedesktop.org/wlroots/wlroots
-Source0:        %{url}/-/releases/%{tag}/downloads/%{name}-%{tag}.tar.gz
+# Use the git archive endpoint: the /-/releases/<tag>/downloads/ endpoint
+# 504s under load at the COPR SRPM stage (observed on builds 10867975/10868146).
+Source0:        %{url}/-/archive/%{tag}/%{name}-%{tag}.tar.gz
 
 # Fedora patches
 # Following patch is required for phoc.
@@ -96,6 +98,8 @@ MESON_OPTIONS=(
 %{_libdir}/pkgconfig/wlroots-%{abi_ver}.pc
 
 %changelog
+* Sun Aug 16 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-3
+- Use git archive endpoint for Source0 (releases/downloads endpoint 504s at COPR SRPM stage)
 * Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-2
 - Fixed patch for wlroots 0.20.2 API (layer_surface_role_client_commit)
 * Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-1
