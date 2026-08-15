@@ -1,6 +1,6 @@
 Name:           hyprtoolkit
 Version:        0.5.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A modern C++ Wayland-native GUI toolkit
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprtoolkit
@@ -9,7 +9,7 @@ ExclusiveArch:  x86_64 aarch64
 Packager:       Ackerman-00 <quietcraft@gmail.com>
 
 BuildRequires:  cmake
-BuildRequires:  cmake(hyprwayland-scanner)
+BuildRequires:  cmake(hyprwayland-scanner) >= 0.4.6
 BuildRequires:  gcc-c++
 BuildRequires:  mesa-libEGL-devel
 BuildRequires:  ninja-build
@@ -63,6 +63,12 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Sat Aug 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.4-3
+- Pin cmake(hyprwayland-scanner) >= 0.4.6: Fedora 44 base repos now ship
+  hyprwayland-scanner 0.4.2 which generates a wl_resource typedef that
+  conflicts with mesa EGL headers (struct wl_resource) and breaks the
+  fc44 build; force the COPR-provided 0.4.6
+
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.4-2
 - Rebuild: aquamarine and hyprgraphics now available in COPR repo
 
