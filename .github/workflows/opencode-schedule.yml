@@ -94,10 +94,9 @@ jobs:
               packages that have one and scans the rest against GitHub release tags,
               bumping spec versions and committing to main directly.
             - Builds happen in COPR (external), in the chroots the project has
-              enabled (currently opensuse-tumbleweed-x86_64,
-              fedora-rawhide-x86_64, fedora-44-x86_64, fedora-43-x86_64 - but
-              NEVER hardcode this list: discover it every run, see CURRENT
-              FEDORA RELEASES below). COPR is configured to
+              enabled (currently fedora-rawhide-x86_64, fedora-44-x86_64,
+              fedora-43-x86_64 - but NEVER hardcode this list: discover it every
+              run, see CURRENT FEDORA RELEASES below). COPR is configured to
               auto-trigger builds on every push to the main branch, so pushing a
               fixed spec file IS how you trigger a rebuild.
             - COPR API v3 (no auth needed for public reads):
@@ -466,8 +465,8 @@ jobs:
               a. DOWNLOAD THE BUILT RPM from COPR's download server:
                  https://download.copr.fedorainfracloud.org/results/ackerman/nexus/<chroot>/<pkg>-<ver>.fc<rel>.x86_64.rpm
                  (chroot = fedora-43-x86_64 / fedora-44-x86_64 /
-                 fedora-rawhide-x86_64 / opensuse-tumbleweed-x86_64; list the
-                 directory with curl to find the exact filename)
+                 fedora-rawhide-x86_64; list the directory with curl to find
+                 the exact filename)
               b. REAL INSTALL TEST IN A CLEAN FEDORA CONTAINER. You need a
                  working container runtime on the runner. Docker is
                  preinstalled on the ubuntu-latest runner, but VERIFY it
@@ -491,30 +490,15 @@ jobs:
                      rpm -V <pkg>
                      ldd "$(command -v <pkg>)"
                    '
-                   Repeat for every currently enabled chroot (see CURRENT
-                   FEDORA RELEASES) using the matching container image
-                   (rawhide's dnf5 uses
-                  `dnf5 copr enable`, same result). If dnf errors with
-                  "nothing provides 'X'" or "No match for argument" - the
-                  install test FAILED and the package is NOT done. If docker
-                  is unavailable, fall back to:
-                  dnf repoquery --requires <built-rpm>   # list resolved requires
-                  dnf download --resolve <pkg>          # does every dep resolve?
-                  OPENSUSE-TUMBLEWEED INSTALL TESTS (only once KNOWN COPR BUG
-                  #2 is fixed and real tumbleweed builds exist - until then the
-                  COPR tumbleweed repo has no repodata and NO install test is
-                  possible, record the gap): container image
-                  registry.opensuse.org/opensuse/tumbleweed (rolling, no
-                  version tag; the tumbleweed-dnf variant carries dnf5). Enable
-                  the repo with zypper:
-                    zypper --non-interactive addrepo --refresh --gpgcheck-allow-unsigned \
-                      'https://copr.fedorainfracloud.org/coprs/ackerman/nexus/repo/opensuse-tumbleweed/ackerman-nexus-opensuse-tumbleweed.repo'
-                    zypper --non-interactive refresh
-                    zypper --non-interactive install --allow-vendor-change /rpms/<pkg>-*.tw.x86_64.rpm
-                  (or `dnf5 copr enable ackerman/nexus` when dnf5-copr is
-                  installed). RPMs built on the tumbleweed chroot carry a
-                  Tumbleweed dist tag (e.g. .tw), NOT .fc - match the actual
-                  filename from the COPR download directory.
+                  Repeat for every currently enabled chroot (see CURRENT
+                  FEDORA RELEASES) using the matching container image
+                  (rawhide's dnf5 uses
+                 `dnf5 copr enable`, same result). If dnf errors with
+                 "nothing provides 'X'" or "No match for argument" - the
+                 install test FAILED and the package is NOT done. If docker
+                 is unavailable, fall back to:
+                 dnf repoquery --requires <built-rpm>   # list resolved requires
+                 dnf download --resolve <pkg>          # does every dep resolve?
               c. MAP WRONG NAMES TO THE REAL FEDORA PACKAGE. For every
                  failing Requires find the actual provider:
                  dnf repoquery --whatprovides 'libFoo.so.1()(64bit)'
@@ -543,9 +527,6 @@ jobs:
                   Pure -devel/library or headless-only packages still get the
                   install test; only the runtime smoke test may be skipped,
                   with the reason recorded.
-                  Tumbleweed install tests are BLOCKED while KNOWN COPR BUG
-                  #2 is open (no COPR tumbleweed repodata exists) - record
-                  them as blocked-(copr-infra) in the ledger, never as tested.
               f. MANDATORY DELIVERABLE - install-test table in your final
                  summary, one row per package tested:
                  | package | COPR build | dnf install test | smoke test |
@@ -572,54 +553,7 @@ jobs:
                  in COPR") is still open, CLOSE it as "not our bug - COPR
                  infrastructure issue; owner declined to pursue admin purge".
               d. The install-verification sweep must test every package the
-                  git repo ships - never the ghost RPMs COPR leaks.
-
-            KNOWN COPR BUG #2 - OPENSUSE-TUMBLEWEED CHROOT BROKEN
-            INFRASTRUCTURE-SIDE - IGNORE, DO NOT CHURN, DO NOT REPORT
-            (MANDATORY). Since ~2026-07-08 the COPR opensuse-tumbleweed-x86_64
-            chroot fails for EVERY project on the service, in the mock
-            BOOTSTRAP phase, BEFORE any spec is even parsed. The failure is
-            always the same: dnf5 cannot load the project's own "copr_base"
-            repository because gpgcheck is enabled on the openSUSE mock config
-            but COPR's storage serves no repomd.xml.asc ("GPG verification is
-            enabled, but GPG signature is not available: Status code: 404 for
-            .../opensuse-tumbleweed-x86_64/repodata/repomd.xml.asc"), plus a
-            "repomd.xml GPG signature verification error: Bad GPG signature"
-            warning on the openSUSE OSS repo. Tracked upstream at
-            fedora-copr/copr#4380 and wezterm/wezterm#7952 (both still open;
-            ackerman/nexus gets the same error as everyone else - verified in
-            Aug 2026 on builds 10867961-10868023). Consequences:
-              a. A build whose ONLY failed chroot is opensuse-tumbleweed-
-                 x86_64 with this bootstrap GPG error is NOT a packaging bug.
-                 Do NOT diagnose it, do NOT touch the spec, do NOT bump
-                 Release, do NOT push a rebuild, do NOT retry, do NOT open an
-                 issue. The Fedora chroots of that build are the authoritative
-                 result. Mark the package's status as "fedora chroots
-                 succeeded, tumbleweed blocked by COPR infra bug".
-              b. NEVER disable or propose disabling the opensuse-tumbleweed
-                 chroot because of this. The chroot is intended support; it
-                 will start building once fedora-copr fixes their side. Do not
-                 treat "tumbleweed failed" as a reason to revert or drop any
-                 package.
-              c. Until fedora-copr/copr#4380 is closed you CANNOT install-
-                 test or docker-build-test anything for opensuse-tumbleweed
-                 the way you do for Fedora chroots: the COPR opensuse repo has
-                 no repodata (that is the bug). Name that gap in the relay;
-                 never fake or claim tumbleweed verification you did not run.
-              d. RE-CHECK THE UPSTREAM ISSUE EVERY RUN - it may be fixed:
-                 curl -s https://api.github.com/repos/fedora-copr/copr/issues/4380
-                 (or `gh api`). If it is CLOSED and/or real COPR
-                 opensuse-tumbleweed builds start SUCCEEDING for other
-                 projects, the chroot is live again: resume normal per-chroot
-                 expectations for it (build, verify, install-test on a
-                 Tumbleweed container per the INSTALL-VERIFICATION SWEEP) and
-                 clear this note from the relay.
-              e. OpenSUSE is a different distro from Fedora: once the chroot
-                 works, specs may need %if 0%{?fedora} / %if 0%{?suse_version}
-                 guards for deps that exist only on one side, and the COPR
-                 build itself is the authority for what needs adjusting -
-                 never guess a guard "in advance" to preempt a failure that
-                 may not exist; fix only what a real failed build log shows.
+                 git repo ships - never the ghost RPMs COPR leaks.
 
             CURRENT FEDORA RELEASES - DISCOVER EVERY RUN, NEVER HARDCODE.
             The Fedora lifecycle rotates twice a year: a new release GA's
@@ -659,30 +593,12 @@ jobs:
                  rawhide-only failure during such a wave is fixed with a
                  rebuild/rename/spec tweak - never by dropping the rawhide
                  chroot.
-              g. OPENSUSE TUMBLEWEED (rolling release, NO EOL cycle): its
-                 chroot name is always opensuse-tumbleweed-x86_64 - confirm it
-                 is still in the COPR project's chroot list every run and
-                 treat it as a first-class build target like any Fedora
-                 chroot. Its base repos are openSUSE OSS/NON-OSS, its package
-                 manager is dnf5 (mock) / zypper (host), and %{dist} on
-                 Tumbleweed is something like %tw - read rpm --eval %{dist}
-                 inside the chroot before relying on dist-based macros. While
-                 KNOWN COPR BUG #2 (above) is open, do NOT expect
-                 opensuse-tumbleweed builds to succeed; once it is fixed,
-                 builds and install-tests for tumbleweed are required like
-                 every other chroot.
 
             Then work autonomously, in this priority order:
 
             1. FIX FAILED COPR BUILDS (highest priority).
                Query the COPR build list (endpoint above). Find every recent build whose
-               state is NOT "succeeded". PER-CHROOT INTERPRETATION IS MANDATORY: read the
-               build's per-chroot states (the build page tabs / chroot objects). A build
-               that failed ONLY on opensuse-tumbleweed-x86_64 with the bootstrap GPG
-               metadata error is KNOWN COPR BUG #2 - infrastructure-side, NOT a packaging
-               bug, nothing to fix (see the KNOWN COPR BUG #2 section above). Only
-               failures on the Fedora chroots are actionable packaging bugs. For each
-               genuinely failing package, get its build id and
+               state is NOT "succeeded". For each failing package, get its build id and
                inspect the failure (build logs / chroot states). Diagnose the root cause:
                usually a bad source URL, version bump without checksum update, or a spec
                problem. Web-search the package and its upstream for known issues before

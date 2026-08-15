@@ -4,7 +4,7 @@
 
 <h1>fedora-nexus</h1>
 
-<p>A self-updating RPM repository for Fedora &amp; openSUSE Tumbleweed, powered by COPR.</p>
+<p>A self-updating RPM repository for Fedora, powered by COPR.</p>
 
 [![Build](https://img.shields.io/github/actions/workflow/status/Ackerman-00/fedora-nexus/update-engine.yml?style=for-the-badge&label=AUTO-UPDATE&logo=github&logoColor=white)](https://github.com/Ackerman-00/fedora-nexus/actions)
 &nbsp;
@@ -29,35 +29,6 @@ sudo dnf copr enable ackerman/nexus
 ```bash
 sudo dnf install <package-name>
 ```
-
----
-
-## 🐧 openSUSE Tumbleweed
-
-**① Enable the repository**
-
-```bash
-sudo zypper addrepo --refresh --gpgcheck-allow-unsigned \
-  'https://copr.fedorainfracloud.org/coprs/ackerman/nexus/repo/opensuse-tumbleweed/ackerman-nexus-opensuse-tumbleweed.repo'
-sudo zypper refresh
-```
-
-(or `sudo dnf5 copr enable ackerman/nexus` if `dnf5-copr` is installed)
-
-**② Install a package**
-
-```bash
-sudo zypper install --allow-vendor-change <package-name>
-```
-
-> **Note (Aug 2026):** the `opensuse-tumbleweed` chroot is currently
-> broken on the COPR *infrastructure* side — every project on the service
-> fails at mock bootstrap (`GPG verification is enabled, but GPG signature
-> is not available`, missing `repomd.xml.asc`), tracked upstream in
-> [fedora-copr/copr#4380](https://github.com/fedora-copr/copr/issues/4380).
-> No packages can build for Tumbleweed until that is fixed; the Fedora
-> chroots are unaffected. No packaging change in this repo can work around
-> it — it is a COPR service bug, not a spec bug.
 
 ---
 
@@ -170,16 +141,6 @@ Verify the COPR is enabled:
 <br />
 Only <code>x86_64</code> is currently supported. If a package is missing, it may be failing to build — check the
 <a href="https://copr.fedorainfracloud.org/coprs/ackerman/nexus/">COPR project page</a>.
-</details>
-
-<details>
-<summary><b>openSUSE Tumbleweed: "GPG verification is enabled, but GPG signature is not available"</b></summary>
-<br />
-Known COPR infrastructure bug affecting the <code>opensuse-tumbleweed</code> chroot service-wide
-(<a href="https://github.com/fedora-copr/copr/issues/4380">fedora-copr/copr#4380</a>) — the COPR repo
-serves no <code>repomd.xml.asc</code> while the openSUSE build root enforces gpgcheck. It affects every
-COPR project, not just this one, and cannot be fixed from this repo. Track the upstream issue; once it is
-closed, Tumbleweed builds will resume automatically.
 </details>
 
 ---
