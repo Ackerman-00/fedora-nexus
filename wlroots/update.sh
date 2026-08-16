@@ -1,66 +1,57 @@
 #!/bin/bash
+# update.sh for wlroots (GitLab-hosted)
+#
+# Uses `git ls-remote --tags` (no HTTP API) for robustness: the GitLab REST
+# API intermittently returns 504 Gateway Time-outs under load, which previously
+# made this script exit 1 and silently skip version checks on every run of the
+# auto-updater (the package could have gone stale unnoticed). ls-remote works
+# over the git protocol and is the same mechanism used by every other update.sh
+# in this repo.
 
-# Configuration
 SPEC_FILE="wlroots.spec"
-GITLAB_REPO="wlroots/wlroots"
+GIT_URL="https://gitlab.freedesktop.org/wlroots/wlroots.git"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
-echo "Checking for upstream updates on $GITLAB_REPO..."
+echo "Checking for upstream updates on wlroots..."
 
-# Fetch the latest release tag from GitLab API
-LATEST_VERSION=$(curl -s "https://gitlab.freedesktop.org/api/v4/projects/${GITLAB_REPO//\//%2F}/releases" | python3 -c "
-import sys, json
-try:
-    data = json.load(sys.stdin)
-    if data and len(data) > 0:
-        # Filter out pre-release versions (rc, beta, alpha, etc.)
-        releases = [r['tag_name'] for r in data if all(x not in r['tag_name'].lower() for x in ['rc', 'beta', 'alpha', '~'])]
-        print(releases[0] if releases else data[0]['tag_name'])
-except:
-    sys.exit(1)
-")
+# Latest stable tag. wlroots tags are bare versions (0.20.2, 0.20.0-rc5).
+# Pre-release tags (rc, beta, alpha, ~) are excluded so we only track stable.
+LATEST_TAG=$(git ls-remote --tags "$GIT_URL" 2>/dev/null \
+  | awk '{print $2}' \
+  | sed 's|refs/tags/||; s/\^{}//' \
+  | grep -E '^[0-9]' \
+  | grep -vE 'rc|beta|alpha|~' \
+  | sort -uV \
+  | tail -1)
 
-if [ -z "$LATEST_VERSION" ]; then
-    # Fallback: use tags API
-    LATEST_VERSION=$(curl -s "https://gitlab.freedesktop.org/api/v4/projects/${GITLAB_REPO//\//%2F}/repository/tags?per_page=1&order_by=version" | python3 -c "
-import sys, json
-try:
-    data = json.load(sys.stdin)
-    if data:
-        print(data[0]['name'])
-except:
-    sys.exit(1)
-")
-fi
-
-if [ -z "$LATEST_VERSION" ]; then
+if [ -z "$LATEST_TAG" ]; then
     echo "Error: Failed to fetch the latest version. Check API limits or connection."
     exit 1
 fi
 
-# Handle tilde in version (rc versions like 0.20.0~rc2)
-SPEC_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
-# The spec uses %global tag %{gsub %{version} ~ -} so 0.20.0~rc2 becomes tag 0.20.0-rc2
-# Strip 'v' prefix if present
-LATEST_VERSION="${LATEST_VERSION#v}"
+# wlroots tags have no 'v' prefix, but strip one defensively.
+LATEST_VERSION="${LATEST_TAG#v}"
 
-if [ "$SPEC_VERSION" != "$LATEST_VERSION" ]; then
-    echo "Update found: $SPEC_VERSION -> $LATEST_VERSION"
+# Read the current version from the spec (the %global tag macro derives from it).
+CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 
-    # 1. Update the Version and Release fields
+if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
+    echo "Update found: $CURRENT_VERSION -> $LATEST_VERSION"
+
+    # 1. Update Version and reset Release to 1 (new upstream version)
     sed -i "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
-    # 2. Auto-generate the Changelog entry
+    # 2. Replace changelog with a single entry
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
-    NEW_CHANGELOG="* $DATE $PACKAGER - $LATEST_VERSION-1\n- Auto-update to version $LATEST_VERSION"
-
-    # 3. Wipe out old logs below %changelog and replace with the single new entry
     sed -i '/^%changelog/,$d' "$SPEC_FILE"
-    echo "%changelog" >> "$SPEC_FILE"
-    echo -e "$NEW_CHANGELOG" >> "$SPEC_FILE"
+    {
+        echo "%changelog"
+        echo "* $DATE $PACKAGER - $LATEST_VERSION-1"
+        echo "- Auto-update to upstream release $LATEST_VERSION"
+    } >> "$SPEC_FILE"
 
-    echo "Upstream source updated from $SPEC_VERSION to $LATEST_VERSION."
+    echo "Successfully patched $SPEC_FILE."
 else
-    echo "Package version $SPEC_VERSION is up to date."
+    echo "Package is already at the latest version ($CURRENT_VERSION). No update needed."
 fi
