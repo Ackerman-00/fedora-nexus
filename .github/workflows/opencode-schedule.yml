@@ -51,7 +51,7 @@ jobs:
         shell: bash
         run: |
           export PATH="$HOME/.opencode/bin:$PATH"
-          for model in "opencode/deepseek-v4-flash-free" "opencode/longcat-2.0-free" "opencode/mimo-v2.5-free" "opencode/laguna-s-2.1-free" "opencode/big-pickle"; do
+          for model in "opencode/deepseek-v4-flash-free" "opencode/mimo-v2.5-free" "opencode/laguna-s-2.1-free" "opencode/big-pickle"; do
             echo "=== opencode run attempt with $model ==="
             if MODEL="$model" opencode run -m "$model" --dangerously-skip-permissions --agent=build --print-logs "$PROMPT"; then
               git fetch origin main >/dev/null 2>&1
@@ -531,9 +531,80 @@ jobs:
                  summary, one row per package tested:
                  | package | COPR build | dnf install test | smoke test |
                  status |
-                  status in: installable / fixed / broken-(dep) /
-                  blocked-(reason). Any package you changed but did not
-                  install-test is an unfinished package.
+                   status in: installable / fixed / broken-(dep) /
+                   blocked-(reason). Any package you changed but did not
+                   install-test is an unfinished package.
+
+            OPTIMIZATION DISCIPLINE (MANDATORY for every source-built
+            package you touch; skip only for prebuilt/repackaged binaries,
+            whose ELFs are immutable - record "prebuilt, nothing to
+            optimize" in the audit table). Fedora already builds with LTO
+            enabled (default since Fedora 32) and %optflags defaults (-O2
+            -g -pipe -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2
+            -fstack-protector-strong -fstack-clash-protection
+            -fcf-protection ...) - your job is to NOT regress that and to
+            fix packages that do:
+              a. NEVER weaken or strip the distro flags: keep %{optflags}
+                 in CFLAGS/CXXFLAGS/LDFLAGS. The %configure / %cmake /
+                 %meson / %set_build_flags macros propagate them
+                 automatically; hand-rolled Makefiles need an explicit
+                 `export CFLAGS="%{optflags}"` (or %set_build_flags) in
+                 %build. A package built without %{optflags} is a bug.
+              b. LTO is ON by default in Fedora's flags - never add it
+                 manually and never disable it unless the build log PROVES
+                 LTO is the failure cause; then use the standard escape
+                 hatch `%global _lto_cflags %{nil}` with a .changes note
+                 explaining why (and try to fix the code instead).
+              c. NO -march=native / -mtune=native / -march=<cpu> beyond the
+                 distro baseline. Binaries must run on ANY x86-64 machine
+                 (Fedora's baseline x86-64 generic; DO NOT assume
+                 x86-64-v2/v3 even if your runner is newer).
+              d. -O3 / -Ofast ONLY for numeric/HPC-style workloads where
+                 upstream documents the benefit; for general code it is a
+                 size/stability regression risk - the default -O2 stands.
+              e. NEVER set %global debug_package %{nil} on a source-built
+                 package (kills debuginfo); it is only justified for
+                 prebuilt/repackaged binaries, which is already the repo
+                 rule for those.
+              f. If upstream's own build scripts hardcode worse flags (-O0,
+                 -Os, -g0, no hardening), override with CFLAGS="%{optflags}"
+                 unless upstream genuinely breaks with standard flags - then
+                 apply the minimal targeted fix with a comment.
+              g. PGO only if upstream documents a training-run workflow;
+                 otherwise skip - not worth the build complexity in this
+                 schedule. If ever applied, rebuild and re-run the
+                 container install test after the profile pass.
+              h. Size sanity: if the built RPM is far larger than upstream's
+                 own binary release, investigate (unstripped .so leftovers,
+                 bundled static archives, debug files installed into the
+                 tree) - it is usually an %install bug, not upstream size.
+
+            UPSTREAM COMPLETENESS SWEEP (MANDATORY for every package you
+            touch: new, version-bumped, or dep-audited). "The build
+            succeeds" says nothing about whether the package actually
+            delivers everything upstream ships. Tear apart the upstream
+            release (repo tree + release assets + the install manifest /
+            meson.build / CMakeLists / Makefile install rules) and diff it
+            against our %files:
+              a. Every user-facing artifact upstream installs MUST be in our
+                 RPM: .desktop entry, icons (ALL sizes in
+                 hicolor/*/apps), appstream/metainfo file, man pages,
+                 shell completions (bash/zsh/fish), systemd units +
+                 tmpfiles, GSettings schemas, translations (%find_lang),
+                 D-Bus service files, configs + examples, symlinks,
+                 companion binaries (e.g. CLI + GUI split, -devel
+                 headers/pkgconfig files). A MISSING artifact = a bug.
+              b. The reverse: anything WE ship that upstream no longer
+                 produces (renamed, removed, superseded) is dead weight -
+                 drop it, matching the "extra/unneeded deps" rule.
+              c. Prebuilt packages: diff the zip/tarball contents against
+                 %files - every shipped file must be installed or explicitly
+                 accounted for (documented exclusion, e.g. unneeded
+                 lang-packs or updater binaries).
+              d. Extend the dependency audit table with a completeness
+                 column: | artifacts: complete | missing-<X> |
+                 blocked-(reason). A package with a missing artifact is not
+                 done.
 
             KNOWN COPR BUG - IGNORE, DO NOT REPORT (MANDATORY). The published
             COPR repodata for ackerman/nexus contains ghost RPMs from a
