@@ -62,13 +62,21 @@ tar -xf %{SOURCE2} -C lib/river/subprojects
 
 %build
 cd lib
+# Build and stage the libraries that other tools link against into a
+# private prefix. COPR builds run unprivileged, so meson install into
+# /usr during %build is not possible; stage instead and point the
+# dependent tools at the staged artifacts via the environment.
+mkdir -p %{_builddir}/astal-stage
 for lib in quarrel wayland-glib wl; do
   pushd $lib
-  %meson --auto-features=auto
-  %meson_build
-  meson install -C redhat-linux-build --no-rebuild
+  meson setup --prefix=%{_builddir}/astal-stage --libdir=lib64 redhat-linux-build . --auto-features=auto
+  meson compile -C redhat-linux-build
+  meson install -C redhat-linux-build
   popd
 done
+export PKG_CONFIG_PATH=%{_builddir}/astal-stage/lib64/pkgconfig
+export XDG_DATA_DIRS=%{_builddir}/astal-stage/share:/usr/local/share:/usr/share
+export CPPFLAGS="-I%{_builddir}/astal-stage/include"
 for lib in $(find -maxdepth 1 -mindepth 1 -type d -not -path ./astal -not -path ./quarrel -not -path ./wayland-glib -not -path ./wl); do
   pushd $lib
   %meson --auto-features=auto
@@ -78,11 +86,16 @@ done
 
 %install
 cd lib
-for lib in $(find -maxdepth 1 -mindepth 1 -type d -not -path ./astal); do
+for lib in $(find -maxdepth 1 -mindepth 1 -type d -not -path ./astal -not -path ./quarrel -not -path ./wayland-glib -not -path ./wl); do
   pushd $lib
   %meson_install
   popd
 done
+# Copy the staged quarrel/wl artifacts into the buildroot (the remaining
+# libs were installed above by the meson install loop with the default /usr prefix).
+cp -a %{_builddir}/astal-stage/lib64/* %{buildroot}%{_libdir}/
+cp -a %{_builddir}/astal-stage/share/* %{buildroot}%{_datadir}/
+cp -a %{_builddir}/astal-stage/include/* %{buildroot}%{_includedir}/
 sed -i 's/ cava,//' %{buildroot}%{_libdir}/pkgconfig/astal-cava-0.1.pc
 rm -rf %{buildroot}%{_includedir}/cava
 rm -rf %{buildroot}%{_datadir}/consolefonts/cava.psf
@@ -177,6 +190,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %changelog
 * Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-2
 - Remove spurious BuildRequires on astal-3.0 and astal-io-0.1 (not used by lib/* tools)
+- Stage quarrel/wayland-glib/wl into a private prefix during %build instead of
+  installing to /usr (COPR builds are unprivileged); pass them to dependent
+  tools via PKG_CONFIG_PATH/XDG_DATA_DIRS/CPPFLAGS
 
 * Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-1
 - Nightly sync with upstream main branch (Commit: 1ea6cf6)
