@@ -2,7 +2,7 @@
 
 Name:           glaze
 Version:        8.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Extremely fast, in memory, JSON and interface library
 License:        MIT
 URL:            https://github.com/stephenberry/glaze
@@ -18,6 +18,7 @@ BuildRequires:  gcc-c++
 %package        devel
 Summary:        Development files for %{name}
 BuildArch:      noarch
+Requires:       %{name} = %{version}-%{release}
 Provides:       %{name}-static = %{version}-%{release}
 
 %description    devel
@@ -37,12 +38,17 @@ Development files for %{name}.
 %install
 %cmake_install
 
-%files devel
+%files
 %license LICENSE
 %doc README.md
 %{_datadir}/cmake/%{name}/
 %{_includedir}/%{name}/
 
+%files devel
+
 %changelog
+* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 8.0.0-2
+- Ship headers and cmake config in the main package so `dnf install glaze` works.
+- Keep devel subpackage as compat wrapper (provides glaze-static).
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 8.0.0-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)

@@ -1,6 +1,6 @@
 Name:           hyprland-protocols
 Version:        0.7.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland protocol extensions for Hyprland
 BuildArch:      noarch
 License:        BSD-3-Clause
@@ -15,6 +15,7 @@ BuildRequires:  meson
 
 %package        devel
 Summary:        Wayland protocol extensions for Hyprland
+Requires:       %{name} = %{version}-%{release}
 
 %description    devel
 %{summary}.
@@ -29,12 +30,17 @@ Summary:        Wayland protocol extensions for Hyprland
 %install
 %meson_install
 
-%files devel
+%files
 %license LICENSE
 %doc README.md
 %{_datadir}/pkgconfig/%{name}.pc
 %{_datadir}/%{name}/
 
+%files devel
+
 %changelog
+* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.0-2
+- Ship protocol definitions and pc file in the main package so `dnf install hyprland-protocols` works.
+- Keep devel subpackage as compat wrapper.
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.0-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)
