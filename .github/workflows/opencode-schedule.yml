@@ -682,17 +682,63 @@ jobs:
 
             Then work autonomously, in this priority order:
 
-            1. FIX FAILED COPR BUILDS (highest priority).
-               Query the COPR build list (endpoint above). Find every recent build whose
-               state is NOT "succeeded". For each failing package, get its build id and
-               inspect the failure (build logs / chroot states). Diagnose the root cause:
-               usually a bad source URL, version bump without checksum update, or a spec
-               problem. Web-search the package and its upstream for known issues before
-               patching. Repair the spec file / update.sh so it is consistent and
-               correct. If the repo's own automation in .github/workflows/* is causing
-               failures, fix the workflow script too.
+             1. FIX FAILED COPR BUILDS (highest priority - dismissal is
+                FORBIDDEN).
+                Query the COPR build list (endpoint above). Find EVERY build
+                whose state is NOT "succeeded" (failed / canceled / errored /
+                skipped). For each failing package, get its build id and read
+                the ACTUAL build logs / chroot states (`GET .../build/detail/
+                <id>` + chroot build logs). Diagnose from the real error
+                output - never from memory, never from the commit message.
 
-               a. WEBHOOK-FIRING VERIFICATION (MANDATORY - the COPR<->GitHub
+                HARD POLICY - A FAILED BUILD IS FIXED, NOT EXPLAINED AWAY:
+                - "transient", "background", "non-publishing", "superseded",
+                  "no NVR", "no submitter", "already covered by a later
+                  successful build" are NOT acceptable closures. The ONLY
+                  closure that counts: the package builds SUCCESSFULLY in COPR
+                  from the CURRENT spec + update.sh in this repo, proven by a
+                  NEWER succeeded build id created by THIS run. Even if you
+                  believe an older build was fine, users see "failed" in the
+                  COPR UI and the only thing that clears it is a fresh green
+                  rebuild of the current sources.
+                - Work ONE package to green before starting the next:
+                  update.sh -> spec sync -> local rebuild -> install test ->
+                  push -> poll COPR until the new build SUCCEEDS. Do NOT
+                  batch fixes: a batch buries a still-failing package under
+                  newer pushes.
+
+                a. THE ONLY ACCEPTABLE CLOSURE - for EVERY failing build, run
+                   this loop to completion:
+                   1) Run the package's update.sh FRESH from a clean copy of
+                      the repo: it must fetch the true latest upstream source
+                      and sync Version/Commit/checksums into the spec. Verify
+                      with web search that what it picks is really the latest
+                      upstream (release page / tags / git ls-remote).
+                   2) Make the spec fully consistent with upstream: Source URL
+                      reachable, checksum matches, %prep/%build/%install
+                      follow the package's own upstream build instructions
+                      (web-search the package for build docs). A broken
+                      update.sh (bad URL parsing, wrong branch, missing
+                      version) is a bug in THIS repo - fix it too.
+                   3) Rebuild locally in a clean Fedora container matching the
+                      failing chroot (docker repro in subsection c) until
+                      `rpmbuild -bb` succeeds, then install-test the built RPM
+                      (INSTALL-VERIFICATION SWEEP below).
+                   4) Commit + push with Release bumped (RELEASE REVISION
+                      DISCIPLINE). Then poll the COPR build list for the
+                      package (`GET .../build/list?...&packagename=<pkg>`): a
+                      NEW build MUST appear. Keep polling chroot states every
+                      60s until it finishes. The package is DONE ONLY when its
+                      NEWEST build state = "succeeded" for every chroot.
+                   5) Record per package: failing build id -> root cause (with
+                      the actual log line quoted) -> fix commit sha -> new
+                      succeeded build id. If a fix attempt fails, read the new
+                      log, web-search the error, adjust, retry - keep looping
+                      until green. If the run clock forces a relay handoff
+                      before green, the relay MUST name the package as
+                      UNRESOLVED (see RELAY / LONG-RUN HANDOFF).
+
+                b. WEBHOOK-FIRING VERIFICATION (MANDATORY - the COPR<->GitHub
                   webhook is the ONLY thing that turns your pushes into builds).
                   READ THE WEBHOOK DIRECTLY INSTEAD OF GUESSING: GitHub records
                   every configured webhook and its delivery history, so you can
@@ -735,7 +781,7 @@ jobs:
                   post-push build id that proves it, or name it as an
                   unverified gap.
 
-               b. REPRODUCE FAILED BUILDS LOCALLY IN DOCKER BEFORE PUSHING A
+               c. REPRODUCE FAILED BUILDS LOCALLY IN DOCKER BEFORE PUSHING A
                   FIX (MANDATORY when a build failed - never fix blind and
                   push, guessing). Waiting on the COPR queue wastes a full push
                   cycle per guess. Instead, once you have a hypothesis, BUILD
@@ -1052,7 +1098,8 @@ jobs:
               has FAILED to do its job. You are done ONLY when the
               pre-completion gate above is completed AND .opencode-relay.md
               on main shows `status: complete` with `run_id: $RUN_ID`.
-              If the repo has ANY failed COPR build, ANY open issue or PR,
+              If the repo has ANY failed COPR build whose package lacks a
+              NEWER succeeded build created by this run, ANY open issue or PR,
               or ANY package whose inventory is unverified, your run is not
               done - keep working regardless of how complete things look.
             - Commit fixes to main directly. NEVER open pull requests yourself, and
