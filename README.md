@@ -35,15 +35,23 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 67 packages</summary>
+<summary>Click to expand — 82 packages</summary>
 
 <br />
 
 | Package | Description | Type |
 |---------|-------------|:----:|
+| `appmenu-glib-translator` | GLib menu translator for the AppMenu protocol | Stable |
 | `app2unit` | Launch desktop entries or commands as systemd user units | Stable |
 | `aquamarine` | Light-weight rendering backend library for Hyprland | Stable |
+| `astal` | Building blocks for creating custom desktop shells (Git Snapshot) | Git |
+| `astal-gjs` | Astal GJS package (Git Snapshot) | Git |
+| `astal-gtk4` | Astal GTK4 bindings (Git Snapshot) | Git |
+| `astal-io` | Astal I/O library (Git Snapshot) | Git |
+| `astal-libs` | Astal libraries (Git Snapshot) | Git |
+| `astal-lua` | Lua bindings for libastal (Git Snapshot) | Git |
 | `awww` | Efficient animated wallpaper daemon for Wayland, controlled at runtime | Stable |
+| `aylurs-gtk-shell` | A customizable and extensible shell (AGS) | Stable |
 | `bibata-cursor-theme` | Open source, compact, and material designed cursor set | Stable |
 | `caelestia-cli-mango` | The main control script for the Caelestia dotfiles (MangoWM) | Stable |
 | `caelestia-shell-mango` | Desktop shell for MangoWM | Stable |
@@ -55,25 +63,31 @@ sudo dnf install <package-name>
 | `ghostty` | Fast, feature-rich, cross-platform terminal emulator (Deb repackage) | Stable |
 | `glaze` | Extremely fast, in memory, JSON and interface library | Stable |
 | `gpu-screen-recorder` | Shadowplay-like screen recorder for Linux (NVIDIA/AMD/Intel) | Stable |
+| `hellwal` | Pywal-like color palette generator, but faster and in C | Stable |
 | `helium-browser` | Private, fast, and honest web browser | Stable |
 | `heroic-games-launcher` | Open source launcher for GOG, Epic, and Amazon Games | Stable |
+| `hyprdim` | Automatically dim windows in Hyprland when switching between them | Stable |
 | `hyprcursor` | The hyprland cursor format, library and utilities | Stable |
 | `hyprgraphics` | Hyprland graphics / resource utilities | Stable |
 | `hypridle` | Hyprland's idle daemon | Stable |
 | `hyprlang` | The official implementation library for the hypr config language | Stable |
 | `hyprlauncher` | A multipurpose and versatile launcher / picker for Hyprland | Stable |
+| `hyprland-autoname-workspaces` | Hyprland autoname workspaces | Stable |
 | `hyprland` | Dynamic tiling Wayland compositor that doesn't sacrifice on its looks | Stable |
 | `hyprland-contrib` | Community scripts and utilities for Hypr projects | Git |
 | `hyprland-guiutils` | Hyprland GUI utilities (welcome, run, dialog, update screens) | Stable |
 | `hyprland-plugins` | Official plugins for Hyprland | Git |
 | `hyprland-protocols` | Wayland protocol extensions for Hyprland | Stable |
 | `hyprland-qt-support` | Qt6 QML style provider for hypr* apps | Stable |
+| `hyprnome` | GNOME-like workspace switching in Hyprland | Stable |
 | `hyprlock` | Hyprland's GPU-accelerated screen locking utility | Stable |
 | `hyprpaper` | Blazing fast wayland wallpaper utility with IPC controls | Stable |
 | `hyprpicker` | A wlroots-compatible Wayland color picker | Stable |
 | `hyprpolkitagent` | A simple polkit authentication agent for Hyprland | Stable |
+| `hyprpwcenter` | A GUI Pipewire control center | Stable |
 | `hyprqt6engine` | Qt6 Theme Provider for Hyprland | Stable |
 | `hyprsunset` | An application to enable a blue-light filter on Hyprland | Stable |
+| `hyprshot` | Utility to easily take screenshots in Hyprland using your mouse | Stable |
 | `hyprshutdown` | A graceful shutdown utility for Hyprland | Stable |
 | `hyprsysteminfo` | An application to display information about the running system | Stable |
 | `hyprtoolkit` | A modern C++ Wayland-native GUI toolkit | Stable |
@@ -96,6 +110,7 @@ sudo dnf install <package-name>
 | `obsidian` | Knowledge base over a local folder of plain-text Markdown files | Stable |
 | `opencode-desktop` | Open source AI coding agent | Stable |
 | `protonplus` | Modern compatibility tools manager | Stable |
+| `pyprland` | Hyprland extensions made easy | Stable |
 | `python3-materialyoucolor` | Material You color generation algorithms (pure Python + C++ quantizer) | Stable |
 | `quickshell-git` | Flexible toolkit for desktop shells with QtQuick (Git Snapshot) | Git |
 | `rootapp` | Discord alternative for gaming communities and large online groups | Stable |
