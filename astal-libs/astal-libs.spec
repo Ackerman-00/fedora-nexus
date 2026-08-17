@@ -7,21 +7,20 @@
 
 Name:           astal-libs
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Astal libraries
 
 License:        LGPL-2.1-only
 URL:            https://github.com/Aylur/astal
 Source0:        %{url}/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
-Source1:        https://github.com/LukashonakV/cava/archive/0.10.3.tar.gz
+Source1:        https://github.com/LukashonakV/cava/archive/1.0.0.tar.gz#/cava-1.0.0.tar.gz
+Source2:        https://github.com/kotontrion/wl-vapi-gen/archive/refs/tags/1.0.0.tar.gz#/wl-vapi-gen-1.0.0.tar.gz
 
 BuildRequires:  gcc
 BuildRequires:  iniparser-devel
 BuildRequires:  meson
 BuildRequires:  pkgconfig(alsa)
 BuildRequires:  pkgconfig(appmenu-glib-translator)
-BuildRequires:  pkgconfig(astal-3.0)
-BuildRequires:  pkgconfig(astal-io-0.1)
 BuildRequires:  pkgconfig(dbusmenu-gtk3-0.4)
 BuildRequires:  pkgconfig(fftw3)
 BuildRequires:  pkgconfig(gdk-pixbuf-2.0)
@@ -34,9 +33,13 @@ BuildRequires:  pkgconfig(json-glib-1.0)
 BuildRequires:  pkgconfig(libnm)
 BuildRequires:  pkgconfig(libpipewire-0.3)
 BuildRequires:  pkgconfig(libpulse)
+BuildRequires:  pkgconfig(libsoup-3.0)
 BuildRequires:  pkgconfig(ncursesw)
 BuildRequires:  pkgconfig(pam)
 BuildRequires:  pkgconfig(sdl2)
+BuildRequires:  pkgconfig(wayland-client)
+BuildRequires:  pkgconfig(wayland-protocols)
+BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(wireplumber-0.5)
 BuildRequires:  python3
 BuildRequires:  vala
@@ -54,27 +57,36 @@ Development files for %{name}.
 %prep
 %autosetup -n astal-%{commit} -p1
 tar -xf %{SOURCE1} -C lib/cava/subprojects
+tar -xf %{SOURCE2} -C lib/wl/subprojects
+tar -xf %{SOURCE2} -C lib/river/subprojects
 
 %build
 cd lib
-for lib in $(find -maxdepth 1 -mindepth 1 -type d -not -path ./astal); do
-pushd $lib
-%meson --auto-features=auto
-%meson_build
-popd
+for lib in quarrel wayland-glib wl; do
+  pushd $lib
+  %meson --auto-features=auto
+  %meson_build
+  meson install -C redhat-linux-build --no-rebuild
+  popd
+done
+for lib in $(find -maxdepth 1 -mindepth 1 -type d -not -path ./astal -not -path ./quarrel -not -path ./wayland-glib -not -path ./wl); do
+  pushd $lib
+  %meson --auto-features=auto
+  %meson_build
+  popd
 done
 
 %install
 cd lib
 for lib in $(find -maxdepth 1 -mindepth 1 -type d -not -path ./astal); do
-pushd $lib
-%meson_install
-popd
+  pushd $lib
+  %meson_install
+  popd
 done
 sed -i 's/ cava,//' %{buildroot}%{_libdir}/pkgconfig/astal-cava-0.1.pc
 rm -rf %{buildroot}%{_includedir}/cava
 rm -rf %{buildroot}%{_datadir}/consolefonts/cava.psf
-rm -rf %{buildroot}%{_libdir}/pkgconfig/cava.pc
+rm -rf %{buildroot}%{_libdir}/pkgconfig/libcava.pc
 
 %files
 %license LICENSE
@@ -82,17 +94,19 @@ rm -rf %{buildroot}%{_libdir}/pkgconfig/cava.pc
 %{_bindir}/astal-apps
 %{_bindir}/astal-auth
 %{_bindir}/astal-battery
+%{_bindir}/astal-brightness
 %{_bindir}/astal-greet
 %{_bindir}/astal-hyprland
 %{_bindir}/astal-mpris
 %{_bindir}/astal-notifd
 %{_bindir}/astal-power-profiles
-%{_bindir}/astal-river
 %{_bindir}/astal-tray
+%{_datadir}/glib-2.0/schemas/io.astal.notifd.gschema.xml
 %{_libdir}/girepository-1.0/AstalApps-0.1.typelib
 %{_libdir}/girepository-1.0/AstalAuth-0.1.typelib
 %{_libdir}/girepository-1.0/AstalBattery-0.1.typelib
 %{_libdir}/girepository-1.0/AstalBluetooth-0.1.typelib
+%{_libdir}/girepository-1.0/AstalBrightness-0.1.typelib
 %{_libdir}/girepository-1.0/AstalCava-0.1.typelib
 %{_libdir}/girepository-1.0/AstalGreet-0.1.typelib
 %{_libdir}/girepository-1.0/AstalHyprland-0.1.typelib
@@ -102,11 +116,14 @@ rm -rf %{buildroot}%{_libdir}/pkgconfig/cava.pc
 %{_libdir}/girepository-1.0/AstalPowerProfiles-0.1.typelib
 %{_libdir}/girepository-1.0/AstalRiver-0.1.typelib
 %{_libdir}/girepository-1.0/AstalTray-0.1.typelib
+%{_libdir}/girepository-1.0/AstalWl-0.1.typelib
 %{_libdir}/girepository-1.0/AstalWp-0.1.typelib
+%{_libdir}/girepository-1.0/Quarrel-0.1.typelib
 %{_libdir}/libastal-apps.so.0{,.*}
 %{_libdir}/libastal-auth.so.0{,.*}
 %{_libdir}/libastal-battery.so.0{,.*}
 %{_libdir}/libastal-bluetooth.so.0{,.*}
+%{_libdir}/libastal-brightness.so.0{,.*}
 %{_libdir}/libastal-cava.so.0{,.*}
 %{_libdir}/libastal-greet.so.0{,.*}
 %{_libdir}/libastal-hyprland.so.0{,.*}
@@ -117,18 +134,30 @@ rm -rf %{buildroot}%{_libdir}/pkgconfig/cava.pc
 %{_libdir}/libastal-river.so.0{,.*}
 %{_libdir}/libastal-tray.so.0{,.*}
 %{_libdir}/libastal-wireplumber.so.0{,.*}
-%{_libdir}/libcava.so
+%{_libdir}/libastal-wl.so.0{,.*}
+%{_libdir}/libcava.so.1{,.*}
+%{_libdir}/libquarrel.so.0{,.*}
+
+%post
+glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
+
+%postun
+glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
 %files devel
 %{_datadir}/gir-1.0/Astal*-0.1.gir
+%{_datadir}/gir-1.0/Quarrel-0.1.gir
 %{_datadir}/vala/vapi/astal-*-0.1.deps
 %{_datadir}/vala/vapi/astal-*-0.1.vapi
+%{_datadir}/vala/vapi/quarrel-0.1.vapi
 %{_includedir}/astal-*.h
 %{_includedir}/astal/
+%{_includedir}/quarrel.h
 %{_libdir}/libastal-apps.so
 %{_libdir}/libastal-auth.so
 %{_libdir}/libastal-battery.so
 %{_libdir}/libastal-bluetooth.so
+%{_libdir}/libastal-brightness.so
 %{_libdir}/libastal-cava.so
 %{_libdir}/libastal-greet.so
 %{_libdir}/libastal-hyprland.so
@@ -139,8 +168,15 @@ rm -rf %{buildroot}%{_libdir}/pkgconfig/cava.pc
 %{_libdir}/libastal-river.so
 %{_libdir}/libastal-tray.so
 %{_libdir}/libastal-wireplumber.so
+%{_libdir}/libastal-wl.so
+%{_libdir}/libcava.so
+%{_libdir}/libquarrel.so
 %{_libdir}/pkgconfig/astal-*.pc
+%{_libdir}/pkgconfig/quarrel-0.1.pc
 
 %changelog
+* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-2
+- Remove spurious BuildRequires on astal-3.0 and astal-io-0.1 (not used by lib/* tools)
+
 * Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-1
 - Nightly sync with upstream main branch (Commit: 1ea6cf6)

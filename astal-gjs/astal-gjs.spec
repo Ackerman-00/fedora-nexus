@@ -8,7 +8,7 @@
 
 Name:           astal-gjs
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Astal GJS package
 
 License:        LGPL-2.1-only
@@ -53,5 +53,8 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-2
+- Rebuild against fixed astal-devel (circular astal-libs dependency removed)
+
 * Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-1
 - Nightly sync with upstream main branch (Commit: 1ea6cf6)
