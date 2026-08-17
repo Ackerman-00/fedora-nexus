@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          7f2292f0792ffc9b127d4788b3dd3f104b5374b2
+%global commit          1ea6cf6cdb67e8679f6e3e8434e76103559194da
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20250602062009
+%global gitdate         20260815214150
 
 %global debug_package %{nil}
 %global _vpath_srcdir lang/lua
@@ -41,5 +41,5 @@ cp -pr astal %{buildroot}%{lua_pkgdir}
 %{lua_pkgdir}/astal/
 
 %changelog
-* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20250602062009git7f2292f-1
-- Initial package
+* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-1
+- Nightly sync with upstream main branch (Commit: 1ea6cf6)
