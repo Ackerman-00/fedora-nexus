@@ -7,7 +7,7 @@
 
 Name:           appmenu-glib-translator
 Version:        25.04^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        appmenu-glib-translator
 
 License:        LGPL-3.0-or-later
@@ -51,10 +51,13 @@ Development files for %{name}.
 %{_datadir}/gir-1.0/AppmenuGLibTranslator-25.04.gir
 %{_datadir}/vala/vapi/appmenu-glib-translator.deps
 %{_datadir}/vala/vapi/appmenu-glib-translator.vapi
-%{_includedir}/appmenu-glib-translator/appmenu-glib-translator.h
+%{_includedir}/appmenu-glib-translator/importer.h
 %{_libdir}/libappmenu-glib-translator.so
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
+* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 25.04^20260705174924git468ea01-2
+- Fix devel %files: upstream installs importer.h, not appmenu-glib-translator.h
+
 * Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 25.04^20260705174924git468ea01-1
 - Nightly sync with upstream main branch (Commit: 468ea01)
