@@ -1,5 +1,5 @@
 Name:           pyprland
-Version:        2.4.7
+Version:        3.4.3
 Release:        1%{?dist}
 Summary:        Hyprland extensions made easy
 
@@ -37,7 +37,12 @@ install -Dpm0755 client/pypr-client -t %{buildroot}%{_bindir}
 %doc README.md
 %{_bindir}/pypr
 %{_bindir}/pypr-client
+%{_bindir}/pypr-gui
+%{_bindir}/pypr-quickstart
 
 %changelog
+* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 3.4.3-1
+- Update to 3.4.3
+
 * Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 2.4.7-1
 - Initial package

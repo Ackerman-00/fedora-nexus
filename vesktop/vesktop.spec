@@ -7,7 +7,7 @@
 
 Name:           vesktop
 Version:        1.6.6
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Custom Discord desktop client with Vencord preinstalled (Nexus Optimized)
 
 License:        GPL-3.0-or-later
@@ -83,6 +83,9 @@ chmod 0755 %{buildroot}%{_bindir}/vesktop
 %attr(4755, root, root) /opt/Vesktop/chrome-sandbox
 
 %changelog
+* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.6-1
+- Update to 1.6.6
+
 * Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.5-2
 - Replace util-linux-core with libuuid to match upstream RPM runtime Requires
 
