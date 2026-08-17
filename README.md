@@ -35,7 +35,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 65 packages</summary>
+<summary>Click to expand — 67 packages</summary>
 
 <br />
 
@@ -90,6 +90,8 @@ sudo dnf install <package-name>
 | `matugen` | Material You color generation tool | Stable |
 | `mpvpaper` | Video wallpaper program for wlroots based Wayland compositors | Stable |
 | `niri-git` | Scrollable-tiling Wayland compositor (Git Snapshot) | Git |
+| `noctalia-git` | Sleek, customizable Wayland desktop shell (Git Snapshot) | Git |
+| `noctalia-greeter` | Minimal greetd login greeter matching Noctalia Shell (Git Snapshot) | Git |
 | `nwg-look` | GTK3 settings editor adapted for the wlroots environment | Stable |
 | `obsidian` | Knowledge base over a local folder of plain-text Markdown files | Stable |
 | `opencode-desktop` | Open source AI coding agent | Stable |
