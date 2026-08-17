@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SPEC_FILE="mangowm.spec"
+SPEC_FILE="aylurs-gtk-shell.spec"
 GITHUB_REPO="Aylur/ags"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
