@@ -7,7 +7,7 @@
 
 Name:           astal-libs
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Astal libraries
 
 License:        LGPL-2.1-only
@@ -53,6 +53,8 @@ Development files for %{name}.
 
 %description
 %{summary}.
+
+Requires:       libcava%{?_isa} = 1.0.0
 
 %prep
 %autosetup -n astal-%{commit} -p1
@@ -100,6 +102,9 @@ sed -i 's/ cava,//' %{buildroot}%{_libdir}/pkgconfig/astal-cava-0.1.pc
 rm -rf %{buildroot}%{_includedir}/cava
 rm -rf %{buildroot}%{_datadir}/consolefonts/cava.psf
 rm -rf %{buildroot}%{_libdir}/pkgconfig/libcava.pc
+# libcava is provided by the standalone libcava package; drop the copy built
+# as part of lib/cava so the two packages do not conflict on the same file.
+rm -rf %{buildroot}%{_libdir}/libcava.so*
 
 %files
 %license LICENSE
@@ -148,7 +153,6 @@ rm -rf %{buildroot}%{_libdir}/pkgconfig/libcava.pc
 %{_libdir}/libastal-tray.so.0{,.*}
 %{_libdir}/libastal-wireplumber.so.0{,.*}
 %{_libdir}/libastal-wl.so.0{,.*}
-%{_libdir}/libcava.so.1{,.*}
 %{_libdir}/libquarrel.so.0{,.*}
 
 %post
@@ -182,12 +186,15 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_libdir}/libastal-tray.so
 %{_libdir}/libastal-wireplumber.so
 %{_libdir}/libastal-wl.so
-%{_libdir}/libcava.so
 %{_libdir}/libquarrel.so
 %{_libdir}/pkgconfig/astal-*.pc
 %{_libdir}/pkgconfig/quarrel-0.1.pc
 
 %changelog
+* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-3
+- Do not ship the bundled libcava: it collides with the standalone libcava
+  package (same /usr/lib64/libcava.so.1.0.0). Depend on libcava = 1.0.0 instead.
+
 * Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-2
 - Remove spurious BuildRequires on astal-3.0 and astal-io-0.1 (not used by lib/* tools)
 - Stage quarrel/wayland-glib/wl into a private prefix during %build instead of
