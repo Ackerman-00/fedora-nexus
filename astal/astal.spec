@@ -5,11 +5,9 @@
 
 %global _vpath_srcdir lib/astal/gtk3
 
-%bcond bootstrap 0
-
 Name:           astal
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Building blocks for creating custom desktop shells
 
 License:        LGPL-2.1-only
@@ -32,10 +30,6 @@ BuildRequires:  pkgconfig(gtk+-3.0)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols)
 BuildRequires:  pkgconfig(wayland-scanner)
-
-%if %{without bootstrap}
-Requires:       astal-libs%{?_isa}
-%endif
 
 %package        devel
 Summary:        Development files for %{name}
@@ -69,5 +63,8 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/astal-3.0.pc
 
 %changelog
+* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-2
+- Remove circular Requires on astal-libs (astal is the core library)
+
 * Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-1
 - Nightly sync with upstream main branch (Commit: 1ea6cf6)
