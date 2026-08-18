@@ -5,7 +5,7 @@
 
 Name:           quickshell-git
 Version:        0.3.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Flexible toolkit for making desktop shells with QtQuick (Git Snapshot)
 
 License:        LGPL-3.0-only
@@ -56,7 +56,7 @@ Quickshell is a flexible toolkit for making desktop shells with QtQuick.
 This package tracks the bleeding-edge master branch.
 
 %prep
-%autosetup -n quickshell
+%autosetup -n quickshell-%{commit}
 
 %build
 export CFLAGS="%{optflags} -ffat-lto-objects"
@@ -84,6 +84,11 @@ export CXXFLAGS="%{optflags} -ffat-lto-objects"
 %{_libdir}/qt6/qml/Quickshell/*
 
 %changelog
+* Tue Aug 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260816002204git532a060-3
+- Fix %prep: the GitHub mirror archive extracts to quickshell-<full-commit>/
+  (Forgejo archives stripped the hash suffix, but GitHub archives do not),
+  so -n quickshell no longer matched. Local rpmbuild verified the fix.
+
 * Tue Aug 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260816002204git532a060-2
 - Switch Source0 to the official GitHub mirror (quickshell-mirror/quickshell):
   git.outfoxxed.me became unreachable from COPR's SRPM-import service, failing
