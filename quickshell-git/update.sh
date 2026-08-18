@@ -8,19 +8,21 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $FORGEJO_HOST/$FORGEJO_REPO..."
 
-# Get latest tag via git ls-remote from Forgejo (no rate limit)
-LATEST_TAG=$(git ls-remote --tags https://$FORGEJO_HOST/$FORGEJO_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | sort -V | tail -1)
+# Get latest tag via git ls-remote from the official GitHub mirror (Forgejo
+# git.outfoxxed.me is frequently unreachable from CI/COPR networks; the mirror
+# is upstream's own and always reachable).
+LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_MIRROR.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | sort -V | tail -1)
 BASE_VER=$(echo "$LATEST_TAG" | sed 's/^v//')
 
 if [ -z "$BASE_VER" ]; then
-    echo "Error: Failed to fetch latest tag from Forgejo."
+    echo "Error: Failed to fetch latest tag from GitHub mirror."
     exit 1
 fi
 
 echo "Latest upstream tag: $LATEST_TAG (base version: $BASE_VER)"
 
-# Get HEAD commit via git ls-remote from Forgejo (no rate limit)
-LATEST_COMMIT=$(git ls-remote https://$FORGEJO_HOST/$FORGEJO_REPO.git HEAD 2>/dev/null | awk '{print $1}')
+# Get HEAD commit via git ls-remote from the GitHub mirror
+LATEST_COMMIT=$(git ls-remote https://github.com/$GITHUB_MIRROR.git HEAD 2>/dev/null | awk '{print $1}')
 
 if [ -z "$LATEST_COMMIT" ]; then
     echo "Error: Failed to fetch HEAD commit."
@@ -45,8 +47,8 @@ fi
 [ "$COMMIT_CHANGED" == "true" ] && echo "New commit: ${CURRENT_COMMIT:0:7} -> $SHORT_COMMIT"
 [ "$BASE_VER_CHANGED" == "true" ] && echo "Base version bump: $CURRENT_BASE_VER -> $BASE_VER"
 
-# Fetch commit date via Forgejo API (no rate limit on Forgejo)
-COMMIT_DATE_RAW=$(curl -sL "https://$FORGEJO_HOST/api/v1/repos/$FORGEJO_REPO/commits?sha=master&limit=1" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d[0].get('commit',{}).get('committer',{}).get('date','') if d else '')" 2>/dev/null)
+# Fetch commit date via GitHub API on the mirror
+COMMIT_DATE_RAW=$(curl -sL -H "Authorization: token ${GITHUB_TOKEN:-}" "https://api.github.com/repos/$GITHUB_MIRROR/commits/$LATEST_COMMIT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('commit',{}).get('committer',{}).get('date',''))" 2>/dev/null)
 
 if [ -z "$COMMIT_DATE_RAW" ]; then
     echo "Warning: Could not fetch commit date. Using spec file date."

@@ -5,11 +5,11 @@
 
 Name:           quickshell-git
 Version:        0.3.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Flexible toolkit for making desktop shells with QtQuick (Git Snapshot)
 
 License:        LGPL-3.0-only
-URL:            https://git.outfoxxed.me/quickshell/quickshell
+URL:            https://github.com/quickshell-mirror/quickshell
 Source0:        %{url}/archive/%{commit}.tar.gz
 
 ExclusiveArch:  x86_64 aarch64
@@ -84,5 +84,10 @@ export CXXFLAGS="%{optflags} -ffat-lto-objects"
 %{_libdir}/qt6/qml/Quickshell/*
 
 %changelog
+* Tue Aug 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260816002204git532a060-2
+- Switch Source0 to the official GitHub mirror (quickshell-mirror/quickshell):
+  git.outfoxxed.me became unreachable from COPR's SRPM-import service, failing
+  every build at source download (builds 10876183, 10877172). Same pinned commit.
+
 * Sun Aug 16 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260816002204git532a060-1
 - Nightly sync with upstream master branch (Commit: 532a060)
