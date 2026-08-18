@@ -35,3 +35,4 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
 else
     echo "Package is already at $LATEST_VERSION. No update needed."
 fi
+# Re-trigger: COPR SRPM-import outage on 2026-08-18 caused build failure; spec unchanged.

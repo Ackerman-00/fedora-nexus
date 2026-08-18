@@ -41,3 +41,4 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
 else
     echo "Already up to date ($CURRENT_VERSION)."
 fi
+# Re-trigger: COPR SRPM-import outage on 2026-08-18 caused build failure; spec unchanged.
