@@ -48,4 +48,4 @@ Development files for %{name}.
 * Thu Aug 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.14.1-1
 - Update to version 0.14.1
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.14.0-1
-- Initial packaging for Fedora Nexus (Nexus Optimized)
+- Initial packaging for Fedora Nexus (Nexus Optimized)# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).

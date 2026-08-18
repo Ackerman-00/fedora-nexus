@@ -211,4 +211,4 @@ rm -f %{buildroot}%{_datadir}/wayland-sessions/hyprland-uwsm.desktop
 - Rebuild: aquamarine and hyprwire now available in COPR repo
 
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.56.2-1
-- Initial packaging for Fedora Nexus (Nexus Optimized)
+- Initial packaging for Fedora Nexus (Nexus Optimized)# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).

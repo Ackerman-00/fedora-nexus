@@ -40,4 +40,4 @@ Summary:        Development files for %{name}
 
 %changelog
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.4.6-1
-- Initial packaging for Fedora Nexus (Nexus Optimized)
+- Initial packaging for Fedora Nexus (Nexus Optimized)# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).

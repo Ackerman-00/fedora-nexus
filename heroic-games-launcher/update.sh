@@ -66,3 +66,4 @@ else
 fi
 
 echo "  -> [DONE] Successfully patched $SPEC_FILE."
+# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).
