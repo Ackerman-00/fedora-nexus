@@ -52,3 +52,5 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
 else
     echo "  -> [OK] Freebuff Desktop is already on latest ($CURRENT_VERSION)."
 fi
+
+# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).

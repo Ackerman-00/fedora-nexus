@@ -33,3 +33,4 @@ if [ "$CURRENT_VERSION" != "$VERSION" ]; then
 else
     echo "Package is already at $VERSION. No update needed."
 fi
+# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).

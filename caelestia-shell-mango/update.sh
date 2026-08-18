@@ -52,3 +52,4 @@ if [ "$CURRENT_COMMIT" != "$LATEST_COMMIT" ]; then
 else
     echo "Package is already at the latest commit ($SHORT_COMMIT). No update needed."
 fi
+# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).
