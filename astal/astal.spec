@@ -1,13 +1,13 @@
 # These will be automatically populated by update.sh
-%global commit          1ea6cf6cdb67e8679f6e3e8434e76103559194da
+%global commit          a16a08c662d9decece15b7ee6d8019e686e529ea
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260815214150
+%global gitdate         20260818112324
 
 %global _vpath_srcdir lib/astal/gtk3
 
 Name:           astal
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Building blocks for creating custom desktop shells
 
 License:        LGPL-2.1-only
@@ -63,8 +63,5 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/astal-3.0.pc
 
 %changelog
-* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-2
-- Remove circular Requires on astal-libs (astal is the core library)
-
-* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-1
-- Nightly sync with upstream main branch (Commit: 1ea6cf6)
+* Tue Aug 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260818112324gita16a08c-1
+- Nightly sync with upstream main branch (Commit: a16a08c)

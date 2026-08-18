@@ -1,14 +1,14 @@
 # These will be automatically populated by update.sh
-%global commit          1ea6cf6cdb67e8679f6e3e8434e76103559194da
+%global commit          a16a08c662d9decece15b7ee6d8019e686e529ea
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260815214150
+%global gitdate         20260818112324
 
 %global debug_package %{nil}
 %global _vpath_srcdir lang/gjs
 
 Name:           astal-gjs
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Astal GJS package
 
 License:        LGPL-2.1-only
@@ -53,8 +53,5 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
-* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-2
-- Rebuild against fixed astal-devel (circular astal-libs dependency removed)
-
-* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-1
-- Nightly sync with upstream main branch (Commit: 1ea6cf6)
+* Tue Aug 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260818112324gita16a08c-1
+- Nightly sync with upstream main branch (Commit: a16a08c)

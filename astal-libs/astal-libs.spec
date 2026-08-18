@@ -1,13 +1,13 @@
 # These will be automatically populated by update.sh
-%global commit          1ea6cf6cdb67e8679f6e3e8434e76103559194da
+%global commit          a16a08c662d9decece15b7ee6d8019e686e529ea
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260815214150
+%global gitdate         20260818112324
 
 %global _lto_cflags %{nil}
 
 Name:           astal-libs
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        Astal libraries
 
 License:        LGPL-2.1-only
@@ -191,15 +191,5 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_libdir}/pkgconfig/quarrel-0.1.pc
 
 %changelog
-* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-3
-- Do not ship the bundled libcava: it collides with the standalone libcava
-  package (same /usr/lib64/libcava.so.1.0.0). Depend on libcava = 1.0.0 instead.
-
-* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-2
-- Remove spurious BuildRequires on astal-3.0 and astal-io-0.1 (not used by lib/* tools)
-- Stage quarrel/wayland-glib/wl into a private prefix during %build instead of
-  installing to /usr (COPR builds are unprivileged); pass them to dependent
-  tools via PKG_CONFIG_PATH/XDG_DATA_DIRS/CPPFLAGS
-
-* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260815214150git1ea6cf6-1
-- Nightly sync with upstream main branch (Commit: 1ea6cf6)
+* Tue Aug 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260818112324gita16a08c-1
+- Nightly sync with upstream main branch (Commit: a16a08c)
