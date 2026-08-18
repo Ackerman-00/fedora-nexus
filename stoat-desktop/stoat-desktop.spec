@@ -5,9 +5,13 @@
 %global __requires_exclude_from ^/opt/Stoat/.*$
 %global __provides_exclude_from ^/opt/Stoat/.*$
 
+# Bundled prebuilt native modules carry build-machine RUNPATHs (Nix store paths)
+# that trip check-rpaths error 0002; all NEEDED libs resolve from the system.
+%global __brp_check_rpaths %{nil}
+
 Name:           stoat-desktop
 Version:        1.5.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Open source, user-first chat platform desktop client
 
 License:        AGPL-3.0-only AND MIT AND BSD-2-Clause
@@ -36,6 +40,7 @@ Requires:       libXfixes
 Requires:       libXrandr
 Requires:       libxkbcommon
 Requires:       mesa-libgbm
+Requires:       pipewire-libs
 Requires:       alsa-lib
 Requires:       libsecret
 Requires:       libappindicator-gtk3
@@ -88,6 +93,12 @@ chmod 0755 %{buildroot}%{_bindir}/stoat-desktop
 %attr(4755, root, root) /opt/Stoat/chrome-sandbox
 
 %changelog
+* Tue Aug 18 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.2-3
+- Fix build: disable check-rpaths for bundled prebuilt native module
+  (node-pipewire index.node carries Nix-store RUNPATH; all NEEDED libs
+  resolve from the system).
+- Add Requires: pipewire-libs (needed by bundled node-pipewire voice module).
+
 * Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.2-2
 - Fix %install: use install -Dpm for desktop/metainfo to create parent dirs
 
