@@ -91,3 +91,4 @@ chmod 0755 %{buildroot}%{_bindir}/vesktop
 
 * Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.6.5-1
 - Initial Repackaged Wayland-Optimized Build via Upstream RPM
+# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).

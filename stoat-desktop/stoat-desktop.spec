@@ -103,4 +103,4 @@ chmod 0755 %{buildroot}%{_bindir}/stoat-desktop
 - Fix %install: use install -Dpm for desktop/metainfo to create parent dirs
 
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.2-1
-- Initial package
+- Initial package# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).

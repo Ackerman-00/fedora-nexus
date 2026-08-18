@@ -49,3 +49,4 @@ sed -i '/^%changelog/,$d' "$SPEC_FILE"
 } >> "$SPEC_FILE"
 
 echo "Successfully patched $SPEC_FILE to $LATEST_TAG."
+# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).

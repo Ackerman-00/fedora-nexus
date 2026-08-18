@@ -110,4 +110,4 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
   %{_sourcedir} copies of committed directories
 
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-1
-- Initial package
+- Initial package# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).

@@ -139,3 +139,4 @@ if [ "$VERSION" != "$CURRENT_VERSION" ] || [ "$NEW_SHA" != "$CURRENT_SHA" ]; the
 fi
 
 echo "Spec file updated to version $VERSION."
+# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).

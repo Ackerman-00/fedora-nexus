@@ -60,3 +60,4 @@ make build
 
 * Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.0.6-1
 - Initial Optimized Native Go Build
+# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).
