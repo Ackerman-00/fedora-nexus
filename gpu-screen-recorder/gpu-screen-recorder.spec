@@ -1,6 +1,6 @@
 Name:           gpu-screen-recorder
-Version:        6.0.0
-Release:        4%{?dist}
+Version:        6.0.1
+Release:        1%{?dist}
 Summary:        A shadowplay-like screen recorder for Linux. The fastest screen recorder for Linux
 
 License:        GPL-3.0-or-later
@@ -97,31 +97,5 @@ on both X11 and Wayland.
 /usr/lib/modprobe.d/gsr-nvidia.conf
 
 %changelog
-* Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 6.0.0-4
-- Recommend psmisc (killall) and libnotify (notify-send): both are invoked
-  by the shipped helper scripts (start-stop-recording.sh, save-recording.sh,
-  save-replay.sh, toggle-recording*.sh, record-save-application-name.sh)
-
-* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 6.0.0-3
-- Recommend the helper tools the shipped scripts in
-  %%{_datadir}/gpu-screen-recorder/scripts actually invoke but which nothing
-  pulled in: xdotool (used by interactive.sh, record-application-name.sh,
-  record-save-application-name.sh, replay-application-name.sh and
-  toggle-recording-selected.sh), /usr/bin/pactl (list-sinks.sh) and ffmpeg
-  (twitch-stream-local-copy.sh). Weak deps because the main recorder works
-  without them.
-
-* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 6.0.0-2
-- Declare gsr-kms-server's CAP_SYS_ADMIN with %%caps() in %%files instead of
-  running setcap from %%post. The scriptlet changed the file behind rpm's
-  back, so every install left "rpm -V gpu-screen-recorder" reporting
-  "........P /usr/bin/gsr-kms-server". Drops the now-unneeded
-  Requires(post): libcap.
-- Recommend turbojpeg: src/image_writer.c dlopen()s libturbojpeg.so.0 for
-  fast JPEG screenshot output and falls back to the bundled stb encoder when
-  it is absent, so it is optional rather than a hard Requires.
-
-* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 6.0.0-1
-- Update to version 6.0.0
-- 6.0.0 ships a new gsr-cli binary + man page; add to %files (fixes
-  "Installed (but unpackaged) file(s)" build error)
+* Tue Aug 18 2026 Ackerman-00 <quietcraft@gmail.com> - 6.0.1-1
+- Update to version 6.0.1
