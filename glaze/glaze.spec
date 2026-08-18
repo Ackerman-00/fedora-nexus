@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name:           glaze
-Version:        8.0.0
-Release:        2%{?dist}
+Version:        8.1.0
+Release:        1%{?dist}
 Summary:        Extremely fast, in memory, JSON and interface library
 License:        MIT
 URL:            https://github.com/stephenberry/glaze
@@ -47,6 +47,8 @@ Development files for %{name}.
 %files devel
 
 %changelog
+* Tue Aug 18 2026 Ackerman-00 <quietcraft@gmail.com> - 8.1.0-1
+- Update to 8.1.0
 * Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 8.0.0-2
 - Ship headers and cmake config in the main package so `dnf install glaze` works.
 - Keep devel subpackage as compat wrapper (provides glaze-static).
