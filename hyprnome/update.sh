@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SPEC_FILE="mangowm.spec"
+SPEC_FILE="hyprnome.spec"
 GITHUB_REPO="donovanglover/hyprnome"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 

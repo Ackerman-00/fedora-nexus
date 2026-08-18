@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SPEC_FILE="mangowm.spec"
+SPEC_FILE="hyprshot.spec"
 GITHUB_REPO="Gustash/Hyprshot"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 

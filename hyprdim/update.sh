@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SPEC_FILE="mangowm.spec"
+SPEC_FILE="hyprdim.spec"
 GITHUB_REPO="donovanglover/hyprdim"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SPEC_FILE="mangowm.spec"
+SPEC_FILE="hyprpwcenter.spec"
 GITHUB_REPO="hyprwm/hyprpwcenter"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 

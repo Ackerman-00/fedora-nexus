@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SPEC_FILE="mangowm.spec"
+SPEC_FILE="hyprland-autoname-workspaces.spec"
 GITHUB_REPO="hyprland-community/hyprland-autoname-workspaces"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 

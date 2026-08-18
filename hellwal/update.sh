@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SPEC_FILE="mangowm.spec"
+SPEC_FILE="hellwal.spec"
 GITHUB_REPO="danihek/hellwal"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 

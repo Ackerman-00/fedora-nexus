@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SPEC_FILE="mangowm.spec"
+SPEC_FILE="pyprland.spec"
 GITHUB_REPO="hyprland-community/pyprland"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
