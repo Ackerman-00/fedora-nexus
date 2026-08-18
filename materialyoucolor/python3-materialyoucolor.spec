@@ -43,3 +43,4 @@ pybind11 extension for speed, with a pure-Python fallback.
 * Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 3.0.4-1
 - Initial package (builds the C++ quantizer via pybind11)
 # Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).
+# Re-trigger #2: run 32173483884 — previous re-trigger did not fire a COPR build (no newer build than 10876224).
