@@ -10,7 +10,7 @@
 %global __brp_check_rpaths %{nil}
 
 Name:           stoat-desktop
-Version:        1.5.2
+Version:        1.5.3
 Release:        3%{?dist}
 Summary:        Open source, user-first chat platform desktop client
 

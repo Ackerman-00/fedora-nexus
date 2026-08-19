@@ -6,7 +6,7 @@
 %global __provides_exclude_from ^/opt/freebuff/.*$
 
 Name:           freebuff
-Version:        0.0.65
+Version:        0.0.66
 Release:        1%{?dist}
 Summary:        The free coding agent for your desktop
 
@@ -106,5 +106,5 @@ install -m644 squashfs-root/usr/share/icons/hicolor/512x512/apps/@codebufffreebu
 %attr(4755, root, root) /opt/freebuff/chrome-sandbox
 
 %changelog
-* Tue Aug 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.65-1
-- Auto-updated to 0.0.65 via update.sh
+* Wed Aug 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.66-1
+- Auto-updated to 0.0.66 via update.sh
