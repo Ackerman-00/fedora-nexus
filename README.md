@@ -30,6 +30,9 @@ sudo dnf copr enable ackerman/nexus
 sudo dnf install <package-name>
 ```
 
+> **Supported releases:** Fedora 43, 44, 45 and Rawhide (x86_64). The COPR
+> project follows Fedora branching automatically.
+
 ---
 
 ## 📦 Packages
