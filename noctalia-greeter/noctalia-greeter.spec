@@ -5,7 +5,7 @@
 
 Name:           noctalia-greeter
 Version:        1.2.1^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A minimal login greeter for greetd that matches the look and feel of Noctalia Shell
 
 License:        MIT
@@ -80,6 +80,33 @@ done
 %{_datadir}/%{name}/*
 %{_datadir}/polkit-1/actions/org.noctalia.greeter.apply-appearance.policy
 
+%post
+# One-time enable instructions on fresh installs (not on upgrades)
+if [ "$1" -eq 1 ]; then
+    echo
+    echo "================================================================"
+    echo "  noctalia-greeter is installed but NOT enabled yet."
+    echo
+    echo "  1. Run the system setup script (PAM patch, state dir, config):"
+    echo "    sudo /usr/share/noctalia-greeter/setup_greeter_system.sh"
+    echo
+    echo "  2. Point greetd at the greeter - /etc/greetd/config.toml:"
+    echo "    [default_session]"
+    echo "    command = \"/usr/bin/noctalia-greeter-session\""
+    echo "    user = \"greetd\""
+    echo
+    echo "  3. Enable and start it:"
+    echo "    sudo systemctl enable --now greetd"
+    echo
+    echo "  Tip: user avatars on the login screen need accountsservice:"
+    echo "    sudo dnf install accountsservice"
+    echo "================================================================"
+fi
+
 %changelog
+* Wed Aug 19 2026 Ackerman-00 <quietcraft@gmail.com> - 1.2.1^20260816121257git10d2c90-2
+- Added %post one-time enable-instructions message on fresh installs
+  (same pattern as the ly package)
+
 * Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 1.2.1^20260816121257git10d2c90-1
 - Nightly sync with upstream main branch (Commit: 10d2c90)
