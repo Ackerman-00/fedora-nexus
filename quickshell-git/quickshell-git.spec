@@ -1,11 +1,11 @@
 # These will be automatically populated by update.sh
-%global commit          532a0606cafb05851a203e65be22c9a057447ee2
+%global commit          9f807554e106f6b0670e60ead82b63f3c0c2ac26
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260816002204
+%global gitdate         20260820110829
 
 Name:           quickshell-git
 Version:        0.3.0^%{gitdate}git%{shortcommit}
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        Flexible toolkit for making desktop shells with QtQuick (Git Snapshot)
 
 License:        LGPL-3.0-only
@@ -84,15 +84,5 @@ export CXXFLAGS="%{optflags} -ffat-lto-objects"
 %{_libdir}/qt6/qml/Quickshell/*
 
 %changelog
-* Tue Aug 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260816002204git532a060-3
-- Fix %prep: the GitHub mirror archive extracts to quickshell-<full-commit>/
-  (Forgejo archives stripped the hash suffix, but GitHub archives do not),
-  so -n quickshell no longer matched. Local rpmbuild verified the fix.
-
-* Tue Aug 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260816002204git532a060-2
-- Switch Source0 to the official GitHub mirror (quickshell-mirror/quickshell):
-  git.outfoxxed.me became unreachable from COPR's SRPM-import service, failing
-  every build at source download (builds 10876183, 10877172). Same pinned commit.
-
-* Sun Aug 16 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260816002204git532a060-1
-- Nightly sync with upstream master branch (Commit: 532a060)
+* Thu Aug 20 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260820110829git9f80755-1
+- Nightly sync with upstream master branch (Commit: 9f80755)
