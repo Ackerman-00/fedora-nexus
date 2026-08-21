@@ -1,10 +1,10 @@
 # These will be automatically populated by update.sh
-%global commit          9f807554e106f6b0670e60ead82b63f3c0c2ac26
+%global commit          1a4716cde794a59928d9d9fc15f2afc7a95de360
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20260820110829
 
 Name:           quickshell-git
-Version:        0.3.0^%{gitdate}git%{shortcommit}
+Version:        0.3.1^%{gitdate}git%{shortcommit}
 Release:        1%{?dist}
 Summary:        Flexible toolkit for making desktop shells with QtQuick (Git Snapshot)
 
@@ -84,5 +84,5 @@ export CXXFLAGS="%{optflags} -ffat-lto-objects"
 %{_libdir}/qt6/qml/Quickshell/*
 
 %changelog
-* Thu Aug 20 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0^20260820110829git9f80755-1
-- Nightly sync with upstream master branch (Commit: 9f80755)
+* Fri Aug 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.1^20260820110829git1a4716c-1
+- Nightly sync with upstream master branch (Commit: 1a4716c)
