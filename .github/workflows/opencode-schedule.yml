@@ -1193,7 +1193,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python3 tools/teardown-sweep.py --overlay . --type fedora --report teardown-report.md
+          python3 tools/teardown-sweep.py --overlay . --type fedora --report teardown-report.md --autofix
 
       - name: Upload opencode logs (on failure)
         if: failure()
