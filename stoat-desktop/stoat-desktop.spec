@@ -93,6 +93,9 @@ chmod 0755 %{buildroot}%{_bindir}/stoat-desktop
 %attr(4755, root, root) /opt/Stoat/chrome-sandbox
 
 %changelog
+* Thu Aug 21 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.5.3-3
+- Rebuild for COPR (spec validation fix)
+
 * Tue Aug 18 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.2-3
 - Fix build: disable check-rpaths for bundled prebuilt native module
   (node-pipewire index.node carries Nix-store RUNPATH; all NEEDED libs

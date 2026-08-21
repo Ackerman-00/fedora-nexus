@@ -83,6 +83,9 @@ chmod 0755 %{buildroot}%{_bindir}/vesktop
 %attr(4755, root, root) /opt/Vesktop/chrome-sandbox
 
 %changelog
+* Thu Aug 21 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.6.7-1
+- Update to 1.6.7
+
 * Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.6-1
 - Update to 1.6.6
 

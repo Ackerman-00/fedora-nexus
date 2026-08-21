@@ -39,6 +39,12 @@ from pathlib import Path
 
 SKIP_DIRS = {"cache", "job_out", "binpkgs", "distfiles", "ccache", ".github",
              ".git", "tools", "node_modules"}
+
+# Packages intentionally pinned to specific commits/tags for compatibility
+# (not tracking latest upstream). The sweep must not flag these as STALE.
+INTENTIONALLY_PINNED = {
+    "hyprland-plugins": "pinned to hyprpm commit 00862ca for hyprland 0.56.2 compat",
+}
 UA = {"User-Agent": "teardown-sweep/1.1 (nexus CI gate)"}
 
 STATUS_OK = "OK"
@@ -1536,6 +1542,11 @@ def check_upstream_latest(pkgs):
     log("=== UPSTREAM LATEST CHECK ===")
     for pkg, pv, srcs, live in pkgs:
         if live or not pv or PLACEHOLDER_RE.match(pv):
+            continue
+        if pkg in INTENTIONALLY_PINNED:
+            rows.append((pkg, "upstream (pinned)", pv, "", STATUS_OK,
+                         "intentionally pinned: %s" % INTENTIONALLY_PINNED[pkg]))
+            log("[%s] %s : %s" % (STATUS_OK, pkg, INTENTIONALLY_PINNED[pkg]))
             continue
         if srcs and isinstance(srcs[0], tuple) and srcs[0][0] == "__metapackage__":
             continue
