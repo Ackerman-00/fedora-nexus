@@ -1,10 +1,10 @@
-%global commit          3dcbce715ae8b93107fa8632db15bf976862a573
+%global commit          57baf317e5196a8286b80976771ef55febad8660
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260630092427
+%global gitdate         20260821083352
 
 Name:           hyprland-contrib
 Version:        0.1^%{gitdate}git%{shortcommit}
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        Community scripts and utilities for Hypr projects
 BuildArch:      noarch
 License:        MIT
@@ -126,6 +126,9 @@ done
 %doc README.md
 
 %changelog
+* Fri Aug 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^20260821083352git57baf31-1
+- Sync with upstream main branch (Commit: 57baf31)
+
 * Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^20260630092427git3dcbce7-3
 - scratchpad: add Recommends: rofi. scratchpad:8 hardcodes
   `_menu_cmd="rofi -dmenu -i -p scratchpad"`, which is what -g/-l pipe the

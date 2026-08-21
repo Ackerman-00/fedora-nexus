@@ -46,14 +46,12 @@ sed -i -E "s/^%global gitdate.*/%global gitdate         $GIT_DATE/" "$SPEC_FILE"
 sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 sed -i -E "s/^Version:.*/Version:        0.1^%{gitdate}git%{shortcommit}/" "$SPEC_FILE"
 
-# Update changelog
+# Update changelog - insert new entry after %changelog line
 DATE_STRING=$(LC_ALL=C date +"%a %b %d %Y")
 CHANGELOG_VER="0.1^${GIT_DATE}git${SHORT_COMMIT}-1"
-sed -i '/^%changelog/,$d' "$SPEC_FILE"
-{
-    echo "%changelog"
-    echo "* $DATE_STRING $PACKAGER - $CHANGELOG_VER"
-    echo "- Sync with upstream main branch (Commit: $SHORT_COMMIT)"
-} >> "$SPEC_FILE"
+sed -i "/^%changelog/a\\
+\\
+* $DATE_STRING $PACKAGER - $CHANGELOG_VER\\
+- Sync with upstream main branch (Commit: $SHORT_COMMIT)" "$SPEC_FILE"
 
 echo "Successfully patched $SPEC_FILE."
