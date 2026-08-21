@@ -39,12 +39,6 @@ from pathlib import Path
 
 SKIP_DIRS = {"cache", "job_out", "binpkgs", "distfiles", "ccache", ".github",
              ".git", "tools", "node_modules"}
-
-# Packages intentionally pinned to specific commits/tags for compatibility
-# (not tracking latest upstream). The sweep must not flag these as STALE.
-INTENTIONALLY_PINNED = {
-    "hyprland-plugins": "pinned to hyprpm commit 00862ca for hyprland 0.56.2 compat",
-}
 UA = {"User-Agent": "teardown-sweep/1.1 (nexus CI gate)"}
 
 STATUS_OK = "OK"
@@ -1192,6 +1186,70 @@ def tear_apart(path, distname, tmp):
 
 
 # ---------------------------------------------------------------------------
+# Dependency checking - verify missing shared libraries
+# ---------------------------------------------------------------------------
+
+def get_elf_needed(elf_path):
+    """Return list of NEEDED shared libraries from an ELF binary via readelf."""
+    try:
+        res = subprocess.run(["readelf", "-d", str(elf_path)],
+                             capture_output=True, timeout=10)
+        if res.returncode != 0:
+            return []
+        needed = []
+        for line in res.stdout.decode(errors="ignore").splitlines():
+            m = re.search(r"NEEDED\s+(\S+)", line)
+            if m:
+                needed.append(m.group(1))
+        return needed
+    except Exception:
+        return []
+
+
+def find_elfs_in_dir(root, max_depth=6):
+    """Find all ELF binaries in a directory tree."""
+    elfs = []
+    for f in root.rglob("*"):
+        if not f.is_file():
+            continue
+        rel = f.relative_to(root)
+        if len(rel.parts) > max_depth:
+            continue
+        try:
+            head = f.read_bytes()[:4]
+            if head == b"\x7fELF":
+                elfs.append(f)
+        except Exception:
+            continue
+    return elfs
+
+
+def check_deps_in_dir(pkg, root):
+    """Check for missing shared libraries in extracted artifact directory.
+    Returns list of (binary, missing_lib) tuples."""
+    missing = []
+    elfs = find_elfs_in_dir(root)
+    for elf in elfs:
+        needed = get_elf_needed(elf)
+        for lib in needed:
+            # Check common system paths
+            found = False
+            for prefix in ["/lib", "/usr/lib", "/lib64", "/usr/lib64",
+                           root, root / "lib", root / "usr/lib"]:
+                if (prefix / lib).exists():
+                    found = True
+                    break
+            if not found:
+                # Also check if it's in a sibling dir relative to the binary
+                sibling = elf.parent / lib
+                if sibling.exists():
+                    found = True
+            if not found:
+                missing.append((str(elf.relative_to(root)), lib))
+    return missing
+
+
+# ---------------------------------------------------------------------------
 # Live-check + per-repo openSUSE source resolution
 # ---------------------------------------------------------------------------
 
@@ -1448,8 +1506,12 @@ def sweep_package(pkg, pv, srcs, live, repo_type, workdir):
             cd_name = content_disposition_name(dst)
             if cd_name:
                 teardown_name = cd_name
+        dep_missing = []
         with tempfile.TemporaryDirectory() as td:
             internal, note, strong, src_like = tear_apart(dst, teardown_name, Path(td))
+            # Check for missing shared libraries in extracted binaries
+            if strong and td and os.listdir(td):
+                dep_missing = check_deps_in_dir(pkg, Path(td))
         if internal and strong:
             if PLACEHOLDER_RE.match(pv or ""):
                 status = STATUS_OK
@@ -1494,6 +1556,19 @@ def sweep_package(pkg, pv, srcs, live, repo_type, workdir):
                 status = STATUS_UNVERIFIED
                 pkg_ok = False
                 note = "%s | hash %s | BINARY ARTIFACT, no internal version evidence" % (note, hash_note)
+        # Append dependency check results
+        if dep_missing:
+            unique_missing = sorted(set(lib for _, lib in dep_missing))
+            dep_note = " | MISSING DEPS: %s" % ", ".join(unique_missing[:10])
+            if len(unique_missing) > 10:
+                dep_note += " (+%d more)" % (len(unique_missing) - 10)
+            note += dep_note
+            # If status was OK but deps are missing, flag it
+            if status == STATUS_OK:
+                status = STATUS_FAIL
+                pkg_ok = False
+                note += " [DEPS-FAIL]"
+            log("[%s] %s : %d missing libs: %s" % (STATUS_FAIL, pkg, len(unique_missing), ", ".join(unique_missing[:5])))
         rows.append((pkg, name, pv, internal, status, note))
         log("[%s] %s : %s" % (status, pkg, note))
         if status in (STATUS_OK, STATUS_SOURCE_OK):
@@ -1542,11 +1617,6 @@ def check_upstream_latest(pkgs):
     log("=== UPSTREAM LATEST CHECK ===")
     for pkg, pv, srcs, live in pkgs:
         if live or not pv or PLACEHOLDER_RE.match(pv):
-            continue
-        if pkg in INTENTIONALLY_PINNED:
-            rows.append((pkg, "upstream (pinned)", pv, "", STATUS_OK,
-                         "intentionally pinned: %s" % INTENTIONALLY_PINNED[pkg]))
-            log("[%s] %s : %s" % (STATUS_OK, pkg, INTENTIONALLY_PINNED[pkg]))
             continue
         if srcs and isinstance(srcs[0], tuple) and srcs[0][0] == "__metapackage__":
             continue
