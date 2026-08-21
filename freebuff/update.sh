@@ -1,9 +1,9 @@
 #!/bin/bash
-# update.sh for Freebuff Desktop (Repackaging Build)
+# update.sh for Freebuff Desktop (Standalone Binary)
 
 SPEC_FILE="freebuff.spec"
 GITHUB_REPO="CodebuffAI/codebuff-community"
-TAG_PREFIX="freebuff-desktop-v"
+TAG_PREFIX="freebuff-v"
 
 echo "Checking for latest Freebuff Desktop release..."
 
@@ -24,12 +24,12 @@ CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     echo "  -> [UPDATE] New version detected: $LATEST_VERSION (Current: $CURRENT_VERSION)"
 
-    # Verify the AppImage asset actually exists for this version
-    ASSET_URL="https://github.com/$GITHUB_REPO/releases/download/${TAG_PREFIX}${LATEST_VERSION}/Freebuff-${LATEST_VERSION}-linux-x86_64.AppImage"
+    # Verify the tar.gz asset actually exists for this version
+    ASSET_URL="https://github.com/$GITHUB_REPO/releases/download/${TAG_PREFIX}${LATEST_VERSION}/freebuff-linux-x64.tar.gz"
 
     echo "  -> [CHECK] Verifying download link..."
     if ! curl -L --output /dev/null --silent --head --fail "$ASSET_URL"; then
-        echo "  -> [ERROR] AppImage asset for $LATEST_VERSION is not yet available on GitHub. Skipping update."
+        echo "  -> [ERROR] tar.gz asset for $LATEST_VERSION is not yet available on GitHub. Skipping update."
         exit 1
     fi
 
@@ -38,6 +38,10 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     # Update Version and Reset Release to 1
     sed -i "s/^Version:\s*.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i "s/^Release:\s*.*/Release:        1%{?dist}/" "$SPEC_FILE"
+
+    # Update sha256 comment (download and hash)
+    SHA256=$(curl -sL "$ASSET_URL" | sha256sum | awk '{print $1}')
+    sed -i "s/^# sha256:.*/# sha256: $SHA256/" "$SPEC_FILE"
 
     # Replace changelog with single entry
     DATE_STR=$(date +"%a %b %d %Y")
@@ -52,5 +56,3 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
 else
     echo "  -> [OK] Freebuff Desktop is already on latest ($CURRENT_VERSION)."
 fi
-
-# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).

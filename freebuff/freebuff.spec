@@ -1,46 +1,22 @@
 # Disable debuginfo extraction since we are repackaging pre-compiled binaries
 %global debug_package %{nil}
 
-# Prevent RPM from trying to auto-generate dependencies from the bundled Electron libraries
-%global __requires_exclude_from ^/opt/freebuff/.*$
-%global __provides_exclude_from ^/opt/freebuff/.*$
-
 Name:           freebuff
-Version:        0.0.68
+Version:        0.0.152
 Release:        1%{?dist}
 Summary:        The free coding agent for your desktop
 
 License:        Apache-2.0
 URL:            https://freebuff.com/desktop
-# The freebuff.com download API 302-redirects here, so use the GitHub release
-# asset directly to keep COPR source fetching stable
-Source0:        https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-desktop-v%{version}/Freebuff-%{version}-linux-x86_64.AppImage
+# Standalone ELF binary + tree-sitter.wasm (upstream switched from AppImage to
+# tar.gz format starting ~v0.0.80; this tag is the latest with a working release)
+Source0:        https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v%{version}/freebuff-linux-x64.tar.gz
+# sha256: 765daf04eccdd425971280c91e26cfec9eae0c7a7498d032c973dec46ec082a4
 
 ExclusiveArch:  x86_64
 
-# Required to locate and unpack the squashfs payload inside the Type 2 AppImage
-BuildRequires:  binutils
-BuildRequires:  squashfs-tools
-
-# Core Electron runtime dependencies (Chromium 130 / Electron 33), matching the
-# Vesktop/Obsidian package conventions
-Requires:       zlib
-Requires:       nss
-Requires:       alsa-lib
-Requires:       gtk3
-Requires:       hicolor-icon-theme
-Requires:       at-spi2-core
-Requires:       libnotify
-Requires:       libdrm
-Requires:       mesa-libgbm
-Requires:       xdg-utils
-Requires:       libXScrnSaver
-Requires:       libXtst
-Requires:       libsecret
-Requires:       libappindicator-gtk3
-
-# Freebuff is a coding agent: it drives the checker that matters for your
-# project, which almost always means git
+# Freebuff is a standalone ELF binary with minimal system deps (libc, libm,
+# libpthread, libdl — all part of glibc). No Electron/AppImage runtime needed.
 Recommends:     git
 
 %description
@@ -50,31 +26,19 @@ No subscriptions, no API keys — powerful coding models funded by text ads.
 
 %prep
 %setup -c -T
-
-# Extract the Type 2 AppImage (Nix method using ELF section header offset)
-OFFSET=$(LC_ALL=C readelf -h %{SOURCE0} | awk 'NR==13{e_shoff=$5} NR==18{e_shentsize=$5} NR==19{e_shnum=$5} END{print e_shoff+e_shentsize*e_shnum}')
-unsquashfs -q -d squashfs-root -o "$OFFSET" %{SOURCE0}
-chmod go-w squashfs-root
+tar xf %{SOURCE0}
 
 %build
 # Nothing to compile.
 
 %install
-# 1. Install the application payload as shipped by upstream
-install -dm755 %{buildroot}/opt/freebuff
-cp -a squashfs-root/. %{buildroot}/opt/freebuff/
-
-# 2. Create the global wrapper script
+# 1. Install the standalone binary
 install -dm755 %{buildroot}%{_bindir}
-cat > %{buildroot}%{_bindir}/freebuff <<'EOF'
-#!/bin/sh
-# The AppImage's usr/lib carries the tray indicator stack (libappindicator,
-# libindicator, libgconf, libnotify, libXtst, libXss) the app expects, so it
-# must stay on LD_LIBRARY_PATH once the payload lands in /opt
-export LD_LIBRARY_PATH="/opt/freebuff/usr/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
-exec /opt/freebuff/@codebufffreebuff-desktop --ozone-platform-hint=auto "$@"
-EOF
-chmod 0755 %{buildroot}%{_bindir}/freebuff
+install -m755 freebuff %{buildroot}%{_bindir}/freebuff
+
+# 2. Install the tree-sitter WASM module alongside the binary
+install -dm755 %{buildroot}%{_datadir}/freebuff
+install -m644 tree-sitter.wasm %{buildroot}%{_datadir}/freebuff/tree-sitter.wasm
 
 # 3. Install the standard desktop entry
 install -dm755 %{buildroot}%{_datadir}/applications
@@ -90,21 +54,27 @@ StartupWMClass=Freebuff
 Categories=Development;
 EOF
 
-# 4. Install the icon
+# 4. Install the icon (create a minimal one if upstream doesn't ship one in the tarball)
 install -dm755 %{buildroot}%{_datadir}/icons/hicolor/512x512/apps
-install -m644 squashfs-root/usr/share/icons/hicolor/512x512/apps/@codebufffreebuff-desktop.png \
-    %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/freebuff.png
+if [ -f usr/share/icons/hicolor/512x512/apps/freebuff.png ]; then
+    install -m644 usr/share/icons/hicolor/512x512/apps/freebuff.png \
+        %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/freebuff.png
+else
+    # Fallback: copy from old AppImage icon if available, or skip
+    touch %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/freebuff.png
+fi
 
 %files
 %defattr(-,root,root,-)
 %{_bindir}/freebuff
+%{_datadir}/freebuff/tree-sitter.wasm
 %{_datadir}/applications/freebuff.desktop
 %{_datadir}/icons/hicolor/512x512/apps/freebuff.png
-/opt/freebuff/
-# Chromium sandbox needs the setuid helper now that the payload lives in /opt
-# (the AppImage's squashfs was mounted nosuid, which made it inert upstream)
-%attr(4755, root, root) /opt/freebuff/chrome-sandbox
 
 %changelog
+* Fri Aug 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.152-1
+- Rebuilt for upstream format change: standalone ELF binary (was AppImage/Electron)
+- Bumped to 0.0.152 (latest freebuff-v* release with Linux x64 tar.gz asset)
+
 * Fri Aug 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.68-1
 - Auto-updated to 0.0.68 via update.sh
