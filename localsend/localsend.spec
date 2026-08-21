@@ -9,14 +9,14 @@
 %global __provides_exclude_from ^%{_libdir}/localsend_app/.*$
 
 Name:           localsend
-Version:        1.18.0
-Release:        2%{?dist}
+Version:        1.18.2
+Release:        1%{?dist}
 Summary:        An open source cross-platform alternative to AirDrop
 
 License:        GPL-3.0
 URL:            https://github.com/localsend/localsend
 # Use the upstream DEB as our raw source payload
-Source0:        %{url}/releases/download/v1.18.0/LocalSend-1.18.0-linux-x86-64.deb
+Source0:        %{url}/releases/download/v1.18.2/LocalSend-1.18.2-linux-x86-64.deb
 
 ExclusiveArch:  x86_64
 
@@ -86,5 +86,7 @@ chmod 0755 %{buildroot}%{_bindir}/localsend_app
 %{_libdir}/localsend_app/
 
 %changelog
+* Fri Aug 21 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.2-1
+- Update to upstream v1.18.2 (full desktop assets; 1.18.1 was Android-only)
 * Tue Aug 11 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.0-2
 - Fix %%prep: upstream switched DEB data archive from data.tar.xz to data.tar.zst in v1.18.0; detect format dynamically
