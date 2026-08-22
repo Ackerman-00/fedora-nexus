@@ -386,6 +386,7 @@ jobs:
             verification protocol: draft a dependency list from the spec,
             independently derive the TRUE list from upstream, then reconcile -
             never trust either alone.
+              a0. CHECK OFFICIAL PACKAGING FIRST (2026 advanced -- web search latest, August 2026): For `{pkg}`, first check the official distro packaging -- Fedora's official dist-git (src.fedoraproject.org/rpms/<pkg> + packages.fedoraproject.org) (`curl -s https://src.fedoraproject.org/rpms/<pkg>/raw/main/f/<pkg>.spec | grep -E '^(Build)?Requires' or search packages.fedoraproject.org`) -- if found, read its `BuildRequires/Requires`/`version` as the latest reference for dependencies (official is where newer spec land first). If official has a newer spec/dependencies than ours, align with it (keep our repo's build flags). If official has no spec for this package (404 / no file), then proceed to tear apart upstream `tar`/`deb`/`rpm`/`AppImage` in Docker as below -- download into `/tmp` (never repo tree), extract, and derive deps from inside (`ldd` `NEEDED` vs `BuildRequires/Requires` vs `RDEPEND` etc.). Web-search 2026 for official + upstream before deciding.
               a. OPEN THE PACKAGE. Read the FULL spec (every BuildRequires /
                  Requires / BuildConflicts, every %global, Source URLs), the
                  %changelog, and update.sh. Download the Source0 tarball into
