@@ -6,12 +6,17 @@ Work-notes for AI agents and humans maintaining this repo.
 
 Three-layer defense-in-depth for package staleness and integrity:
 
-### Layer 1: Deterministic Python sweep (`tools/teardown-sweep.py`)
+### Layer 1: Deterministic Python sweep (`tools/teardown-sweep.py`) — AUXILIARY, NOT VERDICT
 
-Pure stdlib Python script that runs AFTER the agent exits. Downloads every
+Pure stdlib Python helper the **agent calls** (not a separate CI gate). Downloads every
 artifact, tears it apart (AppImage extract, .deb control, zip internals, Electron
 .asar, `application.ini`, ELF `--version` probe), verifies checksums (sha256,
-BLAKE2B+SHA512, SRI), reads internal versions, and compares against upstream.
+BLAKE2B+SHA512, SRI), reads internal versions, compares against upstream, and
+(2026-08) runs RPM excellence checks: `rpmspec -P`, `dnf builddep --assumeno`
+(spec-dry-build), `rpm-spec-tool` RPM320-324, `rpmlint`/`rpmdeplint` hooks.
+The agent IS the teardown — it must tear every package apart itself, produce
+the dependency audit table, and ensure excellent .spec. Sweep is evidence,
+not a pass-anyway script; CI gate hard-fails if the agent skips it.
 
 Key functions:
 - `resolve_canonical_repo()`: detects GitHub forks via API `parent.full_name`,
@@ -47,13 +52,14 @@ Key features:
 - `--scan-images` flag: enables Trivy CVE scanning of base layers
 - Works for ANY package type (gentoo, fedora, nix, void, opensuse)
 
-### Layer 2: Agentic self-healing prompt (opencode-schedule.yml PROMPT)
+### Layer 2: Agentic self-healing prompt (opencode-schedule.yml PROMPT) — MANDATORY
 
-The coding agent's PROMPT includes a TEAR-APART SWEEP PROTOCOL section that
-instructs the agent on what to do:
+YOU are the sweep. The coding agent's PROMPT includes a TEAR-APART SWEEP PROTOCOL that
+is NOT optional and NOT a pass-anyway script. It must:
 
-1. Run `docker-sweep.py --scan-images` for changed/critical packages
-2. Read `teardown-report.md` from the automated sweep:
+1. Tear every .spec + Source0 apart itself (Cargo.toml/meson.build/go.mod vs BuildRequires)
+2. Run 2026 toolchain: `rpmspec -P`, `spectool -g`, `rpmbuild -bs`, `dnf builddep --assumeno` (or docker fedora:44), `rpmlint`/`rpmdeplint`, `rpm-spec-tool` RPM320-324 — log output
+3. Produce the mandatory deliverable `| package | upstream deps | in spec | missing | status |` for ALL 82 packages
    - OSV.dev vulnerability scan (CVEs on pinned version)
    - Repology freshness (outdated vs 120+ repos)
    - Libyear drift (years behind upstream, budget=20yr)
@@ -64,12 +70,11 @@ instructs the agent on what to do:
 6. Never close a teardown issue without passing sweep + evidence
 7. False positive defense: fix the sweep script, never weaken checks
 
-### Layer 3: CI gate + issue auto-open
+### Layer 3: CI gate + issue auto-open — ENFORCED
 
-The workflow's cleanup job opens an issue when the sweep fails (exit 1).
-On the next run, the agent reads the issue and the teardown report, fixes
-the problems, and the sweep re-verifies. This closes the loop:
-detect → report → fix → verify → close.
+`gate_passes()` in `opencode-schedule.yml` now hard-checks that
+`.opencode-relay.md` on main contains `run_id` + `status: complete` + `PACKAGE.*BR.*Req` / `deps-verified` / `dependency audit`.
+If the agent skips the dependency table, the job fails and the next run retries with a stronger model. Cleanup job opens an issue on failure.
 
 ### Why this architecture
 

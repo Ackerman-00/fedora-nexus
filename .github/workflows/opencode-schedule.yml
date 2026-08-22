@@ -460,6 +460,19 @@ jobs:
                  If any package is missing from this table, the run is not
                  finished. State confidence (high/medium/low) for anything
                  not fully verified, and why.
+              h. 2026 AUTOMATED EXCELLENCE CHECKS (MANDATORY - August 2026 toolchain):
+                 For EVERY spec you touched (and for at least 10-sample of the full 82), run the modern Fedora pipeline locally and paste output. This is how an "excellent .spec" is proven, not claimed:
+                 - `rpmspec -P --define "_topdir /tmp" <spec>` — must exit 0 (macro expansion + syntax, catches bad %global/%if)
+                 - `spectool -g -C /tmp/sources --define "_topdir /tmp" <spec>` — every Source0 must fetch 200
+                 - `rpmbuild -bs --define "_topdir /tmp" <spec>` — SRPM must build (if it fails, fix %prep/%autosetup)
+                 - `dnf builddep --assumeno <srpm>` — BuildRequires must RESOLVE against Fedora 44 + COPR ackerman/nexus (spec-dry-build.yml 2026-08 pattern). If `dnf` not on host, run inside `registry.fedoraproject.org/fedora:44` container: `docker run --rm -v /tmp:/tmp registry.fedoraproject.org/fedora:44 bash -c "dnf -y --setopt=gpgcheck=0 copr enable ackerman/nexus && dnf builddep --assumeno /tmp/*.src.rpm"` — zero "no package matched / nothing provides"
+                 - `rpmlint <spec>` and `rpmlint <built-rpm>` — fix E: errors, justify W: with comment; be strict (August 2026)
+                 - `rpmdeplint` (fedora-ci/rpmdeplint, libsolv) — dependency graph must be installable in empty chroot; if `rpmdeplint` not installed, emulate with `dnf repoquery --whatprovides`
+                 - `mock --calculate-dependencies` / `unbreq` (mock 6.7+, 2026-03) — detects unused BuildRequires; drop rot
+                 - `rpm-spec-tool` RPM320-328 (2026-05): duplicate-dependency-atom, runtime-requires-looks-like-build-requires (Requires: -devel/gcc/cmake/pkgconfig), build-tool-used-without-buildrequires (%build calls cmake/meson/ninja/pkg-config without BR) — fix all Warn
+                 - `%generate_buildrequires` (rpm >=4.15) — if upstream ships it (e.g. Python/Node), prefer dynamic over static list; verify it prints one dep per line
+                 - `rpmautospec` %autorelease / %autochangelog is the 2026 default (Fedora 38+, 3423+ packages). This repo still uses manual Release/%changelog per RELEASE REVISION DISCIPLINE — that is OK, but verify Release bumps are exact and %changelog matches; do not mass-convert to %autorelease without owner signal, but note in audit if a spec would benefit.
+                 Log each tool's 1-line result per package; any failure = deps-broken. Tools are available as `tools/teardown-sweep.py:check_rpm_dependencies` already implements static RPM320/324 + dnf builddep checks — you may call it, but YOU do the reasoning. Teardown is done BY YOU, the agent, not by a separate pass-anyway script; the sweep is auxiliary evidence, not the verdict.
 
             KNOWN PACKAGE-SPECIFIC NOTES - THE RIGOR BELOW APPLIES TO EVERY
             PACKAGE, NOT JUST THE EXAMPLE NAMED. For EVERY package, establish
