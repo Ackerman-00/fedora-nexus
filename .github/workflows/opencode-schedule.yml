@@ -1197,10 +1197,21 @@ jobs:
               relay run before the timeout.
             - Don't get stuck: cap retries at 3 per package and escalate unresolvable
               problems via issues.
+            - VERIFICATION LOOP (MANDATORY - battle-tested 2026: pre-completion checklist + external verifier, agentpatterns.ai 2026-07-19 / contextOS 2026-08-14 / digitalapplied.com 2026-08-11): Before declaring `status: complete`, you MUST run `bash tools/verify-fedora.sh` and paste its `----- VERIFICATION REPORT -----` output. It checks numerical completion (82 rows with `deps-verified`/`deps-fixed` — pre-count 82, post-grep must be 82, not 0), evidence strings (`rpmspec -P` / `dnf builddep` / `rpmlint` from 2026 h. checks), and install-test table. Exit 1 = NOT COMPLETE — keep working, fix the listed gaps, re-run verifier until exit 0. Do NOT write `status: complete` if verifier fails. Prompt alone achieves 70-90% compliance; external verifier + gate achieves near-100%. This is the check that prevents "looks done" vs "is done".
             - End every run with a concise final summary: what you fixed, which issues
               you closed, which PRs you merged/rejected, which COPR builds you verified
               and their result, and what remains. Include the pre-completion gate
               checklist with PASS/FAIL + evidence per item.
+
+      - name: Verify completion (external, battle-tested 2026)
+        if: always()
+        shell: bash
+        run: |
+          echo "=== External verifier: tools/verify-fedora.sh ==="
+          bash tools/verify-fedora.sh || {
+            echo "::error::Verification FAILED — relay missing 82-row deps table or evidence. Agent skipped mandatory audit. Gate will retry with stronger model."
+            exit 1
+          }
 
       # ---- topic: teardown-sweep ----
       - name: Upload opencode logs (on failure)
