@@ -1,11 +1,11 @@
 # These will be automatically populated by update.sh
-%global commit          10d2c9074d3a9219e03b55b2c97f1cc743447af5
+%global commit          f797b8c670371d978b4c0e5ed51c184a4017a2c6
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260816121257
+%global gitdate         20260823004012
 
 Name:           noctalia-greeter
 Version:        1.2.1^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        A minimal login greeter for greetd that matches the look and feel of Noctalia Shell
 
 License:        MIT
@@ -104,9 +104,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Wed Aug 19 2026 Ackerman-00 <quietcraft@gmail.com> - 1.2.1^20260816121257git10d2c90-2
-- Added %post one-time enable-instructions message on fresh installs
-  (same pattern as the ly package)
-
-* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 1.2.1^20260816121257git10d2c90-1
-- Nightly sync with upstream main branch (Commit: 10d2c90)
+* Sun Aug 23 2026 Ackerman-00 <quietcraft@gmail.com> - 1.2.1^20260823004012gitf797b8c-1
+- Nightly sync with upstream main branch (Commit: f797b8c)
