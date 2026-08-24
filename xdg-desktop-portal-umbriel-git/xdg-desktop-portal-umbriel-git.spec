@@ -5,7 +5,9 @@
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+# bumped to 2: compile fix (system nlohmann-json instead of broken vendor header),
+# same upstream commit c8a9a22 -> keep Version, increment Release
+Release:        2%{?dist}
 Summary:        XDG Desktop Portal backend for the Umbriel compositor (Nexus Optimized Git Snapshot)
 
 License:        MIT
@@ -42,6 +44,14 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %prep
 %autosetup -n xdg-desktop-portal-umbriel-%{commit}
 
+# Upstream vendors only the top-level split-style nlohmann json.hpp (3.12.0),
+# which includes <nlohmann/detail/*.hpp> files Fedora's json-devel does not
+# ship -> fatal error nlohmann/detail/string_utils.hpp not found. Use the
+# complete, self-contained system header instead (API-compatible).
+sed -i 's|#include "vendor/json.hpp"|#include <nlohmann/json.hpp>|' \
+    src/picker/main.cpp src/wayland/wayland.cpp src/dbus/screenshot.cpp src/dbus/screencast.cpp
+rm -f src/vendor/json.hpp
+
 %build
 %meson -Db_lto=true
 %meson_build
@@ -60,5 +70,10 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
-* Sun Aug 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260824081238gitc8a9a22-1
+* Mon Aug 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260824081238gitc8a9a22-2
+- Fix build: replace broken vendored nlohmann json.hpp with system header
+  (upstream vendor copy needs nlohmann/detail/string_utils.hpp, absent from
+  Fedora's json-devel)
+
+* Mon Aug 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260824081238gitc8a9a22-1
 - Nightly sync with upstream main branch (Commit: c8a9a22)
