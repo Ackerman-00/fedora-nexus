@@ -120,10 +120,12 @@ sudo dnf install <package-name>
 | `scenefx` | Drop-in wlroots scene API replacement with eye-candy effects | Stable |
 | `starship` | Minimal, blazing-fast, customizable prompt for any shell | Stable |
 | `stoat-desktop` | Open source, user-first chat platform desktop client | Stable |
+| `umbriel-git` | Wayland compositor with scrolling and dwindle layouts, built on wlroots + SceneFX (Git Snapshot) | Git |
 | `vesktop` | Custom Discord client with Vencord preinstalled | Stable |
 | `waypaper` | GUI wallpaper manager for Wayland and Xorg Linux systems | Stable |
 | `wlroots` | Modular Wayland compositor library | Stable |
 | `xdg-desktop-portal-hyprland` | xdg-desktop-portal backend for hyprland | Stable |
+| `xdg-desktop-portal-umbriel-git` | XDG Desktop Portal backend for Umbriel (Git Snapshot) | Git |
 | `xwayland-satellite-git` | Rootless Xwayland integration for Wayland compositors (Git Snapshot) | Git |
 | `zen-browser` | Privacy-focused Firefox fork | Stable |
 
