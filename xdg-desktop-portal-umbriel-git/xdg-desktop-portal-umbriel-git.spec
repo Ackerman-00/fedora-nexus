@@ -1,13 +1,11 @@
 # These will be automatically populated by update.sh
-%global commit          c8a9a223d48e6c62652f3f3cfaaa0f50aca39146
+%global commit          9afc9d7c02bf860f985c80f6bee07dc503e41e4f
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260824081238
+%global gitdate         20260824090447
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-# bumped to 2: compile fix (system nlohmann-json instead of broken vendor header),
-# same upstream commit c8a9a22 -> keep Version, increment Release
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        XDG Desktop Portal backend for the Umbriel compositor (Nexus Optimized Git Snapshot)
 
 License:        MIT
@@ -70,10 +68,5 @@ rm -f src/vendor/json.hpp
 %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
-* Mon Aug 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260824081238gitc8a9a22-2
-- Fix build: replace broken vendored nlohmann json.hpp with system header
-  (upstream vendor copy needs nlohmann/detail/string_utils.hpp, absent from
-  Fedora's json-devel)
-
-* Mon Aug 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260824081238gitc8a9a22-1
-- Nightly sync with upstream main branch (Commit: c8a9a22)
+* Mon Aug 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260824090447git9afc9d7-1
+- Nightly sync with upstream main branch (Commit: 9afc9d7)
