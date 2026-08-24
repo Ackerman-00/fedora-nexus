@@ -1259,6 +1259,18 @@ jobs:
             echo "failure issue for today already open - skipping"
           fi
 
+      - name: Close failure issue on success
+        if: needs.opencode.result == 'success'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for n in $(gh api "repos/${GITHUB_REPOSITORY}/issues?state=open&per_page=100" --jq '.[] | select(.title | startswith("autonomous run failed")) | .number'); do
+            echo "Closing failure issue #$n (run $GITHUB_RUN_ID succeeded, verification passed)"
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/$n" -f state=closed -f state_reason=completed >/dev/null
+            gh api "repos/${GITHUB_REPOSITORY}/issues/$n/comments" -f body="Closed automatically: the next scheduled run (\`$GITHUB_RUN_ID\`) passed verification (\`tools/verify-fedora.sh\` exit 0, relay \`run_id: $GITHUB_RUN_ID\` + \`status: complete\`). See https://github.com/${GITHUB_REPOSITORY}/actions/runs/$GITHUB_RUN_ID." >/dev/null || true
+          done
+
       - name: Clean up stray opencode/schedule branches
         shell: bash
         env:
