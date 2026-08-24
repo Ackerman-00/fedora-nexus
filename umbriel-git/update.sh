@@ -33,10 +33,38 @@ if [ -z "$BASE_VER" ]; then
     exit 1
 fi
 
-# SceneFX submodule pin (noctalia fork, umbriel branch) tracked from the commit tree
+# SceneFX submodule pin (noctalia fork, umbriel branch).
+# Primary source: the submodule gitlink in the umbriel tree (what upstream
+# pins). Sanity check: umbriel's meson.build refuses to build unless the
+# scenefx tree provides three patched APIs in include/scenefx/types/wlr_scene.h.
+# Upstream sometimes forgets to bump the gitlink after pushing scenefx fixes;
+# in that case fall back to the current umbriel-branch HEAD so -git stays
+# buildable while remaining on upstream's chosen fork/branch.
+check_scenefx_api() {
+    local sha="$1"
+    [ -n "$sha" ] || return 1
+    local hdr
+    hdr=$(curl -fsSL ${GITHUB_TOKEN:+-H "Authorization: token $GITHUB_TOKEN"} \
+        "https://raw.githubusercontent.com/noctalia-dev/scenefx/$sha/include/scenefx/types/wlr_scene.h" 2>/dev/null) || return 1
+    echo "$hdr" | grep -q wlr_scene_blur_set_ignore_alpha &&
+    echo "$hdr" | grep -q wlr_scene_tree_set_clip &&
+    echo "$hdr" | grep -q wlr_scene_output_set_sdr_white_level
+}
+
 SCENEFX_COMMIT=$(curl -sfL ${GITHUB_TOKEN:+-H "Authorization: token $GITHUB_TOKEN"} \
     "https://api.github.com/repos/$GITHUB_REPO/contents/subprojects/scenefx?ref=$LATEST_COMMIT" \
     | python3 -c "import sys,json; print(json.load(sys.stdin).get('sha',''))" 2>/dev/null)
+
+if ! check_scenefx_api "$SCENEFX_COMMIT"; then
+    echo "Warning: scenefx gitlink ${SCENEFX_COMMIT:0:7} misses Umbriel patched APIs (upstream forgot to bump the submodule); falling back to umbriel branch HEAD."
+    SCENEFX_COMMIT=$(curl -sfL ${GITHUB_TOKEN:+-H "Authorization: token $GITHUB_TOKEN"} \
+        "https://api.github.com/repos/noctalia-dev/scenefx/commits/umbriel" \
+        | python3 -c "import sys,json; print(json.load(sys.stdin).get('sha',''))" 2>/dev/null)
+    if ! check_scenefx_api "$SCENEFX_COMMIT"; then
+        echo "Error: even scenefx umbriel HEAD ${SCENEFX_COMMIT:0:7} lacks the patched APIs; upstream is mid-refactor."
+        exit 1
+    fi
+fi
 
 # Get current values from spec
 CURRENT_COMMIT=$(grep -E "^%global commit" "$SPEC_FILE" | awk '{print $3}')

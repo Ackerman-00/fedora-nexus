@@ -2,9 +2,11 @@
 %global commit          4f9db98ba6c64458723b9273a6b7f15739ce824d
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20260824125130
-# SceneFX submodule pin (noctalia-dev/scenefx, umbriel branch) - kept in
-# lockstep with upstream's chosen submodule revision by update.sh
-%global scenefx_commit      1d5ce45a0c3eceed7ef182a2c2381cbc1c861914
+# SceneFX submodule pin (noctalia-dev/scenefx, umbriel branch) - tracks the
+# gitlink from upstream's tree; when upstream forgets to bump it after a
+# scenefx push (breaking umbriel's own meson API check), update.sh falls
+# back to the current umbriel-branch HEAD
+%global scenefx_commit      dcf4614b177e1a6619a6eea47825f78f8884ac3b
 %global scenefx_shortcommit %(c=%{scenefx_commit}; echo ${c:0:7})
 
 Name:           umbriel-git
