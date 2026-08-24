@@ -1,10 +1,10 @@
 # These will be automatically populated by update.sh
-%global commit          dd8b3565f9a776c9d7686fa879852c271542a53b
+%global commit          4f9db98ba6c64458723b9273a6b7f15739ce824d
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260824032025
+%global gitdate         20260824125130
 # SceneFX submodule pin (noctalia-dev/scenefx, umbriel branch) - kept in
 # lockstep with upstream's chosen submodule revision by update.sh
-%global scenefx_commit      c2dcb622bfee0cb462a56828235864f6ede9165b
+%global scenefx_commit      1d5ce45a0c3eceed7ef182a2c2381cbc1c861914
 %global scenefx_shortcommit %(c=%{scenefx_commit}; echo ${c:0:7})
 
 Name:           umbriel-git
@@ -91,5 +91,5 @@ mv scenefx-%{scenefx_commit} subprojects/scenefx
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Sun Aug 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260824032025gitdd8b356-1
-- Nightly sync with upstream main branch (Commit: dd8b356)
+* Mon Aug 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260824125130git4f9db98-1
+- Nightly sync with upstream main branch (Commit: 4f9db98)
