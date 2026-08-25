@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          61075ddef2e68f6718927978ac99aad1a914d6df
+%global commit          3ad50aa10f9a54a34af1a04908051aefc0b13eb1
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260825010529
+%global gitdate         20260825020328
 # SceneFX submodule pin (noctalia-dev/scenefx, umbriel branch) - tracks the
 # gitlink from upstream's tree; when upstream forgets to bump it after a
 # scenefx push (breaking umbriel's own meson API check), update.sh falls
@@ -106,7 +106,5 @@ mv scenefx-%{scenefx_commit} subprojects/scenefx
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Tue Aug 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260825010529git61075dd-1
-- Nightly sync with upstream main branch (Commit: 61075dd)
-- Disable LTO: linker plugin mis-claims scenefx static-archive members,
-  breaking action-registry-test link (undefined env_parse_bool)
+* Tue Aug 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260825020328git3ad50aa-1
+- Nightly sync with upstream main branch (Commit: 3ad50aa)
