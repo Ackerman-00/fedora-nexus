@@ -9,6 +9,19 @@
 %global scenefx_commit      f72ca297b9ea71643fbb36d03f03e8bf97c0c74f
 %global scenefx_shortcommit %(c=%{scenefx_commit}; echo ${c:0:7})
 
+# Fedora's default LTO flags (-flto=auto -ffat-lto-objects) trip a
+# binutils/GCC linker-plugin bug when linking umbriel's test binaries
+# against the statically vendored scenefx archive (subprojects/scenefx):
+# the plugin claims some members as LTO IR (util_env.c.o) while others are
+# pulled in as plain ELF objects (render_egl.c.o), leaving render_egl's
+# env_parse_bool reference unresolvable:
+#   undefined reference to `env_parse_bool' (link of action-registry-test)
+# Proven by COPR build 10898364, local rpmbuild repro, `ld -y` trace
+# ("definition of env_parse_bool ... symbol from plugin" vs unclaimed ELF
+# reference), and a plugin-free relink that succeeds. Standard escape hatch
+# applied per Fedora LTO policy; drop when scenefx/ld fix the claim logic.
+%global _lto_cflags %{nil}
+
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
 Release:        1%{?dist}
@@ -95,3 +108,5 @@ mv scenefx-%{scenefx_commit} subprojects/scenefx
 %changelog
 * Tue Aug 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260825010529git61075dd-1
 - Nightly sync with upstream main branch (Commit: 61075dd)
+- Disable LTO: linker plugin mis-claims scenefx static-archive members,
+  breaking action-registry-test link (undefined env_parse_bool)
