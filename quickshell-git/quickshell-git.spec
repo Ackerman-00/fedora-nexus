@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          0fed22a2c47d9568ddf13cf61586b3f2ac4378a2
+%global commit          15ea8e6f44a3783ebc4172a7b08ba02ad175dcde
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260822230841
+%global gitdate         20260825091422
 
 Name:           quickshell-git
 Version:        0.3.1^%{gitdate}git%{shortcommit}
@@ -84,5 +84,5 @@ export CXXFLAGS="%{optflags} -ffat-lto-objects"
 %{_libdir}/qt6/qml/Quickshell/*
 
 %changelog
-* Sun Aug 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.1^20260822230841git0fed22a-1
-- Nightly sync with upstream master branch (Commit: 0fed22a)
+* Tue Aug 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.1^20260825091422git15ea8e6-1
+- Nightly sync with upstream master branch (Commit: 15ea8e6)

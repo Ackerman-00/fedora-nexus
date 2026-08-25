@@ -1,13 +1,13 @@
 # These will be automatically populated by update.sh
-%global commit          468ea01ec770378e7ce15fdb86a39972fe5064b4
+%global commit          63e63e7d57f10f3c3ea1e541a21f470e3c6fb996
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260705174924
+%global gitdate         20260825080622
 
 %global _vpath_srcdir subprojects/appmenu-glib-translator
 
 Name:           appmenu-glib-translator
 Version:        25.04^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        appmenu-glib-translator
 
 License:        LGPL-3.0-or-later
@@ -56,8 +56,5 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
-* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 25.04^20260705174924git468ea01-2
-- Fix devel %files: upstream installs importer.h, not appmenu-glib-translator.h
-
-* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 25.04^20260705174924git468ea01-1
-- Nightly sync with upstream main branch (Commit: 468ea01)
+* Tue Aug 25 2026 Ackerman-00 <quietcraft@gmail.com> - 25.04^20260825080622git63e63e7-1
+- Nightly sync with upstream main branch (Commit: 63e63e7)
