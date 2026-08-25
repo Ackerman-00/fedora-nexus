@@ -107,7 +107,8 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 * Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-2
 - Fetch vendored screeninfo and imageio-ffmpeg from PyPI sdists via
   remote Source1/Source2 URLs (auto-downloaded by COPR) instead of
-  %{_sourcedir} copies of committed directories
+  local sources-directory copies of committed directories
 
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-1
-- Initial package# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).
+- Initial package
+# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).
