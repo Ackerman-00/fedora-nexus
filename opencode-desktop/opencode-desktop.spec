@@ -4,7 +4,7 @@
 %global __provides_exclude_from ^/opt/OpenCode/.*$
 
 Name:           opencode-desktop
-Version:        1.18.22
+Version:        1.18.23
 Release:        1%{?dist}
 Summary:        Open source AI coding agent
 
@@ -147,5 +147,5 @@ sed -i 's|^Exec=.*|Exec=%{_bindir}/opencode-desktop %U|' \
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
-* Mon Aug 24 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.22-1
-- Auto-update to version 1.18.22
+* Tue Aug 25 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.23-1
+- Auto-update to version 1.18.23
