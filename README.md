@@ -38,7 +38,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 82 packages</summary>
+<summary>Click to expand — 84 packages</summary>
 
 <br />
 
