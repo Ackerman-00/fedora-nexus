@@ -1,12 +1,12 @@
 # These will be automatically populated by update.sh
-%global commit          ab626d95a64ca2a617a928184f92d43f74af2c36
+%global commit          7327c92160fd81d6726e0115e9e614f935731779
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260826193641
+%global gitdate         20260827080958
 # SceneFX submodule pin (noctalia-dev/scenefx, umbriel branch) - tracks the
 # gitlink from upstream's tree; when upstream forgets to bump it after a
 # scenefx push (breaking umbriel's own meson API check), update.sh falls
 # back to the current umbriel-branch HEAD
-%global scenefx_commit      9717fe638219017d793390cd0bd57a5d74441bdf
+%global scenefx_commit      68bdd17eb40177a5d0c52075735b5cb806de4947
 %global scenefx_shortcommit %(c=%{scenefx_commit}; echo ${c:0:7})
 
 # Fedora's default LTO flags (-flto=auto -ffat-lto-objects) trip a
@@ -106,5 +106,5 @@ mv scenefx-%{scenefx_commit} subprojects/scenefx
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Wed Aug 26 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260826193641gitab626d9-1
-- Nightly sync with upstream main branch (Commit: ab626d9)
+* Thu Aug 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260827080958git7327c92-1
+- Nightly sync with upstream main branch (Commit: 7327c92)
