@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          9294337c76fd08d7d990f4f25e26966d2e354c3d
+%global commit          b1a851ea340f2d06d1e814785448238c7ca735d9
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260828110853
+%global gitdate         20260828220548
 # SceneFX submodule pin (noctalia-dev/scenefx, umbriel branch) - tracks the
 # gitlink from upstream's tree; when upstream forgets to bump it after a
 # scenefx push (breaking umbriel's own meson API check), update.sh falls
@@ -106,5 +106,5 @@ mv scenefx-%{scenefx_commit} subprojects/scenefx
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Fri Aug 28 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260828110853git9294337-1
-- Nightly sync with upstream main branch (Commit: 9294337)
+* Fri Aug 28 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260828220548gitb1a851e-1
+- Nightly sync with upstream main branch (Commit: b1a851e)
