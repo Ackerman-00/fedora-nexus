@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          bcd02cbd1391e85f52c5ff63e00708b5b62f55ec
+%global commit          82f3964d19e39904e32807d3e452a2e19b0493ef
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260823095439
+%global gitdate         20260830120747
 
 %global _lto_cflags %{nil}
 
@@ -191,5 +191,5 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_libdir}/pkgconfig/quarrel-0.1.pc
 
 %changelog
-* Sun Aug 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260823095439gitbcd02cb-1
-- Nightly sync with upstream main branch (Commit: bcd02cb)
+* Sun Aug 30 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260830120747git82f3964-1
+- Nightly sync with upstream main branch (Commit: 82f3964)
