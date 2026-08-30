@@ -19,7 +19,7 @@ Name:               zen-browser
 # An Epoch is the only correct way to supersede a higher version.
 Epoch:              1
 Version:        1.21.16b
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPLv2.0
@@ -96,5 +96,8 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
+* Sun Aug 30 2026 Ackerman-00 <quietcraft@gmail.com> - 1:1.21.16b-2
+- Re-trigger build for 1.21.16b - previous push at 05:01 UTC (1a15914) never built in COPR (latest COPR 1:1.21.15b-1 id 10881611)
+
 * Sun Aug 30 2026 Ackerman-00 <quietcraft@gmail.com> - 1:1.21.16b-1
 - Auto-update to upstream release 1.21.16b
