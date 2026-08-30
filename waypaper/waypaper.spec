@@ -1,5 +1,5 @@
 Name:           waypaper
-Version:        2.8
+Version:        2.9
 Release:        8%{?dist}
 Summary:        GUI wallpaper manager for Wayland and Xorg Linux systems
 
