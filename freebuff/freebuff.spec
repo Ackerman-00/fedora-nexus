@@ -2,7 +2,7 @@
 %global debug_package %{nil}
 
 Name:           freebuff
-Version:        0.0.161
+Version:        0.0.162
 Release:        1%{?dist}
 Summary:        The free coding agent for your desktop
 
@@ -11,7 +11,7 @@ URL:            https://freebuff.com/desktop
 # Standalone ELF binary + tree-sitter.wasm (upstream switched from AppImage to
 # tar.gz format starting ~v0.0.80; this tag is the latest with a working release)
 Source0:        https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v%{version}/freebuff-linux-x64.tar.gz
-# sha256: d7da6b8111f588212c055032bfecc65b31d0cb87ef2439d8ea62456ab19a785f
+# sha256: 21344b1079cabba76aab34168b08ae4f2ecd154d17ad828ce1c161505a9dc657
 
 ExclusiveArch:  x86_64
 
@@ -72,5 +72,5 @@ fi
 %{_datadir}/icons/hicolor/512x512/apps/freebuff.png
 
 %changelog
-* Sun Aug 30 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.161-1
-- Auto-updated to 0.0.161 via update.sh
+* Sun Aug 30 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.162-1
+- Auto-updated to 0.0.162 via update.sh
