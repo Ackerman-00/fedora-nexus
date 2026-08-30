@@ -1,6 +1,6 @@
 Name:           waypaper
 Version:        2.9
-Release:        8%{?dist}
+Release:        1%{?dist}
 Summary:        GUI wallpaper manager for Wayland and Xorg Linux systems
 
 License:        GPL-3.0-only AND MIT AND BSD-2-Clause
@@ -19,6 +19,7 @@ BuildRequires:  python3-build
 BuildRequires:  python3-pip
 BuildRequires:  python3-installer
 BuildRequires:  gzip
+BuildRequires:  systemd-rpm-macros
 
 Requires:       python3-gobject
 Requires:       python3-platformdirs
@@ -63,6 +64,7 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 
 %files
 %{_bindir}/waypaper
+%{_bindir}/waypaperd
 %{python3_sitelib}/waypaper/
 %{python3_sitelib}/waypaper-%{version}.dist-info/
 %{python3_sitelib}/screeninfo/
@@ -70,8 +72,12 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 %{_datadir}/applications/waypaper.desktop
 %{_iconsdir}/hicolor/scalable/apps/waypaper.svg
 %{_mandir}/man1/waypaper.1.gz
+%{_datadir}/systemd/user/waypaperd.service
 
 %changelog
+* Sun Aug 30 2026 Ackerman-00 <quietcraft@gmail.com> - 2.9-1
+- Update to 2.9
+
 * Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-8
 - Add Requires: procps-ng and psmisc. waypaper invokes pgrep/pkill and
   killall to detect and stop running wallpaper backends
