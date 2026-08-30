@@ -47,6 +47,9 @@ Development files for %{name}.
 %files devel
 
 %changelog
+* Sun Aug 30 2026 Ackerman-00 <quietcraft@gmail.com> - 8.3.0-1
+- Update to 8.3.0
+
 * Thu Aug 27 2026 Ackerman-00 <quietcraft@gmail.com> - 8.2.0-1
 - Update to 8.2.0
 * Tue Aug 18 2026 Ackerman-00 <quietcraft@gmail.com> - 8.1.0-1
