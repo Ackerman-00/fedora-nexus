@@ -2,8 +2,6 @@
 
 Version:        1.1.1
 
-%gometa
-
 Name:           nwg-look
 Release:        2%{?dist}
 Summary:        GTK3 settings editor adapted to work in the wlroots environment (Nexus Optimized)

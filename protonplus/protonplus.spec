@@ -1,7 +1,6 @@
 %global tag         v0.6.5
 %global app_id      com.vysp3r.ProtonPlus
 %global forgeurl    https://github.com/vysp3r/ProtonPlus
-%forgemeta
 %undefine distprefix
 
 Name:           protonplus
