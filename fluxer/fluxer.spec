@@ -13,7 +13,7 @@
 %global __requires_exclude ^libffmpeg\\.so.*$
 
 Name:           fluxer
-Version:        2026.829.181028
+Version:        2026.901.185447
 Release:        1%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
@@ -78,5 +78,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %{_datadir}/icons/hicolor/*/apps/%{appid}.png
 
 %changelog
+* Tue Sep 01 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2026.901.185447-1
+- Update to version 2026.901.185447
+
 * Sat Aug 29 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.829.181028-1
 - Update to version 2026.829.181028
