@@ -33,48 +33,57 @@ if [ -z "$BASE_VER" ]; then
     exit 1
 fi
 
-# SceneFX submodule pin (noctalia fork, umbriel branch).
-# Primary source: the submodule gitlink in the umbriel tree (what upstream
-# pins). Sanity check: umbriel's meson.build refuses to build unless the
-# scenefx tree provides three patched APIs in include/scenefx/types/wlr_scene.h.
-# Upstream sometimes forgets to bump the gitlink after pushing scenefx fixes;
-# in that case fall back to the current umbriel-branch HEAD so -git stays
-# buildable while remaining on upstream's chosen fork/branch.
-check_scenefx_api() {
-    local sha="$1"
-    [ -n "$sha" ] || return 1
-    local hdr
-    hdr=$(curl -fsSL ${GITHUB_TOKEN:+-H "Authorization: token $GITHUB_TOKEN"} \
-        "https://raw.githubusercontent.com/noctalia-dev/scenefx/$sha/include/scenefx/types/wlr_scene.h" 2>/dev/null) || return 1
-    echo "$hdr" | grep -q wlr_scene_blur_set_ignore_alpha &&
-    echo "$hdr" | grep -q wlr_scene_tree_set_clip &&
-    echo "$hdr" | grep -q wlr_scene_output_set_sdr_white_level
-}
-
-SCENEFX_COMMIT=$(curl -sfL ${GITHUB_TOKEN:+-H "Authorization: token $GITHUB_TOKEN"} \
-    "https://api.github.com/repos/$GITHUB_REPO/contents/subprojects/scenefx?ref=$LATEST_COMMIT" \
-    | python3 -c "import sys,json; print(json.load(sys.stdin).get('sha',''))" 2>/dev/null)
-
-if ! check_scenefx_api "$SCENEFX_COMMIT"; then
-    echo "Warning: scenefx gitlink ${SCENEFX_COMMIT:0:7} misses Umbriel patched APIs (upstream forgot to bump the submodule); falling back to umbriel branch HEAD."
+# SceneFX submodule pin — only when upstream still uses the subproject.
+# As of 2026-09-01 commit 729e7eb upstream vendored the renderer as
+# umbrielfx/ and removed subprojects/scenefx; archives no longer contain
+# subprojects/. Detect the upstream build system before trying to pin.
+USES_SCENEFX="no"
+if curl -fsSL "https://raw.githubusercontent.com/$GITHUB_REPO/$LATEST_COMMIT/meson.build" 2>/dev/null | grep -q "scenefx"; then
+    USES_SCENEFX="yes"
+    echo "Upstream meson.build references scenefx — checking submodule pin..."
+    check_scenefx_api() {
+        local sha="$1"
+        [ -n "$sha" ] || return 1
+        local hdr
+        hdr=$(curl -fsSL ${GITHUB_TOKEN:+-H "Authorization: token $GITHUB_TOKEN"} \
+            "https://raw.githubusercontent.com/noctalia-dev/scenefx/$sha/include/scenefx/types/wlr_scene.h" 2>/dev/null) || return 1
+        echo "$hdr" | grep -q wlr_scene_blur_set_ignore_alpha &&
+        echo "$hdr" | grep -q wlr_scene_tree_set_clip &&
+        echo "$hdr" | grep -q wlr_scene_output_set_sdr_white_level
+    }
     SCENEFX_COMMIT=$(curl -sfL ${GITHUB_TOKEN:+-H "Authorization: token $GITHUB_TOKEN"} \
-        "https://api.github.com/repos/noctalia-dev/scenefx/commits/umbriel" \
+        "https://api.github.com/repos/$GITHUB_REPO/contents/subprojects/scenefx?ref=$LATEST_COMMIT" \
         | python3 -c "import sys,json; print(json.load(sys.stdin).get('sha',''))" 2>/dev/null)
     if ! check_scenefx_api "$SCENEFX_COMMIT"; then
-        echo "Error: even scenefx umbriel HEAD ${SCENEFX_COMMIT:0:7} lacks the patched APIs; upstream is mid-refactor."
-        exit 1
+        echo "Warning: scenefx gitlink ${SCENEFX_COMMIT:0:7} misses Umbriel patched APIs (upstream forgot to bump the submodule); falling back to umbriel branch HEAD."
+        SCENEFX_COMMIT=$(curl -sfL ${GITHUB_TOKEN:+-H "Authorization: token $GITHUB_TOKEN"} \
+            "https://api.github.com/repos/noctalia-dev/scenefx/commits/umbriel" \
+            | python3 -c "import sys,json; print(json.load(sys.stdin).get('sha',''))" 2>/dev/null)
+        if ! check_scenefx_api "$SCENEFX_COMMIT"; then
+            echo "Error: even scenefx umbriel HEAD ${SCENEFX_COMMIT:0:7} lacks the patched APIs; upstream is mid-refactor."
+            exit 1
+        fi
     fi
+else
+    echo "Upstream meson.build no longer references scenefx (umbrielfx vendored) — skipping scenefx pin."
+    SCENEFX_COMMIT=""
 fi
 
 # Get current values from spec
 CURRENT_COMMIT=$(grep -E "^%global commit" "$SPEC_FILE" | awk '{print $3}')
 CURRENT_BASE_VER=$(grep "^Version:" "$SPEC_FILE" | awk '{print $2}' | sed 's/\^.*//')
-CURRENT_SCENEFX=$(grep -E "^%global scenefx_commit" "$SPEC_FILE" | awk '{print $3}')
+CURRENT_SCENEFX=$(grep -E "^%global scenefx_commit" "$SPEC_FILE" 2>/dev/null | awk '{print $3}' || echo "")
+HAS_SCENEFX_SPEC=$([ -n "$CURRENT_SCENEFX" ] && echo yes || echo no)
 
-# Check if update needed
+# Check if update needed (scenefx only matters when upstream uses it)
 COMMIT_CHANGED=$([ "$CURRENT_COMMIT" != "$LATEST_COMMIT" ] && echo true || echo false)
 BASE_VER_CHANGED=$([ "$CURRENT_BASE_VER" != "$BASE_VER" ] && echo true || echo false)
-SCENEFX_CHANGED=$([ -n "$SCENEFX_COMMIT" ] && [ "$CURRENT_SCENEFX" != "$SCENEFX_COMMIT" ] && echo true || echo false)
+if [ "$USES_SCENEFX" == "yes" ]; then
+    SCENEFX_CHANGED=$([ -n "$SCENEFX_COMMIT" ] && [ "$CURRENT_SCENEFX" != "$SCENEFX_COMMIT" ] && echo true || echo false)
+else
+    # Upstream dropped scenefx — need update if spec still carries the old pin
+    SCENEFX_CHANGED=$([ "$HAS_SCENEFX_SPEC" == "yes" ] && echo true || echo false)
+fi
 
 if [ "$COMMIT_CHANGED" == "false" ] && [ "$BASE_VER_CHANGED" == "false" ] && [ "$SCENEFX_CHANGED" == "false" ]; then
     echo "Package is already at the latest commit ($SHORT_COMMIT). No update needed."
@@ -83,7 +92,11 @@ fi
 
 [ "$COMMIT_CHANGED" == "true" ] && echo "New commit: ${CURRENT_COMMIT:0:7} -> $SHORT_COMMIT"
 [ "$BASE_VER_CHANGED" == "true" ] && echo "Base version bump: $CURRENT_BASE_VER -> $BASE_VER"
-[ "$SCENEFX_CHANGED" == "true" ] && echo "SceneFX submodule pin: ${CURRENT_SCENEFX:0:7} -> ${SCENEFX_COMMIT:0:7}"
+if [ "$USES_SCENEFX" == "yes" ]; then
+    [ "$SCENEFX_CHANGED" == "true" ] && echo "SceneFX submodule pin: ${CURRENT_SCENEFX:0:7} -> ${SCENEFX_COMMIT:0:7}"
+else
+    [ "$SCENEFX_CHANGED" == "true" ] && echo "SceneFX removed upstream (umbrielfx vendored) — dropping spec pin"
+fi
 
 # Fetch commit date via API (needs token for rate limits)
 if [ -n "$GITHUB_TOKEN" ]; then
@@ -99,10 +112,29 @@ else
     GIT_DATE=$(echo "$COMMIT_DATE_RAW" | tr -d '\-TZ:')
 fi
 
-# Update spec
+# Update spec — handle both scenefx-present and scenefx-removed upstream
 sed -i -E "s/^%global commit.*/%global commit          $LATEST_COMMIT/" "$SPEC_FILE"
 sed -i -E "s/^%global gitdate.*/%global gitdate         $GIT_DATE/" "$SPEC_FILE"
-[ -n "$SCENEFX_COMMIT" ] && sed -i -E "s/^%global scenefx_commit.*/%global scenefx_commit      $SCENEFX_COMMIT/" "$SPEC_FILE"
+if [ "$USES_SCENEFX" == "yes" ]; then
+    if grep -q "^%global scenefx_commit" "$SPEC_FILE"; then
+        sed -i -E "s/^%global scenefx_commit.*/%global scenefx_commit      $SCENEFX_COMMIT/" "$SPEC_FILE"
+    else
+        # Upstream re-added scenefx — re-insert pin (rare)
+        sed -i "/^%global gitdate/a %global scenefx_commit      $SCENEFX_COMMIT\n%global scenefx_shortcommit %(c=%{scenefx_commit}; echo \${c:0:7})" "$SPEC_FILE"
+    fi
+else
+    # Upstream vendored umbrielfx — remove obsolete scenefx pins if present
+    sed -i -E "/^%global scenefx_commit/d" "$SPEC_FILE"
+    sed -i -E "/^%global scenefx_shortcommit/d" "$SPEC_FILE"
+    # Remove Source1 and %prep scenefx handling if still present (idempotent)
+    sed -i -E "/^Source1:.*scenefx/d" "$SPEC_FILE"
+    sed -i -E "s/^%autosetup -n umbriel-%\{commit\} -a1/%autosetup -n umbriel-%{commit}/" "$SPEC_FILE"
+    # Remove old rm/mv lines and stale comment
+    sed -i -E "/^rm -rf subprojects\/scenefx/d" "$SPEC_FILE"
+    sed -i -E "/^mv scenefx-/d" "$SPEC_FILE"
+    sed -i -E "/^# GitHub archives exclude git submodules.*scenefx/d" "$SPEC_FILE"
+    sed -i -E "s/^%meson_install --skip-subprojects/%meson_install/" "$SPEC_FILE"
+fi
 sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 sed -i -E "s/^Version:.*/Version:        ${BASE_VER}^%{gitdate}git%{shortcommit}/" "$SPEC_FILE"
 

@@ -2,39 +2,24 @@
 %global commit          729e7eb521c2207dd562ca1284bc0fbf9aecd270
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20260901033951
-# SceneFX submodule pin (noctalia-dev/scenefx, umbriel branch) - tracks the
-# gitlink from upstream's tree; when upstream forgets to bump it after a
-# scenefx push (breaking umbriel's own meson API check), update.sh falls
-# back to the current umbriel-branch HEAD
-%global scenefx_commit      3609fc529bc86dad5c80a446f0f335435c10bc28
-%global scenefx_shortcommit %(c=%{scenefx_commit}; echo ${c:0:7})
 
 # Fedora's default LTO flags (-flto=auto -ffat-lto-objects) trip a
 # binutils/GCC linker-plugin bug when linking umbriel's test binaries
-# against the statically vendored scenefx archive (subprojects/scenefx):
-# the plugin claims some members as LTO IR (util_env.c.o) while others are
-# pulled in as plain ELF objects (render_egl.c.o), leaving render_egl's
-# env_parse_bool reference unresolvable:
-#   undefined reference to `env_parse_bool' (link of action-registry-test)
-# Proven by COPR build 10898364, local rpmbuild repro, `ld -y` trace
-# ("definition of env_parse_bool ... symbol from plugin" vs unclaimed ELF
-# reference), and a plugin-free relink that succeeds. Standard escape hatch
-# applied per Fedora LTO policy; drop when scenefx/ld fix the claim logic.
+# against its statically built umbrielfx archive:
+# the plugin claims some members as LTO IR while others are pulled in as
+# plain ELF objects, leaving references unresolvable
+# (previously: scenefx util_env.c.o vs render_egl.c.o: env_parse_bool).
+# Proven by COPR build 10898364; keep escape hatch until upstream/LD fixed.
 %global _lto_cflags %{nil}
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts (Nexus Optimized Git Snapshot)
 
 License:        MIT
 URL:            https://github.com/noctalia-dev/umbriel
 Source0:        %{url}/archive/%{commit}/umbriel-%{shortcommit}.tar.gz
-# GitHub archives exclude git submodules; umbriel requires the patched
-# SceneFX fork API (scenefx-0.5, umbriel branch). Vendored into
-# subprojects/scenefx during %%prep and linked statically via the meson
-# subproject fallback (never installed: %%meson_install --skip-subprojects).
-Source1:        https://github.com/noctalia-dev/scenefx/archive/%{scenefx_commit}/scenefx-%{scenefx_shortcommit}.tar.gz
 
 ExclusiveArch:  x86_64 aarch64
 
@@ -80,18 +65,14 @@ capture and sharing by xdg-desktop-portal-umbriel.
 Compiled specifically for the Nexus repository via automated Git snapshot.
 
 %prep
-%autosetup -n umbriel-%{commit} -a1
-# GitHub archive tarballs ship submodules as empty directories; swap in the
-# pinned SceneFX fork so meson builds it as the subproject fallback.
-rm -rf subprojects/scenefx
-mv scenefx-%{scenefx_commit} subprojects/scenefx
+%autosetup -n umbriel-%{commit}
 
 %build
 %meson -Db_lto=true
 %meson_build
 
 %install
-%meson_install --skip-subprojects
+%meson_install
 
 %files
 %license LICENSE
@@ -106,5 +87,7 @@ mv scenefx-%{scenefx_commit} subprojects/scenefx
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Tue Sep 01 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260901033951git729e7eb-2
+- Fix build for upstream umbrielfx vendoring: drop obsolete scenefx subproject (now bundled as umbrielfx/), remove Source1 and subprojects/scenefx prep (commit 729e7eb removed the scenefx submodule, archives no longer contain subprojects/)
 * Tue Sep 01 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260901033951git729e7eb-1
 - Nightly sync with upstream main branch (Commit: 729e7eb)
