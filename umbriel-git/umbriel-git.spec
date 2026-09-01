@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          729e7eb521c2207dd562ca1284bc0fbf9aecd270
+%global commit          7597236e96cb990bb92b33352aebeb1a59ff1fd5
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260901033951
+%global gitdate         20260901143804
 
 # Fedora's default LTO flags (-flto=auto -ffat-lto-objects) trip a
 # binutils/GCC linker-plugin bug when linking umbriel's test binaries
@@ -14,7 +14,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts (Nexus Optimized Git Snapshot)
 
 License:        MIT
@@ -87,7 +87,5 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Tue Sep 01 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260901033951git729e7eb-2
-- Fix build for upstream umbrielfx vendoring: drop obsolete scenefx subproject (now bundled as umbrielfx/), remove Source1 and subprojects/scenefx prep (commit 729e7eb removed the scenefx submodule, archives no longer contain subprojects/)
-* Tue Sep 01 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260901033951git729e7eb-1
-- Nightly sync with upstream main branch (Commit: 729e7eb)
+* Tue Sep 01 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260901143804git7597236-1
+- Nightly sync with upstream main branch (Commit: 7597236)
