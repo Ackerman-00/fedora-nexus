@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          8f457b2f6f1c00abaed344bfd901674a64568ba8
+%global commit          8e27f8a3d095024e1fd4e33741a82249446db802
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260901163329
+%global gitdate         20260901175622
 %global upstreamname    noctalia
 
 Name:           noctalia-git
@@ -108,5 +108,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/dev.noctalia.Noctalia
 %{_datadir}/icons/hicolor/scalable/apps/noctalia.svg
 
 %changelog
-* Tue Sep 01 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260901163329git8f457b2-1
-- Nightly sync with upstream main branch (Commit: 8f457b2)
+* Tue Sep 01 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.0^20260901175622git8e27f8a-1
+- Nightly sync with upstream main branch (Commit: 8e27f8a)
