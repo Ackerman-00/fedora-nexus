@@ -2,7 +2,7 @@
 %global             helium_base /opt/helium
 
 Name:               helium-browser
-Version:        0.16.2.1
+Version:        0.16.3.1
 Release:        1%{?dist}
 Summary:            Private, fast, and honest web browser
 
@@ -86,5 +86,5 @@ esac
 %{_datadir}/icons/hicolor/256x256/apps/helium.png
 
 %changelog
-* Fri Aug 28 2026 Ackerman-00 <quietcraft@gmail.com> - 0.16.2.1-1
-- Auto-update to upstream release 0.16.2.1
+* Tue Sep 01 2026 Ackerman-00 <quietcraft@gmail.com> - 0.16.3.1-1
+- Auto-update to upstream release 0.16.3.1
