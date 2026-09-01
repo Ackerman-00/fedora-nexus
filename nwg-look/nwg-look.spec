@@ -2,8 +2,10 @@
 
 Version:        1.1.1
 
+%gometa
+
 Name:           nwg-look
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        GTK3 settings editor adapted to work in the wlroots environment (Nexus Optimized)
 
 License:        MIT
@@ -50,6 +52,9 @@ make build
 %{_datadir}/pixmaps/nwg-look.svg
 
 %changelog
+* Tue Sep 01 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.1.1-3
+- Fix build: restore %gometa macro removed in error (SRPM build failed)
+
 * Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1.1.1-2
 - Drop dead Recommends on xcur2png, which is not packaged in Fedora
 
