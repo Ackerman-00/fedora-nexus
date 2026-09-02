@@ -74,8 +74,8 @@ Repo type: **fedora**. Sweep of **84** packages. Exit code is the verdict; this 
 | matugen | matugen-4.2.0.crate | 4.2.0 |  | **SOURCE-OK** | crate (cargo package tarball), source by construction \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | mpvpaper | 1.9.tar.gz | 1.9 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | niri-git | live YaLTeR/niri | dd75865f547f | dd75865f547f | **OK** | live YaLTeR/niri pin dd75865f547f vs upstream dd75865f547f |
-| noctalia-git | live noctalia-dev/noctalia | 2314bbb7b30e | 2314bbb7b30e | **OK** | live noctalia-dev/noctalia pin 2314bbb7b30e vs upstream 2314bbb7b30e |
-| noctalia-greeter | live noctalia-dev/noctalia-greeter | b4e668d4f8aa | b4e668d4f8aa | **OK** | live noctalia-dev/noctalia-greeter pin b4e668d4f8aa vs upstream b4e668d4f8aa |
+| noctalia-git | live noctalia-dev/noctalia | bc75f722fba9 | bc75f722fba9 | **OK** | live noctalia-dev/noctalia pin bc75f722fba9 vs upstream bc75f722fba9 |
+| noctalia-greeter | live noctalia-dev/noctalia-greeter | 6379fe287bb0 | 6379fe287bb0 | **OK** | live noctalia-dev/noctalia-greeter pin 6379fe287bb0 vs upstream 6379fe287bb0 |
 | nwg-look | v1.1.1.tar.gz | 1.1.1 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | obsidian | obsidian_1.13.7_amd64.deb | 1.13.7 | 1.13.7 | **OK** | deb pkg=obsidian (control control.tar.xz) \| pinned 1.13.7 \| internal 1.13.7 |
 | opencode-desktop | opencode-desktop-linux-amd64.deb | 1.18.26 | 1.18.26 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 1.18.26 \| internal 1.18.26 |
@@ -93,7 +93,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | stoat-desktop | stoat-desktop.desktop | 1.5.3 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | stoat.png | 1.5.3 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.3 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| umbriel-git | live noctalia-dev/umbriel | 06de3bfacc1c | 06de3bfacc1c | **OK** | live noctalia-dev/umbriel pin 06de3bfacc1c vs upstream 06de3bfacc1c |
+| umbriel-git | live noctalia-dev/umbriel | 50add0917be7 | 50add0917be7 | **OK** | live noctalia-dev/umbriel pin 50add0917be7 vs upstream 50add0917be7 |
 | vesktop | vesktop-1.6.7.x86_64.rpm | 1.6.7 | 1.6.7-1 | **OK** | rpm header vesktop=1.6.7-1-1 (tags NAME/VERSION) \| pinned 1.6.7 \| internal 1.6.7-1 |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
 | waypaper | screeninfo-0.8.1.tar.gz | 2.9 | 0.8.1 | **SOURCE-OK** | tar pyproject.toml=0.8.1 (screeninfo-0.8.1/pyproject.toml) \| hash no-checksum-pinned \| weak internal evidence 0.8.1 (not authoritative) |
@@ -117,7 +117,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | freebuff | upstream github.com/CodebuffAI/codebuff-community | 0.0.166 | freebuff-v0.0.166 | **SKIP-LIVE-UNVERIFIED** | upstream released freebuff-v0.0.166 but no replacement artifact yet (partial release) - staying on 0.0.166 |
 | ghostty | upstream github.com/mkasberg/ghostty-ubuntu | 1.3.1 | 1.3.1-0-ppa2 | **SKIP-LIVE-UNVERIFIED** | upstream released 1.3.1-0-ppa2 but no replacement artifact yet (partial release) - staying on 1.3.1 |
 | glaze | upstream github.com/stephenberry/glaze | 8.3.0 | v8.3.0 | **OK** | at upstream latest v8.3.0 [releases/latest] |
-| helium-browser | upstream github.com/imputnet/helium-linux | 0.16.3.1 | 0.16.3.1 | **OK** | at upstream latest 0.16.3.1 [tag; releases/latest pointer stale at 0.16.2.1] |
+| helium-browser | upstream github.com/imputnet/helium-linux | 0.16.3.1 | 0.16.3.1 | **OK** | at upstream latest 0.16.3.1 [releases/latest] |
 | hellwal | upstream github.com/danihek/hellwal | 1.0.7 | v1.0.7 | **OK** | at upstream latest v1.0.7 [releases/latest] |
 | heroic-games-launcher | upstream github.com/Heroic-Games-Launcher/HeroicGamesLauncher | 2.22.1 | v2.22.1 | **OK** | at upstream latest v2.22.1 [releases/latest] |
 | hyprcursor | upstream github.com/hyprwm/hyprcursor | 0.1.13 | v0.1.13 | **OK** | at upstream latest v0.1.13 [releases/latest] |
