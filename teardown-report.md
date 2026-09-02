@@ -21,8 +21,8 @@ Repo type: **fedora**. Sweep of **84** packages. Exit code is the verdict; this 
 | cascadia-code-nerd-fonts | CascadiaCode.tar.xz | 3.5.1 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | cliphist | cliphist-v0.7.0.tar.gz | 0.7.0 | 0.7.0 | **SOURCE-OK** | tar version file=0.7.0 (cliphist-0.7.0/version.txt) \| hash no-checksum-pinned \| weak internal evidence 0.7.0 (not authoritative) |
 | extension-manager | extension-manager-0.6.5.tar.gz | 0.6.5 | >= 0.59.0 | **SOURCE-OK** | tar meson.build=>= 0.59.0 (extension-manager-0.6.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 0.59.0 (not authoritative) |
-| fluxer | rpm | 2026.829.181028 | 2026.901.185447-1 | **MISMATCH** | rpm header fluxer-canary=2026.901.185447-1-1 (tags NAME/VERSION) \| pinned 2026.829.181028 \| internal 2026.901.185447-1 |
-| freebuff | freebuff-linux-x64.tar.gz | 0.0.164 | 0.0.164 | **OK** | tar runtime probe freebuff --version: 0.0.164 \| pinned 0.0.164 \| internal 0.0.164 |
+| fluxer | rpm | 2026.901.185447 | 2026.901.185447-1 | **OK** | rpm header fluxer-canary=2026.901.185447-1-1 (tags NAME/VERSION) \| pinned 2026.901.185447 \| internal 2026.901.185447-1 |
+| freebuff | freebuff-linux-x64.tar.gz | 0.0.166 | 0.0.166 | **OK** | tar runtime probe freebuff --version: 0.0.166 \| pinned 0.0.166 \| internal 0.0.166 |
 | ghostty | ghostty_1.3.1-0.ppa2_amd64_24.04.deb | 1.3.1 | 1.3.1-0~ppa2 | **OK** | deb pkg=ghostty (control control.tar.zst) \| pinned 1.3.1 \| internal 1.3.1-0~ppa2 |
 | glaze | glaze-8.3.0.tar.gz | 8.3.0 | 8.3.0 | **SOURCE-OK** | tar CMakeLists.txt=8.3.0 (glaze-8.3.0/CMakeLists.txt) \| hash no-checksum-pinned \| weak internal evidence 8.3.0 (not authoritative) |
 | gpu-screen-recorder | gpu-screen-recorder.git.6.1.0.tar.gz | 6.1.0 | 6.1.0 | **SOURCE-OK** | tar meson.build=6.1.0 (meson.build) \| hash no-checksum-pinned \| weak internal evidence 6.1.0 (not authoritative) |
@@ -74,11 +74,11 @@ Repo type: **fedora**. Sweep of **84** packages. Exit code is the verdict; this 
 | matugen | matugen-4.2.0.crate | 4.2.0 |  | **SOURCE-OK** | crate (cargo package tarball), source by construction \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | mpvpaper | 1.9.tar.gz | 1.9 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | niri-git | live YaLTeR/niri | dd75865f547f | dd75865f547f | **OK** | live YaLTeR/niri pin dd75865f547f vs upstream dd75865f547f |
-| noctalia-git | live noctalia-dev/noctalia | f4ba50602182 | f5e744f079b0 | **STALE** | live noctalia-dev/noctalia pin f4ba50602182 vs upstream f5e744f079b0 |
+| noctalia-git | live noctalia-dev/noctalia | 2314bbb7b30e | 2314bbb7b30e | **OK** | live noctalia-dev/noctalia pin 2314bbb7b30e vs upstream 2314bbb7b30e |
 | noctalia-greeter | live noctalia-dev/noctalia-greeter | b4e668d4f8aa | b4e668d4f8aa | **OK** | live noctalia-dev/noctalia-greeter pin b4e668d4f8aa vs upstream b4e668d4f8aa |
 | nwg-look | v1.1.1.tar.gz | 1.1.1 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | obsidian | obsidian_1.13.7_amd64.deb | 1.13.7 | 1.13.7 | **OK** | deb pkg=obsidian (control control.tar.xz) \| pinned 1.13.7 \| internal 1.13.7 |
-| opencode-desktop | opencode-desktop-linux-amd64.deb | 1.18.25 | 1.18.25 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 1.18.25 \| internal 1.18.25 |
+| opencode-desktop | opencode-desktop-linux-amd64.deb | 1.18.26 | 1.18.26 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 1.18.26 \| internal 1.18.26 |
 | protonplus | ProtonPlus-v0.6.5.tar.gz | 0.6.5 | >= 1.0.0 | **SOURCE-OK** | tar meson.build=>= 1.0.0 (ProtonPlus-0.6.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 1.0.0 (not authoritative) |
 | pyprland | pyprland-3.4.3.tar.gz | 3.4.3 | 0.0.0 | **SOURCE-OK** | tar package.json=0.0.0 (pyprland-3.4.3/pyprland/gui/frontend/package.json) \| hash no-checksum-pinned \| weak internal evidence 0.0.0 (not authoritative) |
 | quickshell-git | live quickshell-mirror/quickshell | 2d3b3e9c70ef | 2d3b3e9c70ef | **OK** | live quickshell-mirror/quickshell pin 2d3b3e9c70ef vs upstream 2d3b3e9c70ef |
@@ -93,7 +93,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | stoat-desktop | stoat-desktop.desktop | 1.5.3 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | stoat.png | 1.5.3 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.3 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| umbriel-git | live noctalia-dev/umbriel | 51c60d98164d | 64664ec3f987 | **STALE** | live noctalia-dev/umbriel pin 51c60d98164d vs upstream 64664ec3f987 |
+| umbriel-git | live noctalia-dev/umbriel | 06de3bfacc1c | 06de3bfacc1c | **OK** | live noctalia-dev/umbriel pin 06de3bfacc1c vs upstream 06de3bfacc1c |
 | vesktop | vesktop-1.6.7.x86_64.rpm | 1.6.7 | 1.6.7-1 | **OK** | rpm header vesktop=1.6.7-1-1 (tags NAME/VERSION) \| pinned 1.6.7 \| internal 1.6.7-1 |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
 | waypaper | screeninfo-0.8.1.tar.gz | 2.9 | 0.8.1 | **SOURCE-OK** | tar pyproject.toml=0.8.1 (screeninfo-0.8.1/pyproject.toml) \| hash no-checksum-pinned \| weak internal evidence 0.8.1 (not authoritative) |
@@ -102,7 +102,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | xdg-desktop-portal-hyprland | xdg-desktop-portal-hyprland-1.4.1.tar.gz | 1.4.1 | 0.1 | **SOURCE-OK** | tar CMakeLists.txt=0.1 (xdg-desktop-portal-hyprland-1.4.1/hyprland-share-picker/CMakeLists.txt) \| hash no-checksum-pinned \| weak internal evidence 0.1 (not authoritative) |
 | xdg-desktop-portal-hyprland | sdbus-2.3.1.tar.gz | 1.4.1 | 2.3.1 | **SOURCE-OK** | tar CMakeLists.txt=2.3.1 (sdbus-cpp-2.3.1/CMakeLists.txt) \| hash no-checksum-pinned \| weak internal evidence 2.3.1 (not authoritative) |
 | xdg-desktop-portal-umbriel-git | live noctalia-dev/xdg-desktop-portal-umbriel | d996f0c2bd4e | d996f0c2bd4e | **OK** | live noctalia-dev/xdg-desktop-portal-umbriel pin d996f0c2bd4e vs upstream d996f0c2bd4e |
-| xwayland-satellite-git | live Supreeeme/xwayland-satellite | 6d0de1cedde9 | 6d0de1cedde9 | **OK** | live Supreeeme/xwayland-satellite pin 6d0de1cedde9 vs upstream 6d0de1cedde9 |
+| xwayland-satellite-git | live Supreeeme/xwayland-satellite | 78e4e01ea992 | 78e4e01ea992 | **OK** | live Supreeeme/xwayland-satellite pin 78e4e01ea992 vs upstream 78e4e01ea992 |
 | zen-browser | zen.linux-x86_64.tar.xz | 1.21.16b | 1.21.16b | **OK** | tar application.ini=1.21.16b (zen/application.ini) \| pinned 1.21.16b \| internal 1.21.16b |
 | zen-browser | zen-browser.desktop | 1.21.16b |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | zen-browser | policies.json | 1.21.16b |  | **OK** | bundled aux/doc asset in repo, no download needed |
@@ -114,7 +114,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | cascadia-code-nerd-fonts | upstream github.com/ryanoasis/nerd-fonts | 3.5.1 | v3.5.1 | **OK** | at upstream latest v3.5.1 [releases/latest] |
 | cliphist | upstream github.com/sentriz/cliphist | 0.7.0 | v0.7.0 | **OK** | at upstream latest v0.7.0 [releases/latest] |
 | extension-manager | upstream github.com/mjakeman/extension-manager | 0.6.5 | v0.6.5 | **OK** | at upstream latest v0.6.5 [releases/latest] |
-| freebuff | upstream github.com/CodebuffAI/codebuff-community | 0.0.164 | freebuff-v0.0.164 | **SKIP-LIVE-UNVERIFIED** | upstream released freebuff-v0.0.164 but no replacement artifact yet (partial release) - staying on 0.0.164 |
+| freebuff | upstream github.com/CodebuffAI/codebuff-community | 0.0.166 | freebuff-v0.0.166 | **SKIP-LIVE-UNVERIFIED** | upstream released freebuff-v0.0.166 but no replacement artifact yet (partial release) - staying on 0.0.166 |
 | ghostty | upstream github.com/mkasberg/ghostty-ubuntu | 1.3.1 | 1.3.1-0-ppa2 | **SKIP-LIVE-UNVERIFIED** | upstream released 1.3.1-0-ppa2 but no replacement artifact yet (partial release) - staying on 1.3.1 |
 | glaze | upstream github.com/stephenberry/glaze | 8.3.0 | v8.3.0 | **OK** | at upstream latest v8.3.0 [releases/latest] |
 | helium-browser | upstream github.com/imputnet/helium-linux | 0.16.3.1 | 0.16.3.1 | **OK** | at upstream latest 0.16.3.1 [tag; releases/latest pointer stale at 0.16.2.1] |
@@ -155,7 +155,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | mpvpaper | upstream github.com/GhostNaN/mpvpaper | 1.9 | 1.9 | **OK** | at upstream latest 1.9 [releases/latest] |
 | nwg-look | upstream github.com/nwg-piotr/nwg-look | 1.1.1 | v1.1.1 | **OK** | at upstream latest v1.1.1 [releases/latest] |
 | obsidian | upstream github.com/obsidianmd/obsidian-releases | 1.13.7 | v1.13.8 | **SKIP-LIVE-UNVERIFIED** | upstream released v1.13.8 but no replacement artifact yet (partial release) - staying on 1.13.7 |
-| opencode-desktop | upstream github.com/anomalyco/opencode | 1.18.25 | v1.18.25 | **OK** | at upstream latest v1.18.25 [releases/latest] |
+| opencode-desktop | upstream github.com/anomalyco/opencode | 1.18.26 | v1.18.26 | **OK** | at upstream latest v1.18.26 [releases/latest] |
 | protonplus | upstream github.com/vysp3r/ProtonPlus | 0.6.5 | v0.6.5 | **OK** | at upstream latest v0.6.5 [releases/latest] |
 | pyprland | upstream github.com/hyprland-community/pyprland | 3.4.3 | 3.4.3 | **OK** | at upstream latest 3.4.3 [releases/latest] |
 | scenefx | upstream github.com/wlrfx/scenefx | 0.5 | 0.5 | **OK** | at upstream latest 0.5 [releases/latest] |
@@ -168,5 +168,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | zen-browser | upstream github.com/zen-browser/desktop | 1.21.16b | 1.21.16b | **OK** | at upstream latest 1.21.16b [releases/latest] |
 | rootapp | rootapp | 0.9.128 | 0.9.128 | **OUTDATED** | upstream 0.9.128 available, use autocopr (auto-update spec files from GitHub releases) |
 | LIBYEAR | freshness | 0.15 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
+| nwg-look | - | - | - | **DEPS-deps-broken (rpmspec: error: line 5: Unknown tag: %gometa)** | deps-broken (rpmspec: error: line 5: Unknown tag: %gometa) |
+| protonplus | - | - | - | **DEPS-deps-broken (rpmspec: error: line 4: Unknown tag: %forgemeta)** | deps-broken (rpmspec: error: line 4: Unknown tag: %forgemeta) |
 
-**Verdict: FAIL** (3 failure(s))
+**Verdict: PASS** (0 failure(s))
