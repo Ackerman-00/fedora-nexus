@@ -6,15 +6,16 @@
 # e.g. libvulkan.so.1 for unrelated packages), nor must their internal
 # linkage become system Requires.
 %global __provides_exclude_from ^%{_libdir}/%{name}/.*$
-# With the bundled Provides pruned, the only auto-Require that used to be
-# satisfied by fluxer itself (libffmpeg.so, an Electron-private library) must
-# be dropped too, otherwise the package becomes uninstallable. All other
-# auto-generated Requires are real system libraries and are kept.
-%global __requires_exclude ^libffmpeg\\.so.*$
+# With the bundled Provides pruned, the only auto-Requires that used to be
+# satisfied by fluxer itself (libffmpeg.so, an Electron-private library, and
+# libcbor.so.0.8 bundled under resources/app.asar.unpacked) must be dropped
+# too, otherwise the package becomes uninstallable. All other auto-generated
+# Requires are real system libraries and are kept.
+%global __requires_exclude ^libffmpeg\\.so.*$|^libcbor\\.so.*$
 
 Name:           fluxer
 Version:        2026.901.185447
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
@@ -97,6 +98,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %{_datadir}/icons/hicolor/*/apps/%{appid}.png
 
 %changelog
+* Wed Sep 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2026.901.185447-3
+- Exclude bundled libcbor.so.0.8 from auto-Requires (private copy under resources/app.asar.unpacked, same as libffmpeg) - fixes install failure on Fedora 44/45 where system libcbor is 0.13 (provides 0.13, not 0.8)
+
 * Wed Sep 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2026.901.185447-2
 - Fix Canary RPM layout (opt/Fluxer Canary, fluxer-canary.desktop) causing build failure - normalize to Fluxer/fluxer for stable packaging
 
