@@ -14,7 +14,7 @@
 
 Name:           fluxer
 Version:        2026.901.185447
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
@@ -39,6 +39,25 @@ friends, groups, and communities. Self-hosting and more.
 %prep
 %setup -T -c
 rpm2cpio %{SOURCE0} | cpio -idmv
+# Upstream Fluxer RPM ships as either "Fluxer" (stable) or "Fluxer Canary" (canary)
+# with matching desktop/icon/binary names. Normalize to "Fluxer"/"fluxer" so the
+# rest of the spec works for either channel.
+if [ -d "opt/Fluxer Canary" ] && [ ! -e "opt/Fluxer" ]; then
+  mv "opt/Fluxer Canary" "opt/Fluxer"
+fi
+if [ -f "usr/share/applications/fluxer-canary.desktop" ] && [ ! -f "usr/share/applications/fluxer.desktop" ]; then
+  cp "usr/share/applications/fluxer-canary.desktop" "usr/share/applications/fluxer.desktop"
+fi
+if ls usr/share/icons/hicolor/*/apps/fluxer-canary.png >/dev/null 2>&1; then
+  for f in usr/share/icons/hicolor/*/apps/fluxer-canary.png; do
+    dst=$(echo "$f" | sed 's/fluxer-canary/fluxer/')
+    [ -f "$dst" ] || cp "$f" "$dst"
+  done
+fi
+# Binary is fluxer (stable) or fluxer-canary (canary); ensure %{name} exists
+if [ -f "opt/Fluxer/fluxer-canary" ] && [ ! -f "opt/Fluxer/fluxer" ]; then
+  ln -s fluxer-canary "opt/Fluxer/fluxer"
+fi
 
 %install
 mkdir -p %{buildroot}%{_libdir}/%{name}
@@ -78,6 +97,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %{_datadir}/icons/hicolor/*/apps/%{appid}.png
 
 %changelog
+* Wed Sep 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2026.901.185447-2
+- Fix Canary RPM layout (opt/Fluxer Canary, fluxer-canary.desktop) causing build failure - normalize to Fluxer/fluxer for stable packaging
+
 * Tue Sep 01 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2026.901.185447-1
 - Update to version 2026.901.185447
 
