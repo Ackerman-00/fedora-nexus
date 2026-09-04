@@ -1,4 +1,4 @@
-%global tag         v0.6.5
+%global tag         v0.6.6
 %global app_id      com.vysp3r.ProtonPlus
 %global forgeurl    https://github.com/vysp3r/ProtonPlus
 %forgemeta
@@ -6,7 +6,7 @@
 
 Name:           protonplus
 Version:        %{fileref}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        A modern compatibility tools manager
 ExclusiveArch:  x86_64
 
@@ -63,8 +63,5 @@ ProtonPlus is a modern compatibility tools manager for Linux. It allows you to e
 %{_metainfodir}/%{app_id}.metainfo.xml
 
 %changelog
-* Tue Sep 01 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.6.5-2
-- Fix build: restore %forgemeta macro removed in error (SRPM build failed)
-
-* Sun Aug 30 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.5-1
-- Update to version 0.6.5
+* Fri Sep 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.6-1
+- Update to version 0.6.6

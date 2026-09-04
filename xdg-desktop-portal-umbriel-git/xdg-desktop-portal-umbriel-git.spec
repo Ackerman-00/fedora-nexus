@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          5e7efc50ce5013b4799f60c9de8b830026f236a4
+%global commit          f62201b3e3ce350c17f72f5e0a142ac8ab51313d
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260904143801
+%global gitdate         20260904171047
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
@@ -68,5 +68,5 @@ rm -f src/vendor/json.hpp
 %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
-* Fri Sep 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260904143801git5e7efc5-1
-- Nightly sync with upstream main branch (Commit: 5e7efc5)
+* Fri Sep 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260904171047gitf62201b-1
+- Nightly sync with upstream main branch (Commit: f62201b)
