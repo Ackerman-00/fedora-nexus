@@ -1,5 +1,5 @@
 Name:           mangowm
-Version:        0.16.2
+Version:        0.16.3
 Release:        1%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
@@ -62,5 +62,5 @@ dwl — crafted for speed, flexibility, and a customizable desktop experience.
 %{_datadir}/xdg-desktop-portal/mango-portals.conf
 
 %changelog
-* Thu Aug 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.16.2-1
-- Auto-update to version 0.16.2
+* Fri Sep 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.16.3-1
+- Auto-update to version 0.16.3
