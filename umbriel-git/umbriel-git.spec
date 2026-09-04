@@ -14,7 +14,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts (Nexus Optimized Git Snapshot)
 
 License:        MIT
@@ -43,6 +43,7 @@ BuildRequires:  pkgconfig(egl)
 BuildRequires:  pkgconfig(glesv2)
 BuildRequires:  pkgconfig(gbm)
 BuildRequires:  pkgconfig(jemalloc)
+BuildRequires:  pkgconfig(lcms2)
 
 Requires:       xwayland-satellite-git
 Requires:       xdg-desktop-portal-umbriel-git
@@ -87,5 +88,9 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Fri Sep 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260904144707git1b982fa-2
+- Add explicit BuildRequires: pkgconfig(lcms2) for ICC color-management
+  (umbrielfx/meson.build uses dependency('lcms2', required: false); COPR
+  build 10951172 enabled it only via transitive pull - pin it explicitly)
 * Fri Sep 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260904144707git1b982fa-1
 - Nightly sync with upstream main branch (Commit: 1b982fa)
