@@ -6,9 +6,14 @@
 %global __brp_check_rpaths %{nil}
 
 # The binary's Needs an unversioned "libgtk4-layer-shell.so" which we ship
-# ourselves in %{_libdir}; it must not be turned into a (unresolvable) RPM dep.
-%global __requires_exclude ^libgtk4-layer-shell\.so$
-%global __provides_exclude ^libgtk4-layer-shell\.so$
+# ourselves in %{_libdir}; it must not be turned into a (unresolvable) RPM dep,
+# nor advertised as a system Provide.
+# NOTE on filter shape: rpm matches these filters against the DECORATED form
+# `libgtk4-layer-shell.so()(64bit)` on both sides (verified 2026-09-05: the old
+# `\.so$` filters left the Provide in the published 1.3.1-2 RPM and the
+# Require reappeared under rpm 6.0.2), so both must use `\.so.*$`.
+%global __requires_exclude ^libgtk4-layer-shell\.so.*$
+%global __provides_exclude ^libgtk4-layer-shell\.so.*$
 
 # Upstream Ghostty version (drives RPM Version)
 %global ghostty_version 1.3.1
@@ -21,7 +26,7 @@
 
 Name:           ghostty
 Version:        %{ghostty_version}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A fast, feature-rich, and cross-platform terminal emulator
 
 License:        MIT
@@ -135,6 +140,12 @@ rm -rf %{buildroot}%{_datadir}/doc
 %{_datadir}/zsh/vendor-completions/_ghostty
 
 %changelog
+* Sat Sep 05 2026 Ackerman-00 <quietcraft@gmail.com> - 1.3.1-3
+- Fix __provides_exclude for the bundled libgtk4-layer-shell.so: rpm matches
+  provides-filters against the decorated `libgtk4-layer-shell.so()(64bit)`
+  form, so `\.so$` never matched and the published RPM advertised a system
+  soname it must not own (same hijack class as helium-browser/libvulkan).
+  Same upstream .deb, spec-only fix.
 * Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 1.3.1-2
 - Fix COPR build (10850831): add BuildRequires: systemd-rpm-macros so
   %{_userunitdir} expands, and create %{_datadir} before copying usr/share/*
