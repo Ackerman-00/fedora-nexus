@@ -14,7 +14,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts (Nexus Optimized Git Snapshot)
 
 License:        MIT
@@ -28,13 +28,13 @@ BuildRequires:  meson >= 1.3
 BuildRequires:  systemd-rpm-macros
 BuildRequires:  pkgconfig(wlroots-0.20)
 BuildRequires:  pkgconfig(wayland-scanner)
-BuildRequires:  pkgconfig(wayland-server)
+BuildRequires:  pkgconfig(wayland-server) >= 1.24
 BuildRequires:  pkgconfig(wayland-client)
-BuildRequires:  pkgconfig(wayland-protocols) >= 1.32
+BuildRequires:  pkgconfig(wayland-protocols) >= 1.47
 BuildRequires:  pkgconfig(xkbcommon)
 BuildRequires:  pkgconfig(libinput) >= 1.23
-BuildRequires:  pkgconfig(pixman-1)
-BuildRequires:  pkgconfig(libdrm)
+BuildRequires:  pkgconfig(pixman-1) >= 0.43.0
+BuildRequires:  pkgconfig(libdrm) >= 2.4.129
 BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(pangocairo)
 BuildRequires:  pkgconfig(tomlplusplus)
@@ -75,18 +75,33 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %install
 %meson_install
 
+%post
+%systemd_user_post umbriel.service
+
+%preun
+%systemd_user_preun umbriel.service
+
+%postun
+%systemd_user_postun umbriel.service
+
 %files
 %license LICENSE
 %doc README.md
 %{_bindir}/umbriel
 %{_bindir}/start-umbriel
 %dir %{_datadir}/umbriel
-%{_datadir}/umbriel/config.toml
+%config(noreplace) %{_datadir}/umbriel/config.toml
 %{_datadir}/wayland-sessions/umbriel.desktop
 %{_userunitdir}/umbriel.service
 %{_userunitdir}/umbriel-session.target
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Sat Sep 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260905030417git606144d-2
+- Sync BuildRequires floors with upstream meson.build (wayland-protocols
+  >= 1.47, wayland-server >= 1.24, pixman-1 >= 0.43.0, libdrm >= 2.4.129);
+  add systemd user scriptlets for umbriel.service; mark config.toml
+  %config(noreplace) (matches terrapkg review, minus their stale sdbus-c++/
+  md4c/stb/glib-2.0/scenefx BRs which upstream never probes for)
 * Sat Sep 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260905030417git606144d-1
 - Nightly sync with upstream main branch (Commit: 606144d)
