@@ -14,7 +14,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts (Nexus Optimized Git Snapshot)
 
 License:        MIT
@@ -91,11 +91,16 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %{_bindir}/start-umbriel
 %dir %{_datadir}/umbriel
 %config(noreplace) %{_datadir}/umbriel/config.toml
+%{_datadir}/umbriel/shaders/
 %{_datadir}/wayland-sessions/umbriel.desktop
 %{_userunitdir}/umbriel.service
 %{_userunitdir}/umbriel-session.target
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Sat Sep 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260905141122git1cf53d1-2
+- Ship new upstream animation shaders (reveal.glsl, squash.glsl) installed
+  to %%{_datadir}/umbriel/shaders (fixes COPR build 10953214 unpackaged-files
+  error); spec-only fix for same pinned commit, Release bumped 1 -> 2
 * Sat Sep 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260905141122git1cf53d1-1
 - Nightly sync with upstream main branch (Commit: 1cf53d1)
