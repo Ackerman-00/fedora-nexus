@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          1cf53d145d2da63e187e3379b086cff2c4ee7657
+%global commit          203950fb5108f061efd9b9cdde1db01cf2f61a9f
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260905141122
+%global gitdate         20260905180536
 
 # Fedora's default LTO flags (-flto=auto -ffat-lto-objects) trip a
 # binutils/GCC linker-plugin bug when linking umbriel's test binaries
@@ -14,7 +14,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts (Nexus Optimized Git Snapshot)
 
 License:        MIT
@@ -98,9 +98,5 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Sat Sep 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260905141122git1cf53d1-2
-- Ship new upstream animation shaders (reveal.glsl, squash.glsl) installed
-  to %%{_datadir}/umbriel/shaders (fixes COPR build 10953214 unpackaged-files
-  error); spec-only fix for same pinned commit, Release bumped 1 -> 2
-* Sat Sep 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260905141122git1cf53d1-1
-- Nightly sync with upstream main branch (Commit: 1cf53d1)
+* Sat Sep 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260905180536git203950f-1
+- Nightly sync with upstream main branch (Commit: 203950f)
