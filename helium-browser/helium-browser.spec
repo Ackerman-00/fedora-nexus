@@ -1,9 +1,17 @@
 %global             debug_package %{nil}
 %global             helium_base /opt/helium
 
+# Helium ships private Chromium/Electron libraries (libEGL, libGLESv2,
+# libvulkan.so.1, swiftshader, qt shims) under %{helium_base}. They live
+# outside the loader path and must never be advertised as system-wide
+# Provides: dnf once picked helium-browser as the provider of
+# libvulkan.so.1()(64bit) for wlroots, leaving umbriel unstartable
+# (libvulkan.so.1 => not found). Proven by combined install test 2026-09-05.
+%global __provides_exclude_from ^%{helium_base}/.*$
+
 Name:               helium-browser
 Version:        0.16.5.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:            Private, fast, and honest web browser
 
 License:            GPL-3.0-only
@@ -86,5 +94,10 @@ esac
 %{_datadir}/icons/hicolor/256x256/apps/helium.png
 
 %changelog
+* Sat Sep 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.16.5.1-2
+- Stop advertising bundled /opt/helium libs (libEGL, libGLESv2,
+  libvulkan.so.1, ...) as system Provides via __provides_exclude_from;
+  dnf had picked helium-browser as libvulkan provider for wlroots,
+  breaking umbriel startup. Spec-only fix, same upstream version.
 * Sat Sep 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.16.5.1-1
 - Auto-update to upstream release 0.16.5.1
