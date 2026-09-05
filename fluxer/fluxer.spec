@@ -15,7 +15,7 @@
 
 Name:           fluxer
 Version:        2026.904.135113
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
@@ -98,5 +98,12 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %{_datadir}/icons/hicolor/*/apps/%{appid}.png
 
 %changelog
+* Sat Sep 05 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.904.135113-2
+- Rebuild to publish the __provides_exclude_from/__requires_exclude
+  hygiene already in the spec: the published -1 RPM still advertises
+  bundled Chromium libs (libEGL, libGLESv2, libvulkan.so.1, ...) as
+  system Provides, which can hijack unrelated deps (proven same-class
+  hijack via helium-browser + wlroots + umbriel 2026-09-05). No
+  upstream change, same canary snapshot.
 * Fri Sep 04 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.904.135113-1
 - Update to version 2026.904.135113
