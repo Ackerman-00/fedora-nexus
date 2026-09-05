@@ -737,7 +737,8 @@ jobs:
              Then work autonomously, in this priority order:
 
               0. ALWAYS-PRIORITY PACKAGES - noctalia-git, umbriel-git,
-                 noctalia-greeter (highest attention, EVERY run, no
+                 noctalia-greeter, zen-browser, helium-browser,
+                 heroic-games-launcher (highest attention, EVERY run, no
                  exceptions). These move fast and break silently, so the
                  delta/carry-over logic does NOT apply to them:
                  a. EVERY run, FIRST: check each against upstream HEAD
@@ -756,7 +757,7 @@ jobs:
                     container install test + smoke test. Record per-package
                     PASS/FAIL with command output in the relay; a failure
                     here outranks all other non-build-failure work.
-                 c. Never mark these three done based on a previous run's
+                 c. Never mark these six done based on a previous run's
                     result. "Unchanged since last run" is not verification
                     for these packages - re-verify every time.
 
