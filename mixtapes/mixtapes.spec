@@ -9,7 +9,7 @@
 
 Name:           mixtapes
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Modern, Linux-first YouTube Music player (Nexus Git Snapshot)
 
 License:        GPL-3.0-or-later
@@ -47,9 +47,15 @@ Requires:       webkitgtk6.0
 Requires:       glib-networking
 Requires:       gstreamer1-plugins-base
 Requires:       gstreamer1-plugins-good
-Requires:       gstreamer1-plugins-bad-free
-Requires:       gstreamer1-plugins-ugly-free
-Requires:       ffmpeg-free
+# Same RPM Fusion dance as ffmpeg above: Fedora's -free variants conflict
+# with RPM Fusion's full -bad/-ugly, so accept either side.
+Requires:       (gstreamer1-plugins-bad-free or gstreamer1-plugins-bad)
+Requires:       (gstreamer1-plugins-ugly-free or gstreamer1-plugins-ugly)
+# yt-dlp needs an ffmpeg binary for download muxing. Fedora ships it as
+# ffmpeg-free, RPM Fusion as full ffmpeg, and the two conflict with each
+# other - so accept EITHER: dnf satisfies the OR with whatever is already
+# installed instead of dragging in the conflicting sibling.
+Requires:       (ffmpeg-free or ffmpeg)
 Requires:       nodejs
 Requires:       rustypipe-botguard
 Requires:       hicolor-icon-theme
@@ -105,6 +111,11 @@ chmod 0755 %{buildroot}%{_bindir}/mixtapes
 %{_datadir}/mixtapes/
 
 %changelog
+* Sun Sep 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260904205500gitc48756e-2
+- Accept RPM Fusion siblings via rich deps: (ffmpeg-free or ffmpeg),
+  (gstreamer1-plugins-bad-free or -bad), (-ugly-free or -ugly). A hard
+  ffmpeg-free requirement made the package uninstallable for anyone
+  with RPM Fusion's conflicting ffmpeg installed.
 * Sun Sep 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260904205500gitc48756e-1
 - Initial package: Git snapshot (metainfo 2026-09-04.0). Python deps
   mapped to Fedora + Nexus-packaged modules; GResource compiled at
