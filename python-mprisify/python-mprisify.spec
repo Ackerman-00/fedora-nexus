@@ -5,13 +5,17 @@
 
 Name:           python-mprisify
 Version:        1.0.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        MPRIS D-Bus interface library for Python
 
 License:        LGPL-3.0-only
 URL:            https://gitlab.com/zehkira/mprisify
 # GitLab tag archive (no PyPI release published upstream)
 Source0:        https://gitlab.com/zehkira/mprisify/-/archive/v%{version}/mprisify-v%{version}.tar.gz
+
+# Aliased name expected by dependent specs (e.g. mixtapes
+# Requires: python3-mprisify); the binary RPM is named python-mprisify.
+Provides:       python3-mprisify
 
 BuildRequires:  python3-devel
 
@@ -53,6 +57,9 @@ class LowercaseStrEnum(StrEnum):\
 %files -f %{pyproject_files}
 
 %changelog
+* Sun Sep 06 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.0.1-3
+- Provide python3-mprisify (name expected by mixtapes Requires;
+  COPR mixtapes install failed on unresolvable python3-* names).
 * Sun Sep 06 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.0.1-2
 - Map StrEnum backport imports to stdlib enum.StrEnum (not in Fedora;
   COPR 10955043 failed on python3dist(strenum)).
