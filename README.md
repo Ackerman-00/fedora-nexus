@@ -118,6 +118,7 @@ sudo dnf install <package-name>
 | `quickshell-git` | Flexible toolkit for desktop shells with QtQuick (Git Snapshot) | Git |
 | `rootapp` | Discord alternative for gaming communities and large online groups | Stable |
 | `scenefx` | Drop-in wlroots scene API replacement with eye-candy effects | Stable |
+| `splayer-next` | Cross-platform desktop music player with rich lyric support | Stable |
 | `starship` | Minimal, blazing-fast, customizable prompt for any shell | Stable |
 | `stoat-desktop` | Open source, user-first chat platform desktop client | Stable |
 | `umbriel-git` | Wayland compositor with scrolling and dwindle layouts, built on wlroots + SceneFX (Git Snapshot) | Git |
