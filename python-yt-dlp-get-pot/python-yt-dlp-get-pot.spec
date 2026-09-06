@@ -5,7 +5,7 @@
 
 Name:           python-yt-dlp-get-pot
 Version:        0.3.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        PO token provider plugin for yt-dlp
 
 License:        Unlicense
@@ -13,6 +13,10 @@ URL:            https://pypi.org/project/yt-dlp-get-pot/
 # NOTE: the pypi_source macro emits a dashed tarball name that 404s on
 # files.pythonhosted.org for this project; use the real underscore URL.
 Source0:        https://files.pythonhosted.org/packages/source/y/yt-dlp-get-pot/yt_dlp_get_pot-%{version}.tar.gz
+
+# Aliased name expected by dependent specs (e.g. mixtapes
+# Requires: python3-yt-dlp-get-pot); the binary RPM is named python-yt-dlp-get-pot.
+Provides:       python3-yt-dlp-get-pot
 
 BuildRequires:  python3-devel
 
@@ -40,6 +44,9 @@ for the Nexus repository as a dependency of mixtapes.
 %files -f %{pyproject_files}
 
 %changelog
+* Sun Sep 06 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.3.0-3
+- Provide python3-yt-dlp-get-pot (name expected by mixtapes Requires;
+  COPR mixtapes install failed on unresolvable python3-* names).
 * Sun Sep 06 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.3.0-2
 - Add missing %prep/%autosetup so %generate_buildrequires finds the
   sources (same failure as pydbus 10955044 / ytmusicapi 10955049).
