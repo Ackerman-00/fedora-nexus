@@ -104,6 +104,7 @@ sudo dnf install <package-name>
 | `ly` | Lightweight TUI display manager | Stable |
 | `mangowm` | Modern, lightweight, high-performance Wayland compositor built on dwl | Stable |
 | `material-symbols-fonts` | Material Symbols variable icon font by Google | Stable |
+| `mixtapes` | Modern, Linux-first YouTube Music player (Git Snapshot) | Git |
 | `matugen` | Material You color generation tool | Stable |
 | `mpvpaper` | Video wallpaper program for wlroots based Wayland compositors | Stable |
 | `niri-git` | Scrollable-tiling Wayland compositor (Git Snapshot) | Git |
@@ -115,8 +116,15 @@ sudo dnf install <package-name>
 | `protonplus` | Modern compatibility tools manager | Stable |
 | `pyprland` | Hyprland extensions made easy | Stable |
 | `python3-materialyoucolor` | Material You color generation algorithms (pure Python + C++ quantizer) | Stable |
+| `python-mprisify` | MPRIS D-Bus interface library for Python | Stable |
+| `python-pydbus` | Pythonic D-Bus library | Stable |
+| `python-yt-dlp-ejs` | External JavaScript runtimes for yt-dlp | Stable |
+| `python-yt-dlp-get-pot` | PO token provider plugin for yt-dlp | Stable |
+| `python-yt-dlp-get-pot-rustypipe` | PO token provider plugin for yt-dlp using rustypipe-botguard | Stable |
+| `python-ytmusicapi` | Unofficial API for YouTube Music | Stable |
 | `quickshell-git` | Flexible toolkit for desktop shells with QtQuick (Git Snapshot) | Git |
 | `rootapp` | Discord alternative for gaming communities and large online groups | Stable |
+| `rustypipe-botguard` | YouTube Botguard challenge solver for PO token generation | Stable |
 | `scenefx` | Drop-in wlroots scene API replacement with eye-candy effects | Stable |
 | `splayer-next` | Cross-platform desktop music player with rich lyric support | Stable |
 | `starship` | Minimal, blazing-fast, customizable prompt for any shell | Stable |
