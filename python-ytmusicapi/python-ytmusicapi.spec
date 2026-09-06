@@ -5,7 +5,7 @@
 
 Name:           python-ytmusicapi
 Version:        1.12.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Unofficial API for YouTube Music
 
 License:        MIT
@@ -19,6 +19,12 @@ ytmusicapi is an unofficial API for YouTube Music (library, search,
 playlists, uploads, radio). Packaged for the Nexus repository as a
 dependency of mixtapes.
 
+%prep
+# Unpack the PyPI sdist so %generate_buildrequires can find
+# pyproject.toml (missing %prep failed COPR build 10955049: "Neither
+# pyproject.toml nor setup.py found").
+%autosetup -p1 -n ytmusicapi-%{version}
+
 %generate_buildrequires
 %pyproject_buildrequires
 
@@ -30,7 +36,12 @@ dependency of mixtapes.
 %pyproject_save_files ytmusicapi
 
 %files -f %{pyproject_files}
+# Upstream ships a console-script entry point (oauth CLI).
+%{_bindir}/ytmusicapi
 
 %changelog
+* Sun Sep 06 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.12.2-2
+- Add missing %prep/%autosetup (fixes COPR 10955049: %generate_buildrequires
+  ran in an empty build dir).
 * Sun Sep 06 2026 Ackerman-00 <quietcraft@gmail.com> - 1.12.2-1
 - Initial package (dependency of mixtapes). Debuginfo disabled (pure-Python, no ELF).
