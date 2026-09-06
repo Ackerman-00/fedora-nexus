@@ -5,12 +5,16 @@
 
 Name:           python-ytmusicapi
 Version:        1.12.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Unofficial API for YouTube Music
 
 License:        MIT
 URL:            https://pypi.org/project/ytmusicapi/
 Source0:        %{pypi_source ytmusicapi}
+
+# Aliased name expected by dependent specs (e.g. mixtapes
+# Requires: python3-ytmusicapi); the binary RPM is named python-ytmusicapi.
+Provides:       python3-ytmusicapi
 
 BuildRequires:  python3-devel
 
@@ -40,6 +44,9 @@ dependency of mixtapes.
 %{_bindir}/ytmusicapi
 
 %changelog
+* Sun Sep 06 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.12.2-3
+- Provide python3-ytmusicapi (name expected by mixtapes Requires;
+  COPR mixtapes install failed on unresolvable python3-* names).
 * Sun Sep 06 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.12.2-2
 - Add missing %prep/%autosetup (fixes COPR 10955049: %generate_buildrequires
   ran in an empty build dir).
