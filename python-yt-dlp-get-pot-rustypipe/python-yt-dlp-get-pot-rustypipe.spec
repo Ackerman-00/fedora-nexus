@@ -1,3 +1,8 @@
+# No debuginfo: pure-Python wheel, zero ELF binaries, so find-debuginfo
+# would emit an empty debugsource list which rpm >= 6 rejects as a hard
+# error (same failure as mixtapes build 10955014).
+%global debug_package %{nil}
+
 Name:           python-yt-dlp-get-pot-rustypipe
 Version:        0.2.0
 Release:        1%{?dist}
@@ -28,4 +33,4 @@ repository as a dependency of mixtapes.
 
 %changelog
 * Sun Sep 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-1
-- Initial package (dependency of mixtapes)
+- Initial package (dependency of mixtapes). Debuginfo disabled (pure-Python, no ELF).

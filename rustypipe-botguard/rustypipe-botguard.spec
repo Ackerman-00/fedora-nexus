@@ -1,3 +1,9 @@
+# No debuginfo: prebuilt upstream binary is already stripped, so
+# find-debuginfo would emit an empty debugsource list which rpm >= 6
+# rejects as a hard error (same failure as mixtapes build 10955014;
+# same convention as heroic/vesktop/fluxer prebuilt specs).
+%global debug_package %{nil}
+
 Name:           rustypipe-botguard
 Version:        0.1.2
 Release:        1%{?dist}
@@ -35,4 +41,4 @@ install -Dpm0755 rustypipe-botguard -t %{buildroot}%{_bindir}
 
 %changelog
 * Sun Sep 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.2-1
-- Initial package (PO-token helper for mixtapes)
+- Initial package (PO-token helper for mixtapes). Debuginfo disabled (prebuilt stripped binary).

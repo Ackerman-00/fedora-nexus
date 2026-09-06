@@ -1,3 +1,8 @@
+# No debuginfo: pure-Python wheel, zero ELF binaries, so find-debuginfo
+# would emit an empty debugsource list which rpm >= 6 rejects as a hard
+# error (same failure as mixtapes build 10955014).
+%global debug_package %{nil}
+
 Name:           python-mprisify
 Version:        1.0.1
 Release:        1%{?dist}
@@ -34,4 +39,4 @@ tar xzf %{SOURCE0} --strip-components=1
 
 %changelog
 * Sun Sep 06 2026 Ackerman-00 <quietcraft@gmail.com> - 1.0.1-1
-- Initial package (dependency of mixtapes)
+- Initial package (dependency of mixtapes). Debuginfo disabled (pure-Python, no ELF).

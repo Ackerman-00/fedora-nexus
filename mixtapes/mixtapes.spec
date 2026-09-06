@@ -1,4 +1,8 @@
 # These will be automatically populated by update.sh
+# No debuginfo: pure Python sources + data, zero ELF binaries, so
+# find-debuginfo emits an empty debugsource list which rpm >= 6 rejects
+# as a hard error (proven by COPR build 10955014).
+%global debug_package %{nil}
 %global commit          c48756eebd836850eb0ee60991deb71b52e46ee1
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20260904205500
@@ -104,4 +108,5 @@ chmod 0755 %{buildroot}%{_bindir}/mixtapes
 * Sun Sep 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260904205500gitc48756e-1
 - Initial package: Git snapshot (metainfo 2026-09-04.0). Python deps
   mapped to Fedora + Nexus-packaged modules; GResource compiled at
-  build; upstream Exec patched to mixtapes.
+  build; upstream Exec patched to mixtapes. Debuginfo disabled
+  (pure Python/data payload, no ELF for find-debuginfo).
