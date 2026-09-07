@@ -1,13 +1,13 @@
 # These will be automatically populated by update.sh
-%global commit          3a73801c135eb98002713a93de9c1459ad49565d
+%global commit          ae8dc0acc66932171ec70d347a8cab9310ce74e4
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260906222923
+%global gitdate         20260907192903
 
 %global _lto_cflags %{nil}
 
 Name:           astal-libs
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Astal libraries
 
 License:        LGPL-2.1-only
@@ -212,10 +212,5 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_libdir}/pkgconfig/quarrel-0.1.pc
 
 %changelog
-* Mon Sep 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260906222923git3a73801-2
-- Vendor wl-vapi-gen into every lib/*/subprojects dir that wraps it, matching
-  each wrap file's pinned version (1.0.0 for wl/river, 1.1.0 for the new
-  workspace and idle-notify dirs); package the new astal-workspace binary
-  and libastal-{workspace,idle-notify} libs. Fixes COPR build 10955883.
-* Mon Sep 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260906222923git3a73801-1
-- Nightly sync with upstream main branch (Commit: 3a73801)
+* Mon Sep 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260907192903gitae8dc0a-1
+- Nightly sync with upstream main branch (Commit: ae8dc0a)
