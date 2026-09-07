@@ -25,7 +25,13 @@ if [ -n "$LATEST_TAG" ]; then
 else
     BASE_VER=$(curl -fsSL "https://raw.githubusercontent.com/$GITHUB_REPO/$LATEST_COMMIT/meson.build" \
         | grep -oP "^\s*version:\s*'\K[^']+" | head -1)
-    echo "No upstream tags; base version from meson.build: $BASE_VER"
+    if [ -z "$BASE_VER" ]; then
+        # Upstream moved the version to a VERSION file
+        # (meson.build: version: files('VERSION')); read it at HEAD.
+        BASE_VER=$(curl -fsSL "https://raw.githubusercontent.com/$GITHUB_REPO/$LATEST_COMMIT/VERSION" \
+            2>/dev/null | tr -d '[:space:]' | grep -E '^[0-9]+\.[0-9]+')
+    fi
+    echo "No upstream tags; base version from meson.build/VERSION: $BASE_VER"
 fi
 
 if [ -z "$BASE_VER" ]; then
