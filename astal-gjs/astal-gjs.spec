@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          82f3964d19e39904e32807d3e452a2e19b0493ef
+%global commit          3a73801c135eb98002713a93de9c1459ad49565d
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260830120747
+%global gitdate         20260906222923
 
 %global debug_package %{nil}
 %global _vpath_srcdir lang/gjs
@@ -53,5 +53,5 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
-* Sun Aug 30 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260830120747git82f3964-1
-- Nightly sync with upstream main branch (Commit: 82f3964)
+* Mon Sep 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260906222923git3a73801-1
+- Nightly sync with upstream main branch (Commit: 3a73801)
