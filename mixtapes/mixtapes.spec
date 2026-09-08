@@ -3,13 +3,13 @@
 # find-debuginfo emits an empty debugsource list which rpm >= 6 rejects
 # as a hard error (proven by COPR build 10955014).
 %global debug_package %{nil}
-%global commit          c48756eebd836850eb0ee60991deb71b52e46ee1
+%global commit          f68ffef8733b349f5bd6b6925e2c24bee9cddfb9
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260904205500
+%global gitdate         20260908202839
 
 Name:           mixtapes
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Modern, Linux-first YouTube Music player (Nexus Git Snapshot)
 
 License:        GPL-3.0-or-later
@@ -111,6 +111,9 @@ chmod 0755 %{buildroot}%{_bindir}/mixtapes
 %{_datadir}/mixtapes/
 
 %changelog
+* Tue Sep 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260908202839gitf68ffef-1
+- Nightly sync with upstream main branch (Commit: f68ffef)
+
 * Sun Sep 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260904205500gitc48756e-2
 - Accept RPM Fusion siblings via rich deps: (ffmpeg-free or ffmpeg),
   (gstreamer1-plugins-bad-free or -bad), (-ugly-free or -ugly). A hard
