@@ -107,10 +107,29 @@ jobs:
             fi
             printf '%s' "$content" | grep -qx "run_id: $RUN_ID" && printf '%s' "$content" | grep -qi "status: complete" && printf '%s' "$content" | grep -qi "PACKAGE.*BR\|deps-verified\|dependency audit"
           }
+          # Start jitter: many schedulers fire at :00/:10 sharp - a random 0-3 min
+          # delay desyncs this run from the thundering herd that knocks free-model
+          # gateways over (socket-closed flaps). Cheap insurance inside a 355-min job.
+          sleep $((RANDOM % 180))
           for model in "opencode/muse-spark-1.3-contributor-free" "opencode/mimo-v2.5-free" "opencode/ling-3.0-flash-fin-free" "opencode/nemotron-3-ultra-free" "opencode/nemotron-3.5-lightning-free" "opencode/big-pickle"; do
             echo "=== opencode run attempt with $model ==="
             exit_code=0
-            MODEL="$model" opencode run -m "$model" --dangerously-skip-permissions --agent=build --print-logs "$PROMPT" || exit_code=$?
+            # Per-model retries with backoff: free-tier gateways drop sockets under
+            # load (AI_APICallError: socket closed unexpectedly). A flap is NOT a
+            # dead model - retry the SAME model before falling through. Bounded at
+            # 3 tries with full jitter (retry only transient failures, never 4xx).
+            for attempt_n in 1 2 3; do
+              if MODEL="$model" opencode run -m "$model" --dangerously-skip-permissions --agent=build --print-logs "$PROMPT"; then
+                exit_code=0
+                break
+              fi
+              exit_code=$?
+              if [ "$attempt_n" -lt 3 ]; then
+                delay=$((RANDOM % (120 * attempt_n)))
+                echo "=== $model try $attempt_n/3 failed (exit $exit_code) - backing off ${delay}s ==="
+                sleep "$delay"
+              fi
+            done
             if [ "$exit_code" -eq 0 ]; then
               ok=0
               for attempt in $(seq 1 10); do
@@ -129,7 +148,8 @@ jobs:
             else
               echo "=== attempt with $model failed (exit $exit_code) - trying next ==="
             fi
-            sleep 15
+            # Long inter-model sleep: hammering a loaded gateway faster makes it worse.
+            sleep 60
           done
           exit 1
         env:
