@@ -12,14 +12,25 @@ if [[ -f "$RELAY" ]]; then
   else
     echo "PASS: relay run_id matches this run"
   fi
+  expected=$(ls */*.spec 2>/dev/null | wc -l)
+  if [[ "$expected" -eq 0 ]]; then
+    echo "FAIL: NOT COMPLETE -- no */*.spec found (run from repo root)"
+    FAIL=1
+  fi
   rows=$(grep -cE "^\| [a-z0-9_-]+ \|" "$RELAY" 2>/dev/null || echo 0)
   dep_rows=$(grep -c "deps-verified\|deps-fixed" "$RELAY" 2>/dev/null || echo 0)
-  echo "Dependency table rows: $dep_rows (need >=82, found $rows total pipe-rows)"
-  if [[ "$dep_rows" -lt 82 ]]; then
-    echo "FAIL: NOT COMPLETE -- dependency audit table has $dep_rows rows, need 82"
+  echo "Inventory: $expected specs; dependency table rows: $dep_rows (found $rows total pipe-rows)"
+  if [[ "$dep_rows" -lt "$expected" ]]; then
+    echo "FAIL: NOT COMPLETE -- dependency audit table has $dep_rows rows, need $expected (one per spec)"
     FAIL=1
   else
-    echo "PASS: Dependency table: $dep_rows rows"
+    echo "PASS: Dependency table: $dep_rows rows (>= $expected)"
+  fi
+  if ! grep -q "| package | packaged version |" "$RELAY"; then
+    echo "FAIL: NOT COMPLETE -- version accuracy table (priority 2 deliverable) missing in relay"
+    FAIL=1
+  else
+    echo "PASS: Version accuracy table present"
   fi
   for tool in "rpmspec -P" "dnf builddep" "rpmlint"; do
     if ! grep -qi "$tool.*PASS\|PASS.*$tool" "$RELAY"; then
@@ -27,7 +38,7 @@ if [[ -f "$RELAY" ]]; then
       FAIL=1
     fi
   done
-  if ! grep -qi "install-test table" "$RELAY" && ! grep -qi "| package | COPR build |" "$RELAY"; then
+  if ! grep -qi "install-test table" "$RELAY" && ! grep -qiE "\| package \| (chroot \| )?COPR build \|" "$RELAY"; then
     echo "FAIL: NOT COMPLETE -- install-test table missing in relay"
     FAIL=1
   else
@@ -53,5 +64,5 @@ if [[ "$FAIL" -ne 0 ]]; then
   echo "FAIL: NOT COMPLETE -- agent must continue working"
   exit 1
 fi
-echo "PASS: VERIFICATION PASSED -- all 82 deps rows, evidence, install table present"
+echo "PASS: VERIFICATION PASSED -- all $expected deps rows, version table, evidence, install table present"
 exit 0

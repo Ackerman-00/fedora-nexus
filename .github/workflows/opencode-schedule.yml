@@ -394,8 +394,11 @@ jobs:
               a0. CHECK OFFICIAL PACKAGING FIRST (2026 advanced -- web search latest, August 2026): For `{pkg}`, first check the official distro packaging -- Fedora's official dist-git (src.fedoraproject.org/rpms/<pkg> + packages.fedoraproject.org) (`curl -s https://src.fedoraproject.org/rpms/<pkg>/raw/main/f/<pkg>.spec | grep -E '^(Build)?Requires' or search packages.fedoraproject.org`) -- if found, read its `BuildRequires/Requires`/`version` as the latest reference for dependencies (official is where newer spec land first). If official has a newer spec/dependencies than ours, align with it (keep our repo's build flags). If official has no spec for this package (404 / no file), then proceed to tear apart upstream `tar`/`deb`/`rpm`/`AppImage` in Docker as below -- download into `/tmp` (never repo tree), extract, and derive deps from inside (`ldd` `NEEDED` vs `BuildRequires/Requires` vs `RDEPEND` etc.). Web-search 2026 for official + upstream before deciding.
               a. OPEN THE PACKAGE. Read the FULL spec (every BuildRequires /
                  Requires / BuildConflicts, every %global, Source URLs), the
-                 %changelog, and update.sh. Download the Source0 tarball into
-                 the working tree (gitignored, safe) and EXTRACT it. Do not
+%changelog, and update.sh. Download the Source0 tarball into /tmp
+                   (NEVER the repo working tree - see CLEAN-TREE DISCIPLINE),
+                   preferably inside the clean Fedora container from section 1c
+                   so `ldd`/soname findings match the target distro, and EXTRACT
+                   it. Do not
                  reason about dependencies from memory - inspect the actual
                  upstream files:
                  - Rust: Cargo.toml / Cargo.lock (+ vendor dir if present)
@@ -450,10 +453,14 @@ jobs:
                  vendored (vendor.tar.xz), it needs NO BuildRequires, but the
                  crate list must match Cargo.lock - regenerate vendor
                  tarballs when the lock changes.
-              e. ALSO AUDIT RUNTIME Requires (shared libs via ldd of the
-                 built binary, desktop-file helpers, themes, fonts, portal
-                 services) and DROP dead/unneeded deps (rot). Keep the spec
-                 minimal and correct.
+               e. ALSO AUDIT RUNTIME Requires (shared libs via ldd of the
+                  built binary, desktop-file helpers, themes, fonts, portal
+                  services) and DROP dead/unneeded deps (rot). Keep the spec
+                  minimal and correct. Cross-check the built RPM directly:
+                  `rpm -qp --requires/--provides` on the fresh container build -
+                  every soname Requires must resolve via `dnf repoquery
+                  --whatprovides`, and any manual Requires absent from the RPM's
+                  own metadata must be justified in the relay.
               f. APPLY AND VERIFY: add the deps (alphabetized, following spec
                  conventions), commit, push (triggers COPR), and verify the
                  build: an added dep that does not resolve is worse than
@@ -466,7 +473,7 @@ jobs:
                  finished. State confidence (high/medium/low) for anything
                  not fully verified, and why.
               h. 2026 AUTOMATED EXCELLENCE CHECKS (MANDATORY - August 2026 toolchain):
-                 For EVERY spec you touched (and for at least 10-sample of the full 82), run the modern Fedora pipeline locally and paste output. This is how an "excellent .spec" is proven, not claimed:
+                 For EVERY spec you touched (and for at least a 10-sample of the full STEP A inventory - derive the count via `ls */*.spec`, currently 93, NEVER hardcode the number), run the modern Fedora pipeline locally and paste output. This is how an "excellent .spec" is proven, not claimed:
                  - `rpmspec -P --define "_topdir /tmp" <spec>` -- must exit 0 (macro expansion + syntax, catches bad %global/%if)
                  - `spectool -g -C /tmp/sources --define "_topdir /tmp" <spec>` -- every Source0 must fetch 200
                  - `rpmbuild -bs --define "_topdir /tmp" <spec>` -- SRPM must build (if it fails, fix %prep/%autosetup)
@@ -589,8 +596,11 @@ jobs:
                   e. SCOPE: this run MUST install-test, in priority order: every package you
                   touched or rebuilt this run; every package whose binary
                   changed since its last successful install test; then the
-                  oldest still-uncovered packages until your time budget is
-                  used up. Update the coverage ledger in .opencode-relay.md
+                   oldest still-uncovered packages until your time budget is
+                   used up. Cover the primary chroot every run and ROTATE at
+                   least one secondary chroot per run (record the chroot in
+                   every table row and the ledger); COPR green on a chroot proves
+                   compile only, never install. Update the coverage ledger in .opencode-relay.md
                   after every test. The run is NOT complete while any package
                   whose binary changed since its last test remains untested.
                   Pure -devel/library or headless-only packages still get the
@@ -598,8 +608,8 @@ jobs:
                   with the reason recorded.
               f. MANDATORY DELIVERABLE - install-test table in your final
                  summary, one row per package tested:
-                 | package | COPR build | dnf install test | smoke test |
-                 status |
+                  | package | chroot | COPR build | dnf install test | smoke test |
+                  status |
                    status in: installable / fixed / broken-(dep) /
                    blocked-(reason). Any package you changed but did not
                    install-test is an unfinished package.
@@ -662,7 +672,13 @@ jobs:
                  tmpfiles, GSettings schemas, translations (%find_lang),
                  D-Bus service files, configs + examples, symlinks,
                  companion binaries (e.g. CLI + GUI split, -devel
-                 headers/pkgconfig files). A MISSING artifact = a bug.
+                  headers/pkgconfig files). A MISSING artifact = a bug.
+                  License files (including bundled third-party notices,
+                  installed under %license / %{_licensedir} as noctalia-git
+                  does) and upstream test suites (wired into %check and run
+                  during the container rebuild, as protonplus does with
+                  %meson_test) are artifacts too - a missing %license file
+                  or an unrunnable test suite is the same class of bug.
               b. The reverse: anything WE ship that upstream no longer
                  produces (renamed, removed, superseded) is dead weight -
                  drop it, matching the "extra/unneeded deps" rule.
@@ -736,11 +752,18 @@ jobs:
 
              Then work autonomously, in this priority order:
 
-              0. ALWAYS-PRIORITY PACKAGES - noctalia-git, umbriel-git,
-                 noctalia-greeter, zen-browser, helium-browser,
-                 heroic-games-launcher (highest attention, EVERY run, no
-                 exceptions). These move fast and break silently, so the
-                 delta/carry-over logic does NOT apply to them:
+              0. ALWAYS-PRIORITY = ALL PACKAGES (no exceptions). EVERY
+                 package in this repo is priority: check EVERY package
+                 for upstream changes EVERY run (git ls-remote HEAD for
+                 -git packages, releases/tags for versioned ones, artifact
+                 internals for prebuilt binaries - real change only, per
+                 NO-CHURN). The eleven named below simply go FIRST and get
+                 the DEEPEST treatment each run because they move fast and
+                 break silently - xwayland-satellite-git,
+                 noctalia-git, umbriel-git, xdg-desktop-portal-umbriel-git,
+                 helium-browser, zen-browser, heroic-games-launcher,
+                 protonplus, niri-git, mangowm, noctalia-greeter.
+                 The delta/carry-over logic does NOT apply to the eleven:
                  a. EVERY run, FIRST: check each against upstream HEAD
                     (`git ls-remote` default branch + `gh api
                     releases/latest` where applicable). If upstream moved,
@@ -757,9 +780,85 @@ jobs:
                     container install test + smoke test. Record per-package
                     PASS/FAIL with command output in the relay; a failure
                     here outranks all other non-build-failure work.
-                 c. Never mark these six done based on a previous run's
+                 c. Never mark these eleven done based on a previous run's
                     result. "Unchanged since last run" is not verification
                     for these packages - re-verify every time.
+                 d. TERRA CROSS-REFERENCE (MANDATORY for all eleven, every
+                    run - Terra https://github.com/terrapkg/packages branch
+                    frawhide is the closest sibling packager for this exact
+                    stack). For each priority package, fetch Terra's
+                    counterpart spec AND record what Nexus improves:
+                    - umbriel-git vs
+                      anda/desktops/umbriel/nightly/umbriel-nightly.spec
+                    - xdg-desktop-portal-umbriel-git vs
+                      anda/desktops/umbriel/xdg-desktop-portal-umbriel-nightly/xdg-desktop-portal-umbriel-nightly.spec
+                    - noctalia-git vs
+                      anda/desktops/noctalia/nightly/noctalia-nightly.spec
+                    - noctalia-greeter vs
+                      anda/desktops/noctalia/greeter/noctalia-greeter.spec
+                    - mangowm vs anda/desktops/mangowm/mangowm.spec
+                    - helium-browser vs
+                      anda/apps/helium-browser-bin/helium-browser-bin.spec
+                    - heroic-games-launcher vs
+                      anda/games/heroic-games-launcher/heroic-games-launcher.spec
+                    - protonplus vs anda/games/protonplus/protonplus.spec
+                    - niri-git vs Terra's niri ecosystem
+                      (anda/desktops/niri/*) + Fedora official
+                      src.fedoraproject.org/rpms/niri
+                    - xwayland-satellite-git vs Fedora official
+                      src.fedoraproject.org/rpms/xwayland-satellite
+                      (Terra uses the system package; we ship the -git
+                      snapshot - that IS the value-add, keep it pinned to
+                      HEAD, never "align down" to the release version)
+                    - zen-browser: Terra ships NO zen counterpart - ours is
+                      unique value; reference is upstream release tags +
+                      the binary artifact itself, not Terra.
+                    KNOWN BASELINE (2026-09-08, re-verify every run, never
+                    trust from memory): Nexus pins NEWER than Terra
+                    (umbriel ac1952c > terra 509db24; noctalia 69f623c /
+                    5.0.1 > terra 830ce58 / 5.0.0); Nexus BR lists FULLER
+                    (umbriel: wayland-scanner/server, libinput, pixman,
+                    libdrm, egl/glesv2/gbm, lcms2, systemd-rpm-macros that
+                    Terra lacks; noctalia: 47 BR lines incl. split stb,
+                    %check desktop-file-validate, third_party license
+                    install, Recommends ddcutil/gpu-screen-recorder;
+                    mangowm: wlroots-0.20 vs Terra's stale wlroots-0.19);
+                    helium /opt/helium __provides_exclude_from guard is a
+                    Nexus-only proven fix (libvulkan.so.1 hijack breaking
+                    umbriel, 2026-09-05) Terra lacks. NEVER regress these
+                    improvements to "match Terra" - Terra is reference for
+                    spotting OUR gaps (missing BR, stale pin, better
+                    %files/scriptlet), not a target to downgrade to. If
+                    Terra is newer on any package, sync UP to it (real
+                    change only, per NO-CHURN).
+                    TOKEN-SAFE FETCH (rate-limit discipline, same rule as
+                    GITHUB API RATE LIMITS above): NEVER curl Terra raw/API
+                    without a token. ALWAYS use
+                    `gh api repos/terrapkg/packages/contents/<path>?ref=frawhide
+                    --cache 3600s --jq '.content' | base64 -d`
+                    (GITHUB_TOKEN/GH_TOKEN are in env, 5000/hr, 304-free
+                    with token) or
+                    `curl -H "Authorization: token $GITHUB_TOKEN"
+                    https://raw.githubusercontent.com/terrapkg/packages/frawhide/<path>`.
+                    Batch all eleven fetches, back off 60s on 403/429,
+                    throttle to 1 req/s. Record per package one line:
+                    `terra-ref: <path>@<shortsha> | ours: <pin/ver> |
+                    delta: ahead/behind/in-sync | kept-improvements: <list>`.
+                 e. UNIVERSAL UPSTREAM CHECK (all remaining packages, EVERY
+                    run - priority 2 is the full implementation, this is the
+                    non-skippable minimum): for EVERY non-eleven package,
+                    run the same HEAD/release/artifact check as (a) plus a
+                    sibling-reference check where one exists (Terra frawhide
+                    counterpart, Fedora official dist-git
+                    src.fedoraproject.org/rpms/<pkg>, repology/AUR as
+                    independent trackers - token-safe fetch per (d), never
+                    unauthenticated). If upstream moved: full re-tear +
+                    excellence toolchain + install test exactly like (b),
+                    then push per INCREMENTAL DELIVERY. If unchanged: record
+                    one line `upstream: <ref>@<sha/ver> == spec, no action`
+                    with the command output - "unchanged" is a VERIFIED
+                    claim (ls-remote/tag/200-check output pasted), never an
+                    assumption. No package may be carried over unverified.
 
               1. FIX FAILED COPR BUILDS (highest priority - dismissal is
                  FORBIDDEN).
@@ -922,10 +1021,13 @@ jobs:
                  and the AUR package (e.g. aur.archlinux.org/packages/rootapp-bin).
                  This applies to EVERY binary-distributed package, not just
                  rootapp - never trust a filename or homepage string alone.
-               - For GitHub projects, use the API and reconcile results:
-                     curl -s https://api.github.com/repos/<owner>/<repo>/releases/latest
-                     curl -s https://api.github.com/repos/<owner>/<repo>/tags
-                 Web-search too; if API and search disagree, dig until certain.
+                - For GitHub projects, use the API via `gh api` (authenticated,
+                  token-safe per GITHUB API RATE LIMITS above - NEVER bare
+                  `curl https://api.github.com`, which burns the 60/hr
+                  unauthenticated quota) and reconcile results:
+                      gh api repos/<owner>/<repo>/releases/latest --cache 3600s --jq .tag_name
+                      gh api repos/<owner>/<repo>/tags --cache 3600s --jq '.[0].name'
+                  Web-search too; if API and search disagree, dig until certain.
                - For -git/-snapshot packages, compare the pinned %global commit against
                  the current upstream default-branch HEAD; if upstream has new commits,
                  refresh commit + gitdate together.
@@ -963,9 +1065,21 @@ jobs:
                it must return 200. Download the source and `sha256sum` must equal the
                value in the spec. Update the checksum whenever the version changes.
 
-               STEP F - SANITY-CHECK DEPENDENCIES. Web-search the latest release notes
-               for changed BuildRequires/Requires and update the spec if needed. Update
-               the README.md version column too.
+                STEP F - SANITY-CHECK DEPENDENCIES. Web-search the latest release notes
+                for changed BuildRequires/Requires and update the spec if needed. Update
+                the README.md version column too.
+
+                STEP G - CVE TRIAGE (MANDATORY, cheap - OSV.dev needs no auth).
+                Batch-query every STEP A package's upstream name+version against
+                `https://api.osv.dev/v1/querybatch` (one POST, up to 1000
+                queries). Map each package to its REAL upstream ecosystem
+                (PyPI / crates.io / npm / Go / etc. where one exists; -git
+                snapshots and ecosystem-less binaries get `cve: n/a-(reason)` -
+                never a fabricated mapping). Any HIGH/CRITICAL CVE with a fixed
+                version available = a bug: bump or patch it exactly like a
+                STALE package. Record per package `cve: clean/<CVE-ids>/
+                n/a-(reason)` alongside the version table (extend the row, do
+                not drop the 100% coverage rule).
 
                FINAL OUTPUT REQUIREMENT: your final summary MUST include a full
                verification table with one row per package:
@@ -981,16 +1095,15 @@ jobs:
                triggers a COPR build). Do not churn: only add or bump what is genuinely
                new or outdated.
 
-            3. CHECK GITHUB ACTIONS HEALTH.
-               GET https://api.github.com/repos/Ackerman-00/fedora-nexus/actions/runs and
+             3. CHECK GITHUB ACTIONS HEALTH.
+                Query recent runs via `gh api repos/Ackerman-00/fedora-nexus/actions/runs` (authenticated, token-safe) and
                look for recent FAILED "Fedora Nexus Auto-Updater" runs. Identify the
                failing package/step (`gh run view <id> --log-failed` or the logs API) and
                fix the cause. If update.sh scripts are broken (bad URL parsing, missing
                versions), fix them so the auto-updater works again.
 
-            4. REVIEW ALL OPEN ISSUES like a human maintainer - AND REPLY.
-               GET https://api.github.com/repos/Ackerman-00/fedora-nexus/issues (state=open,
-               no pull requests). EVERY open issue MUST get a reply - silence
+             4. REVIEW ALL OPEN ISSUES like a human maintainer - AND REPLY.
+                List open issues via `gh api repos/Ackerman-00/fedora-nexus/issues --paginate -f state=open` (authenticated; filter out pull requests client-side). EVERY open issue MUST get a reply - silence
                is not an option. For each issue:
                - Read it fully, reproduce or diagnose it, and web-search for context.
                - DETERMINE WHO IS RIGHT. If the issue is a genuine packaging bug
@@ -1016,8 +1129,8 @@ jobs:
                - Reply on issues WITH `gh issue comment <n>` even before any fix,
                  so the reporter always gets a response from this run.
 
-            5. REVIEW ALL OPEN PULL REQUESTS like a human maintainer - AND DECIDE.
-               GET https://api.github.com/repos/Ackerman-00/fedora-nexus/pulls (state=open).
+             5. REVIEW ALL OPEN PULL REQUESTS like a human maintainer - AND DECIDE.
+                List open PRs via `gh api repos/Ackerman-00/fedora-nexus/pulls -f state=open` (authenticated).
                For each PR: you are the maintainer - review it, test it, and
                merge / request changes / close it. Do NOT leave it hanging for a
                human. EVERY PR gets a comment with your verdict and reasoning.
@@ -1061,7 +1174,7 @@ jobs:
                and keep your edits accurate and minimal.
 
             7. VALIDATE BEFORE COMMITTING.
-               Run `bash -n` on every update.sh you touch. Validate spec syntax where
+               Run `bash -n` on ALL update.sh in the repo every run (cheap - catches syntax rot before the auto-updater trips on it, see priority 3), plus full validation for every update.sh you touch. Validate spec syntax where
                possible (e.g. `rpmspec -P <file>` if rpm tools are available; otherwise
                careful manual review). Verify every source URL is reachable
                (`curl -sI`), and compute/check checksums with `sha256sum` on downloaded
@@ -1086,7 +1199,7 @@ jobs:
                  <pkg>" with the diagnosis and logs. Then move on.
 
             RELAY / LONG-RUN HANDOFF (MANDATORY): a run may last up to ~5.5 hours
-            (timeout-minutes: 330). NEVER let a run die with work unfinished or
+            (timeout-minutes: 355). NEVER let a run die with work unfinished or
             unrecorded - hand it over to the next runner.
               a. PICKUP ON START: if the relay state file .opencode-relay.md exists
                  on main with status "unfinished", or this run was started with the
@@ -1172,9 +1285,14 @@ jobs:
             - You have FULL control: edit any file in the repo (specs, update.sh,
               workflows, configs, README/docs) whenever it needs fixing or updating - but
               always web-search and verify first, then validate before committing.
-            - NEVER end the run after "diagnostics only". A run whose final
-              output is only "checked versions, everything is up to date"
-              has FAILED to do its job. You are done ONLY when the
+             - NEVER end the run after "diagnostics only". A run whose final
+               output is only "checked versions, everything is up to date"
+               WITHOUT the mandatory version table, dependency audit table,
+               install-test table, and evidence in .opencode-relay.md
+               has FAILED to do its job. (Conversely: a fully-verified
+               zero-change run with all tables green and relay pushed IS
+               complete - do NOT manufacture churn pushes to look productive;
+               NO-CHURN still applies.) You are done ONLY when the
               pre-completion gate above is completed AND .opencode-relay.md
               on main shows `status: complete` with `run_id: $RUN_ID`.
               If the repo has ANY failed COPR build whose package lacks a
@@ -1230,7 +1348,7 @@ jobs:
               relay run before the timeout.
             - Don't get stuck: cap retries at 3 per package and escalate unresolvable
               problems via issues.
-            - VERIFICATION LOOP (MANDATORY - battle-tested 2026: pre-completion checklist + external verifier, agentpatterns.ai 2026-07-19 / contextOS 2026-08-14 / digitalapplied.com 2026-08-11): Before declaring `status: complete`, you MUST run `bash tools/verify-fedora.sh` and paste its `----- VERIFICATION REPORT -----` output. It checks numerical completion (82 rows with `deps-verified`/`deps-fixed` -- pre-count 82, post-grep must be 82, not 0), evidence strings (`rpmspec -P` / `dnf builddep` / `rpmlint` from 2026 h. checks), and install-test table. Exit 1 = NOT COMPLETE -- keep working, fix the listed gaps, re-run verifier until exit 0. Do NOT write `status: complete` if verifier fails. Prompt alone achieves 70-90% compliance; external verifier + gate achieves near-100%. This is the check that prevents "looks done" vs "is done".
+            - VERIFICATION LOOP (MANDATORY - battle-tested 2026: pre-completion checklist + external verifier, agentpatterns.ai 2026-07-19 / contextOS 2026-08-14 / digitalapplied.com 2026-08-11): Before declaring `status: complete`, you MUST run `bash tools/verify-fedora.sh` and paste its `----- VERIFICATION REPORT -----` output. It checks numerical completion (one row per STEP A inventory package with `deps-verified`/`deps-fixed` -- derive the expected count from `ls */*.spec`, post-grep count must reach it, not 0), evidence strings (`rpmspec -P` / `dnf builddep` / `rpmlint` from 2026 h. checks), and install-test table. Exit 1 = NOT COMPLETE -- keep working, fix the listed gaps, re-run verifier until exit 0. Do NOT write `status: complete` if verifier fails. Prompt alone achieves 70-90% compliance; external verifier + gate achieves near-100%. This is the check that prevents "looks done" vs "is done".
             - End every run with a concise final summary: what you fixed, which issues
               you closed, which PRs you merged/rejected, which COPR builds you verified
               and their result, and what remains. Include the pre-completion gate
@@ -1244,7 +1362,7 @@ jobs:
         run: |
           echo "=== External verifier: tools/verify-fedora.sh ==="
           bash tools/verify-fedora.sh || {
-            echo "::error::Verification FAILED -- relay missing 82-row deps table or evidence. Agent skipped mandatory audit. Gate will retry with stronger model."
+            echo "::error::Verification FAILED -- relay missing full-inventory deps table or evidence. Agent skipped mandatory audit. Gate will retry with stronger model."
             exit 1
           }
 
