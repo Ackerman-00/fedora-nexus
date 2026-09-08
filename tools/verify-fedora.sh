@@ -26,6 +26,14 @@ if [[ -f "$RELAY" ]]; then
   else
     echo "PASS: Dependency table: $dep_rows rows (>= $expected)"
   fi
+  unproven_rows=$(grep -c "unproven:" "$RELAY" 2>/dev/null || echo 0)
+  echo "Correctness-contract rows: $unproven_rows (need $expected)"
+  if [[ "$unproven_rows" -lt "$expected" ]]; then
+    echo "FAIL: NOT COMPLETE -- $unproven_rows audit rows carry the unproven: contract, need $expected (one per spec)"
+    FAIL=1
+  else
+    echo "PASS: Correctness contract present on $unproven_rows rows"
+  fi
   if ! grep -q "| package | packaged version |" "$RELAY"; then
     echo "FAIL: NOT COMPLETE -- version accuracy table (priority 2 deliverable) missing in relay"
     FAIL=1

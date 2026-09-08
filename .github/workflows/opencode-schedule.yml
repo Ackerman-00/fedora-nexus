@@ -548,7 +548,47 @@ jobs:
                  - `rpm-spec-tool` RPM320-328 (2026-05): duplicate-dependency-atom, runtime-requires-looks-like-build-requires (Requires: -devel/gcc/cmake/pkgconfig), build-tool-used-without-buildrequires (%build calls cmake/meson/ninja/pkg-config without BR) -- fix all Warn
                  - `%generate_buildrequires` (rpm >=4.15) -- if upstream ships it (e.g. Python/Node), prefer dynamic over static list; verify it prints one dep per line
                  - `rpmautospec` %autorelease / %autochangelog is the 2026 default (Fedora 38+, 3423+ packages). This repo still uses manual Release/%changelog per RELEASE REVISION DISCIPLINE -- that is OK, but verify Release bumps are exact and %changelog matches; do not mass-convert to %autorelease without owner signal, but note in audit if a spec would benefit.
-                 Log each tool's 1-line result per package; any failure = deps-broken. Tools are available as `tools/teardown-sweep.py:check_rpm_dependencies` already implements static RPM320/324 + dnf builddep checks -- you may call it, but YOU do the reasoning. Teardown is done BY YOU, the agent, not by a separate pass-anyway script; the sweep is auxiliary evidence, not the verdict.
+                  Log each tool's 1-line result per package; any failure = deps-broken. Tools are available as `tools/teardown-sweep.py:check_rpm_dependencies` already implements static RPM320/324 + dnf builddep checks -- you may call it, but YOU do the reasoning. Teardown is done BY YOU, the agent, not by a separate pass-anyway script; the sweep is auxiliary evidence, not the verdict.
+
+             DEPENDENCY CORRECTNESS PROOF (MANDATORY, EVERY RUN - "deps-verified"
+             is a PROOF, not an eyeball. Upstream dependencies MUST be all correct:
+             complete, minimal, floored, and provenance-cited. Earn every audit row:)
+               a. PROVENANCE PER DEP: every BuildRequires and Requires must cite its
+                  source - the exact upstream file and symbol that demands it
+                  (meson.build dependency('x'), Cargo.toml [dependencies] entry,
+                  CMake find_package, go.mod require, a subproject meson.build
+                  such as umbrielfx/meson.build which owns umbriel's egl/gbm/
+                  glesv2/lcms2, a .desktop Exec helper, a systemd unit), or
+                  `distro-integration` with a one-line justification
+                  (desktop-file-utils, systemd-rpm-macros, implicit header-only
+                  includes such as stb). A dep with no citable source = UNPROVEN
+                  = a bug until cited or dropped.
+               b. MINIMUM-VERSION RECONCILIATION: every upstream-declared floor
+                  (meson version: '>=N', Cargo "x = "N"", CMake minimum) MUST
+                  appear in our spec (`pkgconfig(x) >= N`). A floor we omit rots
+                  silently when the distro lags; a floor we ADD that upstream
+                  never declared must be justified (distro reality, e.g. the
+                  greeter's wlroots-devel >= 0.20) or dropped.
+               c. REVERSE DIRECTION: every upstream-declared dep must resolve to
+                  exactly one of: a spec BuildRequires, an explicit
+                  vendored/bundled note (crate list byte-equal to Cargo.lock -
+                  regenerate vendor tarballs on lock change), a named
+                  distro-provided transitive, or `optional-disabled` with the
+                  exact -D flag that disables it. Nothing unaccounted, nothing
+                  twice: a `-devel` line shadowed by an identical pkgconfig()
+                  twin is a duplicate - keep the pkgconfig() form (cf. the
+                  noctalia-git 2026-09-08 cleanup of 7 twins).
+               d. PROVIDER IDENTITY for ambiguous mappings (libEGL vs
+                  mesa-libGLES, wayland-egl owner, json vs nlohmann): prove with
+                  `dnf repoquery --whatprovides 'pkgconfig(x)'` inside the
+                  container and record the winning package. Never guess an
+                  owner: helium once hijacked libvulkan.so.1 as a "provider"
+                  and broke umbriel startup.
+               e. OUTPUT CONTRACT: every audit-table row carries `unproven: 0`,
+                  or names each unproven/unmapped dep explicitly as
+                  blocked-(which dep + why). A row claiming deps-verified with
+                  unproven > 0 fails the gate; the external verifier counts
+                  `unproven:` tokens and requires one per inventory package.
 
             KNOWN PACKAGE-SPECIFIC NOTES - THE RIGOR BELOW APPLIES TO EVERY
             PACKAGE, NOT JUST THE EXAMPLE NAMED. For EVERY package, establish
@@ -750,10 +790,67 @@ jobs:
                  %files - every shipped file must be installed or explicitly
                  accounted for (documented exclusion, e.g. unneeded
                  lang-packs or updater binaries).
-              d. Extend the dependency audit table with a completeness
-                 column: | artifacts: complete | missing-<X> |
-                 blocked-(reason). A package with a missing artifact is not
-                 done.
+               d. Extend the dependency audit table with a completeness
+                  column: | artifacts: complete | missing-<X> |
+                  blocked-(reason). A package with a missing artifact is not
+                  done.
+
+             UPSTREAM INTELLIGENCE SWEEP (MANDATORY - be the upstream's own
+             release engineer, not a version-string copier. The checklists
+             below are the FLOOR: show initiative - if you spot an improvement
+             or gap no checklist covers, pursue it). Version numbers say THAT
+             upstream moved; only upstream's own words say WHAT changed. A
+             version bump WITHOUT this reading is an incomplete update. For
+             every package whose upstream changed since its last audit (and
+             for all P0 packages every run):
+               a. READ the delta: release notes/changelog entries, commit titles
+                  since the pinned commit (`git log <pin>..HEAD --oneline`), and
+                  any migration/upgrade notes. Hunt explicitly for: added/removed
+                  dependencies (including TRANSITIVE - re-read Cargo.lock /
+                  pnpm-lock.yaml / go.sum, not just manifests), build-system
+                  changes (meson options renamed, cmake minimum raised, new
+                  cargo --features), new/renamed/removed install artifacts and
+                  binaries/services, CVE or security mentions, deprecated APIs
+                  or flags, and changed asset layouts (a release shipping only
+                  .apk or restructured tarballs = HOLD or rework, never a blind
+                  bump - cf. obsidian 1.13.8).
+               b. READ upstream's own packaging hints: packaging/ and dist/
+                  dirs, .spec/.deb/PKGBUILD files, CI workflows, and install
+                  docs. If upstream ships a unit file, completions, appstream
+                  metadata, or build flags we lack, that is a packaging gap:
+                  close it or justify it in the relay.
+               c. ASK what is missing: diff our %files/Requires against
+                  upstream's documented feature matrix (optional backends,
+                  plugins, integrations). A shippable upstream feature we
+                  silently drop - or a default we set against upstream
+                  guidance - is a bug.
+               d. CHECK upstream health signals: repo archived or renamed?
+                  default branch moved? release cadence collapsed or assets
+                  moved hosts? Any yes = early warning in the relay + verify
+                  the Source0 strategy still holds (new host, new asset names,
+                  new tag scheme - fix update.sh accordingly).
+               e. OUTPUT CONTRACT (one line per package; no line = not verified):
+                  `upstream-delta: <pkg> <old>-><new> | deps+/-: <list> |
+                  artifacts+/-: <list> | health: ok/flag-<what> |
+                  notes: <a few words>`.
+             FLEET BATTLE-TEST ROTATION (MANDATORY - every package earns a full
+             docker rebuild on a schedule, not just touched ones). Touched and
+             changed packages get immediate `rpmbuild -bb` + install + smoke
+             in a fresh container (sections above). ON TOP of that, every run
+             rebuilds the next oldest slice of the fleet ledger from the
+             CURRENT spec (fresh container per package, up to 4 parallel
+             `docker run` jobs): `rpmbuild -bb`, install the result, smoke
+             test. A failure here enters the priority-1 loop exactly like a
+             failed COPR build. The full fleet must rotate through within 4
+             runs; record slice + next-start in the relay. Fan out with
+             parallel subagents (one per batch); serialize only pushes.
+             Time-box the SLICE, never the rigor: fewer packages fully tested
+             beats many glanced at.
+             IMPROVE THE MACHINE (MANDATORY). If the same failure class hits
+             twice (broken updater pattern, recurring dep rename, repeated HOLD
+             justification, repeated manual fix), fix the GENERATOR not the
+             instance: patch update.sh / the check / the documented rule so the
+             third run cannot trip on it. Record every pattern-fix in the relay.
 
             KNOWN COPR BUG - IGNORE, DO NOT REPORT (MANDATORY). The published
             COPR repodata for ackerman/nexus contains ghost RPMs from a
@@ -1141,7 +1238,12 @@ jobs:
                 snapshots and ecosystem-less binaries get `cve: n/a-(reason)` -
                 never a fabricated mapping). Any HIGH/CRITICAL CVE with a fixed
                 version available = a bug: bump or patch it exactly like a
-                STALE package. Record per package `cve: clean/<CVE-ids>/
+                STALE package. Cross-check every HIGH/CRITICAL hit against a
+                second source, the GitHub Advisory Database (`gh api advisories
+                -f ecosystem=<eco> -f affects=<pkg> --cache 3600s`,
+                authenticated) - OSV alone is not enough per the 2026
+                multi-source consensus; confirmed-by-both = patch now,
+                singleton = verify before bump. Record per package `cve: clean/<CVE-ids>/
                 n/a-(reason)` alongside the version table (extend the row, do
                 not drop the 100% coverage rule).
 
