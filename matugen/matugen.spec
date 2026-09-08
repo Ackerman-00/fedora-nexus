@@ -3,7 +3,7 @@
 
 Name:           matugen
 Version:        4.2.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Material You color generation tool (Nexus Optimized)
 
 # Full license audit of vendors and core logic
@@ -18,8 +18,10 @@ BuildRequires:  rust
 BuildRequires:  gcc-c++
 
 %description
-Matugen is a Material You color generation tool that supports templates. 
-Packaged exclusively for the Nexus repository. This version is compiled natively from the official Rust crate for peak performance in Wayland environments.
+Matugen is a Material You color generation tool that supports templates.
+Packaged exclusively for the Nexus repository. This version is compiled
+natively from the official Rust crate for peak performance in Wayland
+environments.
 
 %prep
 %setup -q -n %{crate}-%{version}
@@ -38,6 +40,9 @@ install -Dpm0755 target/release/matugen -t %{buildroot}%{_bindir}/
 %{_bindir}/matugen
 
 %changelog
+* Tue Sep 08 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 4.2.0-3
+- Wrap the package description to 80 columns (fixes rpmlint description-line-too-long)
+
 * Tue Sep 08 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 4.2.0-2
 - Add missing changelog entry for the 4.2.0 version bump (NVR unchanged,
   already built in COPR; spec-metadata fix only)
