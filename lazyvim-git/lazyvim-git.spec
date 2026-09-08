@@ -1,6 +1,6 @@
-%global commit          459a4c3b1059671e766a46c7cc223827dc67e3d0
+%global commit          2239177dbba96d01196eccc93aa1f80e5b73a8e0
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260602133554
+%global gitdate         20260908101350
 
 Name:           lazyvim-git
 Epoch:          1
@@ -32,5 +32,5 @@ cp -a init.lua lua doc queries scripts LICENSE NEWS.md %{buildroot}%{_datadir}/l
 %{_datadir}/lazyvim/
 
 %changelog
-* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 1:0.1^20260602133554git459a4c3-1
-- Initial main-branch snapshot (Commit: 459a4c3)
+* Tue Sep 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^20260908101350git2239177-1
+- Sync with upstream main branch (Commit: 2239177)
