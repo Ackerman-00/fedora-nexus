@@ -38,6 +38,10 @@ install -Dpm0755 target/release/matugen -t %{buildroot}%{_bindir}/
 %{_bindir}/matugen
 
 %changelog
+* Tue Sep 08 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 4.2.0-2
+- Add missing changelog entry for the 4.2.0 version bump (NVR unchanged,
+  already built in COPR; spec-metadata fix only)
+
 * Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 4.1.0-2
 - Drop dead BuildRequires pkgconfig(openssl) (no openssl crate in Cargo.lock;
   matugen uses rustls for TLS)
