@@ -17,8 +17,10 @@ if [[ -f "$RELAY" ]]; then
     echo "FAIL: NOT COMPLETE -- no */*.spec found (run from repo root)"
     FAIL=1
   fi
-  rows=$(grep -cE "^\| [a-z0-9_-]+ \|" "$RELAY" 2>/dev/null || echo 0)
-  dep_rows=$(grep -c "deps-verified\|deps-fixed" "$RELAY" 2>/dev/null || echo 0)
+  rows=$(grep -cE "^\| [a-z0-9_-]+ \|" "$RELAY" 2>/dev/null || true)
+  rows=${rows:-0}
+  dep_rows=$(grep -c "deps-verified\|deps-fixed" "$RELAY" 2>/dev/null || true)
+  dep_rows=${dep_rows:-0}
   echo "Inventory: $expected specs; dependency table rows: $dep_rows (found $rows total pipe-rows)"
   if [[ "$dep_rows" -lt "$expected" ]]; then
     echo "FAIL: NOT COMPLETE -- dependency audit table has $dep_rows rows, need $expected (one per spec)"
@@ -26,7 +28,8 @@ if [[ -f "$RELAY" ]]; then
   else
     echo "PASS: Dependency table: $dep_rows rows (>= $expected)"
   fi
-  unproven_rows=$(grep -c "unproven:" "$RELAY" 2>/dev/null || echo 0)
+  unproven_rows=$(grep -c "unproven:" "$RELAY" 2>/dev/null || true)
+  unproven_rows=${unproven_rows:-0}
   echo "Correctness-contract rows: $unproven_rows (need $expected)"
   if [[ "$unproven_rows" -lt "$expected" ]]; then
     echo "FAIL: NOT COMPLETE -- $unproven_rows audit rows carry the unproven: contract, need $expected (one per spec)"
