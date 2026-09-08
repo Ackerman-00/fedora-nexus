@@ -43,9 +43,53 @@ jobs:
           git config --global user.email "41898282+opencode-agent[bot]@users.noreply.github.com"
           git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
 
-      - name: Install opencode (latest)
+      - name: Install opencode (latest, resilient)
         shell: bash
-        run: curl -fsSL https://opencode.ai/install | bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -u
+          mkdir -p "$HOME/.opencode/bin"
+          export PATH="$HOME/.opencode/bin:$PATH"
+          # 1) Official installer, retried: its internal version fetch can flap
+          #    or hit the shared-runner-IP 60/hr GitHub quota. curl retries +
+          #    4 outer attempts ride out transients.
+          for i in 1 2 3 4; do
+            if curl -fsSL --retry 3 --retry-delay 10 --retry-all-errors https://opencode.ai/install | bash; then
+              break
+            fi
+            echo "opencode install attempt $i/4 failed - sleeping 30s"
+            sleep 30
+          done
+          # 2) npm fallback (documented install method at opencode.ai). Link the
+          #    binary into $HOME/.opencode/bin so later steps need no PATH change.
+          if ! command -v opencode >/dev/null 2>&1; then
+            echo "official installer failed - trying npm"
+            npm install -g opencode-ai || sudo npm install -g opencode-ai || true
+            if command -v opencode >/dev/null 2>&1; then
+              ln -sf "$(command -v opencode)" "$HOME/.opencode/bin/opencode"
+            fi
+          fi
+          # 3) Authenticated GitHub-release fallback: GITHUB_TOKEN gets 5000/hr,
+          #    immune to the shared-IP quota that breaks the script's version
+          #    fetch. Asset name discovered live via API, never hardcoded.
+          if ! command -v opencode >/dev/null 2>&1; then
+            echo "npm fallback failed - trying authenticated gh release download"
+            asset="$(gh release view --repo sst/opencode --json assets --jq '.assets[].name' | grep -E '^opencode-linux-(x64|amd64).*\.(tar\.gz|tgz|zip)$' | head -n 1)"
+            if [ -n "$asset" ]; then
+              echo "downloading asset: $asset"
+              mkdir -p /tmp/opencode-dl
+              gh release download --repo sst/opencode --pattern "$asset" --dir /tmp/opencode-dl --clobber
+              case "$asset" in
+                *.zip) unzip -o /tmp/opencode-dl/"$asset" -d "$HOME/.opencode/bin" ;;
+                *) tar -xzf /tmp/opencode-dl/"$asset" -C "$HOME/.opencode/bin" ;;
+              esac
+            else
+              echo "no linux x64 asset found in latest sst/opencode release"
+            fi
+          fi
+          # Hard gate: every later step assumes `opencode` exists.
+          command -v opencode && opencode --version
 
       - name: Run opencode
         shell: bash
