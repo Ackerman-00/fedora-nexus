@@ -137,6 +137,7 @@ sudo dnf install <package-name>
 | `xdg-desktop-portal-umbriel-git` | XDG Desktop Portal backend for Umbriel (Git Snapshot) | Git |
 | `xwayland-satellite-git` | Rootless Xwayland integration for Wayland compositors (Git Snapshot) | Git |
 | `zen-browser` | Privacy-focused Firefox fork | Stable |
+| `zed` | High-performance, multiplayer code editor | Stable |
 
 > `Git` packages track upstream HEAD and rebuild on every new commit.
 
