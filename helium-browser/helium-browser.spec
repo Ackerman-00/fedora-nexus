@@ -10,8 +10,8 @@
 %global __provides_exclude_from ^%{helium_base}/.*$
 
 Name:               helium-browser
-Version:        0.16.5.1
-Release:        2%{?dist}
+Version:        0.16.6.1
+Release:        1%{?dist}
 Summary:            Private, fast, and honest web browser
 
 License:            GPL-3.0-only
@@ -94,10 +94,5 @@ esac
 %{_datadir}/icons/hicolor/256x256/apps/helium.png
 
 %changelog
-* Sat Sep 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.16.5.1-2
-- Stop advertising bundled /opt/helium libs (libEGL, libGLESv2,
-  libvulkan.so.1, ...) as system Provides via __provides_exclude_from;
-  dnf had picked helium-browser as libvulkan provider for wlroots,
-  breaking umbriel startup. Spec-only fix, same upstream version.
-* Sat Sep 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.16.5.1-1
-- Auto-update to upstream release 0.16.5.1
+* Wed Sep 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.16.6.1-1
+- Auto-update to upstream release 0.16.6.1
