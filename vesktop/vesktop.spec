@@ -7,7 +7,7 @@
 
 Name:           vesktop
 Version:        1.6.7
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Custom Discord desktop client with Vencord preinstalled (Nexus Optimized)
 
 License:        GPL-3.0-or-later
@@ -20,12 +20,19 @@ ExclusiveArch:  x86_64
 # Required to unpack the upstream RPM natively
 BuildRequires:  cpio
 
-# Explicit dependencies mapped from your Void template to Fedora
+# Explicit dependencies mapped from your Void template to Fedora,
+# plus direct NEEDED entries from ldd (auto-deps are excluded for /opt):
 Requires:           hicolor-icon-theme
 Requires:       gtk3
+Requires:       pango
 Requires:       libnotify
 Requires:       nss
+Requires:       cups-libs
+Requires:       libdrm
 Requires:       libXScrnSaver
+Requires:       libXcomposite
+Requires:       libXdamage
+Requires:       libXrandr
 Requires:       libXtst
 Requires:       xdg-utils
 Requires:       at-spi2-core
@@ -83,6 +90,10 @@ chmod 0755 %{buildroot}%{_bindir}/vesktop
 %attr(4755, root, root) /opt/Vesktop/chrome-sandbox
 
 %changelog
+* Wed Sep 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.7-2
+- Add missing runtime Requires from ldd audit (cups-libs, libdrm, pango,
+  libXcomposite, libXdamage, libXrandr)
+
 * Thu Aug 21 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.6.7-1
 - Update to 1.6.7
 
