@@ -248,6 +248,29 @@ jobs:
             will always fail. All other pushes (ebuilds, README, relay, etc.) work
             normally - always `git fetch origin && git pull --rebase origin main`
             before pushing.
+            - WORKFLOW SELF-VALIDATION (MANDATORY - REAL INCIDENT 2026-09-09):
+              commit ad69ca3 added `workflows: write` to two workflow files
+              and GitHub rejected BOTH files at parse time ("Unexpected value
+              'workflows'"), killing every run until a human reverted it. So:
+              1. The permissions: mapping accepts ONLY this closed set (official
+                 workflow-syntax docs, no exceptions): actions,
+                 artifact-metadata, attestations, checks, contents,
+                 deployments, discussions, id-token, issues, models, packages,
+                 pages, pull-requests, repository-projects, security-events,
+                 statuses, vulnerability-alerts. Anything else = entire file
+                 rejected. When in doubt, check the key against this list,
+                 never from memory.
+              2. After ANY edit to .github/workflows/* (and when asked to
+                 verify them), run BOTH: `python3 -c "import yaml; [yaml.safe_load(open(f)) for f in
+                 .github/workflows/*.yml]"` AND a permission-key scan (every
+                 key under every permissions: block must be in the list
+                 above). If actionlint is installable, run it too
+                 (`bash <(curl -sL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+                 && ./actionlint .github/workflows/`); a validation failure
+                 blocks the push the same way a build failure does.
+              3. Report the validation output in the relay as evidence
+                 (workflow-YAML-OK + permission-keys-OK), exactly like
+                 rpmspec -P evidence for specs.
             - GIT IDENTITY (MANDATORY - "ONLY opencode-agent[bot], NOTHING ELSE").
               The ONLY allowed commit identity in this repo is exactly
               `opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com>`,
