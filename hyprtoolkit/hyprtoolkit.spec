@@ -1,6 +1,6 @@
 Name:           hyprtoolkit
-Version:        0.5.4
-Release:        3%{?dist}
+Version:        0.6.0
+Release:        1%{?dist}
 Summary:        A modern C++ Wayland-native GUI toolkit
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprtoolkit
@@ -13,6 +13,7 @@ BuildRequires:  cmake(hyprwayland-scanner) >= 0.4.6
 BuildRequires:  gcc-c++
 BuildRequires:  mesa-libEGL-devel
 BuildRequires:  ninja-build
+BuildRequires:  pkgconfig(absl_flat_hash_map)
 BuildRequires:  pkgconfig(aquamarine)
 BuildRequires:  pkgconfig(egl)
 BuildRequires:  pkgconfig(gbm)
@@ -63,6 +64,10 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Wed Sep 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.0-1
+- Update to upstream v0.6.0; add BuildRequires pkgconfig(absl_flat_hash_map)
+  (new upstream dep in v0.6.0 CMakeLists, provided by abseil-cpp-devel)
+
 * Sat Aug 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.4-3
 - Pin cmake(hyprwayland-scanner) >= 0.4.6: Fedora 44 base repos now ship
   hyprwayland-scanner 0.4.2 which generates a wl_resource typedef that
