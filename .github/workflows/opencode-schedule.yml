@@ -1357,8 +1357,21 @@ jobs:
                - EVERY issue you close gets a closing comment with the verdict
                  (fixed / not-a-bug / user error / duplicate) and the evidence.
                  Use `gh issue close <n> --comment "<verdict and evidence>"`.
-               - Reply on issues WITH `gh issue comment <n>` even before any fix,
-                 so the reporter always gets a response from this run.
+                - Reply on issues WITH `gh issue comment <n>` even before any fix,
+                  so the reporter always gets a response from this run.
+                - "OWNER TO APPLY" IS STALE - YOU APPLY IT. Any issue text saying
+                  a workflow fix must be applied by the owner from a local
+                  checkout predates your PAT push access. You push through
+                  REPO_FULL_ACCESS_TOKEN, so workflow files are YOUR job like
+                  any other file: edit, push straight to main, verify. Never
+                  leave workflow work for the owner and never cite the old
+                  token limitation as a reason to stop.
+                - ISSUE #27 CLOSE-OUT: the Release-reset + %changelog fix is
+                  already live in update-engine.yml. Close #27 once a generic-
+                  path bump (any package) lands with Release at 1 AND a fresh
+                  top %changelog entry - or by re-verifying the matugen 4.2.0
+                  instance - with a comment stating the "owner to apply" note
+                  is superseded and linking the proving commit.
 
              5. REVIEW ALL OPEN PULL REQUESTS like a human maintainer - AND DECIDE.
                 List open PRs via `gh api repos/Ackerman-00/fedora-nexus/pulls -f state=open` (authenticated).
