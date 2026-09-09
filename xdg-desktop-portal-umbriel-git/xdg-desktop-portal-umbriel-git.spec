@@ -5,7 +5,7 @@
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        XDG Desktop Portal backend for the Umbriel compositor (Nexus Optimized Git Snapshot)
 
 License:        MIT
@@ -26,7 +26,7 @@ BuildRequires:  pkgconfig(gbm)
 BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(tomlplusplus)
 BuildRequires:  pkgconfig(nlohmann_json)
-BuildRequires:  pkgconfig(gtk4)
+BuildRequires:  pkgconfig(gtk4) >= 4.12
 
 Requires:       xdg-desktop-portal
 
@@ -68,5 +68,8 @@ rm -f src/vendor/json.hpp
 %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
+* Wed Sep 09 2026 opencode-agent <bot@github.com> - 0.1.0^20260907165527gitd7a1bc3-2
+- Add upstream-declared gtk4 >= 4.12 floor (meson picker dep, enabled by default)
+
 * Mon Sep 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260907165527gitd7a1bc3-1
 - Nightly sync with upstream main branch (Commit: d7a1bc3)
