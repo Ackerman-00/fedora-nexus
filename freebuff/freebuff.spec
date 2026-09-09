@@ -4,6 +4,7 @@
 Name:           freebuff
 Version:        0.0.172
 Release:        1%{?dist}
+Requires:           hicolor-icon-theme
 Summary:        The free coding agent for your desktop
 
 License:        Apache-2.0

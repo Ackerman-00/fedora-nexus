@@ -69,6 +69,7 @@ export CFLAGS="%{optflags} -ffat-lto-objects"
 export CXXFLAGS="%{optflags} -ffat-lto-objects"
 
 # Let Cargo handle the raw compilation natively
+export RUSTFLAGS="%{build_rustflags}"
 cargo build --release --features default
 
 # Generate shell completions safely by isolating runtime context

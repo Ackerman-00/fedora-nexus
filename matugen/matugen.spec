@@ -29,10 +29,10 @@ environments.
 %build
 # Set the linker to native
 export CARGO_NET_OFFLINE=false
+export RUSTFLAGS="%{build_rustflags}"
 cargo build --release --locked
 
 %install
-rm -rf %{buildroot}
 install -Dpm0755 target/release/matugen -t %{buildroot}%{_bindir}/
 
 %files

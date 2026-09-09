@@ -26,7 +26,9 @@ ExclusiveArch:  x86_64 aarch64
 BuildRequires:  gcc-c++
 BuildRequires:  meson >= 1.3
 BuildRequires:  systemd-rpm-macros
-BuildRequires:  pkgconfig(wlroots-0.20)
+BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.1
+# umbrielfx compiles against wlroots private layouts: pinned to 0.20.x
+# upstream (meson.build: >=0.20.1, <0.21.0). Revisit on upstream bump.
 BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(wayland-server) >= 1.24
 BuildRequires:  pkgconfig(wayland-client)
@@ -44,6 +46,9 @@ BuildRequires:  pkgconfig(glesv2)
 BuildRequires:  pkgconfig(gbm)
 BuildRequires:  pkgconfig(jemalloc)
 BuildRequires:  pkgconfig(lcms2)
+# Optional upstream (required: false): without it meson silently builds
+# UMBRIEL_HAS_NATIVE_DRM_POLICY=0 and the [drm] exclusion config stops working.
+BuildRequires:  pkgconfig(libudev)
 
 Requires:       xwayland-satellite-git
 Requires:       xdg-desktop-portal-umbriel-git

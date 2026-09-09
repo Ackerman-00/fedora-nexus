@@ -26,6 +26,10 @@ ExclusiveArch:      x86_64
 # www-browser convention shared by Fedora's firefox/chromium packages
 Provides:           www-browser = %{version}-%{release}
 
+Requires:           hicolor-icon-theme
+# Chromium calls xdg-mime/xdg-settings/xdg-open at runtime (not ELF-linked,
+# so auto-deps miss it). Same as Fedora's chromium package.
+Requires:           xdg-utils
 Requires(post):     desktop-file-utils
 Requires(post):     gtk-update-icon-cache
 Requires(postun):   gtk-update-icon-cache

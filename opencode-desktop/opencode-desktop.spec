@@ -15,6 +15,7 @@ Source0:        https://github.com/anomalyco/opencode/releases/download/v%{versi
 ExclusiveArch:  x86_64
 BuildRequires:  python3
 
+Requires:           hicolor-icon-theme
 Requires:       gtk3
 Requires:       libnotify
 Requires:       nss
@@ -67,7 +68,6 @@ with open(src, "rb") as f:
 PYEOF
 
 %install
-rm -rf %{buildroot}
 
 install -d -m 0755 %{buildroot}/opt/OpenCode
 cp -a opt/OpenCode/* %{buildroot}/opt/OpenCode/

@@ -76,7 +76,6 @@ upstream flake.nix build (Python + GResource bundle).
 glib-compile-resources --sourcedir=. src/muse.gresource.xml --target=src/muse.gresource
 
 %install
-rm -rf %{buildroot}
 
 # Upstream layout: src/* runs as main.py (mirrors upstream flake.nix)
 mkdir -p %{buildroot}%{_datadir}/mixtapes

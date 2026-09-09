@@ -21,6 +21,7 @@ BuildRequires:  python3-installer
 BuildRequires:  gzip
 BuildRequires:  systemd-rpm-macros
 
+Requires:           hicolor-icon-theme
 Requires:       python3-gobject
 Requires:       python3-platformdirs
 Requires:       python3-pillow

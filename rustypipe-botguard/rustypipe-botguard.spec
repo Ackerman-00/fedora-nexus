@@ -33,7 +33,6 @@ tar xJf %{SOURCE0}
 # No compilation - prebuilt upstream binary
 
 %install
-rm -rf %{buildroot}
 install -Dpm0755 rustypipe-botguard -t %{buildroot}%{_bindir}
 
 %files

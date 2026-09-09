@@ -25,6 +25,7 @@ ExclusiveArch:  x86_64
 
 BuildRequires:  unzip
 
+Requires:           hicolor-icon-theme
 Requires:       gtk3
 Requires:       nss
 Requires:       at-spi2-core
@@ -60,7 +61,6 @@ unzip -q %{SOURCE0}
 # No compilation required for pre-built binaries
 
 %install
-rm -rf %{buildroot}
 
 # 1. Install the main application folder
 install -d -m 0755 %{buildroot}/opt/Stoat

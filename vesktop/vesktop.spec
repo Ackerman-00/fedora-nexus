@@ -21,6 +21,7 @@ ExclusiveArch:  x86_64
 BuildRequires:  cpio
 
 # Explicit dependencies mapped from your Void template to Fedora
+Requires:           hicolor-icon-theme
 Requires:       gtk3
 Requires:       libnotify
 Requires:       nss
@@ -51,7 +52,6 @@ rpm2cpio %{SOURCE0} | cpio -idmv
 # No compilation required for pre-built binaries
 
 %install
-rm -rf %{buildroot}
 
 # 1. Install the main application folder
 install -d -m 0755 %{buildroot}/opt/Vesktop

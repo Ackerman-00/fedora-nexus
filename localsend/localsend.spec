@@ -28,6 +28,7 @@ BuildRequires:  tar
 # (libappindicator3-1 | libayatana-appindicator3-1, gir1.2-appindicator3-0.1 |
 #  gir1.2-ayatanaappindicator3-0.1 -> libayatana-appindicator-gtk3,
 #  libayatana-ido3-0.4-0 -> libayatana-ido-gtk3, xdg-user-dirs, libc6 -> glibc)
+Requires:           hicolor-icon-theme
 Requires:       libayatana-appindicator-gtk3
 Requires:       libayatana-ido-gtk3
 Requires:       xdg-user-dirs
@@ -58,7 +59,6 @@ done
 # No compilation required for pre-built binaries
 
 %install
-rm -rf %{buildroot}
 
 # 1. Install standard desktop entries and icons
 install -d -m 0755 %{buildroot}%{_datadir}

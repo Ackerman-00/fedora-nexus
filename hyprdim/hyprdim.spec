@@ -21,6 +21,7 @@ Automatically dim windows in Hyprland when switching between them.
 
 %build
 export CARGO_NET_OFFLINE=false
+export RUSTFLAGS="%{build_rustflags}"
 cargo build --release --locked
 
 %install

@@ -23,7 +23,6 @@ tar xf %{SOURCE0}
 # Pre-built binary, no compilation needed
 
 %install
-rm -rf %{buildroot}
 
 # Install the core binary
 install -Dpm0755 starship -t %{buildroot}%{_bindir}/

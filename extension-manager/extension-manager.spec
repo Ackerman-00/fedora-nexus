@@ -24,6 +24,7 @@ BuildRequires:  pkgconfig(libsoup-3.0)
 BuildRequires:  pkgconfig(json-glib-1.0)
 BuildRequires:  pkgconfig(libxml-2.0)
 
+Requires:           hicolor-icon-theme
 Requires:       vulkan-loader
 
 %description

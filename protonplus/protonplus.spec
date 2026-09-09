@@ -33,7 +33,6 @@ BuildRequires:  pkgconfig(libsoup-3.0)
 BuildRequires:  pkgconfig(sdl3) >= 3.2.0
 
 Requires:       hicolor-icon-theme
-Requires:       vulkan-loader
 Requires:       which
 
 %description
@@ -52,6 +51,7 @@ ProtonPlus is a modern compatibility tools manager for Linux. It allows you to e
 
 %check
 %meson_test
+desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
 
 %files -f %{app_id}.lang
 %license LICENSE.md

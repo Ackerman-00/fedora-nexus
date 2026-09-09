@@ -22,6 +22,7 @@ License:        AGPL-3.0-or-later AND BSD
 URL:            https://fluxer.app
 Source0:        https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm
 
+Requires:           hicolor-icon-theme
 Requires:       at-spi2-core
 Requires:       gtk3
 Requires:       libXScrnSaver

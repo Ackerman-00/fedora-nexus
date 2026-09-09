@@ -53,6 +53,7 @@ BuildRequires:  systemd-rpm-macros
 # (libadwaita-1-0 -> libadwaita, libc6 -> glibc, libfontconfig1 -> fontconfig,
 #  libfreetype6 -> freetype, libglib2.0-0 -> glib2, libgtk-4-1 -> gtk4,
 #  libharfbuzz0b -> harfbuzz, libonig5 -> oniguruma, libx11-6 -> libX11)
+Requires:           hicolor-icon-theme
 Requires:       libadwaita
 Requires:       glibc
 Requires:       fontconfig
@@ -85,7 +86,6 @@ done
 # No compilation required for pre-built binaries
 
 %install
-rm -rf %{buildroot}
 
 # 1. Install the main binary
 install -d -m 0755 %{buildroot}%{_bindir}

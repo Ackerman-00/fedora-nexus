@@ -584,11 +584,46 @@ jobs:
                   container and record the winning package. Never guess an
                   owner: helium once hijacked libvulkan.so.1 as a "provider"
                   and broke umbriel startup.
-               e. OUTPUT CONTRACT: every audit-table row carries `unproven: 0`,
-                  or names each unproven/unmapped dep explicitly as
-                  blocked-(which dep + why). A row claiming deps-verified with
-                  unproven > 0 fails the gate; the external verifier counts
-                  `unproven:` tokens and requires one per inventory package.
+            e. OUTPUT CONTRACT: every audit-table row carries `unproven: 0`,
+               or names each unproven/unmapped dep explicitly as
+               blocked-(which dep + why). A row claiming deps-verified with
+               unproven > 0 fails the gate; the external verifier counts
+               `unproven:` tokens and requires one per inventory package.
+
+            SILENT-OPTIONAL & INSTALL-COVERAGE AUDIT (added 2026-09-09 -
+            umbriel libudev / satellite man-page / zen SPDX lessons. Upstream
+            build files contain THREE dep classes, not two: required,
+            optional (Cargo features, meson -D options), and AUTO-DETECTED
+            (meson required:false, CMake find_package without REQUIRED).
+            Auto-detected is the dangerous one: a missing BR silently builds
+            a degraded binary (umbriel built UMBRIEL_HAS_NATIVE_DRM_POLICY=0
+            with no error when libudev-devel was absent). For EVERY package:
+                a. List all three classes from upstream build files. Required
+                   -> BuildRequires as today. Optional -> either enable (BR
+                   + flag) or disable with the EXACT flag recorded
+                   (-Dfoo=disabled); "absent so off" is not a decision.
+                   Auto-detected -> PIN IT one way or the other, never leave
+                   auto: add the BR to force-enable, or pass the explicit
+                   disable flag. Record choice + why per dep.
+                b. INSTALL COVERAGE: diff upstream's install set against
+                   %files: meson install_data/install_man, repo-root *.man /
+                   *.desktop / *.service / examples+shaders. A shipped-but-
+                   unpackaged file (xwayland-satellite.man went uninstalled
+                   for weeks) = bug. Verify via the upstream file listing or
+                   `meson install --dry-run --destdir`.
+                c. RUST RULES (F44+: no %cargo_build macro exists, verified
+                   2026-09-09): raw `cargo build --release` is current-style
+                   BUT must export RUSTFLAGS="%{build_rustflags}" (opt-level,
+                   single codegen unit, debuginfo, frame pointers).
+                   CFLAGS/CXXFLAGS %optflags on a pure-Rust tree affect ZERO
+                   compilation units - never cite them as "optimization".
+                   Verify hardening on the shipped binary with readelf
+                   (RELRO + BIND_NOW + PIE).
+                d. SPEC HYGIENE (rpmlint-strict): SPDX License identifiers
+                   only (MPL-2.0, never MPLv2.0); shipping hicolor icons
+                   REQUIRES hicolor-icon-theme + symmetric %post/%postun
+                   icon-cache calls; no `rm -rf %{buildroot}`; Epoch needs an
+                   owner-visible comment and is NEVER removed once shipped.
 
             KNOWN PACKAGE-SPECIFIC NOTES - THE RIGOR BELOW APPLIES TO EVERY
             PACKAGE, NOT JUST THE EXAMPLE NAMED. For EVERY package, establish

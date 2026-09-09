@@ -88,7 +88,6 @@ rpm2cpio %{SOURCE0} | cpio -idmv
 # No compilation required for pre-built binaries
 
 %install
-rm -rf %{buildroot}
 
 # 1. Install the main application folder
 install -d -m 0755 %{buildroot}/opt/SPlayer-Next

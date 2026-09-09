@@ -14,14 +14,10 @@ Source0:        %{url}/archive/%{commit}/%{name}-%{commit}.tar.gz
 
 BuildRequires:  meson
 BuildRequires:  gcc-c++
-BuildRequires:  just
 BuildRequires:  greetd
 BuildRequires:  dbus
 BuildRequires:  polkit
-BuildRequires:  json-devel
-BuildRequires:  tomlplusplus-devel
 BuildRequires:  stb_image_resize2-devel
-BuildRequires:  libwebp-devel
 BuildRequires:  librsvg2-devel
 BuildRequires:  libinput-devel
 BuildRequires:  wlroots-devel >= 0.20

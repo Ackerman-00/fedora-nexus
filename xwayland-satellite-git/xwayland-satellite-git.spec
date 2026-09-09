@@ -28,7 +28,7 @@ BuildRequires:  pkgconfig(wayland-server)
 BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-cursor)
 
-Requires:       xorg-x11-server-Xwayland
+Requires:       xorg-x11-server-Xwayland >= 23.1
 Requires:       font(opensans)
 
 Conflicts:      xwayland-satellite
@@ -52,6 +52,11 @@ rm -f OpenSans-Regular.ttf
 # Inject Fedora system optimization variables safely for static linkage
 export CFLAGS="%{optflags} -ffat-lto-objects"
 export CXXFLAGS="%{optflags} -ffat-lto-objects"
+# Fedora-tuned Rust codegen (opt-level, single codegen unit, debuginfo for
+# -debuginfo packages, frame pointers). Raw `cargo build` alone uses stock
+# release defaults and skips all of this; there is no %cargo_build macro
+# left on F44, so export RUSTFLAGS directly.
+export RUSTFLAGS="%{build_rustflags}"
 
 # We let Cargo handle the network fetch directly
 cargo build --release --features systemd,fontconfig
@@ -59,6 +64,7 @@ cargo build --release --features systemd,fontconfig
 %install
 install -Dpm0755 target/release/xwayland-satellite -t %{buildroot}%{_bindir}
 install -Dpm0644 resources/xwayland-satellite.service -t %{buildroot}%{_userunitdir}
+install -Dpm0644 xwayland-satellite.man %{buildroot}%{_mandir}/man1/xwayland-satellite.1
 
 %post
 %systemd_user_post xwayland-satellite.service
@@ -73,6 +79,7 @@ install -Dpm0644 resources/xwayland-satellite.service -t %{buildroot}%{_userunit
 %license LICENSE
 %doc README.md
 %{_bindir}/xwayland-satellite
+%{_mandir}/man1/xwayland-satellite.1*
 %{_userunitdir}/xwayland-satellite.service
 
 %changelog
