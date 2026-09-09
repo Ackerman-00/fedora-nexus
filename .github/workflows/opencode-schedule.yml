@@ -1366,12 +1366,12 @@ jobs:
                   any other file: edit, push straight to main, verify. Never
                   leave workflow work for the owner and never cite the old
                   token limitation as a reason to stop.
-                - ISSUE #27 CLOSE-OUT: the Release-reset + %changelog fix is
-                  already live in update-engine.yml. Close #27 once a generic-
-                  path bump (any package) lands with Release at 1 AND a fresh
-                  top %changelog entry - or by re-verifying the matugen 4.2.0
-                  instance - with a comment stating the "owner to apply" note
-                  is superseded and linking the proving commit.
+                - EVERY OPEN ISSUE AND PR IS YOURS. Track, triage, fix,
+                  verify, and close every open issue and decide every open PR
+                  yourself, with evidence, every run - no human handoff. Never
+                  hardcode per-issue directives into this prompt (they rot the
+                  moment the issue closes); the standing rules above already
+                  cover any issue number, including past ones like #27.
 
              5. REVIEW ALL OPEN PULL REQUESTS like a human maintainer - AND DECIDE.
                 List open PRs via `gh api repos/Ackerman-00/fedora-nexus/pulls -f state=open` (authenticated).
