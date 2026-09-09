@@ -2,7 +2,7 @@
 %global appid dev.zed.Zed
 
 Name:           zed
-Version:        1.19.1
+Version:        1.19.2
 Release:        1%{?dist}
 Summary:        Zed is a high-performance, multiplayer code editor
 SourceLicense:  Apache-2.0 AND GPL-3.0-or-later
@@ -118,5 +118,5 @@ mv assets/fonts/ibm-plex-sans/license.txt LICENSE.fonts
 %{_metainfodir}/%appid.metainfo.xml
 
 %changelog
-* Wed Sep 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.19.1-1
-- Auto-update to upstream stable release v1.19.1
+* Wed Sep 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.19.2-1
+- Auto-update to upstream stable release v1.19.2
