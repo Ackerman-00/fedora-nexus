@@ -22,7 +22,7 @@ Version:        1.22b
 Release:        1%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
-License:            MPLv2.0
+License:            MPL-2.0
 URL:                https://github.com/zen-browser/desktop
 Source0:            https://github.com/zen-browser/desktop/releases/download/1.22b/zen.linux-x86_64.tar.xz
 Source1:            %{full_name}.desktop
@@ -36,6 +36,7 @@ Recommends:         (plasma-browser-integration if plasma-workspace)
 Recommends:         (gnome-browser-connector if gnome-shell)
 
 Requires(post):     gtk-update-icon-cache
+Requires:           hicolor-icon-theme
 Conflicts:          zen-browser-avx2
 Provides:           zen-browser-avx2 = %{epoch}:%{version}-%{release}
 Obsoletes:          zen-browser-avx2 < 1.0.2.b.3-3
@@ -47,8 +48,6 @@ Zen Browser is a highly optimized, privacy-focused fork of Firefox designed for 
 %setup -q -n %{application_name}
 
 %install
-rm -rf %{buildroot}
-
 install -d %{buildroot}/opt/%{application_name}
 install -d %{buildroot}%{_bindir}
 install -d %{buildroot}%{_datadir}/applications
@@ -81,6 +80,9 @@ ln -s ../../../../../../opt/%{application_name}/browser/chrome/icons/default/def
 
 %post
 # Added || : to prevent post-install scriptlet failures if the icon cache is locked
+gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
+
+%postun
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %files

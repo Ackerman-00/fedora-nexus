@@ -18,6 +18,11 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: write
+      # Required to push commits that touch .github/workflows/* files.
+      # The repo "Read and write permissions" toggle does NOT grant this;
+      # without it the push is rejected with "refusing to allow a GitHub App
+      # to create or update workflow without 'workflows' permission".
+      workflows: write
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
@@ -61,7 +66,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python3 << 'PYEOF'
-          import os, re, requests
+          import datetime, os, re, requests
           from pathlib import Path
 
           gh_token = os.environ.get('GITHUB_TOKEN')
@@ -113,11 +118,13 @@ jobs:
 
                       new_content = content
                       changed = False
+                      new_ver = None
 
                       if current_tag:
                           if latest_tag != current_tag:
                               new_content = re.sub(r'(%global\s+tag\s+).+', rf'\g<1>{latest_tag}', new_content)
                               changed = True
+                              new_ver = latest_ver
                               print(f"  -> [UPDATE] {current_tag} -> {latest_tag}")
                           else:
                               print(f"  -> [OK] {current_tag}")
@@ -125,11 +132,20 @@ jobs:
                           if latest_ver != current_ver:
                               new_content = re.sub(r'(^Version:\s+).+', rf'\g<1>{latest_ver}', new_content, flags=re.MULTILINE)
                               changed = True
+                              new_ver = latest_ver
                               print(f"  -> [UPDATE] {current_ver} -> {latest_ver}")
                           else:
                               print(f"  -> [OK] {current_ver}")
 
                       if changed:
+                          # A new upstream version restarts the release counter
+                          # (rpm convention) instead of keeping a stale Release.
+                          new_content = re.sub(r'(^Release:\s+)\d+.*', r'\g<1>1%{?dist}', new_content, flags=re.MULTILINE)
+                          # Every bump ships its own %changelog entry.
+                          date = datetime.datetime.now(datetime.timezone.utc).strftime('%a %b %d %Y')
+                          entry = (f'* {date} Nexus Auto-Updater <bot@github.com> - {new_ver}-1\n'
+                                   f'- Update to version {new_ver}\n\n')
+                          new_content = re.sub(r'(%changelog\n)', r'\g<1>' + entry, new_content, count=1)
                           spec.write_text(new_content, encoding='utf-8')
                   else:
                       print(f"  -> [ERROR] GitHub API returned {res.status_code}")

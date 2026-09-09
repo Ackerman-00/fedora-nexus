@@ -17,6 +17,10 @@ permissions:
   issues: write
   actions: write
   id-token: write
+  # Maintainer scope: may rewrite workflow files when self-healing
+  # (e.g. update-engine.yml). Without this, pushes touching
+  # .github/workflows/* are rejected with a 403.
+  workflows: write
 
 concurrency:
   group: opencode-schedule
@@ -32,6 +36,8 @@ jobs:
       issues: write
       actions: write
       id-token: write
+      # Maintainer scope: may rewrite workflow files when self-healing.
+      workflows: write
     steps:
       - uses: actions/checkout@v7.0.1
         with:
