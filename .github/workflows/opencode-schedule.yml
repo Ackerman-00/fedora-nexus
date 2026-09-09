@@ -647,6 +647,13 @@ jobs:
                    REQUIRES hicolor-icon-theme + symmetric %post/%postun
                    icon-cache calls; no `rm -rf %{buildroot}`; Epoch needs an
                    owner-visible comment and is NEVER removed once shipped.
+                e. EXTRACT, NEVER GREP (REAL INCIDENT 2026-09-09): build-dep
+                   lists must come from FULL-FILE reads (whole meson.build /
+                   Cargo.toml, all subdirs), never from grep-filtered scans.
+                   A `dependency\(` grep silently dropped the greeter's
+                   nlohmann line and cost two red F45 builds. Same for
+                   version floors: read the surrounding context (required:
+                   false fallbacks like epoxy don't need BRs).
 
             KNOWN PACKAGE-SPECIFIC NOTES - THE RIGOR BELOW APPLIES TO EVERY
             PACKAGE, NOT JUST THE EXAMPLE NAMED. For EVERY package, establish
