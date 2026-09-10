@@ -6,7 +6,7 @@
 
 Name:           noctalia-git
 Version:        5.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A sleek, customizable desktop shell crafted for Wayland
 
 License:        MIT
@@ -22,7 +22,6 @@ BuildRequires:  stb_image_resize2-devel
 BuildRequires:  stb_image_write-devel
 BuildRequires:  jemalloc-devel
 BuildRequires:  libical-devel
-BuildRequires:  libsecret-devel
 BuildRequires:  libqalculate-devel
 BuildRequires:  libEGL-devel
 BuildRequires:  mesa-libGLES-devel
@@ -37,9 +36,10 @@ BuildRequires:  pkgconfig(libcurl)
 BuildRequires:  pkgconfig(libjxl)
 BuildRequires:  pkgconfig(libjxl_threads)
 BuildRequires:  pkgconfig(librsvg-2.0)
-BuildRequires:  pkgconfig(libsecret-1)
-BuildRequires:  pkgconfig(libsodium)
+BuildRequires:  pkgconfig(libsecret-1) >= 0.20
+BuildRequires:  pkgconfig(libsodium) >= 1.0.18
 BuildRequires:  pkgconfig(libwebp)
+BuildRequires:  pkgconfig(libwebpdemux)
 BuildRequires:  pkgconfig(libxml-2.0)
 BuildRequires:  pkgconfig(md4c)
 BuildRequires:  pkgconfig(nlohmann_json)
@@ -51,6 +51,7 @@ BuildRequires:  pkgconfig(sdbus-c++)
 BuildRequires:  pkgconfig(sndfile)
 BuildRequires:  pkgconfig(tomlplusplus)
 BuildRequires:  pkgconfig(wayland-client)
+BuildRequires:  pkgconfig(wayland-egl)
 BuildRequires:  pkgconfig(wayland-protocols)
 BuildRequires:  pkgconfig(wireplumber-0.5)
 BuildRequires:  pkgconfig(xkbcommon)
@@ -102,5 +103,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/dev.noctalia.Noctalia
 %{_datadir}/icons/hicolor/scalable/apps/noctalia.svg
 
 %changelog
+* Thu Sep 10 2026 Ackerman-00 <quietcraft@gmail.com> - 5.1.0^20260910151216gitc7b9197-2
+- Harden BuildRequires from upstream meson.build re-tear at c7b9197: add
+  libsecret-1 >= 0.20 and libsodium >= 1.0.18 floors, explicit
+  pkgconfig(libwebpdemux) (required:true upstream) and pkgconfig(wayland-egl)
+  (linked unconditionally), drop libsecret-devel shadowed by its pkgconfig twin
 * Thu Sep 10 2026 Ackerman-00 <quietcraft@gmail.com> - 5.1.0^20260910151216gitc7b9197-1
 - Nightly sync with upstream main branch (Commit: c7b9197)
