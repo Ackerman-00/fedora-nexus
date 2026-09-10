@@ -5,7 +5,7 @@
 
 Name:           noctalia-greeter
 Version:        1.5.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A minimal login greeter for greetd that matches the look and feel of Noctalia Shell
 
 License:        MIT
@@ -18,7 +18,6 @@ BuildRequires:  greetd
 BuildRequires:  dbus
 BuildRequires:  polkit
 BuildRequires:  stb_image_resize2-devel
-BuildRequires:  librsvg2-devel
 BuildRequires:  libinput-devel
 BuildRequires:  wlroots-devel >= 0.20
 BuildRequires:  libEGL-devel
@@ -37,6 +36,7 @@ BuildRequires:  pkgconfig(nlohmann_json)
 BuildRequires:  pkgconfig(pango)
 BuildRequires:  pkgconfig(tomlplusplus)
 BuildRequires:  pkgconfig(wayland-client)
+BuildRequires:  pkgconfig(wayland-egl)
 BuildRequires:  pkgconfig(wayland-protocols)
 BuildRequires:  pkgconfig(wayland-server)
 BuildRequires:  pkgconfig(xkbcommon)
@@ -104,5 +104,9 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Thu Sep 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260910144856git5a450b8-2
+- Harden BuildRequires from upstream meson.build re-tear at 5a450b8: explicit
+  pkgconfig(wayland-egl) (linked unconditionally), drop librsvg2-devel
+  shadowed by its pkgconfig twin
 * Thu Sep 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260910144856git5a450b8-1
 - Nightly sync with upstream main branch (Commit: 5a450b8)
