@@ -1,4 +1,4 @@
-%global tag         v0.6.7
+%global tag         v0.6.8
 %global app_id      com.vysp3r.ProtonPlus
 %global forgeurl    https://github.com/vysp3r/ProtonPlus
 %forgemeta
@@ -63,5 +63,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
 %{_metainfodir}/%{app_id}.metainfo.xml
 
 %changelog
-* Wed Sep 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.7-1
-- Update to version 0.6.7
+* Thu Sep 10 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.8-1
+- Update to version 0.6.8

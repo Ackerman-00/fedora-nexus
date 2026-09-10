@@ -1,11 +1,11 @@
 # These will be automatically populated by update.sh
-%global commit          8fd4399e38704afdb3b34963637b5fd86c52e4f4
+%global commit          c7b9197af77ff22bfb9a83c52a95643a1d90ca86
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260910021832
+%global gitdate         20260910151216
 %global upstreamname    noctalia
 
 Name:           noctalia-git
-Version:        5.0.1^%{gitdate}git%{shortcommit}
+Version:        5.1.0^%{gitdate}git%{shortcommit}
 Release:        1%{?dist}
 Summary:        A sleek, customizable desktop shell crafted for Wayland
 
@@ -102,5 +102,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/dev.noctalia.Noctalia
 %{_datadir}/icons/hicolor/scalable/apps/noctalia.svg
 
 %changelog
-* Thu Sep 10 2026 Ackerman-00 <quietcraft@gmail.com> - 5.0.1^20260910021832git8fd4399-1
-- Nightly sync with upstream main branch (Commit: 8fd4399)
+* Thu Sep 10 2026 Ackerman-00 <quietcraft@gmail.com> - 5.1.0^20260910151216gitc7b9197-1
+- Nightly sync with upstream main branch (Commit: c7b9197)
