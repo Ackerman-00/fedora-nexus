@@ -1,11 +1,11 @@
 # These will be automatically populated by update.sh
-%global commit          5a450b891067c1f0cd7157f4f1091aa0e3014780
+%global commit          dde61d85499c01ce0a9f9b8abfbc399da324dcd4
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260910144856
+%global gitdate         20260910190638
 
 Name:           noctalia-greeter
 Version:        1.5.0^%{gitdate}git%{shortcommit}
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        A minimal login greeter for greetd that matches the look and feel of Noctalia Shell
 
 License:        MIT
@@ -107,13 +107,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Thu Sep 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260910144856git5a450b8-3
-- Wire upstream's hermetic meson test suite into %check (%meson_test:
-  passwordless-sync policy/help, apply-appearance and legacy-staging
-  compatibility tests)
-* Thu Sep 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260910144856git5a450b8-2
-- Harden BuildRequires from upstream meson.build re-tear at 5a450b8: explicit
-  pkgconfig(wayland-egl) (linked unconditionally), drop librsvg2-devel
-  shadowed by its pkgconfig twin
-* Thu Sep 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260910144856git5a450b8-1
-- Nightly sync with upstream main branch (Commit: 5a450b8)
+* Thu Sep 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260910190638gitdde61d8-1
+- Nightly sync with upstream main branch (Commit: dde61d8)
