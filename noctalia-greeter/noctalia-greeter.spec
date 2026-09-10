@@ -5,7 +5,7 @@
 
 Name:           noctalia-greeter
 Version:        1.5.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A minimal login greeter for greetd that matches the look and feel of Noctalia Shell
 
 License:        MIT
@@ -68,6 +68,9 @@ find third_party -type f \( -name "LICENSE*" -o -name "COPYING*" -o -name "NOTIC
     install -p -m 0644 "$file" "$dest_dir/"
 done
 
+%check
+%meson_test
+
 %files
 %doc README.md
 %license LICENSE
@@ -104,6 +107,10 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Thu Sep 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260910144856git5a450b8-3
+- Wire upstream's hermetic meson test suite into %check (%meson_test:
+  passwordless-sync policy/help, apply-appearance and legacy-staging
+  compatibility tests)
 * Thu Sep 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260910144856git5a450b8-2
 - Harden BuildRequires from upstream meson.build re-tear at 5a450b8: explicit
   pkgconfig(wayland-egl) (linked unconditionally), drop librsvg2-devel
