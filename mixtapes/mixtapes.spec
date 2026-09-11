@@ -3,9 +3,9 @@
 # find-debuginfo emits an empty debugsource list which rpm >= 6 rejects
 # as a hard error (proven by COPR build 10955014).
 %global debug_package %{nil}
-%global commit          f68ffef8733b349f5bd6b6925e2c24bee9cddfb9
+%global commit          cdf48a120a7449a8f7295082b2c8fe12c3b57c42
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260908202839
+%global gitdate         20260911180740
 
 Name:           mixtapes
 Version:        0^%{gitdate}git%{shortcommit}
@@ -110,6 +110,9 @@ chmod 0755 %{buildroot}%{_bindir}/mixtapes
 %{_datadir}/mixtapes/
 
 %changelog
+* Fri Sep 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260911180740gitcdf48a1-1
+- Nightly sync with upstream main branch (Commit: cdf48a1)
+
 * Tue Sep 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260908202839gitf68ffef-1
 - Nightly sync with upstream main branch (Commit: f68ffef)
 
