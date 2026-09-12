@@ -1,6 +1,6 @@
 Name:           hyprshutdown
 Version:        0.1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A graceful shutdown utility for Hyprland
 
 License:        BSD-3-Clause
@@ -37,5 +37,7 @@ A graceful shutdown utility for Hyprland.
 %{_bindir}/%{name}
 
 %changelog
+* Sat Sep 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.1-2
+- Rebuild against hyprtoolkit 0.6.0 (libhyprtoolkit.so.6; was linked to .so.5)
 * Tue Aug 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.1-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)
