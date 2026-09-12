@@ -1,6 +1,6 @@
 Name:           hyprpwcenter
 Version:        0.1.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A GUI Pipewire control center
 
 License:        BSD-3-Clause
@@ -45,5 +45,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/applications/hyprpwcenter.desktop
 
 %changelog
+* Sat Sep 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.2-2
+- Rebuild against hyprtoolkit 0.6.0 (libhyprtoolkit.so.6; was linked to .so.5)
 * Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.2-1
 - Initial package
