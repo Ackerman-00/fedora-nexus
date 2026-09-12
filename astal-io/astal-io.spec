@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          ae8dc0acc66932171ec70d347a8cab9310ce74e4
+%global commit          e07013e6104f852b2e6802d3d9a30e73c4bca4b7
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260907192903
+%global gitdate         20260912131025
 
 %global _vpath_srcdir lib/astal/io
 
@@ -57,5 +57,5 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/astal-io-0.1.pc
 
 %changelog
-* Mon Sep 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260907192903gitae8dc0a-1
-- Nightly sync with upstream main branch (Commit: ae8dc0a)
+* Sat Sep 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260912131025gite07013e-1
+- Nightly sync with upstream main branch (Commit: e07013e)
