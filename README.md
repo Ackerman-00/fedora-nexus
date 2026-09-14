@@ -115,7 +115,7 @@ sudo dnf install <package-name>
 | `opencode-desktop` | Open source AI coding agent | Stable |
 | `protonplus` | Modern compatibility tools manager | Stable |
 | `pyprland` | Hyprland extensions made easy | Stable |
-| `python3-materialyoucolor` | Material You color generation algorithms (pure Python + C++ quantizer) | Stable |
+| `materialyoucolor` | Material You color generation algorithms (pure Python + C++ quantizer) | Stable |
 | `python-mprisify` | MPRIS D-Bus interface library for Python | Stable |
 | `python-pydbus` | Pythonic D-Bus library | Stable |
 | `python-yt-dlp-ejs` | External JavaScript runtimes for yt-dlp | Stable |
