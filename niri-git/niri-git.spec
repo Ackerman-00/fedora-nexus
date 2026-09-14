@@ -4,13 +4,16 @@
 %global gitdate         20260913141508
 
 Name:           niri-git
+# Epoch 1 is permanent: legacy 2026MMDD-dated builds sort ABOVE the current
+# ^gitdate snapshots in rpm version comparison, so without it dnf keeps
+# delivering stale builds. NEVER remove it.
 Epoch:          1
 Version:        26.04^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        3%{?dist}
 Summary:        A scrollable-tiling Wayland compositor (Nexus Optimized Git Snapshot)
 
 License:        GPL-3.0-or-later
-URL:            https://github.com/YaLTeR/niri
+URL:            https://github.com/niri-wm/niri
 Source0:        %{url}/archive/%{commit}/niri-%{shortcommit}.tar.gz
 
 ExclusiveArch:  x86_64 aarch64
@@ -20,6 +23,9 @@ BuildRequires:  rust
 BuildRequires:  clang
 BuildRequires:  systemd-rpm-macros
 BuildRequires:  mesa-libEGL-devel
+# cairo.pc is probed directly by cairo-rs (via pangocairo); cairo-gobject
+# alone does not cover it (resolved only transitively before).
+BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(cairo-gobject)
 BuildRequires:  pkgconfig(dbus-1)
 BuildRequires:  pkgconfig(glib-2.0)
@@ -33,13 +39,17 @@ BuildRequires:  pkgconfig(pangocairo)
 BuildRequires:  pkgconfig(pixman-1)
 BuildRequires:  pkgconfig(systemd)
 BuildRequires:  pkgconfig(wayland-client)
+BuildRequires:  pkgconfig(wayland-cursor)
 BuildRequires:  pkgconfig(wayland-server)
 BuildRequires:  pkgconfig(xkbcommon)
 BuildRequires:  pkgconfig(libpipewire-0.3)
+BuildRequires:  pkgconfig(libspa-0.2)
 
 Requires:       xwayland-satellite-git
 Requires:       mesa-dri-drivers
 Requires:       mesa-libEGL
+# libwayland-server is opened with dlopen, so it is not picked up as a
+# build-time dependency (cf. Fedora official niri.spec).
 Requires:       libwayland-server
 
 # Core portal service (at least one backend must be installed)
@@ -94,14 +104,27 @@ install -Dpm0644 niri.bash %{buildroot}%{_datadir}/bash-completion/completions/n
 install -Dpm0644 niri.fish %{buildroot}%{_datadir}/fish/vendor_completions.d/niri.fish
 install -Dpm0644 _niri %{buildroot}%{_datadir}/zsh/site-functions/_niri
 
+%check
+# Unit tests only: niri-visual-tests is a separate workspace member and is
+# never built here, so no session is needed (same scope as Fedora official).
+# Limit parallelism: the suite hits fd limits on many-core builders.
+# Re-export the %build flags - %check is a separate shell section, and
+# without identical RUSTFLAGS cargo would rebuild with different codegen.
+export RAYON_NUM_THREADS=2
+export CFLAGS="%{optflags} -ffat-lto-objects"
+export CXXFLAGS="%{optflags} -ffat-lto-objects"
+export RUSTFLAGS="%{build_rustflags}"
+cargo test --release --features default -- --test-threads 2
+
 %files
 %license LICENSE
 %doc README.md
 %doc resources/default-config.kdl
+%doc docs/wiki
 %{_bindir}/niri
 %{_bindir}/niri-session
 %{_datadir}/wayland-sessions/niri.desktop
-%{_datadir}/xdg-desktop-portal/niri-portals.conf
+%config(noreplace) %{_datadir}/xdg-desktop-portal/niri-portals.conf
 %{_userunitdir}/niri.service
 %{_userunitdir}/niri-shutdown.target
 %{_datadir}/bash-completion/completions/niri
@@ -109,5 +132,13 @@ install -Dpm0644 _niri %{buildroot}%{_datadir}/zsh/site-functions/_niri
 %{_datadir}/zsh/site-functions/_niri
 
 %changelog
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260913141508git66d04a7-3
+- Add explicit cairo, libspa-0.2 and wayland-cursor BuildRequires (lock-proven, previously transitive-only)
+- Run unit tests in %check (thread-limited, same scope as Fedora official); ship %doc docs/wiki
+
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260913141508git66d04a7-2
+- Canonical upstream URL niri-wm/niri (repo moved from YaLTeR/niri); document permanent Epoch 1
+- Mark niri-portals.conf %config(noreplace)
+
 * Sun Sep 13 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260913141508git66d04a7-1
 - Nightly sync with upstream main branch (Commit: 66d04a7)

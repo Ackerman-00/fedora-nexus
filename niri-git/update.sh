@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SPEC_FILE="niri-git.spec"
-GITHUB_REPO="YaLTeR/niri"
+GITHUB_REPO="niri-wm/niri"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."

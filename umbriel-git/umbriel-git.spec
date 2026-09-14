@@ -14,7 +14,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts (Nexus Optimized Git Snapshot)
 
 License:        MIT
@@ -25,6 +25,7 @@ ExclusiveArch:  x86_64 aarch64
 
 BuildRequires:  gcc-c++
 BuildRequires:  meson >= 1.3
+BuildRequires:  ninja-build
 BuildRequires:  systemd-rpm-macros
 BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.1
 # umbrielfx compiles against wlroots private layouts: pinned to 0.20.x
@@ -103,5 +104,8 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260914015417git11c0c99-2
+- Add explicit ninja-build BuildRequires (meson backend, repo convention + RPM322)
+
 * Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260914015417git11c0c99-1
 - Nightly sync with upstream main branch (Commit: 11c0c99)

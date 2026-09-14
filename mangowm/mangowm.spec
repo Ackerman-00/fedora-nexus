@@ -1,6 +1,6 @@
 Name:           mangowm
 Version:        0.17.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <quietcraft@gmail.com>
@@ -8,13 +8,19 @@ URL:            https://github.com/mangowm/mango
 Source:         %{url}/archive/%{version}.tar.gz
 
 BuildRequires:  meson
+BuildRequires:  ninja-build
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-icccm)
+# No upstream floor, but the staging XMLs consumed in protocols/ (cursor-shape,
+# ext-workspace, image-capture, …) need a recent protocols package.
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.41
 BuildRequires:  pkgconfig(wayland-server) >= 1.23.1
-BuildRequires:  pkgconfig(wlroots-0.20)
+# Protocol codegen uses meson find_program('wayland-scanner'), not
+# dependency() - still needs an explicit BR, it never self-declares.
+BuildRequires:  pkgconfig(wayland-scanner)
+BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.0
 BuildRequires:  pkgconfig(xkbcommon)
 BuildRequires:  pkgconfig(libinput) >= 1.27.1
 BuildRequires:  pkgconfig(wayland-client)
@@ -23,7 +29,7 @@ BuildRequires:  pkgconfig(libcjson)
 BuildRequires:  pkgconfig(pangocairo)
 BuildRequires:  pkgconfig(pixman-1)
 BuildRequires:  pkgconfig(libdrm)
-BuildRequires:  scenefx-devel
+BuildRequires:  scenefx-devel >= 0.5.0
 
 Requires:       xorg-x11-server-Xwayland
 Requires:       vulkan-loader
@@ -57,10 +63,14 @@ dwl — crafted for speed, flexibility, and a customizable desktop experience.
 %{_bindir}/mango
 %{_bindir}/mmsg
 %{_mandir}/man1/mmsg.1*
-%{_sysconfdir}/mango/config.conf
+%config(noreplace) %{_sysconfdir}/mango/config.conf
 %{_datadir}/wayland-sessions/mango.desktop
-%{_datadir}/xdg-desktop-portal/mango-portals.conf
+%config(noreplace) %{_datadir}/xdg-desktop-portal/mango-portals.conf
 
 %changelog
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.0-2
+- Add explicit ninja-build and wayland-scanner BuildRequires; add upstream-declared wlroots >= 0.20.0 and scenefx >= 0.5.0 floors
+- Mark config.conf and mango-portals.conf %config(noreplace)
+
 * Sat Sep 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.0-1
 - Auto-update to version 0.17.0

@@ -6,10 +6,10 @@
 
 Name:           noctalia-git
 Version:        5.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A sleek, customizable desktop shell crafted for Wayland
 
-License:        MIT
+License:        Apache-2.0 AND MIT AND BSD-3-Clause AND HPND-sell-variant AND LGPL-2.1-or-later
 URL:            https://github.com/noctalia-dev/%{upstreamname}
 Source0:        %{url}/archive/%{commit}/%{upstreamname}-%{commit}.tar.gz
 
@@ -17,6 +17,9 @@ BuildRequires:  meson
 BuildRequires:  gcc-c++
 BuildRequires:  git
 BuildRequires:  desktop-file-utils
+# Provides dbus-run-session: runs the self-contained upower integration test.
+# Without it meson silently skips that test (same as Fedora official).
+BuildRequires:  dbus-daemon
 BuildRequires:  pipewire-devel
 BuildRequires:  stb_image_resize2-devel
 BuildRequires:  stb_image_write-devel
@@ -26,11 +29,13 @@ BuildRequires:  libqalculate-devel
 BuildRequires:  libEGL-devel
 BuildRequires:  mesa-libGLES-devel
 BuildRequires:  pkgconfig(cairo)
+BuildRequires:  pkgconfig(cairo-ft)
 BuildRequires:  pkgconfig(egl)
 BuildRequires:  pkgconfig(fontconfig)
 BuildRequires:  pkgconfig(freetype2)
-BuildRequires:  pkgconfig(glesv2)
+BuildRequires:  pkgconfig(gio-2.0)
 BuildRequires:  pkgconfig(glib-2.0)
+BuildRequires:  pkgconfig(gobject-2.0)
 BuildRequires:  pkgconfig(harfbuzz)
 BuildRequires:  pkgconfig(libcurl)
 BuildRequires:  pkgconfig(libjxl)
@@ -45,6 +50,8 @@ BuildRequires:  pkgconfig(md4c)
 BuildRequires:  pkgconfig(nlohmann_json)
 BuildRequires:  pkgconfig(pam)
 BuildRequires:  pkgconfig(pango)
+BuildRequires:  pkgconfig(pangocairo)
+BuildRequires:  pkgconfig(pangoft2)
 BuildRequires:  pkgconfig(polkit-agent-1)
 BuildRequires:  pkgconfig(polkit-gobject-1)
 BuildRequires:  pkgconfig(sdbus-c++)
@@ -59,14 +66,25 @@ BuildRequires:  pkgconfig(xkbcommon)
 Requires:       hicolor-icon-theme
 Requires:       dejavu-sans-fonts
 Requires:       libwebp
+# The plugin system shells out to git at runtime (src/scripting/plugin_git.cpp).
+Requires:       git-core
 
 Recommends:     ddcutil
 Recommends:     gpu-screen-recorder
 Recommends:     power-profiles-daemon
+# Noctalia talks to org.freedesktop.UPower AND org.freedesktop.UPower.PowerProfiles.
+Recommends:     upower
 
 Provides:       desktop-notification-daemon
 Provides:       PolicyKit-authentication-agent
 Conflicts:      noctalia
+
+# Upstream does not offer a mechanism for building against system
+# copies of these libraries (cf. Fedora official noctalia.spec).
+Provides:       bundled(fzy)
+Provides:       bundled(luau)
+Provides:       bundled(material_color_utilities)
+Provides:       bundled(wuffs)
 
 %description
 A sleek, customizable desktop shell crafted for Wayland.
@@ -77,12 +95,27 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 # Manually insert commit hash
 sed -i "s/'unknown'/'%{shortcommit}'/g" meson.build
 
+# Remove shebangs and execute permissions from template apply scripts to avoid
+# rpmlint errors/warnings (cf. Fedora official noctalia.spec).
+find assets/templates -type f -name '*.sh' \
+    -exec sed -e '1 {/^#!/d}' -i '{}' + \
+    -exec chmod -x '{}' +
+
 %build
-%meson
+%meson -Dtests=enabled
 %meson_build
 
 %install
 %meson_install
+
+# Shell completions (cf. Fedora official noctalia.spec).
+install -d -m 0755 %{buildroot}%{_datadir}/bash-completion/completions
+%{buildroot}%{_bindir}/noctalia completions bash > %{buildroot}%{_datadir}/bash-completion/completions/noctalia
+install -d -m 0755 %{buildroot}%{_datadir}/fish/vendor_completions.d
+%{buildroot}%{_bindir}/noctalia completions fish > %{buildroot}%{_datadir}/fish/vendor_completions.d/noctalia.fish
+install -d -m 0755 %{buildroot}%{_datadir}/zsh/site-functions
+%{buildroot}%{_bindir}/noctalia completions zsh > %{buildroot}%{_datadir}/zsh/site-functions/_noctalia
+
 install -d %{buildroot}%{_licensedir}/%{name}/third_party
 find third_party -type f \( -name "LICENSE*" -o -name "COPYING*" -o -name "NOTICE*" \) | while read -r file; do
     dest_dir="%{buildroot}%{_licensedir}/%{name}/$(dirname "$file")"
@@ -91,17 +124,27 @@ find third_party -type f \( -name "LICENSE*" -o -name "COPYING*" -o -name "NOTIC
 done
 
 %check
+%meson_test
 desktop-file-validate %{buildroot}%{_datadir}/applications/dev.noctalia.Noctalia.desktop
 
 %files
-%doc README.md
 %license LICENSE
+%doc README.md
 %{_licensedir}/%{name}/third_party/
 %{_bindir}/noctalia
 %{_datadir}/noctalia/
 %{_datadir}/applications/dev.noctalia.Noctalia.desktop
 %{_datadir}/icons/hicolor/scalable/apps/noctalia.svg
+%{_datadir}/bash-completion/completions/noctalia
+%{_datadir}/fish/vendor_completions.d/noctalia.fish
+%{_datadir}/zsh/site-functions/_noctalia
 
 %changelog
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 5.1.0^20260914000849git5d66d11-2
+- Add upstream-required cairo-ft, pangocairo, pangoft2, gobject-2.0 and gio-2.0 BuildRequires
+- Run the headless-safe test suite (%meson -Dtests=enabled + %meson_test); add dbus-daemon so the upower test runs
+- Ship shell completions; scrub template script shebangs; full SPDX License; bundled() Provides
+- Requires git-core (plugins spawn git); Recommends upower (UPower bus) alongside power-profiles-daemon
+
 * Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 5.1.0^20260914000849git5d66d11-1
 - Nightly sync with upstream main branch (Commit: 5d66d11)

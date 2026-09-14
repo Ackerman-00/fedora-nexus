@@ -522,7 +522,10 @@ jobs:
               b. DERIVE THE TRUE BUILD DEPENDENCY LIST from those files.
                  Every direct dependency the upstream build needs MUST have a
                  matching BuildRequires (or be satisfied by vendored/bundled
-                 copy - note it explicitly).
+                 copy - note it explicitly). Meson `find_program()` tools
+                 (protocol scanners, code generators, embed scripts) need
+                 explicit BuildRequires exactly like `dependency()` ones -
+                 build-invoked tools never self-declare.
               c. COMPARE against the spec: missing BuildRequires/Requires,
                  and Requires that no longer exist upstream. MISSING deps = a
                  bug. Fix it.
@@ -654,6 +657,15 @@ jobs:
                    nlohmann line and cost two red F45 builds. Same for
                    version floors: read the surrounding context (required:
                    false fallbacks like epoxy don't need BRs).
+                f. WORKAROUND EXPIRY (2026-09-14): every %prep sed/rm patch
+                   that works around an upstream bug must be re-checked
+                   against the CURRENT pin every run - upstream may have
+                   fixed it (e.g. an upstream switching vendored copies to
+                   system headers while the spec still rewrites includes
+                   for the vendored copy). A workaround whose pattern no
+                   longer matches upstream is dead weight: grep the
+                   extracted Source0 for the pattern to prove expiry, then
+                   delete it with a Release bump, never carry it.
 
             KNOWN PACKAGE-SPECIFIC NOTES - THE RIGOR BELOW APPLIES TO EVERY
             PACKAGE, NOT JUST THE EXAMPLE NAMED. For EVERY package, establish
@@ -840,8 +852,11 @@ jobs:
                  shell completions (bash/zsh/fish), systemd units +
                  tmpfiles, GSettings schemas, translations (%find_lang),
                  D-Bus service files, configs + examples, symlinks,
-                 companion binaries (e.g. CLI + GUI split, -devel
-                  headers/pkgconfig files). A MISSING artifact = a bug.
+                  companion binaries (e.g. CLI + GUI split, -devel
+                   headers/pkgconfig files). A MISSING artifact = a bug.
+                   Every user-editable system-default config in ANY package
+                   must be %config(noreplace) - a shipped-but-silently-
+                   overwritten config is the same class of bug.
                   License files (including bundled third-party notices,
                   installed under %license / %{_licensedir} as noctalia-git
                   does) and upstream test suites (wired into %check and run
