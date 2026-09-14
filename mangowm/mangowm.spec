@@ -1,6 +1,6 @@
 Name:           mangowm
 Version:        0.17.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <quietcraft@gmail.com>
@@ -29,7 +29,11 @@ BuildRequires:  pkgconfig(libcjson)
 BuildRequires:  pkgconfig(pangocairo)
 BuildRequires:  pkgconfig(pixman-1)
 BuildRequires:  pkgconfig(libdrm)
-BuildRequires:  scenefx-devel >= 0.5.0
+# Upstream meson.build demands dependency('scenefx-0.5', version: '>=0.5.0').
+# Must stay in pkgconfig() form: our scenefx NVR is 0.5-2 (RPM: 0.5 < 0.5.0)
+# but its scenefx-0.5.pc carries Version 0.5.0, so only the pkgconfig() floor
+# resolves (COPR build 10982842 failed on plain scenefx-devel >= 0.5.0).
+BuildRequires:  pkgconfig(scenefx-0.5) >= 0.5.0
 
 Requires:       xorg-x11-server-Xwayland
 Requires:       vulkan-loader
@@ -68,6 +72,10 @@ dwl — crafted for speed, flexibility, and a customizable desktop experience.
 %config(noreplace) %{_datadir}/xdg-desktop-portal/mango-portals.conf
 
 %changelog
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.0-3
+- Fix unresolvable scenefx-devel >= 0.5.0 (COPR 10982842): use upstream's own
+  pkgconfig(scenefx-0.5) >= 0.5.0 form, which resolves via the .pc version
+
 * Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.0-2
 - Add explicit ninja-build and wayland-scanner BuildRequires; add upstream-declared wlroots >= 0.20.0 and scenefx >= 0.5.0 floors
 - Mark config.conf and mango-portals.conf %config(noreplace)
