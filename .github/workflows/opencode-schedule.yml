@@ -1026,20 +1026,55 @@ jobs:
                  rebuild/rename/spec tweak - never by dropping the rawhide
                  chroot.
 
+             RETIRED PACKAGES — DO NOT TOUCH (2026-09-14, owner decision).
+             niri-git and noctalia-git are RETIRED transitional stubs, NOT
+             real packages anymore. Fedora now ships them officially:
+             - niri-git -> official 'niri' (F43/F44/F45/Rawhide, maintainer
+               decathorpe, https://packages.fedoraproject.org/pkgs/niri/niri).
+               Stub is niri-git/niri-git.spec at 1:99.0-1, Requires: niri.
+             - noctalia-git -> official 'noctalia' (F44+, https://docs.noctalia.dev
+               /noctalia/getting-started/installation?section=fedora,
+               https://src.fedoraproject.org/rpms/noctalia). Stub is
+               noctalia-git/noctalia-git.spec at 99.0-1, Requires: noctalia.
+             RULES (override everything else in this prompt for these two dirs):
+             1. NEVER bump, refresh, or "update" niri-git/ or noctalia-git/.
+                NEVER run their update.sh expecting a version change (they are
+                intentional no-op stubs). NEVER revert the 99.0 stub back to a
+                git snapshot. NEVER "fix" Version 99.0 as WRONG/STALE in the
+                version sweep - record `retired-stub, upstream=official-fedora`
+                instead.
+             2. EXCLUDE both from: ALWAYS-PRIORITY deep checks, TERRA
+                cross-reference, upstream-delta sweep, dependency deep audit
+                re-tear, 2026 excellence toolchain, and CVE triage. Their
+                update.sh is frozen and their specs are empty on purpose.
+             3. In the version table: `| niri-git | 1:99.0-1 retired-stub |
+                official niri (Fedora) | retired-stub |` (same for noctalia-git).
+                In the dependency audit table: `deps-verified retired-stub,
+                unproven: 0` so tools/verify-fedora.sh still counts them.
+             4. DO NOT open issues or PRs about them, DO NOT install-test
+                them (stub Requires resolves to official repos, not this COPR),
+                DO NOT delete their directories (owner removes from COPR
+                after ~2026-09-28, then deletes the dirs manually).
+             5. If a check (NO-CHURN, STEP C WRONG-VERSION, Terra-newer) flags
+                them, that check is WRONG for these two - ignore it and cite
+                this RETIRED block in the relay.
+
              Then work autonomously, in this priority order:
 
-              0. ALWAYS-PRIORITY = ALL PACKAGES (no exceptions). EVERY
-                 package in this repo is priority: check EVERY package
+              0. ALWAYS-PRIORITY = ALL PACKAGES (except the two RETIRED stubs
+                 above - niri-git and noctalia-git are EXCLUDED from every
+                 check). EVERY remaining package in this repo is priority:
+                 check EVERY non-retired package
                  for upstream changes EVERY run (git ls-remote HEAD for
                  -git packages, releases/tags for versioned ones, artifact
                  internals for prebuilt binaries - real change only, per
-                 NO-CHURN). The eleven named below simply go FIRST and get
+                 NO-CHURN). The nine named below simply go FIRST and get
                  the DEEPEST treatment each run because they move fast and
                  break silently - xwayland-satellite-git,
-                 noctalia-git, umbriel-git, xdg-desktop-portal-umbriel-git,
+                 umbriel-git, xdg-desktop-portal-umbriel-git,
                  helium-browser, zen-browser, heroic-games-launcher,
-                 protonplus, niri-git, mangowm, noctalia-greeter.
-                 The delta/carry-over logic does NOT apply to the eleven:
+                 protonplus, mangowm, noctalia-greeter.
+                 The delta/carry-over logic does NOT apply to the nine:
                  a. EVERY run, FIRST: check each against upstream HEAD
                     (`git ls-remote` default branch + `gh api
                     releases/latest` where applicable). If upstream moved,
@@ -1056,10 +1091,10 @@ jobs:
                     container install test + smoke test. Record per-package
                     PASS/FAIL with command output in the relay; a failure
                     here outranks all other non-build-failure work.
-                 c. Never mark these eleven done based on a previous run's
+                 c. Never mark these nine done based on a previous run's
                     result. "Unchanged since last run" is not verification
                     for these packages - re-verify every time.
-                 d. TERRA CROSS-REFERENCE (MANDATORY for all eleven, every
+                 d. TERRA CROSS-REFERENCE (MANDATORY for all nine, every
                     run - Terra https://github.com/terrapkg/packages branch
                     frawhide is the closest sibling packager for this exact
                     stack). For each priority package, fetch Terra's
@@ -1068,8 +1103,6 @@ jobs:
                       anda/desktops/umbriel/nightly/umbriel-nightly.spec
                     - xdg-desktop-portal-umbriel-git vs
                       anda/desktops/umbriel/xdg-desktop-portal-umbriel-nightly/xdg-desktop-portal-umbriel-nightly.spec
-                    - noctalia-git vs
-                      anda/desktops/noctalia/nightly/noctalia-nightly.spec
                     - noctalia-greeter vs
                       anda/desktops/noctalia/greeter/noctalia-greeter.spec
                     - mangowm vs anda/desktops/mangowm/mangowm.spec
@@ -1078,9 +1111,10 @@ jobs:
                     - heroic-games-launcher vs
                       anda/games/heroic-games-launcher/heroic-games-launcher.spec
                     - protonplus vs anda/games/protonplus/protonplus.spec
-                    - niri-git vs Terra's niri ecosystem
-                      (anda/desktops/niri/*) + Fedora official
-                      src.fedoraproject.org/rpms/niri
+                    - (RETIRED 2026-09-14 SKIPPED: niri-git and noctalia-git
+                      retired to Fedora official - do NOT fetch
+                      anda/desktops/niri/*, anda/desktops/noctalia/nightly/*,
+                      or src.fedoraproject.org/rpms/niri for them)
                     - xwayland-satellite-git vs Fedora official
                       src.fedoraproject.org/rpms/xwayland-satellite
                       (Terra uses the system package; we ship the -git
@@ -1116,13 +1150,14 @@ jobs:
                     with token) or
                     `curl -H "Authorization: token $GITHUB_TOKEN"
                     https://raw.githubusercontent.com/terrapkg/packages/frawhide/<path>`.
-                    Batch all eleven fetches, back off 60s on 403/429,
+                    Batch all nine fetches, back off 60s on 403/429,
                     throttle to 1 req/s. Record per package one line:
                     `terra-ref: <path>@<shortsha> | ours: <pin/ver> |
                     delta: ahead/behind/in-sync | kept-improvements: <list>`.
                  e. UNIVERSAL UPSTREAM CHECK (all remaining packages, EVERY
                     run - priority 2 is the full implementation, this is the
-                    non-skippable minimum): for EVERY non-eleven package,
+                    non-skippable minimum): for EVERY non-nine package
+                    (excluding RETIRED niri-git/noctalia-git entirely),
                     run the same HEAD/release/artifact check as (a) plus a
                     sibling-reference check where one exists (Terra frawhide
                     counterpart, Fedora official dist-git

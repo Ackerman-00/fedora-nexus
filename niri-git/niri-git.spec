@@ -1,136 +1,83 @@
-# These will be automatically populated by update.sh
-%global commit          e1d3b0c47ce5bb77f16e5006aba604d23b233649
-%global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260914123732
+# RETIRED — transitional stub (2026-09-14)
+# niri-git has been retired from fedora-nexus (COPR ackerman/nexus)
+# because Fedora now ships official 'niri' in F43/F44/F45/Rawhide.
+# This stub exists only to notify existing users via `dnf update`
+# and to pull the official package. It will be removed from the
+# COPR ~2 weeks after 2026-09-14 (~2026-09-28), after which
+# `niri-git` will disappear from the repo entirely.
+# DO NOT run update.sh on this spec — Version 99.0 is intentional
+# and must sort ABOVE all previous 26.04^git snapshots (Epoch 1).
 
 Name:           niri-git
-# Epoch 1 is permanent: legacy 2026MMDD-dated builds sort ABOVE the current
-# ^gitdate snapshots in rpm version comparison, so without it dnf keeps
-# delivering stale builds. NEVER remove it.
 Epoch:          1
-Version:        26.04^%{gitdate}git%{shortcommit}
+Version:        99.0
 Release:        1%{?dist}
-Summary:        A scrollable-tiling Wayland compositor (Nexus Optimized Git Snapshot)
-
-License:        GPL-3.0-or-later
+Summary:        Transitional package — niri-git retired, use official niri
+License:        MIT
 URL:            https://github.com/niri-wm/niri
-Source0:        %{url}/archive/%{commit}/niri-%{shortcommit}.tar.gz
+BuildArch:      noarch
 
-ExclusiveArch:  x86_64 aarch64
-
-BuildRequires:  cargo
-BuildRequires:  rust
-BuildRequires:  clang
-BuildRequires:  systemd-rpm-macros
-BuildRequires:  mesa-libEGL-devel
-# cairo.pc is probed directly by cairo-rs (via pangocairo); cairo-gobject
-# alone does not cover it (resolved only transitively before).
-BuildRequires:  pkgconfig(cairo)
-BuildRequires:  pkgconfig(cairo-gobject)
-BuildRequires:  pkgconfig(dbus-1)
-BuildRequires:  pkgconfig(glib-2.0)
-BuildRequires:  pkgconfig(gbm)
-BuildRequires:  pkgconfig(libdisplay-info)
-BuildRequires:  pkgconfig(libinput)
-BuildRequires:  pkgconfig(libseat)
-BuildRequires:  pkgconfig(libudev)
-BuildRequires:  pkgconfig(pango)
-BuildRequires:  pkgconfig(pangocairo)
-BuildRequires:  pkgconfig(pixman-1)
-BuildRequires:  pkgconfig(systemd)
-BuildRequires:  pkgconfig(wayland-client)
-BuildRequires:  pkgconfig(wayland-cursor)
-BuildRequires:  pkgconfig(wayland-server)
-BuildRequires:  pkgconfig(xkbcommon)
-BuildRequires:  pkgconfig(libpipewire-0.3)
-BuildRequires:  pkgconfig(libspa-0.2)
-
-Requires:       xwayland-satellite-git
-Requires:       mesa-dri-drivers
-Requires:       mesa-libEGL
-# libwayland-server is opened with dlopen, so it is not picked up as a
-# build-time dependency (cf. Fedora official niri.spec).
-Requires:       libwayland-server
-
-# Core portal service (at least one backend must be installed)
-Requires:       xdg-desktop-portal
-# Screencasting (niri feature) and GTK file picker backends
-Recommends:     xdg-desktop-portal-gnome
-Recommends:     xdg-desktop-portal-gtk
-Recommends:     gnome-keyring
-
-Provides:       niri = %{version}-%{release}
-Provides:       wayland-compositor
-Conflicts:      niri
+Requires:       niri
 
 %description
-A scrollable-tiling Wayland compositor.
-Compiled specifically for the Nexus repository via automated Git snapshot. Stripped of all secondary GUI bloat (waybar, swaylock, mako) and synchronized with our custom Xwayland bridge for peak performance.
+Transitional retirement package for niri-git.
+
+niri-git from fedora-nexus (COPR ackerman/nexus) has been RETIRED.
+Fedora now ships official 'niri' in every supported release:
+
+  * Fedora 43 updates:  niri 26.04-1.fc43
+  * Fedora 44 updates:  niri 26.04-1.fc44
+  * Fedora 45 / Rawhide: niri 26.04-2.fc45
+  Maintainer: decathorpe — https://packages.fedoraproject.org/pkgs/niri/niri
+  Sources:    https://src.fedoraproject.org/rpms/niri
+
+This empty package exists solely to make `dnf update` visible:
+installing it pulls the official 'niri' and prints migration
+instructions. After updating you can clean up the stub:
+
+  sudo dnf remove niri-git          # leaves official niri installed
+  # or
+  sudo dnf swap niri-git niri
+
+This stub will be removed from the COPR entirely after ~2026-09-28.
+Please migrate now. Thank you for using fedora-nexus!
 
 %prep
-%autosetup -n niri-%{commit}
-
 %build
-# Set the commit string for the binary
-export NIRI_BUILD_COMMIT="%{shortcommit}"
-
-# Inject Fedora system optimization variables safely
-export CFLAGS="%{optflags} -ffat-lto-objects"
-export CXXFLAGS="%{optflags} -ffat-lto-objects"
-
-# Let Cargo handle the raw compilation natively
-export RUSTFLAGS="%{build_rustflags}"
-cargo build --release --features default
-
-# Generate shell completions safely by isolating runtime context
-export XDG_RUNTIME_DIR=$(mktemp -d)
-target/release/niri completions bash > ./niri.bash
-target/release/niri completions fish > ./niri.fish
-target/release/niri completions zsh > ./_niri
-
 %install
-# Install the core binaries
-install -Dpm0755 target/release/niri -t %{buildroot}%{_bindir}
-install -Dpm0755 resources/niri-session -t %{buildroot}%{_bindir}
 
-# Install standard Wayland session and systemd configurations
-install -Dpm0644 resources/niri.desktop -t %{buildroot}%{_datadir}/wayland-sessions
-install -Dpm0644 resources/niri-portals.conf -t %{buildroot}%{_datadir}/xdg-desktop-portal
-install -Dpm0644 resources/niri.service -t %{buildroot}%{_userunitdir}
-install -Dpm0644 resources/niri-shutdown.target -t %{buildroot}%{_userunitdir}
+%post
+cat >&2 <<'EOF'
+========================================================================
+  NOTICE: niri-git from COPR ackerman/nexus is RETIRED.
 
-# Install completions
-install -Dpm0644 niri.bash %{buildroot}%{_datadir}/bash-completion/completions/niri
-install -Dpm0644 niri.fish %{buildroot}%{_datadir}/fish/vendor_completions.d/niri.fish
-install -Dpm0644 _niri %{buildroot}%{_datadir}/zsh/site-functions/_niri
+  Fedora now ships official 'niri' (F43/F44/F45/Rawhide):
 
-%check
-# Unit tests only: niri-visual-tests is a separate workspace member and is
-# never built here, so no session is needed (same scope as Fedora official).
-# Limit parallelism: the suite hits fd limits on many-core builders.
-# Re-export the %build flags - %check is a separate shell section, and
-# without identical RUSTFLAGS cargo would rebuild with different codegen.
-export RAYON_NUM_THREADS=2
-export CFLAGS="%{optflags} -ffat-lto-objects"
-export CXXFLAGS="%{optflags} -ffat-lto-objects"
-export RUSTFLAGS="%{build_rustflags}"
-cargo test --release --features default -- --test-threads 2
+    sudo dnf install niri
+    # or if you already updated to this stub:
+    sudo dnf remove niri-git   # official niri stays installed
+
+  Details: https://packages.fedoraproject.org/pkgs/niri/niri
+           https://src.fedoraproject.org/rpms/niri
+
+  This stub (niri-git 1:99.0-1) will be deleted from the COPR
+  after ~2026-09-28. Thanks for flying with fedora-nexus — ackerman
+========================================================================
+EOF
 
 %files
-%license LICENSE
-%doc README.md
-%doc resources/default-config.kdl
-%doc docs/wiki
-%{_bindir}/niri
-%{_bindir}/niri-session
-%{_datadir}/wayland-sessions/niri.desktop
-%config(noreplace) %{_datadir}/xdg-desktop-portal/niri-portals.conf
-%{_userunitdir}/niri.service
-%{_userunitdir}/niri-shutdown.target
-%{_datadir}/bash-completion/completions/niri
-%{_datadir}/fish/vendor_completions.d/niri.fish
-%{_datadir}/zsh/site-functions/_niri
 
 %changelog
-* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260914123732gite1d3b0c-1
-- Nightly sync with upstream main branch (Commit: e1d3b0c)
+* Sun Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 1:99.0-1
+- RETIRED: niri-git moved to Fedora official 'niri' (F43/F44/F45/Rawhide, decathorpe). Transitional stub that Requires:niri and prints migration notice. Will be removed from COPR after ~2 weeks. Thank you!
+
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 1:26.04^20260913141508git66d04a7-3
+- Add explicit cairo, libspa-0.2 and wayland-cursor BuildRequires (lock-proven, previously transitive-only)
+- Run unit tests in %%check (thread-limited, same scope as Fedora official); ship %%doc docs/wiki
+
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 1:26.04^20260913141508git66d04a7-2
+- Canonical upstream URL niri-wm/niri (repo moved from YaLTeR/niri); document permanent Epoch 1
+- Mark niri-portals.conf %%config(noreplace)
+
+* Sun Sep 13 2026 Ackerman-00 <quietcraft@gmail.com> - 1:26.04^20260913141508git66d04a7-1
+- Nightly sync with upstream main branch (Commit: 66d04a7)

@@ -19,9 +19,10 @@ if [[ -f "$RELAY" ]]; then
   fi
   rows=$(grep -cE "^\| [a-z0-9_-]+ \|" "$RELAY" 2>/dev/null || true)
   rows=${rows:-0}
-  dep_rows=$(grep -c "deps-verified\|deps-fixed" "$RELAY" 2>/dev/null || true)
+  dep_rows=$(grep -c "deps-verified\|deps-fixed\|retired-stub" "$RELAY" 2>/dev/null || true)
   dep_rows=${dep_rows:-0}
   echo "Inventory: $expected specs; dependency table rows: $dep_rows (found $rows total pipe-rows)"
+  echo "(retired-stub rows for niri-git/noctalia-git count as valid — retired 2026-09-14 to Fedora official)"
   if [[ "$dep_rows" -lt "$expected" ]]; then
     echo "FAIL: NOT COMPLETE -- dependency audit table has $dep_rows rows, need $expected (one per spec)"
     FAIL=1
