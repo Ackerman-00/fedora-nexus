@@ -5,7 +5,7 @@
 
 Name:           noctalia-greeter
 Version:        1.5.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A minimal login greeter for greetd that matches the look and feel of Noctalia Shell
 
 License:        MIT
@@ -19,21 +19,30 @@ BuildRequires:  dbus
 BuildRequires:  polkit
 BuildRequires:  stb_image_resize2-devel
 BuildRequires:  libinput-devel
-BuildRequires:  wlroots-devel >= 0.20
+# Precise wlroots series pin: upstream declares no floor, but Fedora ships
+# multiple wlroots series and the 0.20 layout is ABI-critical (distro reality).
+BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20
+# Protocol codegen uses meson find_program('wayland-scanner'), not
+# dependency() - still needs an explicit BR, it never self-declares.
+BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  libEGL-devel
 BuildRequires:  mesa-libGLES-devel
 BuildRequires:  pkgconfig(cairo)
+BuildRequires:  pkgconfig(cairo-ft)
 BuildRequires:  pkgconfig(egl)
 BuildRequires:  pkgconfig(fontconfig)
 BuildRequires:  pkgconfig(freetype2)
-BuildRequires:  pkgconfig(glesv2)
+BuildRequires:  pkgconfig(gio-2.0)
 BuildRequires:  pkgconfig(glib-2.0)
+BuildRequires:  pkgconfig(gobject-2.0)
 BuildRequires:  pkgconfig(harfbuzz)
 BuildRequires:  pkgconfig(librsvg-2.0)
 BuildRequires:  pkgconfig(libwebp)
 BuildRequires:  pkgconfig(libxml-2.0)
 BuildRequires:  pkgconfig(nlohmann_json)
 BuildRequires:  pkgconfig(pango)
+BuildRequires:  pkgconfig(pangocairo)
+BuildRequires:  pkgconfig(pangoft2)
 BuildRequires:  pkgconfig(tomlplusplus)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-egl)
@@ -107,5 +116,9 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260913124259gitabdbee2-2
+- Add upstream-required cairo-ft, pangocairo, pangoft2, gobject-2.0 and gio-2.0 BuildRequires
+- Precise wlroots series pin (pkgconfig form) and explicit wayland-scanner BuildRequires
+
 * Sun Sep 13 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260913124259gitabdbee2-1
 - Nightly sync with upstream main branch (Commit: abdbee2)

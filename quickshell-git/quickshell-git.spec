@@ -5,10 +5,12 @@
 
 Name:           quickshell-git
 Version:        0.3.1^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Flexible toolkit for making desktop shells with QtQuick (Git Snapshot)
 
-License:        LGPL-3.0-only
+# Code is LGPL, Hyprland protocols are BSD-3-Clause, wlr protocols are HPND-sell-variant
+# (cf. Fedora official quickshell.spec).
+License:        LGPL-3.0-or-later and BSD-3-Clause and HPND-sell-variant
 URL:            https://github.com/quickshell-mirror/quickshell
 Source0:        %{url}/archive/%{commit}.tar.gz
 
@@ -17,6 +19,7 @@ ExclusiveArch:  x86_64 aarch64
 BuildRequires:  cmake
 BuildRequires:  ninja-build
 BuildRequires:  gcc-c++
+BuildRequires:  desktop-file-utils
 BuildRequires:  cli11-devel
 BuildRequires:  pkgconf-pkg-config
 BuildRequires:  qt6-qtbase-devel
@@ -50,6 +53,8 @@ Requires:       polkit
 
 Provides:       quickshell = %{version}-%{release}
 Conflicts:      quickshell
+Provides:       desktop-notification-daemon
+Provides:       PolicyKit-authentication-agent
 
 %description
 Quickshell is a flexible toolkit for making desktop shells with QtQuick.
@@ -67,15 +72,22 @@ export CXXFLAGS="%{optflags} -ffat-lto-objects"
     -D CRASH_HANDLER=OFF \
     -D CMAKE_BUILD_TYPE=RelWithDebInfo \
     -D INSTALL_QML_PREFIX=%{_lib}/qt6/qml
+# NOTE: CRASH_HANDLER stays OFF (same intent as Fedora official's breakpad
+# bcond): the handler needs breakpad, which is unpackaged in Fedora.
+# GIT_REVISION is intentionally not passed: current upstream CMakeLists has
+# no such variable (official's flag is from the older tree).
 
 %cmake_build
 
 %install
 %cmake_install
 
+%check
+desktop-file-validate %{buildroot}%{_datadir}/applications/org.quickshell.desktop
+
 %files
-%license LICENSE
-%doc README.md
+%license LICENSE*
+%doc README.md BUILD.md CONTRIBUTING.md HACKING.md changelog/
 %{_bindir}/quickshell
 %{_bindir}/qs
 %{_datadir}/applications/org.quickshell.desktop
@@ -84,5 +96,9 @@ export CXXFLAGS="%{optflags} -ffat-lto-objects"
 %{_libdir}/qt6/qml/Quickshell/*
 
 %changelog
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.1^20260914015902git86b4275-2
+- Full SPDX License expression; ship LICENSE-GPL and contributor docs via glob
+- Validate desktop file in %check; Provide notification-daemon and polkit-auth-agent
+
 * Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.1^20260914015902git86b4275-1
 - Nightly sync with upstream master branch (Commit: 86b4275)
