@@ -10,7 +10,7 @@
 
 Name:           noctalia-git
 Version:        99.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Transitional package — noctalia-git retired, use official noctalia
 License:        MIT
 URL:            https://github.com/noctalia-dev/noctalia
@@ -25,8 +25,10 @@ noctalia-git from fedora-nexus (COPR ackerman/nexus) has been RETIRED.
 Fedora now ships official 'noctalia' from the default repositories
 (Fedora 44 and newer):
 
-  * Fedora 44 updates: noctalia 5.0.0~beta.10-1.fc44
-  * Fedora 45 base:    noctalia 5.0.0~beta.9-1.fc45
+  * Fedora 44 stable:  noctalia 5.1.0-1.fc44
+  * Fedora 45 testing: noctalia 5.1.0-1.fc45 (base still 5.0.0~beta.9-1.fc45)
+  * Rawhide:           noctalia 5.1.0-2.fc46
+  Maintainer: carlwgeorge
   Docs: https://docs.noctalia.dev/noctalia/getting-started/installation?section=fedora
   Sources: https://src.fedoraproject.org/rpms/noctalia
 
@@ -76,6 +78,9 @@ EOF
 %files
 
 %changelog
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 99.0-2
+- Update retirement notice: official noctalia is now 5.1.0 stable (F44 stable 5.1.0-1.fc44, F45 testing 5.1.0-1.fc45, Rawhide 5.1.0-2.fc46, per packages.fedoraproject.org). No code change, notice text only.
+
 * Sun Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 99.0-1
 - RETIRED: noctalia-git moved to Fedora official 'noctalia' (F44+, docs.noctalia.dev). Transitional stub that Requires:noctalia and prints migration notice. Will be removed from COPR after ~2 weeks. Thank you!
 
