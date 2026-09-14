@@ -1,12 +1,12 @@
 # These will be automatically populated by update.sh
-%global commit          5d66d118861fedcbe039d9d04d06904cced40613
+%global commit          2856ec3b1b384f243770240261a11831de51a923
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260914000849
+%global gitdate         20260914124122
 %global upstreamname    noctalia
 
 Name:           noctalia-git
 Version:        5.1.0^%{gitdate}git%{shortcommit}
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        A sleek, customizable desktop shell crafted for Wayland
 
 License:        Apache-2.0 AND MIT AND BSD-3-Clause AND HPND-sell-variant AND LGPL-2.1-or-later
@@ -146,16 +146,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/dev.noctalia.Noctalia
 %{_datadir}/zsh/site-functions/_noctalia
 
 %changelog
-* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 5.1.0^20260914000849git5d66d11-3
-- Drop dbus-daemon BR: the dbus-gated upower integration test segfaults in
-  mock (COPR 10982843); 118/118 remaining tests green
-- Add Requires pipewire (segfault at startup without daemon, per official spec)
-
-* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 5.1.0^20260914000849git5d66d11-2
-- Add upstream-required cairo-ft, pangocairo, pangoft2, gobject-2.0 and gio-2.0 BuildRequires
-- Run the headless-safe test suite (%meson -Dtests=enabled + %meson_test); add dbus-daemon so the upower test runs
-- Ship shell completions; scrub template script shebangs; full SPDX License; bundled() Provides
-- Requires git-core (plugins spawn git); Recommends upower (UPower bus) alongside power-profiles-daemon
-
-* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 5.1.0^20260914000849git5d66d11-1
-- Nightly sync with upstream main branch (Commit: 5d66d11)
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 5.1.0^20260914124122git2856ec3-1
+- Nightly sync with upstream main branch (Commit: 2856ec3)
