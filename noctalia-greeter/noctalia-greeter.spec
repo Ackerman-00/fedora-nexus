@@ -1,11 +1,11 @@
 # These will be automatically populated by update.sh
-%global commit          abdbee2bd7dc6e5a9b68219d2336ef286354abfb
+%global commit          d9fe1d7851464a923020d39efae8a6e3561f0d63
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260913124259
+%global gitdate         20260914063433
 
 Name:           noctalia-greeter
 Version:        1.5.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        A minimal login greeter for greetd that matches the look and feel of Noctalia Shell
 
 License:        MIT
@@ -116,9 +116,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260913124259gitabdbee2-2
-- Add upstream-required cairo-ft, pangocairo, pangoft2, gobject-2.0 and gio-2.0 BuildRequires
-- Precise wlroots series pin (pkgconfig form) and explicit wayland-scanner BuildRequires
-
-* Sun Sep 13 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260913124259gitabdbee2-1
-- Nightly sync with upstream main branch (Commit: abdbee2)
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260914063433gitd9fe1d7-1
+- Nightly sync with upstream main branch (Commit: d9fe1d7)
