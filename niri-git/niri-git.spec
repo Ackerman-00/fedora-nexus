@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          66d04a7d72e25a6c74307bab33a91924d124755d
+%global commit          e1d3b0c47ce5bb77f16e5006aba604d23b233649
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260913141508
+%global gitdate         20260914123732
 
 Name:           niri-git
 # Epoch 1 is permanent: legacy 2026MMDD-dated builds sort ABOVE the current
@@ -9,7 +9,7 @@ Name:           niri-git
 # delivering stale builds. NEVER remove it.
 Epoch:          1
 Version:        26.04^%{gitdate}git%{shortcommit}
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        A scrollable-tiling Wayland compositor (Nexus Optimized Git Snapshot)
 
 License:        GPL-3.0-or-later
@@ -132,13 +132,5 @@ cargo test --release --features default -- --test-threads 2
 %{_datadir}/zsh/site-functions/_niri
 
 %changelog
-* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260913141508git66d04a7-3
-- Add explicit cairo, libspa-0.2 and wayland-cursor BuildRequires (lock-proven, previously transitive-only)
-- Run unit tests in %check (thread-limited, same scope as Fedora official); ship %doc docs/wiki
-
-* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260913141508git66d04a7-2
-- Canonical upstream URL niri-wm/niri (repo moved from YaLTeR/niri); document permanent Epoch 1
-- Mark niri-portals.conf %config(noreplace)
-
-* Sun Sep 13 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260913141508git66d04a7-1
-- Nightly sync with upstream main branch (Commit: 66d04a7)
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 26.04^20260914123732gite1d3b0c-1
+- Nightly sync with upstream main branch (Commit: e1d3b0c)
