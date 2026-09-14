@@ -1027,8 +1027,9 @@ jobs:
                  chroot.
 
              RETIRED PACKAGES — DO NOT TOUCH (2026-09-14, owner decision).
-             niri-git and noctalia-git are RETIRED transitional stubs, NOT
-             real packages anymore. Fedora now ships them officially:
+             niri-git, noctalia-git, and quickshell-git are RETIRED
+             transitional stubs, NOT real packages anymore. Fedora now
+             ships them officially:
              - niri-git -> official 'niri' (F43/F44/F45/Rawhide, maintainer
                decathorpe, https://packages.fedoraproject.org/pkgs/niri/niri).
                Stub is niri-git/niri-git.spec at 1:99.0-1, Requires: niri.
@@ -1036,34 +1037,39 @@ jobs:
                /noctalia/getting-started/installation?section=fedora,
                https://src.fedoraproject.org/rpms/noctalia). Stub is
                noctalia-git/noctalia-git.spec at 99.0-1, Requires: noctalia.
-             RULES (override everything else in this prompt for these two dirs):
-             1. NEVER bump, refresh, or "update" niri-git/ or noctalia-git/.
-                NEVER run their update.sh expecting a version change (they are
-                intentional no-op stubs). NEVER revert the 99.0 stub back to a
-                git snapshot. NEVER "fix" Version 99.0 as WRONG/STALE in the
-                version sweep - record `retired-stub, upstream=official-fedora`
-                instead.
-             2. EXCLUDE both from: ALWAYS-PRIORITY deep checks, TERRA
+             - quickshell-git -> official 'quickshell' (F43/F44/F45/F46+,
+               https://src.fedoraproject.org/rpms/quickshell). Stub is
+               quickshell-git/quickshell-git.spec at 99.0-1, Requires: quickshell.
+             RULES (override everything else in this prompt for these three dirs):
+             1. NEVER bump, refresh, or "update" niri-git/, noctalia-git/,
+                or quickshell-git/. NEVER run their update.sh expecting a
+                version change (they are intentional no-op stubs). NEVER
+                revert the 99.0 stubs back to a git snapshot. NEVER "fix"
+                Version 99.0 as WRONG/STALE in the version sweep - record
+                `retired-stub, upstream=official-fedora` instead.
+             2. EXCLUDE all three from: ALWAYS-PRIORITY deep checks, TERRA
                 cross-reference, upstream-delta sweep, dependency deep audit
                 re-tear, 2026 excellence toolchain, and CVE triage. Their
                 update.sh is frozen and their specs are empty on purpose.
              3. In the version table: `| niri-git | 1:99.0-1 retired-stub |
-                official niri (Fedora) | retired-stub |` (same for noctalia-git).
-                In the dependency audit table: `deps-verified retired-stub,
-                unproven: 0` so tools/verify-fedora.sh still counts them.
+                official niri (Fedora) | retired-stub |` (same for noctalia-git
+                and quickshell-git). In the dependency audit table:
+                `deps-verified retired-stub, unproven: 0` so
+                tools/verify-fedora.sh still counts them.
              4. DO NOT open issues or PRs about them, DO NOT install-test
                 them (stub Requires resolves to official repos, not this COPR),
                 DO NOT delete their directories (owner removes from COPR
                 after ~2026-09-28, then deletes the dirs manually).
              5. If a check (NO-CHURN, STEP C WRONG-VERSION, Terra-newer) flags
-                them, that check is WRONG for these two - ignore it and cite
+                them, that check is WRONG for these three - ignore it and cite
                 this RETIRED block in the relay.
 
              Then work autonomously, in this priority order:
 
-              0. ALWAYS-PRIORITY = ALL PACKAGES (except the two RETIRED stubs
-                 above - niri-git and noctalia-git are EXCLUDED from every
-                 check). EVERY remaining package in this repo is priority:
+              0. ALWAYS-PRIORITY = ALL PACKAGES (except the three RETIRED stubs
+                 above - niri-git, noctalia-git, and quickshell-git are
+                 EXCLUDED from every check). EVERY remaining package in this
+                 repo is priority:
                  check EVERY non-retired package
                  for upstream changes EVERY run (git ls-remote HEAD for
                  -git packages, releases/tags for versioned ones, artifact
@@ -1111,10 +1117,11 @@ jobs:
                     - heroic-games-launcher vs
                       anda/games/heroic-games-launcher/heroic-games-launcher.spec
                     - protonplus vs anda/games/protonplus/protonplus.spec
-                    - (RETIRED 2026-09-14 SKIPPED: niri-git and noctalia-git
-                      retired to Fedora official - do NOT fetch
-                      anda/desktops/niri/*, anda/desktops/noctalia/nightly/*,
-                      or src.fedoraproject.org/rpms/niri for them)
+                    - (RETIRED 2026-09-14 SKIPPED: niri-git, noctalia-git,
+                      and quickshell-git retired to Fedora official — do NOT
+                      fetch anda/desktops/niri/*, anda/desktops/noctalia/nightly/*,
+                      src.fedoraproject.org/rpms/niri, or
+                      src.fedoraproject.org/rpms/quickshell for them)
                     - xwayland-satellite-git vs Fedora official
                       src.fedoraproject.org/rpms/xwayland-satellite
                       (Terra uses the system package; we ship the -git

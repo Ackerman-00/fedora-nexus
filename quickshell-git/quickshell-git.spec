@@ -1,101 +1,75 @@
-# These will be automatically populated by update.sh
-%global commit          86b4275879b32bf58dc89035452313919cd89bd2
-%global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260914015902
+# RETIRED — transitional stub (2026-09-14)
+# quickshell-git has been retired from fedora-nexus (COPR ackerman/nexus)
+# because Fedora now ships official 'quickshell' in F43/F44/F45/F46+.
+# This stub exists only to notify existing users via `dnf update`
+# and to pull the official package. It will be removed from the
+# COPR ~2 weeks after 2026-09-14 (~2026-09-28), after which
+# `quickshell-git` will disappear from the repo entirely.
+# DO NOT run update.sh on this spec — Version 99.0 is intentional
+# and must sort ABOVE all previous 0.3.1^git snapshots.
 
 Name:           quickshell-git
-Version:        0.3.1^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
-Summary:        Flexible toolkit for making desktop shells with QtQuick (Git Snapshot)
-
-# Code is LGPL, Hyprland protocols are BSD-3-Clause, wlr protocols are HPND-sell-variant
-# (cf. Fedora official quickshell.spec).
+Version:        99.0
+Release:        1%{?dist}
+Summary:        Transitional package — quickshell-git retired, use official quickshell
 License:        LGPL-3.0-or-later and BSD-3-Clause and HPND-sell-variant
 URL:            https://github.com/quickshell-mirror/quickshell
-Source0:        %{url}/archive/%{commit}.tar.gz
+BuildArch:      noarch
 
-ExclusiveArch:  x86_64 aarch64
-
-BuildRequires:  cmake
-BuildRequires:  ninja-build
-BuildRequires:  gcc-c++
-BuildRequires:  desktop-file-utils
-BuildRequires:  cli11-devel
-BuildRequires:  pkgconf-pkg-config
-BuildRequires:  qt6-qtbase-devel
-BuildRequires:  qt6-qtbase-private-devel
-BuildRequires:  qt6-qtdeclarative-devel
-BuildRequires:  qt6-qtsvg-devel
-BuildRequires:  qt6-qtwayland-devel
-BuildRequires:  qt6-qtshadertools-devel
-BuildRequires:  libglvnd-devel
-BuildRequires:  wayland-devel
-BuildRequires:  wayland-protocols-devel
-BuildRequires:  libxcb-devel
-BuildRequires:  mesa-libEGL-devel
-BuildRequires:  mesa-libgbm-devel
-BuildRequires:  libdrm-devel
-BuildRequires:  pam-devel
-BuildRequires:  polkit-devel
-BuildRequires:  pipewire-devel
-BuildRequires:  jemalloc-devel
-BuildRequires:  hicolor-icon-theme
-BuildRequires:  spirv-tools
-BuildRequires:  vulkan-headers
-
-Requires:       hicolor-icon-theme
-Requires:       qt6-qtbase
-Requires:       qt6-qtdeclarative
-Requires:       qt6-qtsvg
-Requires:       qt6-qtwayland
-Requires:       jemalloc
-Requires:       polkit
-
-Provides:       quickshell = %{version}-%{release}
-Conflicts:      quickshell
-Provides:       desktop-notification-daemon
-Provides:       PolicyKit-authentication-agent
+Requires:       quickshell
 
 %description
-Quickshell is a flexible toolkit for making desktop shells with QtQuick.
-This package tracks the bleeding-edge master branch.
+Transitional retirement package for quickshell-git.
+
+quickshell-git from fedora-nexus (COPR ackerman/nexus) has been RETIRED.
+Fedora now ships official 'quickshell' in every supported release:
+
+  * Fedora 43:  quickshell 0.2.1-5.fc43
+  * Fedora 44:  quickshell 0.2.1-5.fc44
+  * Fedora 45:  quickshell 0.2.1-5.fc45
+  * Fedora 46 / Rawhide: quickshell 0.2.1-5.fc46
+  Maintainer: Fedora Qt/KDE SIG
+  Sources: https://src.fedoraproject.org/rpms/quickshell
+
+This empty package exists solely to make `dnf update` visible:
+installing it pulls the official 'quickshell' and prints migration
+instructions. After updating you can clean up the stub:
+
+  sudo dnf remove quickshell-git          # leaves official quickshell installed
+  # or
+  sudo dnf swap quickshell-git quickshell
+
+This stub will be removed from the COPR entirely after ~2026-09-28.
+Please migrate now. Thank you for using fedora-nexus!
 
 %prep
-%autosetup -n quickshell-%{commit}
-
 %build
-export CFLAGS="%{optflags} -ffat-lto-objects"
-export CXXFLAGS="%{optflags} -ffat-lto-objects"
-
-%cmake -G Ninja \
-    -D DISTRIBUTOR='Fedora' \
-    -D CRASH_HANDLER=OFF \
-    -D CMAKE_BUILD_TYPE=RelWithDebInfo \
-    -D INSTALL_QML_PREFIX=%{_lib}/qt6/qml
-# NOTE: CRASH_HANDLER stays OFF (same intent as Fedora official's breakpad
-# bcond): the handler needs breakpad, which is unpackaged in Fedora.
-# GIT_REVISION is intentionally not passed: current upstream CMakeLists has
-# no such variable (official's flag is from the older tree).
-
-%cmake_build
-
 %install
-%cmake_install
 
-%check
-desktop-file-validate %{buildroot}%{_datadir}/applications/org.quickshell.desktop
+%post
+cat >&2 <<'EOF'
+========================================================================
+  NOTICE: quickshell-git from COPR ackerman/nexus is RETIRED.
+
+  Fedora now ships official 'quickshell' (F43/F44/F45/F46+):
+
+    sudo dnf install quickshell
+    # or if you already updated to this stub:
+    sudo dnf remove quickshell-git   # official quickshell stays installed
+
+  Details: https://src.fedoraproject.org/rpms/quickshell
+
+  This stub (quickshell-git 99.0-1) will be deleted from the COPR
+  after ~2026-09-28. Thanks for flying with fedora-nexus — ackerman
+========================================================================
+EOF
 
 %files
-%license LICENSE*
-%doc README.md BUILD.md CONTRIBUTING.md HACKING.md changelog/
-%{_bindir}/quickshell
-%{_bindir}/qs
-%{_datadir}/applications/org.quickshell.desktop
-%{_datadir}/icons/hicolor/scalable/apps/org.quickshell.svg
-%dir %{_libdir}/qt6/qml/Quickshell/
-%{_libdir}/qt6/qml/Quickshell/*
 
 %changelog
+* Sun Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 99.0-1
+- RETIRED: quickshell-git moved to Fedora official 'quickshell' (F43/F44/F45/F46+). Transitional stub that Requires:quickshell and prints migration notice. Will be removed from COPR after ~2 weeks. Thank you!
+
 * Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.1^20260914015902git86b4275-2
 - Full SPDX License expression; ship LICENSE-GPL and contributor docs via glob
 - Validate desktop file in %check; Provide notification-daemon and polkit-auth-agent
