@@ -1,6 +1,6 @@
 Name:           mangowm
 Version:        0.17.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <quietcraft@gmail.com>
@@ -70,7 +70,15 @@ dwl — crafted for speed, flexibility, and a customizable desktop experience.
 %config(noreplace) %{_sysconfdir}/mango/config.conf
 %{_datadir}/wayland-sessions/mango.desktop
 %config(noreplace) %{_datadir}/xdg-desktop-portal/mango-portals.conf
+# New in 0.17.1: mango-session.target (meson install_data assets/ ->
+# prefix/lib/systemd/user). mango activates it itself, see set_activation_env()
+# in src/main.c. COPR 10988486 failed with "Installed (but unpackaged) file(s)
+# found: /usr/lib/systemd/user/mango-session.target".
+%{_userunitdir}/mango-session.target
 
 %changelog
+* Tue Sep 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.1-2
+- Ship new upstream mango-session.target user unit (COPR 10988486 failed
+  with "Installed (but unpackaged) file(s) found").
 * Tue Sep 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.1-1
 - Auto-update to version 0.17.1
