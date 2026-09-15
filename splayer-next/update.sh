@@ -18,7 +18,7 @@ echo "Checking for upstream updates on $GITHUB_REPO..."
 # 1.2.0-alpha.1 never match and are never picked up.
 LATEST_TAG=$(git ls-remote --tags "https://github.com/$GITHUB_REPO.git" 2>/dev/null \
     | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' \
-    | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
+    | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | sed -E 's/^v?([0-9].*)/\1 &/' | sort -V -k1,1 | tail -1 | awk '{print $2}')
 LATEST_VERSION=${LATEST_TAG#v}
 
 if [ -z "$LATEST_VERSION" ]; then

@@ -7,7 +7,11 @@ GITHUB_REPO="obsidianmd/obsidian-releases"
 echo "Checking for latest Obsidian release..."
 
 # Get latest tag via git ls-remote (no rate limit)
-LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | sort -V | tail -1)
+# NOTE: upstream tags may mix v-prefixed and bare schemes (e.g. v1.0.7 vs 1.0.8);
+# plain `sort -V` orders "v…" after bare versions and picks the WRONG latest
+# (hellwal 1.0.8 downgrade, 2026-09-15). Sort by the v-stripped version key
+# but keep the exact tag (download URLs need it verbatim).
+LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | sed -E 's/^v?([0-9].*)/\1 &/' | sort -V -k1,1 | tail -1 | awk '{print $2}')
 LATEST_VERSION=$(echo "$LATEST_TAG" | sed 's/^v//')
 
 if [ -z "$LATEST_VERSION" ]; then
