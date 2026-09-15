@@ -1,6 +1,6 @@
 Name:           mangowm
-Version:        0.17.0
-Release:        3%{?dist}
+Version:        0.17.1
+Release:        1%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <quietcraft@gmail.com>
@@ -72,13 +72,5 @@ dwl — crafted for speed, flexibility, and a customizable desktop experience.
 %config(noreplace) %{_datadir}/xdg-desktop-portal/mango-portals.conf
 
 %changelog
-* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.0-3
-- Fix unresolvable scenefx-devel >= 0.5.0 (COPR 10982842): use upstream's own
-  pkgconfig(scenefx-0.5) >= 0.5.0 form, which resolves via the .pc version
-
-* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.0-2
-- Add explicit ninja-build and wayland-scanner BuildRequires; add upstream-declared wlroots >= 0.20.0 and scenefx >= 0.5.0 floors
-- Mark config.conf and mango-portals.conf %config(noreplace)
-
-* Sat Sep 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.0-1
-- Auto-update to version 0.17.0
+* Tue Sep 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.1-1
+- Auto-update to version 0.17.1

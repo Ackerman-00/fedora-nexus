@@ -1,6 +1,6 @@
 Name:           hyprland-protocols
-Version:        0.7.0
-Release:        2%{?dist}
+Version:        0.7.1
+Release:        1%{?dist}
 Summary:        Wayland protocol extensions for Hyprland
 BuildArch:      noarch
 License:        BSD-3-Clause
@@ -39,6 +39,9 @@ Requires:       %{name} = %{version}-%{release}
 %files devel
 
 %changelog
+* Tue Sep 15 2026 Nexus Auto-Updater <bot@github.com> - 0.7.1-1
+- Update to version 0.7.1
+
 * Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.0-2
 - Ship protocol definitions and pc file in the main package so `dnf install hyprland-protocols` works.
 - Keep devel subpackage as compat wrapper.
