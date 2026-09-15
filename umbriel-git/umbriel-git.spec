@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          11c0c99b85c5aa579224cf0d2302f4f7356ac5c4
+%global commit          bc3ebdc84f8b482cc071b4ccd85fc4b34a3dab80
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260914015417
+%global gitdate         20260915014621
 
 # Fedora's default LTO flags (-flto=auto -ffat-lto-objects) trip a
 # binutils/GCC linker-plugin bug when linking umbriel's test binaries
@@ -14,7 +14,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts (Nexus Optimized Git Snapshot)
 
 License:        MIT
@@ -104,8 +104,5 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260914015417git11c0c99-2
-- Add explicit ninja-build BuildRequires (meson backend, repo convention + RPM322)
-
-* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260914015417git11c0c99-1
-- Nightly sync with upstream main branch (Commit: 11c0c99)
+* Tue Sep 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260915014621gitbc3ebdc-1
+- Nightly sync with upstream main branch (Commit: bc3ebdc)

@@ -8,8 +8,8 @@
 %global comet_version 0.2.0
 
 Name:           heroic-games-launcher
-Version:        2.22.1
-Release:        4%{?dist}
+Version:        2.22.2
+Release:        1%{?dist}
 Summary:        Open source launcher for GOG, Epic, and Amazon Games (Nexus Optimized)
 
 License:        GPL-3.0-only AND MIT AND BSD-3-Clause
@@ -102,6 +102,9 @@ find %{buildroot}/opt/Heroic -type f -name "*.a" -delete
 /opt/Heroic/
 
 %changelog
+* Tue Sep 15 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.2-1
+- Auto-update to upstream release v2.22.2
+
 * Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.1-4
 - Update to upstream 2.22.1 (the auto-updater bumped Version without a
   changelog entry; Release continues from the already-published 2.22.1-3
