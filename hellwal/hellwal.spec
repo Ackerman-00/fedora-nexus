@@ -1,6 +1,6 @@
 Name:           hellwal
-Version:        1.0.7
-Release:        1%{?dist}
+Version:        1.0.8
+Release:        2%{?dist}
 Summary:        Pywal-like color palette generator, but faster and in C
 
 License:        MIT
@@ -35,5 +35,16 @@ install -Dpm0644 assets/hellwal-completion.bash %{buildroot}%{bash_completions_d
 %{bash_completions_dir}/%{name}
 
 %changelog
-* Tue Sep 15 2026 Ackerman-00 <quietcraft@gmail.com> - 1.0.7-1
-- Auto-update to version 1.0.7
+* Tue Sep 15 2026 Ackerman-00 <quietcraft@gmail.com> - 1.0.8-2
+- Restore 1.0.8 after auto-updater tag-sort downgrade to 1.0.7 (update.sh
+  picked v1.0.7 over the newer bare 1.0.8 tag; the 1.0.7 Source 404s on
+  codeload and failed COPR build 10989360); tag ordering fixed in update.sh
+* Tue Sep 15 2026 Ackerman-00 <quietcraft@gmail.com> - 1.0.8-1
+- Update to version 1.0.8 (template color operations, wallpaper-derived
+  background, first-run directory creation, terminal/symlink fixes;
+  upstream tag scheme changed v1.0.7 -> 1.0.8, Source URL updated)
+* Wed Sep 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.0.7-2
+- Strip upstream shebang from bash completion (sourced, never executed;
+  fixes rpmlint non-executable-script error)
+* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 1.0.7-1
+- Initial package
