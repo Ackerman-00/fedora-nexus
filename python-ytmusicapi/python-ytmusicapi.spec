@@ -4,8 +4,8 @@
 %global debug_package %{nil}
 
 Name:           python-ytmusicapi
-Version:        1.12.2
-Release:        3%{?dist}
+Version:        1.12.3
+Release:        1%{?dist}
 Summary:        Unofficial API for YouTube Music
 
 License:        MIT
@@ -44,6 +44,9 @@ dependency of mixtapes.
 %{_bindir}/ytmusicapi
 
 %changelog
+* Wed Sep 16 2026 Ackerman-00 <quietcraft@gmail.com> - 1.12.3-1
+- Auto-update to upstream PyPI release 1.12.3
+
 * Sun Sep 06 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.12.2-3
 - Provide python3-ytmusicapi (name expected by mixtapes Requires;
   COPR mixtapes install failed on unresolvable python3-* names).
