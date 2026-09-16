@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          6ca1d08c7fe49f396fe68eb65386ab59f5ca7c6e
+%global commit          0a74b592c5a253f95cb28f5cefd0a1ac1a41e9f4
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260915151519
+%global gitdate         20260916104611
 
 # Fedora's default LTO flags (-flto=auto -ffat-lto-objects) trip a
 # binutils/GCC linker-plugin bug when linking umbriel's test binaries
@@ -55,7 +55,6 @@ Requires:       xwayland-satellite-git
 Requires:       xdg-desktop-portal-umbriel-git
 Requires:       mesa-dri-drivers
 Requires:       mesa-libEGL
-Requires:       libwayland-server
 # Portal framework - xdg-desktop-portal-umbriel-git is the Umbriel backend
 Requires:       xdg-desktop-portal
 
@@ -104,5 +103,6 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Tue Sep 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260915151519git6ca1d08-1
-- Nightly sync with upstream main branch (Commit: 6ca1d08)
+* Wed Sep 16 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260916104611git0a74b59-1
+- Nightly sync with upstream main branch (Commit: 0a74b59)
+- Drop redundant Requires: libwayland-server (auto soname dep covers it, rpmlint E)
