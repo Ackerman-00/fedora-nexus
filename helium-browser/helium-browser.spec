@@ -1,3 +1,10 @@
+# MAINTENANCE: ackerman/nexus COPR only — auto-update DISABLED (2026-09-17).
+# Helium re-releases often (Chromium rebuilds, sometimes tag-before-assets)
+# and each bump re-downloads ~130MB; updates are done deliberately by the
+# maintainer, not by update-engine.yml. update.sh is an intentional no-op
+# (kept so the generic scanner keeps skipping this spec). To update: bump
+# Version, verify tarball + tag assets exist, push (COPR auto-builds),
+# confirm the new build is green.
 %global             debug_package %{nil}
 %global             helium_base /opt/helium
 
@@ -11,15 +18,19 @@
 
 Name:               helium-browser
 Version:        0.17.1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:            Private, fast, and honest web browser
 
-License:            GPL-3.0-only
+License:            GPL-3.0-only AND BSD-3-Clause
 URL:                https://github.com/imputnet/helium-linux
 Source0:            https://github.com/imputnet/helium-linux/releases/download/%{version}/helium-%{version}-x86_64_linux.tar.xz
 # The official binary tarball does not ship the metainfo file, so pull it
 # from the repo at the matching release tag (all release tags carry it).
 Source1:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/package/net.imput.helium.metainfo.xml
+# The binary tarball carries no license texts either (s6muel fetches
+# LICENSE.ungoogled_chromium from the tag too); stage both for %license.
+Source2:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/LICENSE
+Source3:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/LICENSE.ungoogled_chromium
 
 ExclusiveArch:      x86_64
 
@@ -30,6 +41,9 @@ Requires:           hicolor-icon-theme
 # Chromium calls xdg-mime/xdg-settings/xdg-open at runtime (not ELF-linked,
 # so auto-deps miss it). Same as Fedora's chromium package.
 Requires:           xdg-utils
+# Chromium dlopens dbus at runtime (invisible to ELF auto-deps); s6muel's dep
+# review and CachyOS both list dbus explicitly.
+Requires:           dbus-daemon
 Requires(post):     desktop-file-utils
 Requires(post):     gtk-update-icon-cache
 Requires(postun):   gtk-update-icon-cache
@@ -44,6 +58,10 @@ while keeping the Chromium browsing experience.
 
 %prep
 %setup -q -n helium-%{version}-x86_64_linux
+
+# Stage the tag-fetched license texts for %license (see Source2/Source3).
+cp %{SOURCE2} LICENSE.GPL-3.0-only
+cp %{SOURCE3} LICENSE.ungoogled_chromium
 
 %build
 # Using prebuilt binaries
@@ -91,6 +109,8 @@ esac
 
 %files
 %defattr(-,root,root,-)
+%license LICENSE.GPL-3.0-only
+%license LICENSE.ungoogled_chromium
 %{helium_base}/
 %{_bindir}/helium
 %{_datadir}/applications/helium.desktop
@@ -98,5 +118,9 @@ esac
 %{_datadir}/icons/hicolor/256x256/apps/helium.png
 
 %changelog
+* Thu Sep 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.1.1-2
+- Ship license texts (%license LICENSE + LICENSE.ungoogled_chromium from tag; License tag now GPL-3.0-only AND BSD-3-Clause, matching Terra/s6muel)
+- Add Requires: dbus-daemon (Chromium dlopens dbus, invisible to auto-deps)
+- COPR-only manual maintenance, auto-update disabled (update.sh is now a no-op)
 * Wed Sep 16 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.1.1-1
 - Auto-update to upstream release 0.17.1.1

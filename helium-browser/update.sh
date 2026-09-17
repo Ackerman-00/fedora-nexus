@@ -1,56 +1,9 @@
 #!/bin/bash
-# update.sh for Helium Browser (Repackaging Build)
-
-SPEC_FILE="helium-browser.spec"
-GITHUB_REPO="imputnet/helium-linux"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
-
-echo "Checking for upstream updates on $GITHUB_REPO..."
-
-# Get latest tag via git ls-remote (no rate limit)
-LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?$' | sort -V | tail -1)
-
-if [ -z "$LATEST_TAG" ]; then
-    echo "  -> [ERROR] Failed to fetch latest tag."
-    exit 1
-fi
-
-LATEST_VERSION="$LATEST_TAG"
-
-# Read current version from the spec file
-CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
-
-# Compare and update
-if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
-    echo "  -> [UPDATE] New version detected: $LATEST_VERSION (Current: $CURRENT_VERSION)"
-
-    # A tag can exist before its release assets do: helium's release workflow
-    # uploads the tarballs at the end. Bumping on a tag whose asset is missing
-    # produces a spec whose Source0 404s, so every COPR rebuild of that NVR
-    # fails. Only bump once the tarball really exists.
-    TARBALL_URL="https://github.com/$GITHUB_REPO/releases/download/$LATEST_VERSION/helium-$LATEST_VERSION-x86_64_linux.tar.xz"
-    echo "  -> [CHECK] Verifying $TARBALL_URL"
-    if ! curl --output /dev/null --silent --location --head --fail "$TARBALL_URL"; then
-        echo "  -> [ERROR] Linux x86_64 tarball for $LATEST_VERSION is not yet available on GitHub. Skipping update."
-        exit 1
-    fi
-
-    # 1. Update the Version and Release fields
-    sed -i "s/^Version:\s*.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
-    sed -i "s/^Release:\s*.*/Release:        1%{?dist}/" "$SPEC_FILE"
-
-    # 2. Replace changelog with single entry
-    DATE=$(LC_ALL=C date +"%a %b %d %Y")
-    sed -i '/^%changelog/,$d' "$SPEC_FILE"
-    {
-        echo "%changelog"
-        echo "* $DATE $PACKAGER - $LATEST_VERSION-1"
-        echo "- Auto-update to upstream release $LATEST_TAG"
-    } >> "$SPEC_FILE"
-
-    echo "  -> [DONE] $SPEC_FILE is ready for build."
-else
-    echo "  -> [OK] Helium is already on latest ($CURRENT_VERSION)."
-fi
-
-# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).
+# MAINTENANCE: helium-browser is maintained MANUALLY in ackerman/nexus COPR only.
+# Auto-update is DISABLED (2026-09-17): Helium re-releases often (Chromium
+# rebuilds, sometimes tag-before-assets) and each bump re-downloads ~130MB,
+# so updates are done deliberately by the maintainer, not by update-engine.yml.
+# This intentional no-op keeps the generic scanner skipping helium-browser.spec
+# (update-engine.yml skips specs that have an update.sh) while changing nothing.
+echo "helium-browser is COPR-only, manually maintained (ackerman/nexus) — auto-update disabled, nothing to do."
+exit 0
