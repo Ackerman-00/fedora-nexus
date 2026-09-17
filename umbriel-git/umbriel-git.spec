@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          f0b3830afd997e04f25ab0c80f3d09a9e8814704
+%global commit          42e7ef38ae938f4796b70b16fc1238d9c96cf01f
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260917113454
+%global gitdate         20260917134225
 
 # Fedora's default LTO flags (-flto=auto -ffat-lto-objects) trip a
 # binutils/GCC linker-plugin bug when linking umbriel's test binaries
@@ -103,5 +103,5 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Thu Sep 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260917113454gitf0b3830-1
-- Nightly sync with upstream main branch (Commit: f0b3830)
+* Thu Sep 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260917134225git42e7ef3-1
+- Nightly sync with upstream main branch (Commit: 42e7ef3)

@@ -1,6 +1,6 @@
 Name:           mangowm
-Version:        0.17.1
-Release:        2%{?dist}
+Version:        0.17.2
+Release:        1%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <quietcraft@gmail.com>
@@ -77,8 +77,5 @@ dwl — crafted for speed, flexibility, and a customizable desktop experience.
 %{_userunitdir}/mango-session.target
 
 %changelog
-* Tue Sep 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.1-2
-- Ship new upstream mango-session.target user unit (COPR 10988486 failed
-  with "Installed (but unpackaged) file(s) found").
-* Tue Sep 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.1-1
-- Auto-update to version 0.17.1
+* Thu Sep 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.2-1
+- Auto-update to version 0.17.2
