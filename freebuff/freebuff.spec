@@ -2,7 +2,7 @@
 %global debug_package %{nil}
 
 Name:           freebuff
-Version:        0.0.175
+Version:        0.0.176
 Release:        1%{?dist}
 Requires:           hicolor-icon-theme
 Summary:        The free coding agent for your desktop
@@ -12,7 +12,7 @@ URL:            https://freebuff.com/desktop
 # Standalone ELF binary + tree-sitter.wasm (upstream switched from AppImage to
 # tar.gz format starting ~v0.0.80; this tag is the latest with a working release)
 Source0:        https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v%{version}/freebuff-linux-x64.tar.gz
-# sha256: 3a38960e791a262f86af1681f46f9a40fe379a5ffa9c65144a3a8e4935905a34
+# sha256: cb742923dfac5949ed453c1e1ddc4c0b67e0460bb7581acb72e72e92d2418826
 
 ExclusiveArch:  x86_64
 
@@ -73,5 +73,5 @@ fi
 %{_datadir}/icons/hicolor/512x512/apps/freebuff.png
 
 %changelog
-* Tue Sep 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.175-1
-- Auto-updated to 0.0.175 via update.sh
+* Thu Sep 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.176-1
+- Auto-updated to 0.0.176 via update.sh
