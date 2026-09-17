@@ -16,16 +16,18 @@ if [ -n "$DISP_VERSION" ] && [ "$DISP_VERSION" != "$VERSION" ]; then
     VERSION="$DISP_VERSION"
 fi
 # Also follow redirect and check final RPM's Content-Disposition if still empty
+# Filename is authoritative: it names the RPM that actually downloads.
+# The X-Fluxer-Version header sometimes leads (advertises a version whose
+# RPM is not served yet) or lags the filename - never trust it over the
+# filename. Only fall back to the header when no filename was served.
 if [ -z "$VERSION" ] || [ "$VERSION" != "$DISP_VERSION" ]; then
     FINAL_HEADER=$(curl -sI --max-time 15 -L -A "Mozilla/5.0" "$API_URL")
     FINAL_DISP=$(echo "$FINAL_HEADER" | grep -i "content-disposition" | grep -oP 'Fluxer-Canary-\K[0-9.]+' | head -1)
     if [ -n "$FINAL_DISP" ]; then
-        # Compare semantic version: use sort -V
-        NEWER=$(printf "%s\n%s\n" "$VERSION" "$FINAL_DISP" | sort -V | tail -1)
-        if [ "$NEWER" != "$VERSION" ]; then
-            echo "Note: final redirect version $FINAL_DISP newer than $VERSION, using $FINAL_DISP"
-            VERSION="$FINAL_DISP"
+        if [ "$FINAL_DISP" != "$VERSION" ]; then
+            echo "Note: served RPM filename $FINAL_DISP vs X-Fluxer-Version=$VERSION, using $FINAL_DISP (filename authoritative)"
         fi
+        VERSION="$FINAL_DISP"
     fi
 fi
 
