@@ -14,7 +14,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts (Nexus Optimized Git Snapshot)
 
 License:        MIT
@@ -103,5 +103,10 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Thu Sep 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260917000358gitbc95a27-2
+- Rebuild: COPR build 10993878 failed in mock bootstrap on transient
+  download.copr.fedorainfracloud.org 504s (copr_base repodata unreachable
+  on f43/f44/rawhide, spec untouched); repodata healthy again, rebuilding
+  same sources under a new NVR so the failed build is superseded
 * Thu Sep 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260917000358gitbc95a27-1
 - Nightly sync with upstream main branch (Commit: bc95a27)
