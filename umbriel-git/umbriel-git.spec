@@ -14,7 +14,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts (Nexus Optimized Git Snapshot)
 
 License:        MIT
@@ -24,6 +24,7 @@ Source0:        %{url}/archive/%{commit}/umbriel-%{shortcommit}.tar.gz
 ExclusiveArch:  x86_64 aarch64
 
 BuildRequires:  gcc-c++
+BuildRequires:  git
 BuildRequires:  meson >= 1.3
 BuildRequires:  ninja-build
 BuildRequires:  systemd-rpm-macros
@@ -57,6 +58,13 @@ Requires:       mesa-dri-drivers
 Requires:       mesa-libEGL
 # Portal framework - xdg-desktop-portal-umbriel-git is the Umbriel backend
 Requires:       xdg-desktop-portal
+# start-umbriel needs systemctl (managed path) + dbus session helpers.
+# Verified on F44: dnf repoquery --whatprovides => systemd, dbus-daemon, dbus-tools.
+Requires:       systemd
+Requires:       dbus-daemon
+Requires:       dbus-tools
+# PACKAGING.md runtime table: "a usable font stack" for overlays/diagnostics.
+Recommends:     liberation-fonts
 
 Provides:       umbriel = %{version}-%{release}
 Provides:       wayland-compositor
@@ -74,7 +82,9 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %autosetup -n umbriel-%{commit}
 
 %build
-%meson -Db_lto=true
+# -Dtests=disabled states the release-build intent explicitly (PACKAGING.md;
+# tests=auto already resolves off for release, same as nix/package.nix).
+%meson -Db_lto=true -Dtests=disabled
 %meson_build
 
 %install
@@ -103,5 +113,8 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Thu Sep 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260917134225git42e7ef3-2
+- Add BuildRequires: git (meson vcs_tag revision stamp) and -Dtests=disabled (explicit per PACKAGING.md)
+- Add Requires: systemd, dbus-daemon, dbus-tools (start-umbriel helpers, verified via dnf repoquery); Recommends: liberation-fonts (PACKAGING.md font stack)
 * Thu Sep 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260917134225git42e7ef3-1
 - Nightly sync with upstream main branch (Commit: 42e7ef3)
