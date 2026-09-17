@@ -1,3 +1,9 @@
+# MAINTENANCE: ackerman/nexus COPR only — auto-update DISABLED (2026-09-17).
+# Upstream publishes 2-3 builds per week and every bump is a multi-hour COPR
+# Rust build, so updates are done deliberately by the maintainer, not by
+# update-engine.yml. update.sh is an intentional no-op (kept so the generic
+# scanner keeps skipping this spec). To update: bump Version, verify the tag
+# tarball exists, push (COPR auto-builds), confirm the new build is green.
 %global crate zed
 %global appid dev.zed.Zed
 
