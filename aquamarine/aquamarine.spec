@@ -1,5 +1,5 @@
 Name:           aquamarine
-Version:        0.15.0
+Version:        0.15.1
 Release:        1%{?dist}
 Summary:        A very light linux rendering backend library
 License:        BSD-3-Clause
@@ -55,6 +55,9 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Thu Sep 17 2026 Nexus Auto-Updater <bot@github.com> - 0.15.1-1
+- Update to version 0.15.1
+
 * Sat Aug 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.15.0-1
 - Update to version 0.15.0
 
