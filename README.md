@@ -38,7 +38,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 95 packages</summary>
+<summary>Click to expand — 96 packages</summary>
 
 <br />
 
@@ -127,6 +127,7 @@ sudo dnf install <package-name>
 | `rootapp` | Discord alternative for gaming communities and large online groups | Stable |
 | `rustypipe-botguard` | YouTube Botguard challenge solver for PO token generation | Stable |
 | `scenefx` | Drop-in wlroots scene API replacement with eye-candy effects | Stable |
+| `sonora` | Native music streaming client | Stable |
 | `splayer-next` | Cross-platform desktop music player with rich lyric support | Stable |
 | `starship` | Minimal, blazing-fast, customizable prompt for any shell | Stable |
 | `stoat-desktop` | Open source, user-first chat platform desktop client | Stable |
