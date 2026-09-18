@@ -10,8 +10,8 @@
 %global __brp_check_rpaths %{nil}
 
 Name:           stoat-desktop
-Version:        1.5.3
-Release:        3%{?dist}
+Version:        1.5.4
+Release:        1%{?dist}
 Summary:        Open source, user-first chat platform desktop client
 
 License:        AGPL-3.0-only AND MIT AND BSD-2-Clause
@@ -93,6 +93,9 @@ chmod 0755 %{buildroot}%{_bindir}/stoat-desktop
 %attr(4755, root, root) /opt/Stoat/chrome-sandbox
 
 %changelog
+* Fri Sep 18 2026 Nexus Auto-Updater <bot@github.com> - 1.5.4-1
+- Update to version 1.5.4
+
 * Thu Aug 21 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.5.3-3
 - Rebuild for COPR (spec validation fix)
 
