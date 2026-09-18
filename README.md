@@ -38,7 +38,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 81 packages</summary>
+<summary>Click to expand — 95 packages</summary>
 
 <br />
 
@@ -60,6 +60,7 @@ sudo dnf install <package-name>
 | `caelestia-shell-mango` | Desktop shell for MangoWM | Stable |
 | `cascadia-code-nerd-fonts` | Cascadia Code patched with Nerd Fonts icons | Stable |
 | `cliphist` | Wayland clipboard manager with support for multimedia | Stable |
+| `concord` | Feature-rich TUI client for Discord | Stable |
 | `extension-manager` | Native tool for browsing and managing GNOME Shell Extensions | Stable |
 | `fluxer` | Free and open source instant messaging and VoIP platform | Stable |
 | `freebuff` | The free coding agent for your desktop (parallel agents, private workspaces) | Stable |
