@@ -10,8 +10,9 @@ Three-layer defense-in-depth for package staleness and integrity:
 
 Pure stdlib Python helper the **agent calls** (not a separate CI gate). Downloads every
 artifact, tears it apart (AppImage extract, .deb control, zip internals, Electron
-.asar, `application.ini`, ELF `--version` probe), verifies checksums (sha256,
-BLAKE2B+SHA512, SRI), reads internal versions, compares against upstream, and
+.asar, `application.ini`, ELF `--version` probe), verifies checksums (Fedora
+specs pin `# sha256:`; BLAKE2B+SHA512/SRI paths are cross-repo heritage in the
+shared script, not Fedora convention), reads internal versions, compares against upstream, and
 (2026-08) runs RPM excellence checks: `rpmspec -P`, `dnf builddep --assumeno`
 (spec-dry-build), `rpm-spec-tool` RPM320-324, `rpmlint`/`rpmdeplint` hooks.
 The agent IS the teardown — it must tear every package apart itself, produce
@@ -50,6 +51,12 @@ Runs INSIDE the agent's execution. For each package:
 Key features:
 - `trivy_scan_image()`: scans base Docker images for CRITICAL/HIGH/MEDIUM CVEs
 - `--scan-images` flag: enables Trivy CVE scanning of base layers
+- Trivy floor (Sept 2026, OSV GHSA-69fq-xp46-6x23): March 2026 supply-chain
+  compromise shipped malicious trivy v0.69.4 / hijacked trivy-action tags /
+  DockerHub 0.69.5+0.69.6 images. Require trivy >= 0.72.0 (fixes CVE-2026-55092,
+  CVE-2026-63328), verify binary provenance, pin trivy GitHub Actions to
+  immutable commit SHAs. Fedora 44 repos still ship 0.69.3 — do NOT treat the
+  distro package as safe without checking.
 - Works for ANY package type (gentoo, fedora, nix, void, opensuse)
 
 ### Layer 2: Agentic self-healing prompt (opencode-schedule.yml PROMPT) — MANDATORY
@@ -59,22 +66,35 @@ is NOT optional and NOT a pass-anyway script. It must:
 
 1. Tear every .spec + Source0 apart itself (Cargo.toml/meson.build/go.mod vs BuildRequires)
 2. Run 2026 toolchain: `rpmspec -P`, `spectool -g`, `rpmbuild -bs`, `dnf builddep --assumeno` (or docker fedora:44), `rpmlint`/`rpmdeplint`, `rpm-spec-tool` RPM320-324 — log output
-3. Produce the mandatory deliverable `| package | upstream deps | in spec | missing | status |` for ALL 82 packages
+3. Produce the mandatory deliverable `| package | upstream deps | in spec | missing | status |` for ALL packages (94 specs as of 2026-09-17 — derive via `ls */*.spec | wc -l`, NEVER hardcode the count)
    - OSV.dev vulnerability scan (CVEs on pinned version)
    - Repology freshness (outdated vs 120+ repos)
    - Libyear drift (years behind upstream, budget=20yr)
-   - Auto-update tool hints (livecheck, autocopr, nix-update)
-3. For each OUTDATED: use the suggested auto-update tool to fix it
-4. For each FAIL/MISMATCH: re-download, verify checksum, update if re-released
-5. LIBYEAR ENFORCEMENT: if >20 yr, prioritize highest-drift packages
-6. Never close a teardown issue without passing sweep + evidence
-7. False positive defense: fix the sweep script, never weaken checks
+   - Auto-update tool hints (per-package `update.sh`, else update-engine.yml scanner)
+4. For each OUTDATED: run the package's `update.sh` (or fix it) to update
+5. For each FAIL/MISMATCH: re-download, verify checksum, update if re-released
+6. LIBYEAR ENFORCEMENT: if >20 yr, prioritize highest-drift packages
+7. Never close a teardown issue without passing sweep + evidence
+8. False positive defense: fix the sweep script, never weaken checks
 
 ### Layer 3: CI gate + issue auto-open — ENFORCED
 
 `gate_passes()` in `opencode-schedule.yml` now hard-checks that
 `.opencode-relay.md` on main contains `run_id` + `status: complete` + `PACKAGE.*BR.*Req` / `deps-verified` / `dependency audit`.
 If the agent skips the dependency table, the job fails and the next run retries with a stronger model. Cleanup job opens an issue on failure.
+
+### Environment baseline (verified 2026-09-17 via web search — re-discover every run, never hardcode)
+
+- Fedora 44 = current stable (GA 2026-04-28, EOL ~2027-06-02). Fedora 43
+  supported, EOL 2026-12-09. Fedora 45 branched 2026-08-11, beta freeze
+  2026-08-25, GA scheduled 2026-10-20 (GNOME 51, GCC 16.2, RPM 6.1,
+  Python 3.15, OpenSSL 4.0 wave). Rawhide = F46. COPR chroots
+  fedora-43/44/45-x86_64 + fedora-rawhide-x86_64 match this — query the
+  COPR project API every run.
+- RPM 6.0 (F43+, multi-key signing) / 6.1 (F45 beta); rpmlint 2.9–2.10
+  current. The Layer 2 toolchain above remains the excellence floor.
+- Repology API: bulk clients must send a User-Agent and stay ≤1 req/s.
+  OSV.dev `v1/querybatch` takes up to 1000 queries per POST, no auth.
 
 ### Why this architecture
 
