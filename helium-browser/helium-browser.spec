@@ -17,8 +17,8 @@
 %global __provides_exclude_from ^%{helium_base}/.*$
 
 Name:               helium-browser
-Version:        0.17.1.1
-Release:        2%{?dist}
+Version:        0.17.2.1
+Release:        1%{?dist}
 Summary:            Private, fast, and honest web browser
 
 License:            GPL-3.0-only AND BSD-3-Clause
@@ -118,6 +118,8 @@ esac
 %{_datadir}/icons/hicolor/256x256/apps/helium.png
 
 %changelog
+* Fri Sep 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.2.1-1
+- Update to upstream release 0.17.2.1 (Chromium 153.0.8010.52, uBlock 1.75.0)
 * Thu Sep 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.1.1-2
 - Ship license texts (%license LICENSE + LICENSE.ungoogled_chromium from tag; License tag now GPL-3.0-only AND BSD-3-Clause, matching Terra/s6muel)
 - Add Requires: dbus-daemon (Chromium dlopens dbus, invisible to auto-deps)
