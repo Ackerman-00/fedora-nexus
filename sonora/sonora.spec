@@ -4,7 +4,7 @@
 
 Name:           sonora
 Version:        0.37.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Native music streaming client
 # Workspace is GPL-3.0-or-later; the binary embeds the Inter typeface
 # (OFL-1.1) and four icon packs (Lucide ISC, Iconoir MIT, Remix Apache-2.0,
@@ -25,6 +25,10 @@ BuildRequires:  mold
 # locked in Cargo.lock but fetched at build time — cargo needs git.
 BuildRequires:  git
 BuildRequires:  pkgconf-pkg-config
+# opusic-sys (Opus codec, audio stack) configures its bundled build with the
+# cmake binary — proven by COPR F45 build 10999320 ("is `cmake` not installed?").
+# Upstream docs omit it (their CI/dev boxes already carry it); not optional here.
+BuildRequires:  cmake
 # Native deps from upstream CLAUDE.md "Building" (Fedora set) + flatpak
 # manifest: GPUI links x11/xcb/xkb/wayland/vulkan/fontconfig/freetype,
 # cpal/rodio need alsa, rusqlite links system sqlite (non-Windows),
@@ -125,5 +129,7 @@ esac
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
+* Fri Sep 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.37.0-2
+- Add BuildRequires: cmake (opusic-sys build script shells out to it; F45 build 10999320 failed without it)
 * Fri Sep 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.37.0-1
 - Initial package (source build with system libraries)
