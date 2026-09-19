@@ -15,7 +15,7 @@
 
 Name:           fluxer
 Version:        2026.919.185602
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
@@ -41,11 +41,18 @@ friends, groups, and communities. Self-hosting and more.
 %prep
 %setup -T -c
 rpm2cpio %{SOURCE0} | cpio -idmv
-# Upstream Fluxer RPM ships as either "Fluxer" (stable) or "Fluxer Canary" (canary)
+# Upstream Fluxer RPM ships as either "Fluxer" (stable), "Fluxer Canary"
+# (canary, mixed case) or "fluxer-canary" (canary, lowercase, since 2026.919)
 # with matching desktop/icon/binary names. Normalize to "Fluxer"/"fluxer" so the
-# rest of the spec works for either channel.
+# rest of the spec works for any channel.
 if [ -d "opt/Fluxer Canary" ] && [ ! -e "opt/Fluxer" ]; then
   mv "opt/Fluxer Canary" "opt/Fluxer"
+fi
+if [ -d "opt/fluxer-canary" ] && [ ! -e "opt/Fluxer" ]; then
+  mv "opt/fluxer-canary" "opt/Fluxer"
+fi
+if [ -d "opt/fluxer" ] && [ ! -e "opt/Fluxer" ]; then
+  mv "opt/fluxer" "opt/Fluxer"
 fi
 if [ -f "usr/share/applications/fluxer-canary.desktop" ] && [ ! -f "usr/share/applications/fluxer.desktop" ]; then
   cp "usr/share/applications/fluxer-canary.desktop" "usr/share/applications/fluxer.desktop"
@@ -99,5 +106,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %{_datadir}/icons/hicolor/*/apps/%{appid}.png
 
 %changelog
+* Sat Sep 19 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.919.185602-2
+- Handle lowercase opt/fluxer-canary layout (2026.919 ships canary dir,
+  broke %install cp -a opt/Fluxer/*, COPR 11004735)
+
 * Sat Sep 19 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.919.185602-1
 - Update to version 2026.919.185602
