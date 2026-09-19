@@ -14,7 +14,7 @@
 
 Name:           hyprland-plugins
 Version:        0.1^%{bumpver}.git%{shortcommit0}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Official plugins for Hyprland
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprland-plugins
@@ -26,7 +26,7 @@ BuildRequires:  gcc-c++
 BuildRequires:  cmake
 BuildRequires:  hyprland-devel
 
-Requires:       hyprland = %_hyprland_version
+Requires:       hyprland = %{hyprland_ver}
 
 # print Recommends: for each plugin
 %{lua:for w in rpm.expand('%plugins'):gmatch("%S+") do print("Recommends: hyprland-plugin-"..w..'\n') end}
@@ -36,7 +36,7 @@ Requires:       hyprland = %_hyprland_version
 
 %define _package() \%package -n hyprland-plugin-%1\
 Summary:       %1 plugin for Hyprland\
-Requires:      hyprland = %_hyprland_version\
+Requires:      hyprland = %{hyprland_ver}\
 \%description  -n hyprland-plugin-%1\
 \%1 plugin for Hyprland.\
 \%files -n     hyprland-plugin-%1\
@@ -70,6 +70,11 @@ done
 %files
 
 %changelog
+* Sat Sep 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^3.git00862ca-2
+- Fix unexpanded macro in Requires: %_hyprland_version was never defined
+  (the macro is %{hyprland_ver}); every RPM carried a literal unsatisfiable
+  `Requires: hyprland = %_hyprland_version`. Now pins hyprland = 0.56.2.
+
 * Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^3.git00862ca-1
 - Pin to hyprland 0.56.2 compat commit 00862ca (last hyprpm pin for 0.56.2)
   Fixes build: main-HEAD a9eaa52 requires hyprland/src/keybinds/Manager.hpp
