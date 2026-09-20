@@ -9,7 +9,7 @@ echo "Checking for upstream updates..."
 # Try X-Fluxer-Version header first, then Content-Disposition filename (header is sometimes stale)
 HEADER=$(curl -sI --max-time 15 -A "Mozilla/5.0" "$API_URL")
 VERSION=$(echo "$HEADER" | grep -i "^X-Fluxer-Version:" | awk '{print $2}' | tr -d '\r')
-DISP_VERSION=$(echo "$HEADER" | grep -i "content-disposition" | grep -oP 'Fluxer-Canary-\K[0-9.]+' | head -1)
+DISP_VERSION=$(echo "$HEADER" | grep -i "content-disposition" | grep -oP 'Fluxer-\K[0-9.]+' | head -1)
 # Prefer the newer version if they differ (filename is authoritative when header lags)
 if [ -n "$DISP_VERSION" ] && [ "$DISP_VERSION" != "$VERSION" ]; then
     echo "Note: X-Fluxer-Version=$VERSION vs Content-Disposition=$DISP_VERSION, using $DISP_VERSION (filename authoritative)"
@@ -22,7 +22,7 @@ fi
 # filename. Only fall back to the header when no filename was served.
 if [ -z "$VERSION" ] || [ "$VERSION" != "$DISP_VERSION" ]; then
     FINAL_HEADER=$(curl -sI --max-time 15 -L -A "Mozilla/5.0" "$API_URL")
-    FINAL_DISP=$(echo "$FINAL_HEADER" | grep -i "content-disposition" | grep -oP 'Fluxer-Canary-\K[0-9.]+' | head -1)
+    FINAL_DISP=$(echo "$FINAL_HEADER" | grep -i "content-disposition" | grep -oP 'Fluxer-\K[0-9.]+' | head -1)
     if [ -n "$FINAL_DISP" ]; then
         if [ "$FINAL_DISP" != "$VERSION" ]; then
             echo "Note: served RPM filename $FINAL_DISP vs X-Fluxer-Version=$VERSION, using $FINAL_DISP (filename authoritative)"
