@@ -14,8 +14,8 @@
 %global __requires_exclude ^libffmpeg\\.so.*$|^libcbor\\.so.*$
 
 Name:           fluxer
-Version:        2026.919.185602
-Release:        2%{?dist}
+Version:        2026.919.232330
+Release:        1%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
@@ -106,9 +106,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %{_datadir}/icons/hicolor/*/apps/%{appid}.png
 
 %changelog
-* Sat Sep 19 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.919.185602-2
-- Handle lowercase opt/fluxer-canary layout (2026.919 ships canary dir,
-  broke %install cp -a opt/Fluxer/*, COPR 11004735)
-
-* Sat Sep 19 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.919.185602-1
-- Update to version 2026.919.185602
+* Sun Sep 20 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.919.232330-1
+- Update to version 2026.919.232330
