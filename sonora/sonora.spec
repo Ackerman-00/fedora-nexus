@@ -3,8 +3,8 @@
 %global appid io.github.nolight132.sonora
 
 Name:           sonora
-Version:        0.37.0
-Release:        2%{?dist}
+Version:        0.38.0
+Release:        1%{?dist}
 Summary:        Native music streaming client
 # Workspace is GPL-3.0-or-later; the binary embeds the Inter typeface
 # (OFL-1.1) and four icon packs (Lucide ISC, Iconoir MIT, Remix Apache-2.0,
@@ -129,7 +129,5 @@ esac
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
-* Fri Sep 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.37.0-2
-- Add BuildRequires: cmake (opusic-sys build script shells out to it; F45 build 10999320 failed without it)
-* Fri Sep 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.37.0-1
-- Initial package (source build with system libraries)
+* Sun Sep 20 2026 Ackerman-00 <quietcraft@gmail.com> - 0.38.0-1
+- Auto-update to upstream stable release v0.38.0
