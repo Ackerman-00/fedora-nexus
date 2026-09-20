@@ -1,6 +1,6 @@
 Name:           mangowm
 Version:        0.17.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <quietcraft@gmail.com>
@@ -13,6 +13,9 @@ BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-icccm)
+# xwayland defaults to enabled upstream: xcb-randr is required, not auto.
+# Resolves via libxcb-devel today, but every upstream dep needs its own BR.
+BuildRequires:  pkgconfig(xcb-randr)
 # No upstream floor, but the staging XMLs consumed in protocols/ (cursor-shape,
 # ext-workspace, image-capture, …) need a recent protocols package.
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.41
@@ -77,5 +80,7 @@ dwl — crafted for speed, flexibility, and a customizable desktop experience.
 %{_userunitdir}/mango-session.target
 
 %changelog
+* Sun Sep 20 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.2-2
+- Add explicit pkgconfig(xcb-randr) BR (xwayland defaults enabled upstream)
 * Thu Sep 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.2-1
 - Auto-update to version 0.17.2
