@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          02dbb072f40891d86818132f1ef0a35d2973aced
+%global commit          c803861925bfe759968472c2fbab0aa870eb3b2e
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260920021731
+%global gitdate         20260920164115
 
 Name:           noctalia-greeter
 Version:        1.5.0^%{gitdate}git%{shortcommit}
@@ -116,5 +116,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Sun Sep 20 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260920021731git02dbb07-1
-- Nightly sync with upstream main branch (Commit: 02dbb07)
+* Sun Sep 20 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260920164115gitc803861-1
+- Nightly sync with upstream main branch (Commit: c803861)
