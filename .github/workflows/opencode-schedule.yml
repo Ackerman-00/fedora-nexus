@@ -61,31 +61,33 @@ jobs:
             echo "opencode install attempt $i/4 failed - sleeping 30s"
             sleep 30
           done
-          # 2) npm fallback (documented install method at opencode.ai). Link the
-          #    binary into $HOME/.opencode/bin so later steps need no PATH change.
+          # 2) npm fallback (V2 package per https://opencode.ai/v2/docs/cli/commands).
+          #    Link the binary into $HOME/.opencode/bin so later steps need no PATH change.
           if ! command -v opencode >/dev/null 2>&1; then
             echo "official installer failed - trying npm"
-            npm install -g opencode-ai || sudo npm install -g opencode-ai || true
+            npm install -g @opencode/cli || sudo npm install -g @opencode/cli || true
             if command -v opencode >/dev/null 2>&1; then
               ln -sf "$(command -v opencode)" "$HOME/.opencode/bin/opencode"
             fi
           fi
           # 3) Authenticated GitHub-release fallback: GITHUB_TOKEN gets 5000/hr,
           #    immune to the shared-IP quota that breaks the script's version
-          #    fetch. Asset name discovered live via API, never hardcoded.
+          #    fetch. V2 releases live at opencode-ai/opencode with assets like
+          #    opencode-linux-x86_64.tar.gz. Asset name discovered live via API,
+          #    never hardcoded.
           if ! command -v opencode >/dev/null 2>&1; then
             echo "npm fallback failed - trying authenticated gh release download"
-            asset="$(gh release view --repo sst/opencode --json assets --jq '.assets[].name' | grep -E '^opencode-linux-(x64|amd64).*\.(tar\.gz|tgz|zip)$' | head -n 1)"
+            asset="$(gh release view --repo opencode-ai/opencode --json assets --jq '.assets[].name' | grep -E '^opencode-linux-(x86_64|x64|amd64).*\.(tar\.gz|tgz|zip)$' | head -n 1)"
             if [ -n "$asset" ]; then
               echo "downloading asset: $asset"
               mkdir -p /tmp/opencode-dl
-              gh release download --repo sst/opencode --pattern "$asset" --dir /tmp/opencode-dl --clobber
+              gh release download --repo opencode-ai/opencode --pattern "$asset" --dir /tmp/opencode-dl --clobber
               case "$asset" in
                 *.zip) unzip -o /tmp/opencode-dl/"$asset" -d "$HOME/.opencode/bin" ;;
                 *) tar -xzf /tmp/opencode-dl/"$asset" -C "$HOME/.opencode/bin" ;;
               esac
             else
-              echo "no linux x64 asset found in latest sst/opencode release"
+              echo "no linux x64 asset found in latest opencode-ai/opencode release"
             fi
           fi
           # Hard gate: every later step assumes `opencode` exists.
@@ -112,13 +114,23 @@ jobs:
             printf '%s' "$content" | grep -qx "run_id: $RUN_ID" || return 1
             printf '%s' "$content" | grep -qi "status: complete" || return 1
             printf '%s' "$content" | grep -qi "PACKAGE.*BR\|deps-verified\|dependency audit" || return 1
-            local expected dep_rows unproven_rows tool
+            local expected dep_rows unproven_rows teardown_pass tool
             expected=$(ls */*.spec 2>/dev/null | wc -l)
             [ "$expected" -gt 0 ] || return 1
-            dep_rows=$(printf '%s' "$content" | grep -c "deps-verified\|deps-fixed\|retired-stub" || true)
+            dep_rows=$(printf '%s' "$content" | grep -c "deps-verified\|deps-fixed\|version-checked\|retired-stub" || true)
             [ "$dep_rows" -ge "$expected" ] || return 1
             unproven_rows=$(printf '%s' "$content" | grep -c "unproven:" || true)
             [ "$unproven_rows" -ge "$expected" ] || return 1
+            printf '%s' "$content" | grep -qiE "^teardown-slice:" || return 1
+            local mains_pkg
+            mains="xwayland-satellite-git umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter ly wlroots"
+            for mains_pkg in $mains; do
+              printf '%s' "$content" | grep -qiE "docker-teardown: $mains_pkg .*PASS" || return 1
+            done
+            today=$(date -u +%F); yest=$(date -u -d yesterday +%F 2>/dev/null || date -u -v-1d +%F)
+            for mains_pkg in $mains; do
+              printf '%s' "$content" | grep -qiE "upstream: $mains_pkg .*($today|$yest)" || return 1
+            done
             for tool in "rpmspec -P" "dnf builddep" "rpmlint"; do
               printf '%s' "$content" | grep -qi "$tool.*PASS\|PASS.*$tool" || return 1
             done
@@ -130,7 +142,7 @@ jobs:
           # delay desyncs this run from the thundering herd that knocks free-model
           # gateways over (socket-closed flaps). Cheap insurance inside a 355-min job.
           sleep $((RANDOM % 180))
-          for model in "opencode/muse-spark-1.3-contributor-free" "opencode/mimo-v2.5-free" "opencode/ling-3.0-flash-fin-free" "opencode/nemotron-3-ultra-free" "opencode/nemotron-3.5-lightning-free" "opencode/big-pickle"; do
+          for model in "opencode/muse-spark-1.3-contributor-free" "opencode/mimo-v2.5-free" "opencode/deepseek-v4-flash-free" "opencode/muse-spark-1.2-contributor-free" "opencode/big-pickle" "opencode/nemotron-3.5-lightning-free" "opencode/nemotron-3-ultra-free" "opencode/ling-3.0-flash-fin-free"; do
             echo "=== opencode run attempt with $model ==="
             exit_code=0
             # Per-model retries with backoff: free-tier gateways drop sockets under
@@ -138,7 +150,7 @@ jobs:
             # dead model - retry the SAME model before falling through. Bounded at
             # 3 tries with full jitter (retry only transient failures, never 4xx).
             for attempt_n in 1 2 3; do
-              if MODEL="$model" opencode run -m "$model" --dangerously-skip-permissions --agent=build --print-logs "$PROMPT"; then
+              if MODEL="$model" opencode run --standalone --model "$model" --agent build "$PROMPT"; then
                 exit_code=0
                 break
               fi
@@ -173,8 +185,11 @@ jobs:
           exit 1
         env:
           MODEL: opencode/muse-spark-1.3-contributor-free
-          OPENCODE_CONFIG_CONTENT: '{"small_model":"opencode/mimo-v2.5-free"}'
+          OPENCODE_CONFIG_CONTENT: '{"agents":{"title":{"model":"opencode/mimo-v2.5-free"}}}'
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          COPR_LOGIN: ${{ secrets.COPR_LOGIN }}
+          COPR_USERNAME: ${{ secrets.COPR_USERNAME }}
+          COPR_TOKEN: ${{ secrets.COPR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELAY: ${{ github.event.inputs.relay || 'false' }}
@@ -230,9 +245,10 @@ jobs:
             CONTEXT
             - Each package lives in its own directory with a .spec file and often an
               update.sh (an upstream-check script). update-engine.yml (GitHub Actions,
-              "Fedora Nexus Auto-Updater") runs every 2h: it runs update.sh for
-              packages that have one and scans the rest against GitHub release tags,
-              bumping spec versions and committing to main directly.
+              "Fedora Nexus Auto-Updater") runs every 6h (cron '0 */6 * * *'):
+              it runs update.sh for packages that have one and scans the rest
+              against GitHub release tags, bumping spec versions and committing
+              to main directly.
             - Builds happen in COPR (external), in the chroots the project has
               enabled (currently fedora-rawhide-x86_64, fedora-44-x86_64,
               fedora-43-x86_64 - but NEVER hardcode this list: discover it every
@@ -267,6 +283,48 @@ jobs:
             will always fail. All other pushes (ebuilds, README, relay, etc.) work
             normally - always `git fetch origin && git pull --rebase origin main`
             before pushing.
+            - COPR WRITE ACCESS (2026-09-21, verified live against copr-cli 2.6
+              + python-copr docs + https://copr.fedorainfracloud.org/api/).
+              The old "no owner-level COPR access in CI" limitation is GONE once
+              the owner stores their personal COPR API credentials as Actions
+              secrets. With them you can create missing package records, repair
+              webhook/source-type configs, and enable new Fedora chroots YOURSELF
+              instead of filing needs-owner issues (the #14/#30 failure class):
+              1. SECRETS (owner creates once; you NEVER print them anywhere -
+                 not in logs, issues, comments, or files): COPR_LOGIN,
+                 COPR_USERNAME, COPR_TOKEN (from
+                 https://copr.fedorainfracloud.org/api/ while logged in as the
+                 project owner - the page shows the exact login/username/token
+                 block plus its expiration date). Tokens are personal to the
+                 owner, must not be shared, and EXPIRE 180 days after generation.
+              2. SETUP (every run, before priority 1): `pip install copr-cli`
+                 (PyPI `copr-cli`, authentic upstream: Pierre-Yves Chibon /
+                 fedora-copr, GPLv2+), write ~/.config/copr from the secrets
+                 with printf (NEVER echo secrets to stdout), then
+                 `copr-cli whoami` MUST print the owner's username. If auth
+                 fails, the token expired: open/refresh ONE issue titled
+                 "needs-owner: refresh COPR_API_TOKEN (expired)" and fall back
+                 to read-only COPR behavior for this run. This rotation is the
+                 single recurring owner task - note the expiry date in the relay
+                 every run so it never surprises.
+              3. ALLOWED WRITE OPS (command names verified in copr-cli 2.6;
+                 discover exact flags live via `--help`, never from memory):
+                 - missing package record (repo dir exists, COPR has no record,
+                   zero builds ever): `add-package-scm` on ackerman/nexus with
+                   clone-url https://github.com/Ackerman-00/fedora-nexus,
+                   commit main, subdir <pkg>, spec <pkg>.spec, webhook-rebuild
+                   on. Verify with `get-package` + a fresh build appearing.
+                 - broken webhook/source-type (pushes never build): fix with
+                   `edit-package-scm` (webhook-rebuild on, correct
+                   clone-url/subdir/spec). Verify: push a Release-bump commit
+                   and confirm a NEW build appears (the section 1b proof).
+                 - new Fedora chroot (CURRENT FEDORA RELEASES): enable via the
+                   project modify / `edit-chroot` path; verify via the project
+                   chroot list. COPR ghost-RPM purges and anything the API
+                   rejects stay OWNER-ACL (see issue classes, priority 4).
+              4. Every COPR write is followed by a read proving it
+                 (get-package/build list output pasted in the relay). A write
+                 you cannot verify is an unfinished package, not a fix.
             - WORKFLOW SELF-VALIDATION (MANDATORY - REAL INCIDENT 2026-09-09):
               commit ad69ca3 added `workflows: write` to two workflow files
               and GitHub rejected BOTH files at parse time ("Unexpected value
@@ -612,7 +670,15 @@ jobs:
               g. MANDATORY DELIVERABLE - dependency audit table for EVERY
                  package: | package | upstream deps found | in spec |
                  missing/added | extra/dropped | status |
-                 status in: deps-verified / deps-fixed / blocked-(reason).
+                 status in: deps-verified / deps-fixed / version-checked /
+                 blocked-(reason). HONEST LABELS (2026-09-21, enforced by the
+                 verifier): `deps-verified` ONLY with this run's
+                 `docker-teardown: <pkg> ... PASS` token (fresh-container
+                 re-tear + rpmbuild + install + smoke); `deps-fixed` when you
+                 changed the spec AND tore it down after; `version-checked`
+                 for update.sh/tags/API freshness checks WITHOUT a container
+                 teardown. A `deps-verified` row with no teardown token is a
+                 gate failure, not a shortcut.
                  If any package is missing from this table, the run is not
                  finished. State confidence (high/medium/low) for anything
                  not fully verified, and why.
@@ -975,11 +1041,17 @@ jobs:
              CURRENT spec (fresh container per package, up to 4 parallel
              `docker run` jobs): `rpmbuild -bb`, install the result, smoke
              test. A failure here enters the priority-1 loop exactly like a
-             failed COPR build. The full fleet must rotate through within 4
-             runs; record slice + next-start in the relay. Fan out with
+             failed COPR build. The full fleet must rotate through within 8
+             runs; record the slice ledger in the relay as
+             `teardown-slice: <pkg> <pkg> ... | next-start: <pkg>`
+             (packages space-separated before the pipe, exactly one
+             next-start package after it). Fan out with
              parallel subagents (one per batch); serialize only pushes.
              Time-box the SLICE, never the rigor: fewer packages fully tested
-             beats many glanced at.
+             beats many glanced at. Every slice package emits one evidence
+             line `docker-teardown: <pkg> rpmbuild-bb PASS install PASS smoke
+             PASS` (or FAIL with the log line); without that token the package
+             was NOT torn down no matter what the audit table says.
              IMPROVE THE MACHINE (MANDATORY). If the same failure class hits
              twice (broken updater pattern, recurring dep rename, repeated HOLD
              justification, repeated manual fix), fix the GENERATOR not the
@@ -1093,16 +1165,35 @@ jobs:
                  for upstream changes EVERY run (git ls-remote HEAD for
                  -git packages, releases/tags for versioned ones, artifact
                  internals for prebuilt binaries - real change only, per
-                 NO-CHURN). The nine named below simply go FIRST and get
+                 NO-CHURN). The eleven mains named below simply go FIRST and get
                  the DEEPEST treatment each run because they move fast and
                  break silently - xwayland-satellite-git,
                  umbriel-git, xdg-desktop-portal-umbriel-git,
                  helium-browser, zen-browser, heroic-games-launcher,
-                 protonplus, mangowm, noctalia-greeter.
-                 The delta/carry-over logic does NOT apply to the nine:
+                 protonplus, mangowm, noctalia-greeter, ly, wlroots.
+                 (ly + wlroots added 2026-09-22: ly's forge is Codeberg
+                 fairyglade/ly, NOT GitHub - the generic tag scanner cannot
+                 see it, check codeberg API + update.sh; wlroots is the
+                 foundation every compositor here builds on, a soname bump
+                 breaks all of them at once.)
+                 The delta/carry-over logic does NOT apply to the eleven:
                  a. EVERY run, FIRST: check each against upstream HEAD
                     (`git ls-remote` default branch + `gh api
-                    releases/latest` where applicable). If upstream moved,
+                    releases/latest` where applicable; ly via Codeberg
+                    `https://codeberg.org/api/v1/repos/fairyglade/ly/releases`
+                    stable tags only, NEVER -rc; wlroots via GitLab
+                    `https://gitlab.freedesktop.org/api/v4/projects/wlroots%2Fwlroots/releases`).
+                    ALWAYS-LIVE (2026-09-22, no exceptions, no carry-over):
+                    upstream + dependency checks for all eleven mains run FRESH
+                    every run and their raw output is pasted in the relay, one
+                    line per main:
+                    `upstream: <pkg> <ref>@<sha/ver> == spec | <cmd> | <today-UTC-date>`
+                    (the UTC date proves the check ran this run - the verifier
+                    rejects lines dated any other day). Reusing a previous
+                    run's conclusion, audit, or teardown for any main is a gate
+                    failure even if upstream did not move - "unchanged" must be
+                    RE-PROVEN, never recalled.
+                    If upstream moved,
                     refresh the pin/commit/version + checksum immediately
                     (RELEASE REVISION DISCIPLINE + NO-CHURN rules still
                     apply - only push on real change).
@@ -1114,12 +1205,15 @@ jobs:
                     (`rpmspec -P`, `spectool -g`, `rpmbuild -bs`,
                     `dnf builddep --assumeno`, `rpmlint`), AND a fresh
                     container install test + smoke test. Record per-package
-                    PASS/FAIL with command output in the relay; a failure
+                    PASS/FAIL with command output in the relay PLUS one
+                    `docker-teardown: <pkg> rpmbuild-bb PASS install PASS
+                    smoke PASS` token per package (the verifier counts these);
+                    a failure
                     here outranks all other non-build-failure work.
-                 c. Never mark these nine done based on a previous run's
+                 c. Never mark these eleven done based on a previous run's
                     result. "Unchanged since last run" is not verification
                     for these packages - re-verify every time.
-                 d. TERRA CROSS-REFERENCE (MANDATORY for all nine, every
+                 d. TERRA CROSS-REFERENCE (MANDATORY for all eleven, every
                     run - Terra https://github.com/terrapkg/packages branch
                     frawhide is the closest sibling packager for this exact
                     stack). For each priority package, fetch Terra's
@@ -1149,6 +1243,16 @@ jobs:
                     - zen-browser: Terra ships NO zen counterpart - ours is
                       unique value; reference is upstream release tags +
                       the binary artifact itself, not Terra.
+                    - ly: forge is Codeberg (fairyglade/ly), no GitHub
+                      counterpart to cross-ref - reference is Codeberg
+                      stable tags + update.sh; record `terra-ref: n/a
+                      (codeberg-forge)`.
+                    - wlroots: reference is GitLab releases + Fedora
+                      official src.fedoraproject.org/rpms/wlroots (watch
+                      the soname: a 0.20 -> 0.21 bump means coordinated
+                      rebuilds of umbriel/mangowm/greeter the same run);
+                      record `terra-ref: n/a (gitlab-forge)` unless a
+                      Terra anda path is verified live that run.
                     KNOWN BASELINE (2026-09-08, re-verify every run, never
                     trust from memory): Nexus pins NEWER than Terra
                     (umbriel ac1952c > terra 509db24; noctalia 69f623c /
@@ -1176,13 +1280,13 @@ jobs:
                     with token) or
                     `curl -H "Authorization: token $GITHUB_TOKEN"
                     https://raw.githubusercontent.com/terrapkg/packages/frawhide/<path>`.
-                    Batch all nine fetches, back off 60s on 403/429,
+                    Batch all eleven fetches, back off 60s on 403/429,
                     throttle to 1 req/s. Record per package one line:
                     `terra-ref: <path>@<shortsha> | ours: <pin/ver> |
                     delta: ahead/behind/in-sync | kept-improvements: <list>`.
                  e. UNIVERSAL UPSTREAM CHECK (all remaining packages, EVERY
                     run - priority 2 is the full implementation, this is the
-                    non-skippable minimum): for EVERY non-nine package
+                    non-skippable minimum): for EVERY non-eleven package
                     (excluding RETIRED niri-git/noctalia-git entirely),
                     run the same HEAD/release/artifact check as (a) plus a
                     sibling-reference check where one exists (Terra frawhide
@@ -1284,13 +1388,14 @@ jobs:
                  - If builds for OTHER packages/apps keep appearing when you
                   push but THIS package never builds even after several pushes,
                   treat the webhook/source-type config for that package as
-                  broken: the webhook URL in COPR project Settings -> Webhooks
-                  (github/<id>/<uuid>/) may be dead or the package source type
-                  may not be scm/github. You cannot repair it via the unauthed
-                  API - record the problem in .opencode-relay.md, keep main
-                  clean, and file an issue titled "COPR webhook not firing for
-                  <pkg>" with the evidence (delivery history + push SHAs vs
-                  build list timestamps).
+                  broken: FIRST repair it yourself via COPR WRITE ACCESS
+                  (`edit-package-scm`: webhook-rebuild on, correct
+                  clone-url/subdir/spec), then push a Release-bump commit and
+                  confirm a NEW build appears. Only if the API rejects the
+                  repair does it become OWNER-ACL (priority 4): record the
+                  evidence in .opencode-relay.md and add it to the consolidated
+                  needs-owner list instead of filing repeated per-issue
+                  "still blocked" comments.
                  - FINAL GATE CHECK: in your final summary state for EVERY
                   package you pushed the webhook delivery id/status AND the
                   post-push build id that proves it, or name it as an
@@ -1468,6 +1573,20 @@ jobs:
                - EVERY issue you close gets a closing comment with the verdict
                  (fixed / not-a-bug / user error / duplicate) and the evidence.
                  Use `gh issue close <n> --comment "<verdict and evidence>"`.
+               - ISSUE CLASSES (2026-09-21: every issue is AUTO or OWNER-ACL,
+                 nothing in between). AUTO (fix+verify+close yourself, no human
+                 needed): spec bugs, wrong/stale versions, missing deps, broken
+                 update.sh, failed COPR builds, webhook/source-type repairs and
+                 missing COPR package records (via COPR WRITE ACCESS above),
+                 docs, triage replies. An AUTO issue open past one run is YOUR
+                 failure. OWNER-ACL (only what the COPR API rejects or is
+                 secrets-gated: ghost-RPM admin purges, COPR token refresh,
+                 infra outages): NEVER post repeated "still blocked" comments
+                 (the #30 spam loop). Comment ONCE per issue per run MAXIMUM,
+                 and maintain ONE consolidated `needs-owner:` list in
+                 .opencode-relay.md (item | evidence | since-run) updated in
+                 place every run. A new OWNER-ACL item gets a new issue ONLY if
+                 no open issue already tracks it.
                 - Reply on issues WITH `gh issue comment <n>` even before any fix,
                   so the reporter always gets a response from this run.
                 - "OWNER TO APPLY" IS STALE - YOU APPLY IT. Any issue text saying
@@ -1703,7 +1822,7 @@ jobs:
               relay run before the timeout.
             - Don't get stuck: cap retries at 3 per package and escalate unresolvable
               problems via issues.
-            - VERIFICATION LOOP (MANDATORY - battle-tested 2026: pre-completion checklist + external verifier, agentpatterns.ai 2026-07-19 / contextOS 2026-08-14 / digitalapplied.com 2026-08-11): Before declaring `status: complete`, you MUST run `bash tools/verify-fedora.sh` and paste its `----- VERIFICATION REPORT -----` output. It checks numerical completion (one row per STEP A inventory package with `deps-verified`/`deps-fixed` -- derive the expected count from `ls */*.spec`, post-grep count must reach it, not 0), evidence strings (`rpmspec -P` / `dnf builddep` / `rpmlint` from 2026 h. checks), and install-test table. Exit 1 = NOT COMPLETE -- keep working, fix the listed gaps, re-run verifier until exit 0. Do NOT write `status: complete` if verifier fails. Prompt alone achieves 70-90% compliance; external verifier + gate achieves near-100%. This is the check that prevents "looks done" vs "is done". Exact greppable contract (the verifier AND the workflow gate check the same strings, case-insensitive): every audit row carries its `unproven:` token; each of `rpmspec -P`, `dnf builddep`, `rpmlint` must share its relay line with `PASS` (e.g. `rpmlint PASS: <pkgs> (0 errors)`); the version-table header `| package | packaged version |` and an install-test table must be present. A tool named only inside a 'not verified' gap does NOT satisfy its evidence line -- an unsatisfiable line means the run is NOT complete (relay stays `unfinished` + handoff), never `complete`-with-gap. Self-claiming verifier PASS without pasting the report is a gate failure.
+            - VERIFICATION LOOP (MANDATORY - battle-tested 2026: pre-completion checklist + external verifier, agentpatterns.ai 2026-07-19 / contextOS 2026-08-14 / digitalapplied.com 2026-08-11): Before declaring `status: complete`, you MUST run `bash tools/verify-fedora.sh` and paste its `----- VERIFICATION REPORT -----` output. It checks numerical completion (one row per STEP A inventory package with `deps-verified`/`deps-fixed`/`version-checked` -- derive the expected count from `ls */*.spec`, post-grep count must reach it, not 0), evidence strings (`rpmspec -P` / `dnf builddep` / `rpmlint` from 2026 h. checks), and install-test table. Exit 1 = NOT COMPLETE -- keep working, fix the listed gaps, re-run verifier until exit 0. Do NOT write `status: complete` if verifier fails. Prompt alone achieves 70-90% compliance; external verifier + gate achieves near-100%. This is the check that prevents "looks done" vs "is done". Exact greppable contract (the verifier AND the workflow gate check the same strings, case-insensitive): every audit row carries its `unproven:` token; a `teardown-slice:` ledger line names this run's rotating slice plus `next-start`; all 11 mains (xwayland-satellite-git umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter ly wlroots) carry `docker-teardown: <pkg> ... PASS` tokens AND fresh `upstream: <pkg> ... <today-UTC-date>` live-check lines, and every extra slice-named package carries one (`deps-verified` without its teardown token fails the gate); each of `rpmspec -P`, `dnf builddep`, `rpmlint` must share its relay line with `PASS` (e.g. `rpmlint PASS: <pkgs> (0 errors)`); the version-table header `| package | packaged version |` and an install-test table must be present. A tool named only inside a 'not verified' gap does NOT satisfy its evidence line -- an unsatisfiable line means the run is NOT complete (relay stays `unfinished` + handoff), never `complete`-with-gap. Self-claiming verifier PASS without pasting the report is a gate failure.
             - End every run with a concise final summary: what you fixed, which issues
               you closed, which PRs you merged/rejected, which COPR builds you verified
               and their result, and what remains. Include the pre-completion gate
