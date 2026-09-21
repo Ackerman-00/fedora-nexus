@@ -1,13 +1,13 @@
 # These will be automatically populated by update.sh
-%global commit          e07013e6104f852b2e6802d3d9a30e73c4bca4b7
+%global commit          7c3371c2be4022870f3894cbb58610342b604247
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260912131025
+%global gitdate         20260921181529
 
 %global _lto_cflags %{nil}
 
 Name:           astal-libs
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Astal libraries
 
 License:        LGPL-2.1-only
@@ -32,6 +32,7 @@ BuildRequires:  pkgconfig(gio-unix-2.0)
 BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(gobject-2.0)
 BuildRequires:  pkgconfig(gobject-introspection-1.0)
+BuildRequires:  pkgconfig(gtk4-wayland)
 BuildRequires:  pkgconfig(json-glib-1.0)
 BuildRequires:  pkgconfig(libnm)
 BuildRequires:  pkgconfig(libpipewire-0.3)
@@ -64,9 +65,10 @@ Requires:       libcava%{?_isa} = 1.0.0
 tar -xf %{SOURCE1} -C lib/cava/subprojects
 # Vendor wl-vapi-gen into every lib subproject dir that wraps it, matching
 # the version each wrap file pins. Upstream keeps adding new dirs that need
-# it (lib/wl, lib/river on 1.0.0; lib/workspace, lib/idle-notify on 1.1.0
-# as of commit 3a73801), so hardcoding dir names breaks on every new dir.
-for d in lib/*/subprojects; do
+# it (lib/wl/wl, lib/river on 1.0.0; lib/workspace, lib/idle-notify on 1.1.0
+# as of commit 7c3371c which split lib/wl into lib/wl/wl + lib/wl/wl4),
+# so hardcoding dir names breaks on every new dir.
+for d in lib/*/subprojects lib/*/*/subprojects; do
   if [ -f "$d/wl-vapi-gen.wrap" ]; then
     if grep -q 'directory = wl-vapi-gen-1.1.0' "$d/wl-vapi-gen.wrap"; then
       tar -xf %{SOURCE3} -C "$d"
@@ -83,7 +85,12 @@ cd lib
 # /usr during %build is not possible; stage instead and point the
 # dependent tools at the staged artifacts via the environment.
 mkdir -p %{_builddir}/astal-stage
-for lib in quarrel wayland-glib wl; do
+# Upstream commit 7c3371c split lib/wl into lib/wl/wl (astal-wl) and
+# lib/wl/wl4 (astal-wl4, needs gtk4-wayland); there is no build file at
+# lib/wl itself anymore, so stage both subprojects explicitly.
+# wl/wl4 configures against the staged astal-wl-0.1.pc, so it must be
+# built AFTER the stage prefix is exported (dependency ordering).
+for lib in quarrel wayland-glib wl/wl; do
   pushd $lib
   meson setup --prefix=%{_builddir}/astal-stage --libdir=lib64 redhat-linux-build . --auto-features=auto
   meson compile -C redhat-linux-build
@@ -93,6 +100,13 @@ done
 export PKG_CONFIG_PATH=%{_builddir}/astal-stage/lib64/pkgconfig
 export XDG_DATA_DIRS=%{_builddir}/astal-stage/share:/usr/local/share:/usr/share
 export CPPFLAGS="-I%{_builddir}/astal-stage/include"
+for lib in wl/wl4; do
+  pushd $lib
+  meson setup --prefix=%{_builddir}/astal-stage --libdir=lib64 redhat-linux-build . --auto-features=auto
+  meson compile -C redhat-linux-build
+  meson install -C redhat-linux-build
+  popd
+done
 for lib in $(find -maxdepth 1 -mindepth 1 -type d -not -path ./astal -not -path ./quarrel -not -path ./wayland-glib -not -path ./wl); do
   pushd $lib
   %meson --auto-features=auto
@@ -151,6 +165,7 @@ rm -rf %{buildroot}%{_libdir}/libcava.so*
 %{_libdir}/girepository-1.0/AstalRiver-0.1.typelib
 %{_libdir}/girepository-1.0/AstalTray-0.1.typelib
 %{_libdir}/girepository-1.0/AstalWl-0.1.typelib
+%{_libdir}/girepository-1.0/AstalWl4-0.1.typelib
 %{_libdir}/girepository-1.0/AstalWorkspace-0.1.typelib
 %{_libdir}/girepository-1.0/AstalWp-0.1.typelib
 %{_libdir}/girepository-1.0/Quarrel-0.1.typelib
@@ -171,6 +186,7 @@ rm -rf %{buildroot}%{_libdir}/libcava.so*
 %{_libdir}/libastal-tray.so.0{,.*}
 %{_libdir}/libastal-wireplumber.so.0{,.*}
 %{_libdir}/libastal-wl.so.0{,.*}
+%{_libdir}/libastal-wl4.so.0{,.*}
 %{_libdir}/libastal-workspace.so.0{,.*}
 %{_libdir}/libquarrel.so.0{,.*}
 
@@ -206,11 +222,16 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_libdir}/libastal-tray.so
 %{_libdir}/libastal-wireplumber.so
 %{_libdir}/libastal-wl.so
+%{_libdir}/libastal-wl4.so
 %{_libdir}/libastal-workspace.so
 %{_libdir}/libquarrel.so
 %{_libdir}/pkgconfig/astal-*.pc
 %{_libdir}/pkgconfig/quarrel-0.1.pc
 
 %changelog
-* Sat Sep 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260912131025gite07013e-1
-- Nightly sync with upstream main branch (Commit: e07013e)
+* Mon Sep 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260921181529git7c3371c-2
+- Rebuild for upstream lib/wl split into lib/wl/wl + lib/wl/wl4: stage both
+  subprojects, vendor wl-vapi-gen at depth 3, add gtk4-wayland BR, ship
+  AstalWl4 typelib/library
+* Mon Sep 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260921181529git7c3371c-1
+- Nightly sync with upstream main branch (Commit: 7c3371c)
