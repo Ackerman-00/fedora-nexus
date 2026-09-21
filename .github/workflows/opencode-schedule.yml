@@ -151,7 +151,7 @@ jobs:
           # delay desyncs this run from the thundering herd that knocks free-model
           # gateways over (socket-closed flaps). Cheap insurance inside a 355-min job.
           sleep $((RANDOM % 180))
-          for model in "opencode/muse-spark-1.3-contributor-free" "opencode/mimo-v2.5-free" "opencode/deepseek-v4-flash-free" "opencode/muse-spark-1.2-contributor-free" "opencode/big-pickle" "opencode/nemotron-3.5-lightning-free" "opencode/nemotron-3-ultra-free" "opencode/ling-3.0-flash-fin-free"; do
+          for model in "opencode/muse-spark-1.3-contributor-free" "opencode/mimo-v2.6-flash-free" "opencode/mimo-v2.5-free" "opencode/deepseek-v4-flash-free" "opencode/muse-spark-1.2-contributor-free" "opencode/big-pickle" "opencode/nemotron-3.5-lightning-free" "opencode/nemotron-3-ultra-free" "opencode/ling-3.0-flash-fin-free"; do
             echo "=== opencode run attempt with $model ==="
             exit_code=0
             # Per-model retries with backoff: free-tier gateways drop sockets under
