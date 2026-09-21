@@ -51,11 +51,13 @@ jobs:
           set -u
           mkdir -p "$HOME/.opencode/bin"
           export PATH="$HOME/.opencode/bin:$PATH"
-          # 1) Official installer, retried: its internal version fetch can flap
+          # 1) Official V2 installer, retried: its internal version fetch can flap
           #    or hit the shared-runner-IP 60/hr GitHub quota. curl retries +
-          #    4 outer attempts ride out transients.
+          #    4 outer attempts ride out transients. NOTE: the V1 installer at
+          #    https://opencode.ai/install ships opencode 1.x - V2 lives at
+          #    https://opencode.ai/v2/install (verified 2026-09-21).
           for i in 1 2 3 4; do
-            if curl -fsSL --retry 3 --retry-delay 10 --retry-all-errors https://opencode.ai/install | bash; then
+            if curl -fsSL --retry 3 --retry-delay 10 --retry-all-errors https://opencode.ai/v2/install | bash; then
               break
             fi
             echo "opencode install attempt $i/4 failed - sleeping 30s"
@@ -92,6 +94,13 @@ jobs:
           fi
           # Hard gate: every later step assumes `opencode` exists.
           command -v opencode && opencode --version
+          # V1 tripwire (REAL INCIDENT 2026-09-21: the V1 installer ships
+          # opencode 1.x, which reads V1 flags - fail fast, never run V1).
+          ver="$(opencode --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n 1)"
+          case "$ver" in
+            1.*) echo "FATAL: opencode V1 ($ver) installed - V2 required, aborting run" >&2; exit 1 ;;
+            *) echo "opencode version OK: $ver (V2+)" ;;
+          esac
 
       - name: Run opencode
         shell: bash
