@@ -38,7 +38,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 96 packages</summary>
+<summary>Click to expand — 94 packages</summary>
 
 <br />
 
@@ -113,7 +113,6 @@ sudo dnf install <package-name>
 | `noctalia-greeter` | Minimal greetd login greeter matching Noctalia Shell (Git Snapshot) | Git |
 | `nwg-look` | GTK3 settings editor adapted for the wlroots environment | Stable |
 | `obsidian` | Knowledge base over a local folder of plain-text Markdown files | Stable |
-| `opencode-desktop` | Open source AI coding agent | Stable |
 | `protonplus` | Modern compatibility tools manager | Stable |
 | `pyprland` | Hyprland extensions made easy | Stable |
 | `materialyoucolor` | Material You color generation algorithms (pure Python + C++ quantizer) | Stable |
