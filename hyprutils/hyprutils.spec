@@ -1,6 +1,6 @@
 Name:           hyprutils
 Version:        0.14.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Hyprland utilities library used across the ecosystem
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprutils
@@ -43,6 +43,10 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Mon Sep 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0.14.2-3
+- Add missing changelog entry for the 0.14.2 update (fixes rpmlint incoherent-version-in-changelog)
+* Mon Sep 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0.14.2-2
+- Update to version 0.14.2
 * Thu Aug 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.14.1-2
 - Fix changelog to reflect the 0.14.1 update (was stale at 0.14.0)
 * Thu Aug 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.14.1-1
