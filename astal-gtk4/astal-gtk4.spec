@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          35d4bc75a3a672b2fcfa43da62bc0cbddd54b41f
+%global commit          be986c11800fd6ec490eb46e3f1f36ca6945bfef
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260922142044
+%global gitdate         20260922171025
 
 %bcond bootstrap 0
 
@@ -62,5 +62,5 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/astal-4-4.0.pc
 
 %changelog
-* Tue Sep 22 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260922142044git35d4bc7-1
-- Nightly sync with upstream main branch (Commit: 35d4bc7)
+* Tue Sep 22 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260922171025gitbe986c1-1
+- Nightly sync with upstream main branch (Commit: be986c1)
