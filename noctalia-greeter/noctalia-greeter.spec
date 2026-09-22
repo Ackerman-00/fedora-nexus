@@ -5,7 +5,7 @@
 
 Name:           noctalia-greeter
 Version:        1.5.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 License:        MIT
@@ -89,6 +89,7 @@ done
 %{_bindir}/%{name}-compositor
 %{_bindir}/%{name}-print-greetd-config
 %{_bindir}/%{name}-session
+%{_bindir}/%{name}-xsession
 %{_datadir}/%{name}/*
 %{_datadir}/polkit-1/actions/org.noctalia.greeter.apply-appearance.policy
 
@@ -116,5 +117,8 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Tue Sep 22 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260922084750git85ea486-2
+- Ship new upstream noctalia-greeter-xsession helper (fixes COPR 11020382
+  unpackaged-file error)
 * Tue Sep 22 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260922084750git85ea486-1
 - Nightly sync with upstream main branch (Commit: 85ea486)
