@@ -29,8 +29,10 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
 
     echo "  -> [CHECK] Verifying download link..."
     if ! curl -L --output /dev/null --silent --head --fail "$ASSET_URL"; then
-        echo "  -> [ERROR] tar.gz asset for $LATEST_VERSION is not yet available on GitHub. Skipping update."
-        exit 1
+        echo "  -> [SKIP] tar.gz asset for $LATEST_VERSION is not yet available on GitHub yet. Keeping $CURRENT_VERSION."
+        # Exit 0: asset-not-published-yet is the guard working as designed, not
+        # a script failure (same generator fix as obsidian/logseq, 2026-09-22).
+        exit 0
     fi
 
     echo "  -> [ACTION] Updating $SPEC_FILE..."

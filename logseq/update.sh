@@ -27,8 +27,10 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
 
     echo "  -> [CHECK] Verifying download link..."
     if ! curl --output /dev/null --silent --head --fail "$ZIP_URL"; then
-        echo "  -> [ERROR] Linux x86_64 zip for $LATEST_VERSION is not yet available on GitHub. Skipping update."
-        exit 1
+        echo "  -> [SKIP] Linux x86_64 zip for $LATEST_VERSION is not yet available on GitHub yet. Keeping $CURRENT_VERSION."
+        # Exit 0: asset-not-published-yet is the guard working as designed, not
+        # a script failure (same generator fix as obsidian/freebuff, 2026-09-22).
+        exit 0
     fi
 
     echo "  -> [ACTION] Updating $SPEC_FILE..."

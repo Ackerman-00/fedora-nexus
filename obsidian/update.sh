@@ -31,8 +31,11 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     
     echo "  -> [CHECK] Verifying download link..."
     if ! curl --output /dev/null --silent --head --fail "$DEB_URL"; then
-        echo "  -> [ERROR] .deb file for $LATEST_VERSION is not yet available on GitHub. Skipping update."
-        exit 1
+        echo "  -> [SKIP] .deb file for $LATEST_VERSION is not yet available on GitHub yet. Keeping $CURRENT_VERSION."
+        # Exit 0: the asset check working as designed is NOT a script failure.
+        # Exiting 1 here made update-engine.yml log "FAILED" on every run and
+        # masked genuinely broken updaters (2026-09-22 generator fix).
+        exit 0
     fi
 
     echo "  -> [ACTION] Updating $SPEC_FILE..."
