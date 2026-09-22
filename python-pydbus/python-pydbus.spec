@@ -5,7 +5,7 @@
 
 Name:           python-pydbus
 Version:        0.6.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Pythonic D-Bus library
 
 License:        LGPL-2.0-or-later
@@ -17,6 +17,13 @@ Source0:        %{pypi_source pydbus}
 Provides:       python3-pydbus
 
 BuildRequires:  python3-devel
+
+# Runtime: pydbus/__init__.py does `from gi.repository.GLib import Variant`
+# (PyGObject), but upstream setup.py declares no install_requires and PyPI
+# requires_dist is empty, so %pyproject_* generates no dep for it. Without
+# this, `import pydbus` fails with ModuleNotFoundError: No module named 'gi'
+# on minimal installs (proven in f44 container teardown).
+Requires:       python3-gobject
 
 %description
 pydbus provides Pythonic bindings for D-Bus. Packaged for the Nexus
@@ -41,6 +48,10 @@ repository as a dependency of mixtapes (MPRIS/tray integration).
 %files -f %{pyproject_files}
 
 %changelog
+* Tue Sep 22 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.6.0-4
+- Add missing Requires: python3-gobject (pydbus/__init__.py imports
+  gi.repository.GLib, but upstream declares no install_requires so the
+  dep was never generated; `import pydbus` failed on minimal installs).
 * Sun Sep 06 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.6.0-3
 - Provide python3-pydbus (name expected by mixtapes Requires;
   COPR mixtapes install failed on unresolvable python3-* names).
