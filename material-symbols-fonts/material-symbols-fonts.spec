@@ -4,7 +4,7 @@
 
 Name:           material-symbols-fonts
 Version:        4.0.0^%{snapdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Material Symbols variable icon font by Google
 License:        Apache-2.0
 URL:            https://github.com/google/material-design-icons
@@ -13,6 +13,8 @@ Source1:        %{url}/raw/%{commit}/variablefont/MaterialSymbolsRounded%%5BFILL
 Source2:        %{url}/raw/%{commit}/variablefont/MaterialSymbolsSharp%%5BFILL%%2CGRAD%%2Copsz%%2Cwght%%5D.ttf#/MaterialSymbolsSharp.ttf
 
 BuildArch:      noarch
+
+Requires:       fonts-filesystem
 
 %description
 Material Symbols variable icon font in Outlined, Rounded, and Sharp styles.
@@ -33,5 +35,8 @@ install -m 0644 -p "%{SOURCE2}" %{buildroot}%{_datadir}/fonts/%{name}/MaterialSy
 %{_datadir}/fonts/%{name}
 
 %changelog
+* Tue Sep 22 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 4.0.0^20260918021448git27e9ef1-2
+- Add missing Requires: fonts-filesystem (owns /usr/share/fonts; verified via rpm -qf in f44)
+
 * Fri Sep 18 2026 Ackerman-00 <quietcraft@gmail.com> - 4.0.0^20260918021448git27e9ef1-1
 - Nightly sync with upstream master branch (Commit: 27e9ef1)
