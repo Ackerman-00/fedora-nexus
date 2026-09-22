@@ -1,13 +1,13 @@
 # These will be automatically populated by update.sh
-%global commit          7c3371c2be4022870f3894cbb58610342b604247
+%global commit          35d4bc75a3a672b2fcfa43da62bc0cbddd54b41f
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260921181529
+%global gitdate         20260922142044
 
 %global _lto_cflags %{nil}
 
 Name:           astal-libs
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Astal libraries
 
 License:        LGPL-2.1-only
@@ -229,9 +229,5 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_libdir}/pkgconfig/quarrel-0.1.pc
 
 %changelog
-* Mon Sep 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260921181529git7c3371c-2
-- Rebuild for upstream lib/wl split into lib/wl/wl + lib/wl/wl4: stage both
-  subprojects, vendor wl-vapi-gen at depth 3, add gtk4-wayland BR, ship
-  AstalWl4 typelib/library
-* Mon Sep 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260921181529git7c3371c-1
-- Nightly sync with upstream main branch (Commit: 7c3371c)
+* Tue Sep 22 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260922142044git35d4bc7-1
+- Nightly sync with upstream main branch (Commit: 35d4bc7)
