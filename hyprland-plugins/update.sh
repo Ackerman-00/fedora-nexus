@@ -22,7 +22,11 @@ echo "Target hyprland version: $HYPRLAND_VER"
 # reference headers not in the installed release). The hyprpm pins live in
 # hyprpm.toml; the matching commit carries the version in its message, e.g.
 # "hyprpm: add pin for 0.56.2".
-LATEST_COMMIT=$(curl -s --max-time 30 \
+# Honor GITHUB_TOKEN like every sibling updater: unauthenticated calls share
+# a 60/h quota that a full 62-package sweep exhausts, and this query is the
+# script's PRIMARY source (no git ls-remote fallback), so a rate-limit JSON
+# error made the parser TypeError and the run exit 1 spuriously (2026-09-23).
+LATEST_COMMIT=$(curl -s --max-time 30 ${GITHUB_TOKEN:+-H "Authorization: token $GITHUB_TOKEN"} \
     "https://api.github.com/repos/$GITHUB_REPO/commits?path=hyprpm.toml&per_page=100" \
     | python3 -c '
 import json, sys
@@ -32,6 +36,13 @@ except Exception:
     sys.exit(1)
 ver = sys.argv[1]
 best = None
+# A rate-limit/404 body is a dict, not a list: iterating it would yield
+# string keys and crash with "string indices must be integers". Fail
+# closed with a clear message instead of a traceback.
+if not isinstance(d, list):
+    print("upstream-query-failed: %s" % (d.get("message", "non-list response")
+          if isinstance(d, dict) else "non-list response"), file=sys.stderr)
+    sys.exit(1)
 for c in d:
     msg_head = c["commit"]["message"].split("\n")[0]
     if ver in msg_head:
