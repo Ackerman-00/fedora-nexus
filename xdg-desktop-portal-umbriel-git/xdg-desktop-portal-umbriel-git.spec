@@ -1,11 +1,11 @@
 # These will be automatically populated by update.sh
-%global commit          d7a1bc386c2a6dfaecaa953165f9f373735c9ee0
+%global commit          80a74319bb9fef2ab604382026fc61646a8397ef
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260907165527
+%global gitdate         20260923131917
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        XDG Desktop Portal backend for the Umbriel compositor (Nexus Optimized Git Snapshot)
 
 License:        MIT
@@ -68,12 +68,5 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %config(noreplace) %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
-* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260907165527gitd7a1bc3-3
-- Drop obsolete vendored-json %prep workaround (upstream uses system nlohmann/json.hpp since d7a1bc3)
-- Add explicit ninja-build and wayland-scanner BuildRequires; mark umbriel-portals.conf %config(noreplace)
-
-* Wed Sep 09 2026 opencode-agent <bot@github.com> - 0.1.0^20260907165527gitd7a1bc3-2
-- Add upstream-declared gtk4 >= 4.12 floor (meson picker dep, enabled by default)
-
-* Mon Sep 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260907165527gitd7a1bc3-1
-- Nightly sync with upstream main branch (Commit: d7a1bc3)
+* Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260923131917git80a7431-1
+- Nightly sync with upstream main branch (Commit: 80a7431)
