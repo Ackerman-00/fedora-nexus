@@ -1,11 +1,11 @@
 # These will be automatically populated by update.sh
-%global commit          85ea4863e363973254e091bc82a3c39cb73af3c1
+%global commit          ec03f710b0a93adcc64cfe0d434462ccb30639c6
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260922084750
+%global gitdate         20260923073436
 
 Name:           noctalia-greeter
 Version:        1.5.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 License:        MIT
@@ -117,8 +117,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Tue Sep 22 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260922084750git85ea486-2
-- Ship new upstream noctalia-greeter-xsession helper (fixes COPR 11020382
-  unpackaged-file error)
-* Tue Sep 22 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260922084750git85ea486-1
-- Nightly sync with upstream main branch (Commit: 85ea486)
+* Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.0^20260923073436gitec03f71-1
+- Nightly sync with upstream main branch (Commit: ec03f71)
