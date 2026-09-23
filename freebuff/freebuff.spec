@@ -2,9 +2,8 @@
 %global debug_package %{nil}
 
 Name:           freebuff
-Version:        0.0.184
+Version:        0.0.185
 Release:        1%{?dist}
-Requires:           hicolor-icon-theme
 Summary:        The free coding agent for your desktop
 
 License:        Apache-2.0
@@ -12,9 +11,10 @@ URL:            https://freebuff.com/desktop
 # Standalone ELF binary + tree-sitter.wasm (upstream switched from AppImage to
 # tar.gz format starting ~v0.0.80; this tag is the latest with a working release)
 Source0:        https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v%{version}/freebuff-linux-x64.tar.gz
-# sha256: 10edc47adf14cb9aa5ff63a49c92279d1780733c18d1b0756057484fc45224fe
+# sha256: 1e4486baa6be32c5473279b2cbc748b5ce6f703da498def2926a7fb09bff28b1
 
 ExclusiveArch:  x86_64
+BuildRequires:  desktop-file-utils
 
 # Freebuff is a standalone ELF binary with minimal system deps (libc, libm,
 # libpthread, libdl — all part of glibc). No Electron/AppImage runtime needed.
@@ -41,37 +41,29 @@ install -m755 freebuff %{buildroot}%{_bindir}/freebuff
 install -dm755 %{buildroot}%{_datadir}/freebuff
 install -m644 tree-sitter.wasm %{buildroot}%{_datadir}/freebuff/tree-sitter.wasm
 
-# 3. Install the standard desktop entry
+# 3. Install the standard desktop entry (no Icon: upstream ships no icon
+# in the tar.gz and a zero-byte placeholder breaks icon lookup, 2026-09-23)
 install -dm755 %{buildroot}%{_datadir}/applications
 cat > %{buildroot}%{_datadir}/applications/freebuff.desktop <<'EOF'
 [Desktop Entry]
 Name=Freebuff
 Comment=The free coding agent for your desktop
 Exec=freebuff %U
-Icon=freebuff
 Terminal=false
 Type=Application
 StartupWMClass=Freebuff
 Categories=Development;
 EOF
 
-# 4. Install the icon (create a minimal one if upstream doesn't ship one in the tarball)
-install -dm755 %{buildroot}%{_datadir}/icons/hicolor/512x512/apps
-if [ -f usr/share/icons/hicolor/512x512/apps/freebuff.png ]; then
-    install -m644 usr/share/icons/hicolor/512x512/apps/freebuff.png \
-        %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/freebuff.png
-else
-    # Fallback: copy from old AppImage icon if available, or skip
-    touch %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/freebuff.png
-fi
+%check
+desktop-file-validate %{buildroot}%{_datadir}/applications/freebuff.desktop
 
 %files
 %defattr(-,root,root,-)
 %{_bindir}/freebuff
 %{_datadir}/freebuff/tree-sitter.wasm
 %{_datadir}/applications/freebuff.desktop
-%{_datadir}/icons/hicolor/512x512/apps/freebuff.png
 
 %changelog
-* Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.184-1
-- Auto-updated to 0.0.184 via update.sh
+* Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.185-1
+- Auto-updated to 0.0.185 via update.sh
