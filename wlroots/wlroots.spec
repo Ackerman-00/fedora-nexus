@@ -5,7 +5,7 @@
 
 Name:           wlroots
 Version:        0.20.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        A modular Wayland compositor library
 
 # Convert tilde to dash for source tag (e.g. 0.20.0~rc2 -> 0.20.0-rc2)
@@ -36,8 +36,6 @@ Source0:        %{url}/-/archive/%{tag}/%{name}-%{tag}.tar.gz
 # Following patch is required for phoc.
 Patch:          Revert-layer-shell-error-on-0-dimension-without-anch.patch
 
-BuildRequires:  gcc
-BuildRequires:  gcc
 BuildRequires:  glslang
 BuildRequires:  meson >= 1.3
 
@@ -116,6 +114,8 @@ MESON_OPTIONS=(
 %{_libdir}/pkgconfig/wlroots-%{abi_ver}.pc
 
 %changelog
+* Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-5
+- Drop duplicate BuildRequires: gcc (RPM320 duplicate-dependency-atom)
 * Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-4
 - Add explicit gcc BuildRequires (Fedora official parity; mock provides it today)
 - Document MIT licensing of scanner-processed protocols; devel Recommends xcb-icccm
