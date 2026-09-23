@@ -6,7 +6,7 @@
 
 Name:           protonplus
 Version:        %{fileref}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A modern compatibility tools manager
 ExclusiveArch:  x86_64
 
@@ -16,6 +16,7 @@ Source0:        %{forgesource}
 
 BuildRequires:  gettext
 BuildRequires:  meson >= 1.0.0
+BuildRequires:  python3
 BuildRequires:  vala
 BuildRequires:  desktop-file-utils
 BuildRequires:  libappstream-glib
@@ -63,5 +64,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
 %{_metainfodir}/%{app_id}.metainfo.xml
 
 %changelog
+* Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.8-2
+- Add missing BuildRequires: python3 (tests/meson.build uses
+  python.find_installation for scripts_test.py run in %check)
+
 * Thu Sep 10 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.8-1
 - Update to version 0.6.8
