@@ -9,7 +9,7 @@
 
 Name:           mixtapes
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Modern, Linux-first YouTube Music player (Nexus Git Snapshot)
 
 License:        GPL-3.0-or-later
@@ -26,6 +26,11 @@ BuildRequires:  python3-devel
 # StrEnum is stdlib on Fedora's Python (>= 3.11) and needs no package.
 Requires:       python3
 Requires:       python3-gobject
+# gi.repository import of Gtk/Adw pulls in the cairo typelib, which rpm
+# ships in gobject-introspection (NOT python3-gobject). Without it the
+# launcher dies at import with "Typelib file for namespace 'cairo' not
+# found" (fresh-container teardown, 2026-09-23).
+Requires:       gobject-introspection
 Requires:       python3-numpy
 Requires:       python3-ytmusicapi
 Requires:       yt-dlp
@@ -110,6 +115,12 @@ chmod 0755 %{buildroot}%{_bindir}/mixtapes
 %{_datadir}/mixtapes/
 
 %changelog
+* Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260912133811git00f4707-2
+- Require gobject-introspection: it owns the cairo-1.0 typelib that
+  gi.repository (Gtk/Adw/Gdk) loads at import time. Fresh-container
+  install lacked it and mixtapes died with
+  "Typelib file for namespace 'cairo', version '1.0' not found".
+
 * Sat Sep 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260912133811git00f4707-1
 - Nightly sync with upstream main branch (Commit: 00f4707)
 
