@@ -5,7 +5,7 @@
 
 Name:           wlroots
 Version:        0.20.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        A modular Wayland compositor library
 
 # Convert tilde to dash for source tag (e.g. 0.20.0~rc2 -> 0.20.0-rc2)
@@ -36,6 +36,10 @@ Source0:        %{url}/-/archive/%{tag}/%{name}-%{tag}.tar.gz
 # Following patch is required for phoc.
 Patch:          Revert-layer-shell-error-on-0-dimension-without-anch.patch
 
+# Single gcc atom (RPM320-safe): mock/COPR minimal buildroots ship no
+# compiler — 0.20.2-5 removed both former duplicate lines and failed all
+# 4 chroots with "Unknown compiler(s): [['gcc']]" (build 11027369).
+BuildRequires:  gcc
 BuildRequires:  glslang
 BuildRequires:  meson >= 1.3
 
@@ -114,6 +118,11 @@ MESON_OPTIONS=(
 %{_libdir}/pkgconfig/wlroots-%{abi_ver}.pc
 
 %changelog
+* Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-6
+- Restore a single BuildRequires: gcc: -6 keeps RPM320 satisfied (one atom
+  only) while restoring the compiler — -5 removed BOTH duplicate gcc lines
+  and failed all 4 COPR chroots (11027369: "Unknown compiler(s): gcc";
+  minimal mock buildroot has no gcc)
 * Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-5
 - Drop duplicate BuildRequires: gcc (RPM320 duplicate-dependency-atom)
 * Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-4
