@@ -7,7 +7,7 @@
 
 Name:           ly
 Version:        1.4.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Lightweight TUI display manager
 
 License:        WTFPL AND MIT
@@ -84,6 +84,9 @@ install -pm0644 zig-pkg/%{clap_hash}/LICENSE %{buildroot}%{_licensedir}/ly/LICEN
 install -pm0644 zig-pkg/%{zigini_hash}/LICENSE %{buildroot}%{_licensedir}/ly/LICENSE-zigini
 install -pm0644 zig-pkg/%{ini_hash}/LICENCE %{buildroot}%{_licensedir}/ly/LICENSE-ini
 install -pm0644 zig-pkg/%{termbox2_hash}/LICENSE %{buildroot}%{_licensedir}/ly/LICENSE-termbox2
+install -pm0644 zig-pkg/%{aro_hash}/LICENSE %{buildroot}%{_licensedir}/ly/LICENSE-aro
+install -pm0644 zig-pkg/%{aro_hash}/LICENSE-UNICODE %{buildroot}%{_licensedir}/ly/LICENSE-aro-UNICODE
+install -pm0644 zig-pkg/%{translate_c_hash}/LICENSE %{buildroot}%{_licensedir}/ly/LICENSE-translate-c
 
 %post
 %systemd_post ly@.service ly-kmsconvt@.service
@@ -126,6 +129,9 @@ fi
 %license %{_licensedir}/ly/LICENSE-zigini
 %license %{_licensedir}/ly/LICENSE-ini
 %license %{_licensedir}/ly/LICENSE-termbox2
+%license %{_licensedir}/ly/LICENSE-aro
+%license %{_licensedir}/ly/LICENSE-aro-UNICODE
+%license %{_licensedir}/ly/LICENSE-translate-c
 %doc readme.md
 
 %{_bindir}/ly
@@ -145,6 +151,11 @@ fi
 %config(noreplace) %{_sysconfdir}/ly/lang/*.ini
 
 %changelog
+* Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.1-3
+- Install the bundled aro (MIT + Unicode License v3) and translate_c (MIT)
+  license texts via %%license; they ship in the vendor bundle but were
+  missing from the packaged licensedir.
+
 * Mon Aug 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.1-2
 - Release bump for the %post one-time enable-instructions message added by
   the owner; with Release still at 1 the NVR was identical to the already
