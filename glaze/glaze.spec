@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           glaze
-Version:        8.4.0
+Version:        9.0.0
 Release:        1%{?dist}
 Summary:        Extremely fast, in memory, JSON and interface library
 License:        MIT
@@ -47,6 +47,9 @@ Development files for %{name}.
 %files devel
 
 %changelog
+* Thu Sep 24 2026 Nexus Auto-Updater <bot@github.com> - 9.0.0-1
+- Update to version 9.0.0
+
 * Tue Sep 15 2026 Nexus Auto-Updater <bot@github.com> - 8.4.0-1
 - Update to version 8.4.0
 
