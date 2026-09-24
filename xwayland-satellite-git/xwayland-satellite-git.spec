@@ -1,15 +1,15 @@
 # These will be automatically populated by update.sh
-%global commit          add2795134593faafce60e404a0a75df68e9ee0c
+%global commit          5274bdce3dd96c922c73b00276b2a628356e7f2b
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260909215949
+%global gitdate         20260924031557
 
 Name:           xwayland-satellite-git
 # Epoch 1 is permanent: legacy 2026MMDD-dated builds sort ABOVE the current
 # ^gitdate snapshots in rpm version comparison, so without it dnf keeps
 # delivering stale builds. NEVER remove it.
 Epoch:          1
-Version:        0.8.2^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Version:        0.8.3^%{gitdate}git%{shortcommit}
+Release:        1%{?dist}
 Summary:        Rootless Xwayland integration for Wayland compositors (Git Snapshot)
 
 License:        MPL-2.0
@@ -96,9 +96,5 @@ cargo test --release --features systemd,fontconfig --lib
 %{_userunitdir}/xwayland-satellite.service
 
 %changelog
-* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.2^20260909215949gitadd2795-2
-- Run lib-only unit tests in %check (integration tests need a live session, same scope as Fedora official)
-- Document permanent Epoch 1
-
-* Thu Sep 10 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.2^20260909215949gitadd2795-1
-- Nightly sync with upstream main branch (Commit: add2795)
+* Thu Sep 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.3^20260924031557git5274bdc-1
+- Nightly sync with upstream main branch (Commit: 5274bdc)
