@@ -1,11 +1,11 @@
 # These will be automatically populated by update.sh
-%global commit          ee380d66984a45310ef48a283ad806ebab752788
+%global commit          744ceeacf353f8e6136647a3a9da487912ad7490
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260924131601
+%global gitdate         20260925181324
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        XDG Desktop Portal backend for Umbriel
 
 License:        MIT
@@ -68,7 +68,5 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %config(noreplace) %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
-* Fri Sep 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260924131601gitee380d6-2
-- Shorten Summary to fix rpmlint summary-too-long
-* Thu Sep 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260924131601gitee380d6-1
-- Nightly sync with upstream main branch (Commit: ee380d6)
+* Fri Sep 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260925181324git744ceea-1
+- Nightly sync with upstream main branch (Commit: 744ceea)
