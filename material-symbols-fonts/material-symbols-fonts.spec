@@ -1,10 +1,10 @@
-%global commit          27e9ef1dbeedc13d682fece4a58e1eda4cb0961a
+%global commit          bd8cb85bd4bad964fe6918f79665bb40c3a8efef
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global snapdate         20260918021448
+%global snapdate         20260925021835
 
 Name:           material-symbols-fonts
 Version:        4.0.0^%{snapdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Material Symbols variable icon font by Google
 License:        Apache-2.0
 URL:            https://github.com/google/material-design-icons
@@ -35,8 +35,5 @@ install -m 0644 -p "%{SOURCE2}" %{buildroot}%{_datadir}/fonts/%{name}/MaterialSy
 %{_datadir}/fonts/%{name}
 
 %changelog
-* Tue Sep 22 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 4.0.0^20260918021448git27e9ef1-2
-- Add missing Requires: fonts-filesystem (owns /usr/share/fonts; verified via rpm -qf in f44)
-
-* Fri Sep 18 2026 Ackerman-00 <quietcraft@gmail.com> - 4.0.0^20260918021448git27e9ef1-1
-- Nightly sync with upstream master branch (Commit: 27e9ef1)
+* Fri Sep 25 2026 Ackerman-00 <quietcraft@gmail.com> - 4.0.0^20260925021835gitbd8cb85-1
+- Nightly sync with upstream master branch (Commit: bd8cb85)
