@@ -5,8 +5,8 @@
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
-Summary:        XDG Desktop Portal backend for the Umbriel compositor (Nexus Optimized Git Snapshot)
+Release:        2%{?dist}
+Summary:        XDG Desktop Portal backend for Umbriel
 
 License:        MIT
 URL:            https://github.com/noctalia-dev/xdg-desktop-portal-umbriel
@@ -68,5 +68,7 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %config(noreplace) %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
+* Fri Sep 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260924131601gitee380d6-2
+- Shorten Summary to fix rpmlint summary-too-long
 * Thu Sep 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260924131601gitee380d6-1
 - Nightly sync with upstream main branch (Commit: ee380d6)
