@@ -38,7 +38,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 94 packages</summary>
+<summary>Click to expand — 95 packages</summary>
 
 <br />
 
@@ -134,6 +134,7 @@ sudo dnf install <package-name>
 | `vesktop` | Custom Discord client with Vencord preinstalled | Stable |
 | `waypaper` | GUI wallpaper manager for Wayland and Xorg Linux systems | Stable |
 | `wlroots` | Modular Wayland compositor library | Stable |
+| `xcur2png` | Convert X cursor files into PNG images (hyprcursor-util extract helper) | Stable |
 | `xdg-desktop-portal-hyprland` | xdg-desktop-portal backend for hyprland | Stable |
 | `xdg-desktop-portal-umbriel-git` | XDG Desktop Portal backend for Umbriel (Git Snapshot) | Git |
 | `xwayland-satellite-git` | Rootless Xwayland integration for Wayland compositors (Git Snapshot) | Git |
