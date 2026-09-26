@@ -1,6 +1,6 @@
 Name:           hyprland-protocols
 Version:        0.7.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Wayland protocol extensions for Hyprland
 BuildArch:      noarch
 License:        BSD-3-Clause
@@ -25,8 +25,12 @@ Requires:       %{name} = %{version}-%{release}
 
 %build
 # Upstream 0.7.1 dropped meson.build (CMake-only now, see upstream README
-# "Building": cmake -S . -B ./build). %meson fails with "Neither source
-# directory ... contain a build file meson.build" (COPR 10988487).
+# "Building": cmake -S . -B ./build). The old meson build command failed
+# with "Neither source directory ... contain a build file meson.build"
+# (COPR 10988487). NOTE: never write a macro token in a comment - rpm
+# macro-expands comment lines, and with meson-srpm-macros installed the
+# meson build macro expansion injects shell commands into the build
+# script (rpmbuild died with: syntax error near unexpected token `(').
 %cmake
 %cmake_build
 
@@ -42,6 +46,12 @@ Requires:       %{name} = %{version}-%{release}
 %files devel
 
 %changelog
+* Sat Sep 26 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.1-3
+- Remove the macro token from the %build comment: rpm macro-expands comment
+  lines, so whenever meson-srpm-macros is present in the environment the
+  commented meson build command expanded into real shell lines and rpmbuild
+  failed with "syntax error near unexpected token `('" before %cmake ran.
+  COPR's minimal buildroot (cmake only) passed only by luck.
 * Tue Sep 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.1-2
 - Switch to CMake: upstream 0.7.1 removed meson.build (CMake-only build,
   COPR 10988487 failed with "Neither source directory ... contain a build
