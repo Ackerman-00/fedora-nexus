@@ -6,7 +6,7 @@
 
 Name:           protonplus
 Version:        %{fileref}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A modern compatibility tools manager
 ExclusiveArch:  x86_64
 
@@ -37,7 +37,9 @@ Requires:       hicolor-icon-theme
 Requires:       which
 
 %description
-ProtonPlus is a modern compatibility tools manager for Linux. It allows you to easily manage and update various compatibility tools like Proton, Wine, DXVK, and VKD3D across different launchers.
+ProtonPlus is a modern compatibility tools manager for Linux.
+It allows you to easily manage and update various compatibility tools
+like Proton, Wine, DXVK, and VKD3D across different launchers.
 
 %prep
 %forgeautosetup
@@ -64,6 +66,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
 %{_metainfodir}/%{app_id}.metainfo.xml
 
 %changelog
+* Sun Sep 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.8-3
+- Wrap %description to fix rpmlint E: description-line-too-long
+
 * Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.8-2
 - Add missing BuildRequires: python3 (tests/meson.build uses
   python.find_installation for scripts_test.py run in %check)
