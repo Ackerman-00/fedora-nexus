@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          11f6b725c8a9f8ec724e0edaf7a74622d538dcd4
+%global commit          78eb770c90647b7e687f85623498f83d704b3403
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260926204951
+%global gitdate         20260926232825
 
 # Fedora's default LTO flags (-flto=auto -ffat-lto-objects) trip a
 # binutils/GCC linker-plugin bug when linking umbriel's test binaries
@@ -113,5 +113,5 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Sat Sep 26 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260926204951git11f6b72-1
-- Nightly sync with upstream main branch (Commit: 11f6b72; GLSL effect engine + harness refactor; %files: bundled effects/ presets replace removed shaders/)
+* Sun Sep 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20260926232825git78eb770-1
+- Nightly sync with upstream main branch (Commit: 78eb770)
