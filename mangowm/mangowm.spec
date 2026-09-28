@@ -1,6 +1,6 @@
 Name:           mangowm
-Version:        0.17.3
-Release:        2%{?dist}
+Version:        0.17.4
+Release:        1%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <quietcraft@gmail.com>
@@ -87,8 +87,5 @@ sed -i "s/'-U_FORTIFY_SOURCE',//g" meson.build
 %{_userunitdir}/mango-session.target
 
 %changelog
-* Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.3-2
-- Re-apply Fedora FORTIFY_SOURCE=3 hardening: strip upstream's -U_FORTIFY_SOURCE
-  c_arg (present in 0.17.3 meson.build) that cancelled the distro optflag
-* Tue Sep 22 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.3-1
-- Auto-update to version 0.17.3
+* Mon Sep 28 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.4-1
+- Auto-update to version 0.17.4
