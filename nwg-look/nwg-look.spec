@@ -1,11 +1,11 @@
 %global goipath         github.com/nwg-piotr/nwg-look
 
-Version:        1.1.1
+Version:        1.1.2
 
 %gometa
 
 Name:           nwg-look
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        GTK3 settings editor adapted to work in the wlroots environment (Nexus Optimized)
 
 License:        MIT
@@ -52,6 +52,9 @@ make build
 %{_datadir}/pixmaps/nwg-look.svg
 
 %changelog
+* Tue Sep 29 2026 Nexus Auto-Updater <bot@github.com> - 1.1.2-1
+- Update to version 1.1.2
+
 * Tue Sep 01 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.1.1-3
 - Fix build: restore %gometa macro removed in error (SRPM build failed)
 
