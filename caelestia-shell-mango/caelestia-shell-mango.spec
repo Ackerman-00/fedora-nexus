@@ -36,8 +36,9 @@ BuildRequires:  fftw-devel
 # === RUNTIME DEPENDENCIES ===
 # Compositor (MangoWM only!)
 Requires:       mangowm
-# Quickshell shell runner
-Requires:       quickshell-git
+# Quickshell shell runner (official Fedora package; the quickshell-git
+# transitional stub is retired and disappears from the COPR)
+Requires:       quickshell
 # Launcher
 Requires:       app2unit
 # Audio
