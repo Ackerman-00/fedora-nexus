@@ -113,8 +113,13 @@ def get_void_packages(root):
 # Docker test runners
 # ---------------------------------------------------------------------------
 
+# Pinned Fedora container (AGENTS.md toolchain baseline). Never :latest: the
+# tag rolls to the next release on GA day and silently changes the buildroot.
+FEDORA_IMAGE = "fedora:44"
+
+
 def docker_run(image, commands, timeout=600):
-    cmd_script = " && ".join(commands)
+    cmd_script = "set -o pipefail; " + " && ".join(commands)
     try:
         res = subprocess.run(
             ["docker", "run", "--rm", "--network=host",
@@ -128,12 +133,12 @@ def docker_run(image, commands, timeout=600):
         return -1, "", str(e)
 
 
-def test_gentoo_package(atom, overlay_path, workdir):
+def test_gentoo_package(atom, overlay_path, workdir, timeout=300):
     commands = [
         "emerge --sync --quiet 2>/dev/null || true",
         "emerge --pretend --verbose %s 2>&1 | tail -30" % atom,
     ]
-    rc, out, err = docker_run("gentoo/stage3", commands, timeout=300)
+    rc, out, err = docker_run("gentoo/stage3", commands, timeout=timeout)
     combined = out + err
     result = {"package": atom, "status": STATUS_PASS, "details": ""}
     if rc != 0:
@@ -147,17 +152,25 @@ def test_gentoo_package(atom, overlay_path, workdir):
     return result
 
 
-def test_fedora_package(name, nvra, spec_path, workdir):
+def test_fedora_package(name, nvra, spec_path, workdir, timeout=300):
     commands = [
-        "dnf install -y dnf-plugins-core 2>/dev/null",
-        "dnf copr enable -y Ackerman-00/nexus 2>/dev/null || true",
+        "dnf install -y dnf-plugins-core",
+        "dnf copr enable -y ackerman/nexus",
         "dnf install -y %s 2>&1 | tail -30" % name,
         "rpm -V %s 2>&1 | head -20" % name,
         "which %s 2>/dev/null && ldd $(which %s) 2>/dev/null | grep 'not found' || true" % (name, name),
     ]
-    rc, out, err = docker_run("fedora:latest", commands, timeout=300)
+    rc, out, err = docker_run(FEDORA_IMAGE, commands, timeout=timeout)
     combined = out + err
     result = {"package": name, "status": STATUS_PASS, "details": ""}
+    if rc != 0:
+        result["status"] = STATUS_INSTALL_FAIL
+        result["details"] = "docker/dnf pipeline failed (rc=%d): %s" % (rc, combined[-500:])
+        return result
+    if not out.strip():
+        result["status"] = STATUS_INSTALL_FAIL
+        result["details"] = "no dnf output, install command never ran"
+        return result
     if "Error" in combined and "Nothing to do" not in combined:
         if "No match" in combined or "no package" in combined.lower():
             result["status"] = STATUS_SKIP
@@ -179,12 +192,12 @@ def test_fedora_package(name, nvra, spec_path, workdir):
     return result
 
 
-def test_nix_package(name, expr_path, workdir):
+def test_nix_package(name, expr_path, workdir, timeout=600):
     commands = [
         "nix-build '<nixpkgs>' -A %s 2>&1 | tail -10" % name,
         "nix-store --query --requisites $(nix-build '<nixpkgs>' -A %s 2>/dev/null) 2>&1 | wc -l" % name,
     ]
-    rc, out, err = docker_run("nixos/nix", commands, timeout=600)
+    rc, out, err = docker_run("nixos/nix", commands, timeout=timeout)
     combined = out + err
     result = {"package": name, "status": STATUS_PASS, "details": ""}
     if rc != 0 and "error" in combined.lower():
@@ -196,12 +209,12 @@ def test_nix_package(name, expr_path, workdir):
     return result
 
 
-def test_void_package(name, template_path, workdir):
+def test_void_package(name, template_path, workdir, timeout=300):
     commands = [
         "xbps-install -Sy 2>/dev/null || true",
         "xbps-install -S %s 2>&1 | tail -10" % name,
     ]
-    rc, out, err = docker_run("voidlinux/voidlinux", commands, timeout=300)
+    rc, out, err = docker_run("voidlinux/voidlinux", commands, timeout=timeout)
     combined = out + err
     result = {"package": name, "status": STATUS_PASS, "details": ""}
     if rc != 0:
@@ -222,6 +235,12 @@ def trivy_scan_image(image_tag):
     try:
         import shutil
         if not shutil.which("trivy"):
+            return None
+        ver = subprocess.run(["trivy", "--version"], capture_output=True,
+                             text=True, timeout=30)
+        m = re.search(r"(\d+)\.(\d+)\.(\d+)", ver.stdout)
+        if not m or (int(m.group(1)), int(m.group(2))) < (0, 72):
+            log("[WARN] trivy < 0.72.0 has known CVEs (CVE-2026-63328), skipping image scan")
             return None
         res = subprocess.run(
             ["trivy", "image", "--format", "json", "--severity", "CRITICAL,HIGH,MEDIUM",
@@ -295,13 +314,13 @@ def main():
     for name, ver, path in pkgs:
         log("Testing %s ..." % name)
         if repo_type == "gentoo":
-            r = test_gentoo_package(name, root, root)
+            r = test_gentoo_package(name, root, root, timeout=args.timeout)
         elif repo_type in ("fedora", "opensuse"):
-            r = test_fedora_package(name, ver, path, root)
+            r = test_fedora_package(name, ver, path, root, timeout=args.timeout)
         elif repo_type == "nix":
-            r = test_nix_package(name, path, root)
+            r = test_nix_package(name, path, root, timeout=args.timeout)
         elif repo_type == "void":
-            r = test_void_package(name, path, root)
+            r = test_void_package(name, path, root, timeout=args.timeout)
         else:
             r = {"package": name, "status": STATUS_SKIP, "details": "unsupported repo type"}
         results.append(r)
@@ -313,7 +332,7 @@ def main():
     if args.scan_images:
         BASE_IMAGES = {
             "gentoo": "gentoo/stage3",
-            "fedora": "fedora:latest",
+            "fedora": FEDORA_IMAGE,
             "void": "voidlinux/voidlinux:latest",
         }
         img = BASE_IMAGES.get(repo_type)
