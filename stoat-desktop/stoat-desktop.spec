@@ -96,7 +96,7 @@ chmod 0755 %{buildroot}%{_bindir}/stoat-desktop
 * Fri Sep 18 2026 Nexus Auto-Updater <bot@github.com> - 1.5.4-1
 - Update to version 1.5.4
 
-* Thu Aug 21 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.5.3-3
+* Fri Aug 21 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.5.3-3
 - Rebuild for COPR (spec validation fix)
 
 * Tue Aug 18 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.2-3

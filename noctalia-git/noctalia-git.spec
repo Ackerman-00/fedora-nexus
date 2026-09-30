@@ -3,7 +3,7 @@
 # because Fedora now ships official 'noctalia' (F44+).
 # This stub exists only to notify existing users via `dnf update`
 # and to pull the official package. It will be removed from the
-# COPR ~2 weeks after 2026-09-14 (~2026-09-28), after which
+# COPR once migration settles (owner removes it; check the COPR package list), after which
 # `noctalia-git` will disappear from the repo entirely.
 # DO NOT run update.sh on this spec — Version 99.0 is intentional
 # and must sort ABOVE all previous 5.1.0^git snapshots.
@@ -46,7 +46,7 @@ the official package, or temporarily keep the last noctalia-git build
 until you upgrade. This stub will still print the notice on F43 but
 its Requires: noctalia will not resolve until you are on F44+.
 
-This stub will be removed from the COPR entirely after ~2026-09-28.
+This stub will be removed from the COPR entirely once migration settles.
 Please migrate now. Thank you for using fedora-nexus!
 
 %prep
@@ -71,7 +71,7 @@ cat >&2 <<'EOF'
            https://src.fedoraproject.org/rpms/noctalia
 
   This stub (noctalia-git 99.0-1) will be deleted from the COPR
-  after ~2026-09-28. Thanks for flying with fedora-nexus — ackerman
+  once migration settles. Thanks for flying with fedora-nexus — ackerman
 ========================================================================
 EOF
 
@@ -81,7 +81,7 @@ EOF
 * Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 99.0-2
 - Update retirement notice: official noctalia is now 5.1.0 stable (F44 stable 5.1.0-1.fc44, F45 testing 5.1.0-1.fc45, Rawhide 5.1.0-2.fc46, per packages.fedoraproject.org). No code change, notice text only.
 
-* Sun Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 99.0-1
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 99.0-1
 - RETIRED: noctalia-git moved to Fedora official 'noctalia' (F44+, docs.noctalia.dev). Transitional stub that Requires:noctalia and prints migration notice. Will be removed from COPR after ~2 weeks. Thank you!
 
 * Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 5.1.0^20260914000849git5d66d11-3

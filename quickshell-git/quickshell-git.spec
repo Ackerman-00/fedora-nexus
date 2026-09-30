@@ -3,7 +3,7 @@
 # because Fedora now ships official 'quickshell' in F43/F44/F45/F46+.
 # This stub exists only to notify existing users via `dnf update`
 # and to pull the official package. It will be removed from the
-# COPR ~2 weeks after 2026-09-14 (~2026-09-28), after which
+# COPR once migration settles (owner removes it; check the COPR package list), after which
 # `quickshell-git` will disappear from the repo entirely.
 # DO NOT run update.sh on this spec — Version 99.0 is intentional
 # and must sort ABOVE all previous 0.3.1^git snapshots.
@@ -39,7 +39,7 @@ instructions. After updating you can clean up the stub:
   # or
   sudo dnf swap quickshell-git quickshell
 
-This stub will be removed from the COPR entirely after ~2026-09-28.
+This stub will be removed from the COPR entirely once migration settles.
 Please migrate now. Thank you for using fedora-nexus!
 
 %prep
@@ -60,14 +60,14 @@ cat >&2 <<'EOF'
   Details: https://src.fedoraproject.org/rpms/quickshell
 
   This stub (quickshell-git 99.0-1) will be deleted from the COPR
-  after ~2026-09-28. Thanks for flying with fedora-nexus — ackerman
+  once migration settles. Thanks for flying with fedora-nexus — ackerman
 ========================================================================
 EOF
 
 %files
 
 %changelog
-* Sun Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 99.0-1
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 99.0-1
 - RETIRED: quickshell-git moved to Fedora official 'quickshell' (F43/F44/F45/F46+). Transitional stub that Requires:quickshell and prints migration notice. Will be removed from COPR after ~2 weeks. Thank you!
 
 * Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.1^20260914015902git86b4275-2

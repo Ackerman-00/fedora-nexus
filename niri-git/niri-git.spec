@@ -3,7 +3,7 @@
 # because Fedora now ships official 'niri' in F43/F44/F45/Rawhide.
 # This stub exists only to notify existing users via `dnf update`
 # and to pull the official package. It will be removed from the
-# COPR ~2 weeks after 2026-09-14 (~2026-09-28), after which
+# COPR once migration settles (owner removes it; check the COPR package list), after which
 # `niri-git` will disappear from the repo entirely.
 # DO NOT run update.sh on this spec — Version 99.0 is intentional
 # and must sort ABOVE all previous 26.04^git snapshots (Epoch 1).
@@ -39,7 +39,7 @@ instructions. After updating you can clean up the stub:
   # or
   sudo dnf swap niri-git niri
 
-This stub will be removed from the COPR entirely after ~2026-09-28.
+This stub will be removed from the COPR entirely once migration settles.
 Please migrate now. Thank you for using fedora-nexus!
 
 %prep
@@ -61,14 +61,14 @@ cat >&2 <<'EOF'
            https://src.fedoraproject.org/rpms/niri
 
   This stub (niri-git 1:99.0-1) will be deleted from the COPR
-  after ~2026-09-28. Thanks for flying with fedora-nexus — ackerman
+  once migration settles. Thanks for flying with fedora-nexus — ackerman
 ========================================================================
 EOF
 
 %files
 
 %changelog
-* Sun Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 1:99.0-1
+* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 1:99.0-1
 - RETIRED: niri-git moved to Fedora official 'niri' (F43/F44/F45/Rawhide, decathorpe). Transitional stub that Requires:niri and prints migration notice. Will be removed from COPR after ~2 weeks. Thank you!
 
 * Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 1:26.04^20260913141508git66d04a7-3

@@ -8,7 +8,7 @@
 # against its statically built umbrielfx archive:
 # the plugin claims some members as LTO IR while others are pulled in as
 # plain ELF objects, leaving references unresolvable
-# (previously: scenefx util_env.c.o vs render_egl.c.o: env_parse_bool).
+# (previously: vendored umbrielfx/util_env.c.o vs render_egl.c.o: env_parse_bool).
 # Proven by COPR build 10898364; keep escape hatch until upstream/LD fixed.
 %global _lto_cflags %{nil}
 
