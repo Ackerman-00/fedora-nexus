@@ -39,7 +39,7 @@ from pathlib import Path
 
 SKIP_DIRS = {"cache", "job_out", "binpkgs", "distfiles", "ccache", ".github",
              ".git", "tools", "node_modules"}
-UA = {"User-Agent": "teardown-sweep/1.1 (nexus CI gate)"}
+UA = {"User-Agent": "teardown-sweep/1.1 (https://github.com/Ackerman-00/fedora-nexus)"}
 
 STATUS_OK = "OK"
 STATUS_SOURCE_OK = "SOURCE-OK"
@@ -71,6 +71,15 @@ def fetch(url, timeout=120):
     req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.read()
+
+
+def post_json(url, payload, timeout=15):
+    """POST a JSON payload, return the decoded JSON response. Used for
+    POST-only endpoints such as api.osv.dev/v1/query (GET returns 405)."""
+    req = urllib.request.Request(url, data=json.dumps(payload).encode(),
+                                 headers={**UA, "Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return json.loads(r.read().decode())
 
 
 def fetch_with_name(url, timeout=120):
@@ -105,7 +114,7 @@ def latest_channel_version_header(url, timeout=60):
         req = urllib.request.Request(url, method="HEAD", headers=UA)
         with urllib.request.urlopen(req, timeout=timeout) as r:
             for k, v in r.headers.items():
-                if "version" in k.lower() and v.strip():
+                if "version" in k.lower() and re.match(r"^\d+(\.\d+)+", v.strip()):
                     return k, v.strip()
     except Exception:
         pass
@@ -117,6 +126,7 @@ def normalize(v):
     v = re.sub(r"^[vV]", "", v)
     v = re.sub(r"\^.*$", "", v)
     v = re.sub(r"~.*$", "", v)
+    v = re.sub(r"\+[a-zA-Z0-9._-]+$", "", v)
     v = re.sub(r"-([0-9]+)$", "", v)
     return v.lower()
 
@@ -159,14 +169,27 @@ def is_template_version(pv):
     return bool(TEMPLATE_VERSION_RE.search(pv))
 
 
+_REPOLLOGY_LAST = [0.0]
+
+
+def _repology_fetch(project_name, timeout=15):
+    """GET one Repology project, throttled to <=1 req/s with a repo-linked
+    User-Agent (repology.org/api bulk-client policy)."""
+    import time
+    wait = 1.0 - (time.monotonic() - _REPOLLOGY_LAST[0])
+    if wait > 0:
+        time.sleep(wait)
+    _REPOLLOGY_LAST[0] = time.monotonic()
+    return fetch("https://repology.org/api/v1/project/%s" % project_name,
+                 timeout=timeout)
+
+
 def repology_newest(project_name):
     """Query Repology API for the newest known version of ANY package.
     Returns (version, repo_name) or (None, None). Works for ALL packages
     across 120+ repos — no hardcoding needed."""
     try:
-        data = json.loads(fetch(
-            "https://repology.org/api/v1/project/%s" % project_name,
-            timeout=15).decode())
+        data = json.loads(_repology_fetch(project_name).decode())
         if not isinstance(data, list):
             return None, None
         for p in data:
@@ -176,8 +199,8 @@ def repology_newest(project_name):
             if p.get("status") not in ("unique", "rolling", "noscheme", "ignored",
                                         "incorrect", "untrusted"):
                 return p.get("version"), p.get("repo", "")
-    except Exception:
-        pass
+    except Exception as e:
+        log("[WARN] repology query failed for %s: %s" % (project_name, e))
     return None, None
 
 
@@ -198,10 +221,7 @@ def osv_query(pkg, version, ecosystem=None):
     if eco:
         query["package"]["ecosystem"] = eco
     try:
-        data = json.loads(fetch(
-            "https://api.osv.dev/v1/query",
-            data=json.dumps(query).encode(),
-            timeout=15).decode())
+        data = post_json("https://api.osv.dev/v1/query", query, timeout=15)
         vulns = data.get("vulns", [])
         return [v.get("id", "?") for v in vulns]
     except Exception:
@@ -212,9 +232,7 @@ def repology_dep_info(pkg):
     """Get dependency and version info from Repology for ANY package.
     Returns dict with upstream_version, status, deps, or empty dict."""
     try:
-        data = json.loads(fetch(
-            "https://repology.org/api/v1/project/%s" % pkg,
-            timeout=15).decode())
+        data = json.loads(_repology_fetch(pkg).decode())
         if not isinstance(data, list):
             return {}
         newest = None
@@ -235,8 +253,8 @@ def repology_dep_info(pkg):
                 "status": newest.get("status"),
                 "summary": newest.get("summary"),
             }
-    except Exception:
-        pass
+    except Exception as e:
+        log("[WARN] repology query failed for %s: %s" % (pkg, e))
     return {}
 
 
@@ -994,9 +1012,7 @@ def read_rpm_version(path):
     rel = get(1002)
     if not ver:
         return None, "rpm header has no VERSION tag"
-    full = "%s-%s" % (ver, rel) if rel else ver
-    return full, "rpm header %s=%s%s (tags NAME/VERSION%s)" % (
-        name or "?", full, "-%s" % rel if rel else "", "")
+    return ver, "rpm header %s=%s-%s (tags NAME/VERSION/RELEASE)" % (name or "?", ver, rel or "1")
 
 
 def looks_like_source(tree):
@@ -1602,25 +1618,6 @@ def tear_apart(path, distname, tmp):
             return None, "xbps extracted, no version evidence found", False, looks_like_source(sub)
         except Exception as e:
             return None, "xbps teardown error: %s" % e, False, False
-    if ext.endswith(".rpm"):
-        try:
-            sub = tmp / "rpm"
-            sub.mkdir()
-            import subprocess as _sp
-            _sp.run(["bash", "-c", "rpm2cpio '%s' | cpio -idm" % str(path)],
-                    cwd=str(sub), check=True, capture_output=True)
-            hits = version_evidence(sub, distname)
-            for kind, v, rel in hits:
-                if kind in STRONG_KINDS:
-                    return v, "rpm %s=%s (%s)" % (kind, v, rel), True, False
-            ver, cmd, out = probe_binary_version(sub, distname)
-            if ver:
-                return ver, "rpm runtime probe %s: %s" % (cmd, out), True, False
-            if hits:
-                return hits[0][1], "rpm %s=%s (%s)" % (hits[0][0], hits[0][1], hits[0][2]), False, looks_like_source(sub)
-            return None, "rpm extracted, no version evidence found", False, looks_like_source(sub)
-        except Exception as e:
-            return None, "rpm teardown error: %s" % e, False, False
     return None, "unknown artifact type", False, False
 
 
@@ -1637,7 +1634,7 @@ def get_elf_needed(elf_path):
             return []
         needed = []
         for line in res.stdout.decode(errors="ignore").splitlines():
-            m = re.search(r"NEEDED\s+(\S+)", line)
+            m = re.search(r"\(NEEDED\)\s+Shared library: \[([^\]]+)\]", line)
             if m:
                 needed.append(m.group(1))
         return needed
@@ -1673,8 +1670,9 @@ def check_deps_in_dir(pkg, root):
         for lib in needed:
             # Check common system paths
             found = False
-            for prefix in ["/lib", "/usr/lib", "/lib64", "/usr/lib64",
-                           root, root / "lib", root / "usr/lib"]:
+            for prefix in (Path("/lib"), Path("/usr/lib"), Path("/lib64"),
+                           Path("/usr/lib64"), root, root / "lib",
+                           root / "usr/lib"):
                 if (prefix / lib).exists():
                     found = True
                     break
@@ -2288,6 +2286,9 @@ def check_vulns_and_deps(pkgs, repo_type):
                 log("[FRESH] %s@%s" % (pkg, clean_pv))
             else:
                 log("[INFO] %s@%s status=%s" % (pkg, clean_pv))
+        else:
+            log("[WARN] %s: repology unreachable or unknown project, freshness unverified" % pkg)
+            rows.append((pkg, pkg, clean_pv, "", STATUS_UNVERIFIED, "repology unreachable"))
 
         api_repo = None
         for item in srcs:
@@ -2358,6 +2359,10 @@ def fix_stale_pkg(pkg, pv, latest, repo_type, root):
             new_txt = re.sub(r"^(Version:\s*).*$", r"\g<1>%s" % new_ver, txt, count=1, flags=re.M)
             if new_txt != txt:
                 log("  [autofix] sed Version %s -> %s in %s" % (pv, new_ver, spec))
+                if "# sha256:" in new_txt:
+                    log("  [autofix] %s pins # sha256: — recompute the hash for the new tarball before committing" % pkg)
+                    new_txt = re.sub(r"#\s*sha256:\s*[0-9a-fA-F]{64}",
+                                     "# sha256: RECOMPUTE-AFTER-VERSION-BUMP", new_txt)
                 spec.write_text(new_txt)
                 return True
     if repo_type == "nix":
@@ -2402,9 +2407,9 @@ def check_rpm_dependencies(root, repo_type):
       - dnf builddep --assumeno — BuildRequires resolvability against
         Fedora + COPR (inside Fedora container if docker is available,
         else static repology/packages.fedoraproject.org check)
-      - rpm-spec-tool RPM320-328 — duplicate deps, runtime-requires-
-        looks-like-buildrequires, build-tool-used-without-BR
-      - rpmlint + rpmdeplint — dependency graph (if installed)
+      - static RPM323/RPM324 heuristics (duplicate-dependency atoms are
+        impossible by construction since requirements are stored in a set;
+        rpm-spec-tool, rpmlint and rpmdeplint binaries are NOT invoked here)
 
     No hardcoding: works for ANY fedora/opensuse package. Produces a
     per-package table that satisfies the PROMPT's MANDATORY DELIVERABLE
@@ -2504,18 +2509,24 @@ def check_rpm_dependencies(root, repo_type):
         # RPM324: build-tool used without BR (static)
         build_script = "\n".join(re.findall(r"^%(?:build|install|check)\b.*?(?=^%|\Z)", txt, re.M | re.S))
         for tool, br_atom in BUILD_TOOL_BRS.items():
+            if br_atom in br or ("pkgconfig(%s)" % br_atom) in br:
+                continue
+            if tool in ("pkg-config", "pkgconf") and any(b.startswith("pkgconfig") for b in br):
+                continue
             if re.search(r"\b%s\b" % re.escape(tool), build_script):
-                if br_atom not in br and "pkgconfig" not in " ".join(br):
-                    br_missing.append("RPM324: %s -> BuildRequires: %s" % (tool, br_atom))
+                br_missing.append("RPM324: %s -> BuildRequires: %s" % (tool, br_atom))
         # Requires looks like BuildRequires (devel)
         for r in list(req):
             if r.endswith("-devel") or r in BUILD_TOOL_BRS:
                 br_missing.append("RPM323: Requires:%s looks like BuildRequires" % r)
-        status = "deps-verified" if (rpmspec_ok and not br_missing) else "deps-needs-fix"
-        if not rpmspec_ok:
+        if not has_rpmspec:
+            status = "deps-unverified (rpmspec not installed on runner)"
+        elif not rpmspec_ok:
             status = "deps-broken (rpmspec: %s)" % rpmspec_err
         elif br_missing:
             status = "deps-broken (%s)" % "; ".join(br_missing[:2])
+        else:
+            status = "deps-verified"
         rows_dep.append((pkg, len(br), len(req), ";".join(sorted(br_missing)[:3]) or "-", status))
         if status != "deps-verified":
             log("  [DEPS] %s: %s (BR:%d Req:%d)" % (pkg, status, len(br), len(req)))
@@ -2629,10 +2640,17 @@ def main():
     log("")
     log("=== SWEEP TABLE ===")
     log("%-34s %-34s %-16s %-14s %-12s %s" % ("PACKAGE", "DISTFILE", "PINNED", "INTERNAL", "STATUS", "NOTE"))
-    bad_statuses = (STATUS_FAIL, STATUS_MISMATCH, STATUS_STALE, STATUS_UNVERIFIED)
-    good_statuses = (STATUS_OK, STATUS_SOURCE_OK, STATUS_SKIP)
-    # Count bad per-PACKAGE, not per-artifact. A package with multiple
-    # artifacts (e.g. .deb + .tar.zst) is verified if ANY artifact is OK.
+    bad_statuses = (STATUS_FAIL, STATUS_MISMATCH, STATUS_STALE, STATUS_UNVERIFIED,
+                    STATUS_SKIP)
+    good_statuses = (STATUS_OK, STATUS_SOURCE_OK)
+
+    def is_bad(s):
+        return (s in bad_statuses or s.startswith("DEPS-")
+                or s in ("VULN", "OUTDATED", "OVER-BUDGET"))
+
+    # Count bad per-PACKAGE, not per-artifact. A bad row is never masked by a
+    # later good row for another artifact of the same package; a good row only
+    # fills a package with no verdict yet. SKIP counts as unverified.
     pkg_worst = {}  # pkg -> worst status seen
     for pkg, dist, pinned, internal, status, note in rows:
         log("%-34s %-34s %-16s %-14s %-12s %s" % (
@@ -2640,14 +2658,12 @@ def main():
         if pkg in ("LIBYEAR",):
             continue
         prev = pkg_worst.get(pkg)
-        if status in bad_statuses:
-            # Only mark bad if no good status has been seen for this package yet
-            if prev not in good_statuses:
-                pkg_worst[pkg] = status
-        elif status in good_statuses:
-            # Any good status overrides previous bad for this package
+        if is_bad(status):
             pkg_worst[pkg] = status
-    n_bad = sum(1 for s in pkg_worst.values() if s in bad_statuses)
+        elif status in good_statuses:
+            if prev is None:
+                pkg_worst[pkg] = status
+    n_bad = sum(1 for s in pkg_worst.values() if is_bad(s))
 
     report = Path(args.report)
     lines = ["# Teardown Sweep Report", "",
