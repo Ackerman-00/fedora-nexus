@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          63cdf17f17b4ee231ef862690048549f218e8e0e
+%global commit          b5690b56d749526a05db9b9268d58bf8f700957f
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260925130202
+%global gitdate         20260930121453
 
 Name:           xwayland-satellite-git
 # Epoch 1 is permanent: legacy 2026MMDD-dated builds sort ABOVE the current
@@ -96,5 +96,5 @@ cargo test --release --features systemd,fontconfig --lib
 %{_userunitdir}/xwayland-satellite.service
 
 %changelog
-* Fri Sep 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.3^20260925130202git63cdf17-1
-- Nightly sync with upstream main branch (Commit: 63cdf17)
+* Wed Sep 30 2026 Ackerman-00 <quietcraft@gmail.com> - 1:0.8.3^20260930121453gitb5690b5-1
+- Nightly sync with upstream main branch (Commit: b5690b5)
