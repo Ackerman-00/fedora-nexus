@@ -21,6 +21,9 @@ Summary:        Free and open source instant messaging and VoIP platform
 License:        AGPL-3.0-or-later AND BSD
 URL:            https://fluxer.app
 Source0:        https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm
+# Rolling "latest" URL: pin the hash of the served artifact so rebuilds and
+# the sweep verify fixed bits. Refreshed by update.sh on every version bump.
+# sha256: efb23bd8c08832b3833991f89879a20c99437350dc0e80214edb048a37a73369
 
 Requires:           hicolor-icon-theme
 Requires:       at-spi2-core

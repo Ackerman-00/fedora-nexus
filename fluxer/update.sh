@@ -44,6 +44,20 @@ if [ "$CURRENT_VERSION" != "$VERSION" ]; then
     sed -i "s/^Version:.*/Version:        $VERSION/" "$SPEC_FILE"
     sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
+    # Refresh the sha256 pin for the newly served artifact (rolling URL:
+    # without this, rebuilds silently ship new bits under the old hash)
+    echo "  -> [HASH] Computing sha256 of served artifact"
+    SHA256=$(curl -sL --max-time 120 -A "Mozilla/5.0" "$API_URL" | sha256sum | awk '{print $1}')
+    if [ -n "$SHA256" ]; then
+        if grep -q "^# sha256:" "$SPEC_FILE"; then
+            sed -i -E "s|^# sha256:.*|# sha256: $SHA256|" "$SPEC_FILE"
+        else
+            sed -i "/^Source0:/a # sha256: $SHA256" "$SPEC_FILE"
+        fi
+    else
+        echo "  -> [WARN] Could not compute sha256; pin left stale on purpose"
+    fi
+
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
     sed -i '/^%changelog/,$d' "$SPEC_FILE"
     {
