@@ -33,6 +33,9 @@ BuildRequires:  pkgconfig(nlohmann_json)
 BuildRequires:  pkgconfig(gtk4) >= 4.12
 
 Requires:       xdg-desktop-portal
+# Upstream README [screenshot] color_pick_cmd: external color picker
+# (AUR optdepends slurp). Weak dep: portal works without it.
+Recommends:     slurp
 
 Provides:       xdg-desktop-portal-umbriel = %{version}-%{release}
 Conflicts:      xdg-desktop-portal-umbriel
@@ -51,7 +54,9 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 # header rewrite is needed. If upstream ever re-vendors, re-add the rewrite.
 
 %build
-%meson -Db_lto=true
+# -Dpicker=enabled states the release intent explicitly (meson_options.txt;
+# picker=auto already resolves on while the gtk4 BR is present, same as AUR).
+%meson -Db_lto=true -Dpicker=enabled
 %meson_build
 
 %install
