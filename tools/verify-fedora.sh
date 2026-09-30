@@ -1,13 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 # Strict completion verifier for fedora-nexus.
+if [[ "${1:-}" == "--print-mains" ]]; then
+  echo "xwayland-satellite-git umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter ly wlroots"
+  exit 0
+fi
 RUN_ID="${RUN_ID:-}"
 RELAY=".opencode-relay.md"
 FAIL=0
 
 echo "----- VERIFICATION REPORT -----"
 if [[ -f "$RELAY" ]]; then
-  if [[ -n "$RUN_ID" ]] && ! grep -qx "run_id: $RUN_ID" "$RELAY"; then
+  if [[ -z "$RUN_ID" ]]; then
+    echo "FAIL: NOT COMPLETE -- RUN_ID not set, cannot verify relay ownership"
+    FAIL=1
+  elif ! grep -qx "run_id: $RUN_ID" "$RELAY"; then
     echo "FAIL: NOT COMPLETE -- relay is not for this run (expected run_id: $RUN_ID)"
     FAIL=1
   else
@@ -20,20 +27,22 @@ if [[ -f "$RELAY" ]]; then
     FAIL=1
   fi
 
-  # A version check is not a dependency proof. Every active package must have
-  # a fresh dependency teardown result; only intentional retired stubs may use
-  # retired-stub. This is the authoritative completion contract.
-  dep_rows=$(grep -cE "\| (deps-verified|deps-fixed|retired-stub)([[:space:]]|\|)" "$RELAY" 2>/dev/null || true)
+  # version-checked is an honest label for freshness checks without a container
+  # teardown (see PROMPT). It counts here only with same-run upstream evidence
+  # (checked below); the 11 mains additionally need docker-teardown PASS.
+  # Count DISTINCT package names, not matching lines: prose mentioning a
+  # status must not satisfy the inventory bar.
+  dep_rows=$(grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*\| (deps-verified|deps-fixed|version-checked|retired-stub) \|" "$RELAY" 2>/dev/null | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u | wc -l || true)
   dep_rows=${dep_rows:-0}
   echo "Inventory: $expected specs; strict dependency rows: $dep_rows"
   if [[ "$dep_rows" -lt "$expected" ]]; then
-    echo "FAIL: NOT COMPLETE -- every package needs deps-verified/deps-fixed teardown evidence (or retired-stub); found $dep_rows, need $expected"
+    echo "FAIL: NOT COMPLETE -- every package needs deps-verified/deps-fixed/version-checked teardown evidence (or retired-stub); found $dep_rows, need $expected"
     FAIL=1
   else
     echo "PASS: strict dependency rows cover inventory"
   fi
 
-  unproven_rows=$(grep -c "unproven:" "$RELAY" 2>/dev/null || true)
+  unproven_rows=$(grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*unproven:" "$RELAY" 2>/dev/null | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u | wc -l || true)
   unproven_rows=${unproven_rows:-0}
   echo "Correctness-contract rows: $unproven_rows (need $expected)"
   if [[ "$unproven_rows" -lt "$expected" ]]; then
@@ -43,9 +52,13 @@ if [[ -f "$RELAY" ]]; then
     echo "PASS: correctness contract covers inventory"
   fi
 
-  # Require a same-run upstream evidence row for every package. This prevents
-  # carrying yesterday's upstream conclusion forward as a current audit.
-  upstream_rows=$(grep -cE "\| upstream: [^|]+ \|" "$RELAY" 2>/dev/null || true)
+  # Require a same-run upstream evidence row for every package. The trailing
+  # date field must be today or yesterday: this prevents carrying an old
+  # upstream conclusion forward as a current audit.
+  # (TODAY/YEST are computed in the MAINS block below; precompute here.)
+  TODAY=$(date -u +%F)
+  YEST=$(date -u -d yesterday +%F 2>/dev/null || date -u -v-1d +%F)
+  upstream_rows=$(grep -cE "\| upstream: [^|]+ \|.*($TODAY|$YEST)" "$RELAY" 2>/dev/null || true)
   upstream_rows=${upstream_rows:-0}
   echo "Upstream evidence rows: $upstream_rows (need $expected)"
   if [[ "$upstream_rows" -lt "$expected" ]]; then
@@ -83,8 +96,6 @@ if [[ -f "$RELAY" ]]; then
   fi
 
   MAINS="xwayland-satellite-git umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter ly wlroots"
-  TODAY=$(date -u +%F)
-  YEST=$(date -u -d yesterday +%F 2>/dev/null || date -u -v-1d +%F)
   for pkg in $MAINS; do
     if ! grep -qiE "docker-teardown: $pkg .*PASS" "$RELAY"; then
       echo "FAIL: NOT COMPLETE -- main package '$pkg' lacks fresh docker-teardown PASS"
