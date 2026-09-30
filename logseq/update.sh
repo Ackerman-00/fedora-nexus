@@ -39,6 +39,16 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     sed -i "s/^Version:\s*.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i "s/^Release:\s*.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
+    # Refresh the pinned sha256 for the new zip (teardown-sweep verifies
+    # Source0 against this pin; a stale pin fails the next run)
+    echo "  -> [HASH] Computing sha256 of $ZIP_URL"
+    SHA256=$(curl -sL "$ZIP_URL" | sha256sum | awk '{print $1}')
+    if [ -n "$SHA256" ]; then
+        sed -i -E "s|^# sha256:.*|# sha256: $SHA256|" "$SPEC_FILE"
+    else
+        echo "  -> [WARN] Could not compute sha256; pin left stale on purpose"
+    fi
+
     # Replace changelog with single entry
     DATE_STR=$(date +"%a %b %d %Y")
     sed -i '/^%changelog/,$d' "$SPEC_FILE"

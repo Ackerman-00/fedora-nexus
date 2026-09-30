@@ -51,6 +51,17 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     
     # 2. Update the download URL path in the spec file with the RAW tag
     sed -i -E "s|download/[^/]+/zen.linux-x86_64.tar.xz|download/$LATEST_TAG/zen.linux-x86_64.tar.xz|g" "$SPEC_FILE"
+
+    # 3. Refresh the pinned sha256 for the new tarball (the spec carries
+    #    a `# sha256:` pin checked by teardown-sweep; a stale pin fails
+    #    verification on the next run)
+    echo "  -> [HASH] Computing sha256 of $TARBALL_URL"
+    SHA256=$(curl -sL "$TARBALL_URL" | sha256sum | awk '{print $1}')
+    if [ -n "$SHA256" ]; then
+        sed -i -E "s|^# sha256:.*|# sha256: $SHA256|" "$SPEC_FILE"
+    else
+        echo "  -> [WARN] Could not compute sha256; pin left stale on purpose"
+    fi
     
     # 3. Replace changelog with single entry
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
