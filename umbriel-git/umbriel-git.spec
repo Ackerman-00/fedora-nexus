@@ -48,11 +48,16 @@ BuildRequires:  pkgconfig(glesv2)
 BuildRequires:  pkgconfig(gbm)
 BuildRequires:  pkgconfig(jemalloc)
 BuildRequires:  pkgconfig(lcms2)
+BuildRequires:  pkgconfig(xcb)
+BuildRequires:  pkgconfig(xcb-icccm)
+BuildRequires:  pkgconfig(xcb-ewmh)
 # Optional upstream (required: false): without it meson silently builds
 # UMBRIEL_HAS_NATIVE_DRM_POLICY=0 and the [drm] exclusion config stops working.
 BuildRequires:  pkgconfig(libudev)
 
-Requires:       xwayland-satellite-git
+# Native wlroots Xwayland integration: needs the Xwayland binary on PATH
+# (upstream dropped xwayland-satellite; README/PACKAGING.md as of 2026-09).
+Requires:       xorg-x11-server-Xwayland%{?_isa}
 Requires:       xdg-desktop-portal-umbriel-git
 Requires:       mesa-dri-drivers
 Requires:       mesa-libEGL
@@ -74,8 +79,9 @@ Conflicts:      umbriel
 Umbriel is a Wayland compositor designed for daily use, with scrolling and
 dwindle layouts, per-output workspaces, window rules, blur, shadows, and
 fluid animations. Built in C++23 on wlroots and the Noctalia SceneFX fork,
-with Xwayland support provided by xwayland-satellite and portal screen
-capture and sharing by xdg-desktop-portal-umbriel.
+with X11 support from wlroots' native Xwayland integration (requires the
+Xwayland binary on PATH) and portal screen capture and sharing
+by xdg-desktop-portal-umbriel.
 Compiled specifically for the Nexus repository via automated Git snapshot.
 
 %prep
@@ -84,7 +90,7 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %build
 # -Dtests=disabled states the release-build intent explicitly (PACKAGING.md;
 # tests=auto already resolves off for release, same as nix/package.nix).
-%meson -Db_lto=true -Dtests=disabled
+%meson -Db_lto=true -Dtests=disabled -Dtest_ipc=disabled
 %meson_build
 
 %install
