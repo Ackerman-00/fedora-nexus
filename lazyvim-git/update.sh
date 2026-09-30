@@ -48,7 +48,7 @@ sed -i -E "s/^Version:.*/Version:        0.1^%{gitdate}git%{shortcommit}/" "$SPE
 
 # Update changelog
 DATE_STRING=$(LC_ALL=C date +"%a %b %d %Y")
-CHANGELOG_VER="0.1^${GIT_DATE}git${SHORT_COMMIT}-1"
+CHANGELOG_VER="1:0.1^${GIT_DATE}git${SHORT_COMMIT}-1"
 sed -i '/^%changelog/,$d' "$SPEC_FILE"
 {
     echo "%changelog"

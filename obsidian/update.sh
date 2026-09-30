@@ -11,8 +11,8 @@ echo "Checking for latest Obsidian release..."
 # plain `sort -V` orders "v…" after bare versions and picks the WRONG latest
 # (hellwal 1.0.8 downgrade, 2026-09-15). Sort by the v-stripped version key
 # but keep the exact tag (download URLs need it verbatim).
-LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | sed -E 's/^v?([0-9].*)/\1 &/' | sort -V -k1,1 | tail -1 | awk '{print $2}')
-LATEST_VERSION=$(echo "$LATEST_TAG" | sed 's/^v//')
+LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | grep -vEi '(alpha|beta|rc[0-9]*|[-.]pre|[-.]dev|nightly|canary)' | sed -E 's/^v?([0-9].*)/\1 &/' | sort -V -k1,1 | tail -1 | awk '{print $2}')
+LATEST_VERSION=$(echo "$LATEST_TAG" | sed 's/^v//;s@-@.@g')
 
 if [ -z "$LATEST_VERSION" ]; then
     echo "  -> [ERROR] Failed to fetch latest tag."
@@ -26,8 +26,9 @@ CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     echo "  -> [UPDATE] New version detected: $LATEST_VERSION (Current: $CURRENT_VERSION)"
 
-    # Verify the .deb source actually exists for this version
-    DEB_URL="https://github.com/$GITHUB_REPO/releases/download/v${LATEST_VERSION}/obsidian_${LATEST_VERSION}_amd64.deb"
+    # Verify the .deb source actually exists for this version (use the exact
+    # tag: upstream may tag bare versions without the `v` prefix one day)
+    DEB_URL="https://github.com/$GITHUB_REPO/releases/download/$LATEST_TAG/obsidian_${LATEST_VERSION}_amd64.deb"
     
     echo "  -> [CHECK] Verifying download link..."
     if ! curl --output /dev/null --silent --head --fail "$DEB_URL"; then
