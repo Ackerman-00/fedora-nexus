@@ -10,11 +10,14 @@ Three-layer defense-in-depth for package staleness and integrity:
 
 Pure stdlib Python helper the **agent calls** (not a separate CI gate). Downloads every
 artifact, tears it apart (AppImage extract, .deb control, zip internals, Electron
-.asar, `application.ini`, ELF `--version` probe), verifies checksums (Fedora
-specs pin `# sha256:`; BLAKE2B+SHA512/SRI paths are cross-repo heritage in the
-shared script, not Fedora convention), reads internal versions, compares against upstream, and
-(2026-08) runs RPM excellence checks: `rpmspec -P`, `dnf builddep --assumeno`
-(spec-dry-build), `rpm-spec-tool` RPM320-324, `rpmlint`/`rpmdeplint` hooks.
+.asar, `application.ini`, ELF `--version` probe), verifies checksums (only a
+minority of Fedora specs pin `# sha256:` today — the rest are
+download-verified but unpinned; BLAKE2B+SHA512/SRI paths are cross-repo
+heritage in the shared script, not Fedora convention), reads internal
+versions, compares against upstream, and (2026-08) runs RPM excellence
+checks: `rpmspec -P`, `dnf builddep --assumeno` (spec-dry-build), plus
+static RPM323/RPM324 heuristics. `rpm-spec-tool`, `rpmlint` and `rpmdeplint`
+are Layer-2 agent tools, NOT run by this script.
 The agent IS the teardown — it must tear every package apart itself, produce
 the dependency audit table, and ensure excellent .spec. Sweep is evidence,
 not a pass-anyway script; CI gate hard-fails if the agent skips it.
@@ -36,8 +39,10 @@ Key functions:
 - `fix_stale_pkg()`: mechanical auto-fix — sed version in ebuild/spec/nix/template
 - `--autofix` flag: when STALE is detected, auto-fix and re-verify
 
-Exit code = verdict. Exit 0 = all packages verified. Exit 1 = any
-FAIL/MISMATCH/STALE/UNVERIFIED → CI opens an issue.
+Exit code = the agent's verdict for this sweep run. Exit 0 = all packages
+verified. Exit 1 = any FAIL/MISMATCH/STALE/UNVERIFIED. CI does not execute
+this script; CI failure issues come from the `cleanup` job in
+opencode-schedule.yml.
 
 ### Layer 1b: Docker-based install + dependency sweep (`tools/docker-sweep.py`)
 
@@ -65,8 +70,8 @@ YOU are the sweep. The coding agent's PROMPT includes a TEAR-APART SWEEP PROTOCO
 is NOT optional and NOT a pass-anyway script. It must:
 
 1. Tear every .spec + Source0 apart itself (Cargo.toml/meson.build/go.mod vs BuildRequires)
-2. Run 2026 toolchain: `rpmspec -P`, `spectool -g`, `rpmbuild -bs`, `dnf builddep --assumeno` (or docker fedora:44), `rpmlint`/`rpmdeplint`, `rpm-spec-tool` RPM320-324 — log output
-3. Produce the mandatory deliverable `| package | upstream deps | in spec | missing | status |` for ALL packages (94 specs as of 2026-09-17 — derive via `ls */*.spec | wc -l`, NEVER hardcode the count)
+2. Run 2026 toolchain: `rpmspec -P`, `spectool -g`, `rpmbuild -bs`, `dnf builddep --assumeno` (or docker fedora:44), `rpmlint`/`rpmdeplint` — log output. (`rpm-spec-tool` as a standalone binary does not exist in Fedora or on PyPI; the static RPM323/RPM324 checks live in tools/teardown-sweep.py.)
+3. Produce the mandatory deliverable `| package | upstream deps | in spec | missing | status |` for ALL packages (derive the count every run via `ls */*.spec | wc -l` — NEVER hardcode it)
    - OSV.dev vulnerability scan (CVEs on pinned version)
    - Repology freshness (outdated vs 120+ repos)
    - Libyear drift (years behind upstream, budget=20yr)
@@ -79,8 +84,11 @@ is NOT optional and NOT a pass-anyway script. It must:
 
 ### Layer 3: CI gate + issue auto-open — ENFORCED
 
-`gate_passes()` in `opencode-schedule.yml` now hard-checks that
-`.opencode-relay.md` on main contains `run_id` + `status: complete` + `PACKAGE.*BR.*Req` / `deps-verified` / `dependency audit`.
+`gate_passes()` in `opencode-schedule.yml` hard-checks that
+`.opencode-relay.md` on main contains `run_id`, `status: complete`, and
+(`PACKAGE.*BR` or `deps-verified` or `dependency audit`), plus per-package
+dependency-row counts (see the inline gate) and `tools/verify-fedora.sh`
+as the external bar.
 If the agent skips the dependency table, the job fails and the next run retries with a stronger model. Cleanup job opens an issue on failure.
 
 ### Environment baseline (verified 2026-09-17 via web search — re-discover every run, never hardcode)
