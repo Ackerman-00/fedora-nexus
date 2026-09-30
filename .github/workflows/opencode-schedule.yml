@@ -1137,53 +1137,19 @@ jobs:
                  rebuild/rename/spec tweak - never by dropping the rawhide
                  chroot.
 
-             RETIRED PACKAGES — DO NOT TOUCH (2026-09-14, owner decision).
-             niri-git, noctalia-git, and quickshell-git are RETIRED
-             transitional stubs, NOT real packages anymore. Fedora now
-             ships them officially:
-             - niri-git -> official 'niri' (F43/F44/F45/Rawhide, maintainer
-               decathorpe, https://packages.fedoraproject.org/pkgs/niri/niri).
-               Stub is niri-git/niri-git.spec at 1:99.0-1, Requires: niri.
-             - noctalia-git -> official 'noctalia' (F44+, https://docs.noctalia.dev
-               /noctalia/getting-started/installation?section=fedora,
-               https://src.fedoraproject.org/rpms/noctalia). Stub is
-               noctalia-git/noctalia-git.spec at 99.0-1, Requires: noctalia.
-             - quickshell-git -> official 'quickshell' (F43/F44/F45/F46+,
-               https://src.fedoraproject.org/rpms/quickshell). Stub is
-               quickshell-git/quickshell-git.spec at 99.0-1, Requires: quickshell.
-             RULES (override everything else in this prompt for these three dirs):
-             1. NEVER bump, refresh, or "update" niri-git/, noctalia-git/,
-                or quickshell-git/. NEVER run their update.sh expecting a
-                version change (they are intentional no-op stubs). NEVER
-                revert the 99.0 stubs back to a git snapshot. NEVER "fix"
-                Version 99.0 as WRONG/STALE in the version sweep - record
-                `retired-stub, upstream=official-fedora` instead.
-             2. EXCLUDE all three from: ALWAYS-PRIORITY deep checks, TERRA
-                cross-reference, upstream-delta sweep, dependency deep audit
-                re-tear, 2026 excellence toolchain, and CVE triage. Their
-                update.sh is frozen and their specs are empty on purpose.
-             3. In the version table: `| niri-git | 1:99.0-1 retired-stub |
-                official niri (Fedora) | retired-stub |` (same for noctalia-git
-                and quickshell-git). In the dependency audit table:
-                `deps-verified retired-stub, unproven: 0` so
-                tools/verify-fedora.sh still counts them.
-             4. DO NOT open issues or PRs about them, DO NOT install-test
-                them (stub Requires resolves to official repos, not this COPR),
-                DO NOT delete their directories (owner removes them from COPR and
-                deletes the dirs manually once the three stubs stop being built;
-                check the COPR package list each run and cite the date in the
-                relay - no hardcoded cutoff date).
-             5. If a check (NO-CHURN, STEP C WRONG-VERSION, Terra-newer) flags
-                them, that check is WRONG for these three - ignore it and cite
-                this RETIRED block in the relay.
+             REMOVED PACKAGES (2026-09-30, owner decision, COPR records
+             already deleted). niri-git, noctalia-git, and quickshell-git
+             lived on as transitional stubs pointing at official Fedora
+             packages (niri, noctalia, quickshell) and are now gone from
+             both the COPR and this repo. RULES: never re-add these
+             directories; if a check references them, that check is stale -
+             drop the reference. Do not open issues about them.
 
              Then work autonomously, in this priority order:
 
-              0. ALWAYS-PRIORITY = ALL PACKAGES (except the three RETIRED stubs
-                 above - niri-git, noctalia-git, and quickshell-git are
-                 EXCLUDED from every check). EVERY remaining package in this
+              0. ALWAYS-PRIORITY = ALL PACKAGES. EVERY package in this
                  repo is priority:
-                 check EVERY non-retired package
+                 check EVERY package
                  for upstream changes EVERY run (git ls-remote HEAD for
                  -git packages, releases/tags for versioned ones, artifact
                  internals for prebuilt binaries - real change only, per
@@ -1308,8 +1274,7 @@ jobs:
                     delta: ahead/behind/in-sync | kept-improvements: <list>`.
                  e. UNIVERSAL UPSTREAM CHECK (all remaining packages, EVERY
                     run - priority 2 is the full implementation, this is the
-                    non-skippable minimum): for EVERY non-eleven package
-                    (excluding RETIRED niri-git/noctalia-git entirely),
+                    non-skippable minimum): for EVERY non-eleven package,
                     run the same HEAD/release/artifact check as (a) plus a
                     sibling-reference check where one exists (Terra frawhide
                     counterpart, Fedora official dist-git
