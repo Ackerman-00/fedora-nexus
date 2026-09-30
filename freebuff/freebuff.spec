@@ -3,7 +3,7 @@
 
 Name:           freebuff
 Version:        0.2.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The free coding agent for your desktop
 
 License:        Apache-2.0
@@ -65,5 +65,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/freebuff.desktop
 %{_datadir}/applications/freebuff.desktop
 
 %changelog
+* Wed Sep 30 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.1-2
+- Rebuild: COPR build 11054110 compiled the RPM fine but the backend
+  failed publishing it (pulp 404 on fedora-44-x86_64 repo); no content change
 * Wed Sep 30 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.1-1
 - Auto-updated to 0.2.1 via update.sh
