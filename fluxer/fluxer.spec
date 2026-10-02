@@ -15,7 +15,7 @@
 
 Name:           fluxer
 Version:        2026.1001.230522
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
@@ -107,7 +107,16 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %{_libdir}/%{name}/
 %{_datadir}/applications/%{appid}.desktop
 %{_datadir}/icons/hicolor/*/apps/%{appid}.png
+# Electron aborts at startup ("SUID sandbox helper binary was found, but is
+# not configured correctly", setuid_sandbox_host.cc:166) unless chrome-sandbox
+# is SUID root 4755 - proven FATAL rc=133 as non-root under xvfb 2026-10-02;
+# same fix vesktop/stoat-desktop already ship, matches Google Chrome's rpm.
+%attr(4755, root, root) %{_libdir}/%{name}/chrome-sandbox
 
 %changelog
+* Fri Oct 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2026.1001.230522-2
+- Fix startup crash: ship chrome-sandbox as %attr(4755, root, root) so the
+  Electron SUID sandbox helper is configured correctly (was 0755 ->
+  FATAL abort for every non-root launch; verified under xvfb before/after).
 * Fri Oct 02 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1001.230522-1
 - Update to version 2026.1001.230522
