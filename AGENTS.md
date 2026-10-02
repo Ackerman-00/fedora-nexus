@@ -119,3 +119,27 @@ If the agent skips the dependency table, the job fails and the next run retries 
 - **Defense-in-depth**: even if one layer misses, the next catches it.
   Fork detection, template version detection, libyear budget, and
   Trivy CVE scanning prevent the known false positive classes.
+
+## Electron chrome-sandbox rule (added 2026-10-02, real incident)
+
+Five Electron packages (fluxer, obsidian, logseq, heroic-games-launcher,
+splayer-next) shipped `/opt/*/chrome-sandbox` as plain 0755, so Chromium's
+SUID-sandbox preflight FATAL-aborted at launch for EVERY non-root user
+(`setuid_sandbox_host.cc:166`, "The SUID sandbox helper binary was found, but
+is not configured correctly", core dump rc=133) - the apps could not start at
+all. Reproduced under `xvfb-run` as a non-root user in a clean fedora:44
+container on 2026-10-02 for all five.
+
+RULE for every package that ships an Electron/Chromium binary:
+1. `%files` MUST carry `%attr(4755, root, root) <path>/chrome-sandbox`
+   (in-repo working references: vesktop, stoat-desktop; same as Google
+   Chrome's own rpm), OR deliberately `rm` the helper like rootapp does -
+   never ship it as 0755.
+2. VERIFY with the launch test, not just rpmbuild:
+   `docker run --rm --security-opt seccomp=unconfined ... useradd -m t && su
+   t -c "xvfb-run -a <app>"` - expect rc=124 (app stays alive) and zero
+   `setuid_sandbox_host` lines. (Without `seccomp=unconfined` even correct
+   packages die on docker's namespace restriction - that error is a container
+   artifact, the `setuid_sandbox_host` FATAL is the real bug.)
+3. `tools/teardown-sweep.py:check_rpm_dependencies` statically flags any spec
+   that names chrome-sandbox without the %attr (or an explicit rm).

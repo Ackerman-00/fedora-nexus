@@ -3124,6 +3124,19 @@ def check_rpm_dependencies(root, repo_type):
         for r in list(req):
             if r.endswith("-devel") or r in BUILD_TOOL_BRS:
                 br_missing.append("RPM323: Requires:%s looks like BuildRequires" % r)
+        # Electron SUID sandbox helper class (proven 2026-10-02 on fluxer,
+        # obsidian, logseq, heroic-games-launcher, splayer-next): a spec that
+        # installs chrome-sandbox but ships it as plain 0755 makes Electron
+        # FATAL-abort at launch for every non-root user
+        # (setuid_sandbox_host.cc:166). Correct patterns: %attr(4755, root,
+        # root) on the helper (vesktop/stoat-desktop) or deliberate rm
+        # (rootapp). Detects only specs that literally name the file; specs
+        # that glob a whole Electron app dir are covered by the AGENTS.md
+        # rule + non-root xvfb launch test.
+        if ("chrome-sandbox" in txt
+                and not re.search(r"%attr\(\s*4755\s*,\s*root\s*,\s*root\s*\)[^\n]*chrome-sandbox", txt)
+                and not re.search(r"^\s*(?:rm|rm -f)\b[^\n]*chrome-sandbox", txt, re.M)):
+            br_missing.append("RPM-sandbox: chrome-sandbox installed without %attr(4755, root, root)")
         if not has_rpmspec:
             status = "deps-unverified (rpmspec not installed on runner)"
         elif not rpmspec_ok:
