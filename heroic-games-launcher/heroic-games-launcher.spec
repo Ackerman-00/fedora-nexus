@@ -9,7 +9,7 @@
 
 Name:           heroic-games-launcher
 Version:        2.22.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Open source launcher for GOG, Epic, and Amazon Games (Nexus Optimized)
 
 License:        GPL-3.0-only AND MIT AND BSD-3-Clause
@@ -100,8 +100,17 @@ find %{buildroot}/opt/Heroic -type f -name "*.a" -delete
 %{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/apps/*.*
 /opt/Heroic/
+# Electron aborts at startup ("SUID sandbox helper binary was found, but is
+# not configured correctly", setuid_sandbox_host.cc:166) unless chrome-sandbox
+# is SUID root 4755 - proven FATAL rc=133 as non-root under xvfb 2026-10-02;
+# same fix vesktop/stoat-desktop already ship, matches Google Chrome's rpm.
+%attr(4755, root, root) /opt/Heroic/chrome-sandbox
 
 %changelog
+* Fri Oct 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.22.3-3
+- Fix startup crash: ship chrome-sandbox as %attr(4755, root, root) so the
+  Electron SUID sandbox helper is configured correctly (was 0755 ->
+  FATAL abort for every non-root launch; verified under xvfb before/after).
 * Sat Sep 19 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.3-2
 - Correct bundled(legendary) Provides to 0.21.1 (what the 2.22.3 artifact
   actually ships; verified via `legendary --version` inside the upstream RPM)
