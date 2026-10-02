@@ -11,6 +11,11 @@
 #     RPMS/noarch, not RPMS/x86_64).
 #  3. Never `set -e` around, never edit this file while jobs run (bash reads
 #     the script incrementally; a mid-run edit corrupts running jobs).
+#  4. Print INSTALL_EXIT explicitly. `tail -1` of dnf hides the result when the
+#     RPM is already installed (it prints "Nothing to do." instead of
+#     "Complete!"), which made an install step look like it produced no output.
+#     With INSTALL_EXIT there is no ambiguity; session 5 of run 37006623550 hit
+#     exactly this on astal-gjs.
 #
 # usage: container-teardown.sh <pkgdir> <spec> <smoke-cmd> [rpmV-name]
 set -u
@@ -26,7 +31,7 @@ echo '--- spectool ---'; spectool -g -C /root/rpmbuild/SOURCES $SPEC 2>&1 | tail
 find . -maxdepth 1 -type f -exec cp -f {} /root/rpmbuild/SOURCES/ \;
 echo '--- rpmbuild ---'; rpmbuild -bb --define '_topdir /root/rpmbuild' $SPEC > /tmp/bb.log 2>&1; echo RPMBUILD_EXIT=\$?; tail -2 /tmp/bb.log
 RPM=\$(ls /root/rpmbuild/RPMS/*/*.rpm 2>/dev/null | head -1); echo BUILT=\$RPM
-echo '--- install ---'; dnf -y --setopt=gpgcheck=0 --setopt=install_weak_deps=False install \$RPM 2>&1 | tail -1
+echo '--- install ---'; dnf -y --setopt=gpgcheck=0 --setopt=install_weak_deps=False install \$RPM 2>&1 | tail -1; echo INSTALL_EXIT=\${PIPESTATUS[0]}
 if [ -n '$RPMVNAME' ]; then rpm -V $RPMVNAME && echo RPMV_OK; fi
 echo '--- smoke ---'; $SMOKE; echo SMOKE_EXIT=\$?
-" 2>&1 | grep -aE -- '---|RPMBUILD_EXIT|BUILT=|RPMV_OK|SMOKE_EXIT|Complete!|Error' | head -20
+" 2>&1 | grep -aE -- '---|RPMBUILD_EXIT|INSTALL_EXIT|BUILT=|RPMV_OK|SMOKE_EXIT|Complete!|Error' | head -20
