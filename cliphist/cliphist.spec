@@ -3,7 +3,7 @@
 
 Name:           cliphist
 Version:        0.7.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Wayland clipboard manager with support for multimedia
 
 License:        BSD-3-Clause AND GPL-3.0-only AND MIT
@@ -11,9 +11,6 @@ URL:            https://github.com/sentriz/cliphist
 Source0:        %{url}/archive/v%{version}/cliphist-v%{version}.tar.gz
 
 BuildRequires:  golang >= 1.20
-# Provides the Go RPM macros used by the check step below. Without this the
-# macro is undefined and the check dies on an unexpanded macro reference.
-BuildRequires:  go-rpm-macros
 
 Requires:       wl-clipboard
 Requires:       xdg-utils
@@ -41,19 +38,28 @@ install -m 0755 cliphist %{buildroot}%{_bindir}/cliphist
 #
 # The suite must NOT run as root. testdata/no-permission.txtar does
 # "chmod 111 $HOME" and then asserts that cliphist store fails with
-# "permission denied" - which can never happen for uid 0, and rpmbuild runs
-# as root. Running the same command as an unprivileged user makes the whole
-# suite pass, so the test is fine and only the buildroot user was wrong.
+# "permission denied" - which can never happen for uid 0.
 #
-# The Go module cache lives under /root, which an unprivileged user cannot
-# traverse, so run the suite from a copy under /tmp.
+# How to get off uid 0 depends on who owns the build:
+#  - A plain "rpmbuild -bb" runs as root, so we must drop privileges. The
+#    Go module cache then lives under /root, which the unprivileged user
+#    cannot traverse, so run the suite from a copy under /tmp.
+#  - mock - which is what COPR and koji use - already runs the whole build
+#    as the unprivileged "mockbuild" user, so useradd is impossible there
+#    and pointless: the suite is run in place. Getting this wrong made the
+#    COPR build 11065113 fail with "su: user cliphist-check does not exist
+#    or the user entry does not contain all the required fields".
 export GO111MODULE=on
-useradd -r -m -d /tmp/cliphist-check cliphist-check >/dev/null 2>&1 || :
-rm -rf /tmp/cliphist-src
-cp -a %{_builddir}/cliphist-%{version} /tmp/cliphist-src
-chmod -R a+rX /tmp/cliphist-src
-su cliphist-check -s /bin/sh -c \
-  "cd /tmp/cliphist-src && GO111MODULE=on go test -buildmode pie -compiler gc ./..."
+if [ "$(id -u)" -eq 0 ]; then
+  useradd -r -m -d /tmp/cliphist-check cliphist-check
+  rm -rf /tmp/cliphist-src
+  cp -a %{_builddir}/cliphist-%{version} /tmp/cliphist-src
+  chmod -R a+rX /tmp/cliphist-src
+  su cliphist-check -s /bin/sh -c \
+    "cd /tmp/cliphist-src && GO111MODULE=on go test -buildmode pie -compiler gc ./..."
+else
+  go test -buildmode pie -compiler gc ./...
+fi
 
 %files
 %license LICENSE
@@ -61,6 +67,15 @@ su cliphist-check -s /bin/sh -c \
 %{_bindir}/cliphist
 
 %changelog
+* Fri Oct 02 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.0-3
+- Fix the check section in unprivileged builds. mock, and therefore COPR
+  and koji, runs rpmbuild as the unprivileged "mockbuild" user, where the
+  useradd plus su dance meant to step around the root-only no-permission
+  testdata case cannot work; the suite now runs in place there and only
+  drops privileges when the build really is running as uid 0.
+- Drop the go-rpm-macros build requirement again. It was only ever there to
+  define %gotest, and the check section now invokes the go tool directly, so
+  nothing in this spec references a go-rpm macro any more.
 * Fri Oct 02 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.0-2
 - Ship the upstream license and documentation: the LICENSE file under the
   license directory plus CHANGELOG.md, readme.md and version.txt as docs.
