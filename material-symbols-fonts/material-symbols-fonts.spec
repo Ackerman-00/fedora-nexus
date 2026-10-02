@@ -1,6 +1,6 @@
-%global commit          bd8cb85bd4bad964fe6918f79665bb40c3a8efef
+%global commit          737e3324305806514d7909874fa1818ae1808232
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global snapdate         20260925021835
+%global snapdate         20261002022151
 
 Name:           material-symbols-fonts
 Version:        4.0.0^%{snapdate}git%{shortcommit}
@@ -35,5 +35,5 @@ install -m 0644 -p "%{SOURCE2}" %{buildroot}%{_datadir}/fonts/%{name}/MaterialSy
 %{_datadir}/fonts/%{name}
 
 %changelog
-* Fri Sep 25 2026 Ackerman-00 <quietcraft@gmail.com> - 4.0.0^20260925021835gitbd8cb85-1
-- Nightly sync with upstream master branch (Commit: bd8cb85)
+* Fri Oct 02 2026 Ackerman-00 <quietcraft@gmail.com> - 4.0.0^20261002022151git737e332-1
+- Nightly sync with upstream master branch (Commit: 737e332)
