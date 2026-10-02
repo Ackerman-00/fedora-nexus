@@ -5,7 +5,7 @@
 
 Name:           python-yt-dlp-get-pot-rustypipe
 Version:        0.2.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        PO token provider plugin for yt-dlp using rustypipe-botguard
 
 License:        MIT
@@ -19,6 +19,11 @@ Source0:        https://files.pythonhosted.org/packages/source/y/yt-dlp-get-pot-
 Provides:       python3-yt-dlp-get-pot-rustypipe
 
 BuildRequires:  python3-devel
+
+# Weak runtime dep: the plugin shells out to the rustypipe-botguard binary
+# (PATH lookup, configurable) to fetch PO tokens. Recommends, not Requires,
+# since the path is user-overridable and mixtapes pulls both explicitly.
+Recommends:     rustypipe-botguard
 
 %description
 yt-dlp-get-pot-rustypipe is a yt-dlp plugin that fetches PO tokens
@@ -44,6 +49,9 @@ repository as a dependency of mixtapes.
 %files -f %{pyproject_files}
 
 %changelog
+* Fri Oct 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.2.0-4
+- Add Recommends: rustypipe-botguard (plugin shells out to that binary
+  via PATH lookup; upstream yt_dlp_get_pot_rustypipe.py _BOTGUARD_BIN).
 * Sun Sep 06 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.2.0-3
 - Provide python3-yt-dlp-get-pot-rustypipe (name expected by mixtapes Requires;
   COPR mixtapes install failed on unresolvable python3-* names).
