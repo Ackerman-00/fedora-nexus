@@ -1,9 +1,14 @@
 # Disable debuginfo extraction since we are repackaging pre-compiled binaries
 %global debug_package %{nil}
+# Never strip the prebuilt Bun binary: brp-strip -g made `freebuff --version`
+# print the Bun runtime version (1.3.14) instead of the app version (0.2.12),
+# because Bun's arg handling consults ELF symbols (2026-10-02). With stripping
+# disabled the installed binary is byte-identical to upstream Source0.
+%global __strip /bin/true
 
 Name:           freebuff
 Version:        0.2.12
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The free coding agent for your desktop
 
 License:        Apache-2.0
@@ -65,5 +70,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/freebuff.desktop
 %{_datadir}/applications/freebuff.desktop
 
 %changelog
+* Fri Oct 02 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.12-2
+- Do not strip the prebuilt Bun binary: brp-strip flipped `freebuff --version`
+  from 0.2.12 to the Bun runtime version 1.3.14; installed binary is now
+  byte-identical to Source0 (sha256 124a45e0...)
+
 * Fri Oct 02 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.12-1
 - Auto-updated to 0.2.12 via update.sh
