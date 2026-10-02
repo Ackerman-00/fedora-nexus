@@ -2,7 +2,7 @@
 
 Name:           logseq
 Version:        2.0.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A privacy-first, local-first platform for knowledge management and collaboration
 
 License:        AGPL-3.0-only
@@ -104,10 +104,19 @@ install -m644 %{SOURCE1} %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/logs
 %defattr(-,root,root,-)
 %{_bindir}/logseq
 /opt/logseq/
+# Electron aborts at startup ("SUID sandbox helper binary was found, but is
+# not configured correctly", setuid_sandbox_host.cc:166) unless chrome-sandbox
+# is SUID root 4755 - proven FATAL rc=133 as non-root under xvfb 2026-10-02;
+# same fix vesktop/stoat-desktop already ship, matches Google Chrome's rpm.
+%attr(4755, root, root) /opt/logseq/chrome-sandbox
 %{_datadir}/applications/logseq.desktop
 %{_datadir}/icons/hicolor/512x512/apps/logseq.png
 
 %changelog
+* Fri Oct 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.0.1-4
+- Fix startup crash: ship chrome-sandbox as %attr(4755, root, root) so the
+  Electron SUID sandbox helper is configured correctly (was 0755 ->
+  FATAL abort for every non-root launch; verified under xvfb before/after).
 * Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.1-3
 - Correct changelog bookkeeping: the Aug 05 check-rpaths entry was labelled
   2.0.1-2 although the spec's Release was still 1 at that commit (89a9846),
