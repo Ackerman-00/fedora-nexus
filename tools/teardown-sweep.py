@@ -239,6 +239,36 @@ def osv_query(pkg, version, ecosystem=None):
         return []
 
 
+def repology_is_newer(pinned, upstream):
+    """True only when Repology's reported version is genuinely NEWER than our
+    pin. Used to stop tracker-lag / foreign-project false positives (a
+    same-named project in another repo). Unparseable versions fall back to
+    True so an ambiguous tracker can never silently hide a real update."""
+    def key(v):
+        parts = [p for p in re.split(r"[.\-_+~]", (v or "").strip().lstrip("vV")) if p]
+        out = []
+        for p in parts:
+            m = re.match(r"^(\d+)(.*)$", p)
+            if m:
+                out.append((0, int(m.group(1)), m.group(2)))
+            else:
+                out.append((-1, 0, p))
+        return out
+
+    if not upstream or not re.search(r"\d", upstream):
+        return True
+    try:
+        pk, uk = key(pinned), key(upstream)
+    except Exception:
+        return True
+    # pad the shorter key with implicit zeros (1.0 == 1.0.0, but 1.0.1 > 1.0)
+    while len(pk) < len(uk):
+        pk.append((0, 0, ""))
+    while len(uk) < len(pk):
+        uk.append((0, 0, ""))
+    return uk > pk
+
+
 def repology_dep_info(pkg):
     """Get dependency and version info from Repology for ANY package.
     Returns dict with upstream_version, status, deps, or empty dict."""
@@ -2722,12 +2752,30 @@ def check_vulns_and_deps(pkgs, repo_type):
             upstream = info.get("upstream_version", "?")
             status = info.get("status", "?")
             if status == "outdated" and upstream:
-                total_outdated += 1
-                tool = AUTO_UPDATE_TOOLS.get(repo_type, "manual")
-                log("[OUTDATED] %s: pinned %s, upstream %s -> use %s"
-                    % (pkg, clean_pv, upstream, tool))
-                rows.append((pkg, pkg, clean_pv, upstream, "OUTDATED",
-                             "upstream %s available, use %s" % (upstream, tool)))
+                # Repology's per-repo status is relative to the NEWEST entry in
+                # the project, not to us. When our pin is >= what Repology
+                # reports as "upstream", the tracker is behind us (or tracking
+                # a same-named but different project - e.g. repology "rootapp"
+                # resolves to the AUR lineage at 0.9.144/1.0.0 while we ship
+                # 0.9.145 verified from X-AppImage-Version inside the AppImage).
+                # Flagging OUTDATED there is a false positive: fix the verdict
+                # by comparing versions, never by trusting the status alone.
+                if not repology_is_newer(clean_pv, upstream):
+                    log("[AHEAD] %s: pinned %s >= repology %s (%s) - tracker "
+                        "behind/foreign project, not outdated"
+                        % (pkg, clean_pv, upstream, info.get("repo")))
+                    rows.append((pkg, info.get("repo") or pkg, clean_pv, upstream,
+                                 STATUS_OK,
+                                 "pinned %s >= repology %s (%s); tracker behind"
+                                 % (clean_pv, upstream, info.get("repo"))))
+                    total_fresh += 1
+                else:
+                    total_outdated += 1
+                    tool = AUTO_UPDATE_TOOLS.get(repo_type, "manual")
+                    log("[OUTDATED] %s: pinned %s, upstream %s -> use %s"
+                        % (pkg, clean_pv, upstream, tool))
+                    rows.append((pkg, pkg, clean_pv, upstream, "OUTDATED",
+                                 "upstream %s available, use %s" % (upstream, tool)))
             elif status == "newest":
                 total_fresh += 1
                 log("[FRESH] %s@%s" % (pkg, clean_pv))
