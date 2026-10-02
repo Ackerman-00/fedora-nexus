@@ -12,7 +12,7 @@
 
 Name:           splayer-next
 Version:        1.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Cross-platform desktop music player with rich lyric support (Nexus Optimized)
 
 License:        AGPL-3.0-only
@@ -118,8 +118,17 @@ chmod 0755 %{buildroot}%{_bindir}/splayer-next
 %{_datadir}/applications/top.imsyy.splayer_next.desktop
 %{_datadir}/icons/hicolor/512x512/apps/SPlayer-Next.png
 /opt/SPlayer-Next/
+# Electron aborts at startup ("SUID sandbox helper binary was found, but is
+# not configured correctly", setuid_sandbox_host.cc:166) unless chrome-sandbox
+# is SUID root 4755 - proven FATAL rc=133 as non-root under xvfb 2026-10-02;
+# same fix vesktop/stoat-desktop already ship, matches Google Chrome's rpm.
+%attr(4755, root, root) /opt/SPlayer-Next/chrome-sandbox
 
 %changelog
+* Fri Oct 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.1.0-2
+- Fix startup crash: ship chrome-sandbox as %attr(4755, root, root) so the
+  Electron SUID sandbox helper is configured correctly (was 0755 ->
+  FATAL abort for every non-root launch; verified under xvfb before/after).
 * Sun Sep 06 2026 Ackerman-00 <quietcraft@gmail.com> - 1.1.0-1
 - Initial package: natively repackaged upstream RPM (Electron 43.2.0,
   better-sqlite3 13.0.3, 4 Rust napi native modules). Runtime Requires
