@@ -51,6 +51,17 @@ STATUS_SKIP = "SKIP-LIVE-UNVERIFIED"
 
 rows = []  # (package, distfile, pinned, internal, status, note)
 
+# Freshness verdict recorded by check_upstream_latest() and re-read by the
+# Repology-fallback in check_vulns_and_deps(), so a blocked Repology query can
+# never re-open a question the forge check already answered with evidence.
+UPSTREAM_VERDICT = {}  # pkg -> (kind, source, value)
+# Internal version read from the first torn artifact of a package; lets the
+# tag comparison recognise a rebuild tag as the build we already verified.
+INTERNAL_VER = {}  # pkg -> internal version string
+# Cached distfile we actually tore apart, so a version-less vendor URL can be
+# freshness-checked against the bytes upstream serves right now.
+ARTIFACT_PATH = {}  # pkg -> Path
+
 
 def log(msg):
     print(msg, flush=True)
@@ -409,6 +420,20 @@ def expand(text, vars_):
     for _ in range(8):
         out = text
 
+        # %{pypi_source name} is a Fedora macro (python-rpm-macros) that
+        # expands to the canonical PyPI sdist URL for NAME-VERSION. Unknown to
+        # a plain rpm on this host, so reconstruct it here: without it every
+        # 'Source0: %{pypi_source ...}' spec reads as "no source URL".
+        def pypi_source(m):
+            ver = vars_.get("version", "")
+            if not ver or "%" in ver:
+                return m.group(0)
+            key = m.group(1).replace("_", "-").lower()
+            return ("https://files.pythonhosted.org/packages/source/"
+                    "%s/%s/%s-%s.tar.gz" % (key[0], key, key, ver))
+
+        out = re.sub(r"%\{pypi_source\s+([\w.-]+)\}", pypi_source, out)
+
         def rep(m):
             v = vars_.get(m.group(1), "")
             if m.group(2) == "//":
@@ -459,8 +484,15 @@ def parse_spec_sources(content, vars_):
     """Extract (url, distname, sha256_or_None) for each SourceN: line."""
     srcs = []
     sha256s = [m.group(1).strip().lower() for m in re.finditer(r"#\s*sha256:\s*([0-9a-fA-F]{64})", content)]
-    for m in re.finditer(r"^Source\d*:\s*(\S+)\s*$", content, re.M):
-        raw = m.group(1)
+    for m in re.finditer(r"^Source\d*:\s*(.+?)\s*$", content, re.M):
+        raw = m.group(1).strip()
+        # A Source line may carry a trailing comment; macros may contain
+        # spaces ('%{pypi_source pydbus}'), so the whole line is taken and
+        # only the comment is dropped - truncating at the first space made
+        # every %{pypi_source ...} spec read as "no source URL".
+        raw = re.split(r"\s+#\s", raw, 1)[0].strip()
+        if not raw:
+            continue
         url = expand(eval_shell_exprs(raw, vars_), vars_)
         name = url.rsplit("/", 1)[-1]
         if not name:
@@ -1041,11 +1073,24 @@ DOC_NAMES = {"license", "license.txt", "license.md", "copying", "copying.txt",
 DOC_EXT = {".md", ".txt", ".patch", ".diff"}
 AUX_EXT = {".png", ".svg", ".ico", ".jpg", ".jpeg", ".gif", ".webp", ".xml",
            ".plist", ".metainfo"}
+# Legal-text stems: these files carry a license/copyright notice and can never
+# be executed, even when upstream appends a qualifier after a dot or underscore
+# (LICENSE.ungoogled_chromium, COPYING.GPL3, LICENSE-APACHE). Matched on the
+# stem only, so a real artifact such as 'license-server' still falls through to
+# the artifact checks.
+DOC_STEMS = {"license", "licence", "copying", "copyright", "notice",
+             "authors", "contributors", "maintainers"}
 
 
 def looks_like_doc(distname):
-    base = distname.lower().rsplit(".", 1)[0] if distname.lower().rsplit(".", 1)[-1] in DOC_EXT else distname.lower()
-    return base in DOC_NAMES or distname.lower().endswith(tuple(DOC_EXT))
+    d = distname.lower()
+    base = d.rsplit(".", 1)[0] if d.rsplit(".", 1)[-1] in DOC_EXT else d
+    if base in DOC_NAMES or d.endswith(tuple(DOC_EXT)):
+        return True
+    # Qualifier-suffixed legal text: LICENSE.ungoogled_chromium, COPYING.GPL3.
+    # The stem is matched on '.'/':' only - a real artifact called
+    # 'license-server.bin' keeps its '-' and never lands here.
+    return re.split(r"[.:]", d, 1)[0] in DOC_STEMS
 
 
 def looks_like_aux(distname):
@@ -1660,30 +1705,139 @@ def find_elfs_in_dir(root, max_depth=6):
     return elfs
 
 
+_LIB_CONTAINER = {"name": None, "state": None}
+_LIB_CACHE = {}  # soname -> True/False/None (None = could not be determined)
+
+
+def _lib_container():
+    """Lazily start ONE long-lived fedora:44 container used to resolve sonames
+    against the distro this repository actually builds for. Returns the
+    container name or None. Cached; removed at interpreter exit."""
+    if _LIB_CONTAINER["state"] is None:
+        _LIB_CONTAINER["state"] = "failed"
+        import shutil
+        if not shutil.which("docker"):
+            return None
+        import atexit
+        name = "sweep-libs-%d" % os.getpid()
+        try:
+            subprocess.run(["docker", "rm", "-f", name], capture_output=True, timeout=30)
+            subprocess.run(["docker", "run", "-d", "--name", name,
+                            "registry.fedoraproject.org/fedora:44", "sleep", "inf"],
+                           capture_output=True, timeout=180, check=True)
+            subprocess.run(["docker", "exec", name, "dnf", "-y", "-q", "makecache"],
+                           capture_output=True, timeout=600, check=True)
+            _LIB_CONTAINER["name"] = name
+            _LIB_CONTAINER["state"] = "ok"
+            atexit.register(lambda: subprocess.run(
+                ["docker", "rm", "-f", name], capture_output=True, timeout=60))
+        except Exception as e:
+            log("[WARN] fedora lib container unavailable: %s" % e)
+            subprocess.run(["docker", "rm", "-f", name], capture_output=True, timeout=30)
+    return _LIB_CONTAINER["name"] if _LIB_CONTAINER["state"] == "ok" else None
+
+
+def host_sonames():
+    """Sonames visible to the host dynamic linker (ldconfig -p). Used only
+    when no Fedora container can be reached — a weaker, host-shaped reference."""
+    if "host" not in _LIB_CACHE:
+        libs = set()
+        try:
+            out = subprocess.run(["ldconfig", "-p"], capture_output=True,
+                                 text=True, timeout=30)
+            for line in out.stdout.splitlines():
+                m = re.match(r"\s*(\S+)\s+\S+\s+(\S+)", line)
+                if m and "/" in m.group(2):
+                    libs.add(m.group(1))
+        except Exception:
+            libs = set()
+        _LIB_CACHE["host"] = libs
+    return _LIB_CACHE["host"]
+
+
+def fedora_provides_many(libs):
+    """Map soname -> True (Fedora 44 ships it) / False (it does not) /
+    None (undeterminable). One container exec per batch, cached per soname.
+
+    Checking against the TARGET distro instead of whatever host happens to run
+    the sweep is what makes this signal real: a Debian/Ubuntu runner keeps its
+    libraries under /lib/<triplet>, so flat /lib + /usr/lib path probing used
+    to report libc.so.6 and libX11.so.6 as "missing" on every package."""
+    want = list(dict.fromkeys(libs))
+    todo = [l for l in want if l not in _LIB_CACHE]
+    if todo:
+        name = _lib_container()
+        if not name:
+            for l in todo:
+                _LIB_CACHE[l] = None
+        else:
+            script = ('for l in "$@"; do '
+                      'o=$(dnf -q repoquery --whatprovides "$l()(64bit)" 2>/dev/null); '
+                      'if [ -n "$o" ]; then echo "Y $l"; else echo "N $l"; fi; done')
+            try:
+                out = subprocess.run(["docker", "exec", name, "bash", "-c",
+                                      script, "sweep"] + todo,
+                                     capture_output=True, text=True, timeout=900)
+                seen = set()
+                for line in out.stdout.splitlines():
+                    parts = line.split()
+                    if len(parts) == 2 and parts[0] in ("Y", "N"):
+                        _LIB_CACHE[parts[1]] = (parts[0] == "Y")
+                        seen.add(parts[1])
+                for l in todo:
+                    if l not in seen:
+                        _LIB_CACHE[l] = None
+                log("    [deps] fedora:44 resolves %d/%d sonames (%d not shipped)"
+                    % (sum(1 for l in todo if _LIB_CACHE.get(l) is True),
+                       len(todo),
+                       sum(1 for l in todo if _LIB_CACHE.get(l) is False)))
+            except Exception as e:
+                log("[WARN] fedora soname query failed: %s" % e)
+                for l in todo:
+                    _LIB_CACHE[l] = None
+    return {l: _LIB_CACHE.get(l) for l in want}
+
+
 def check_deps_in_dir(pkg, root):
-    """Check for missing shared libraries in extracted artifact directory.
-    Returns list of (binary, missing_lib) tuples."""
+    """Shared libraries the extracted binaries need that the artifact itself
+    does not bundle. Returns (missing, unverified) as lists of (binary, lib).
+
+    missing    : soname is neither bundled nor shipped by Fedora 44
+    unverified : soname could not be resolved at all (no container, no host
+                 ldconfig) — reported separately so an environment gap can
+                 never be misread as a broken artifact."""
     missing = []
+    unverified = []
     elfs = find_elfs_in_dir(root)
+    # Every file the artifact itself ships, by basename. Browser/electron
+    # bundles keep plugins in subdirectories (zen/gmp-clearkey/0.1/*.so) while
+    # the libraries they load live at the application root, which the loader
+    # resolves through the app's own library path - so an artifact-local lib
+    # must be looked for anywhere in the tree, not only next to the binary.
+    bundled = {p.name for p in root.rglob("*") if p.is_file()}
+    needed = []
     for elf in elfs:
-        needed = get_elf_needed(elf)
-        for lib in needed:
-            # Check common system paths
-            found = False
-            for prefix in (Path("/lib"), Path("/usr/lib"), Path("/lib64"),
-                           Path("/usr/lib64"), root, root / "lib",
-                           root / "usr/lib"):
-                if (prefix / lib).exists():
-                    found = True
-                    break
-            if not found:
-                # Also check if it's in a sibling dir relative to the binary
-                sibling = elf.parent / lib
-                if sibling.exists():
-                    found = True
-            if not found:
-                missing.append((str(elf.relative_to(root)), lib))
-    return missing
+        for lib in get_elf_needed(elf):
+            if lib in bundled:
+                continue
+            needed.append((str(elf.relative_to(root)), lib))
+    if not needed:
+        return missing, unverified
+    resolved = fedora_provides_many([lib for _, lib in needed])
+    host = None
+    for binary, lib in needed:
+        state = resolved.get(lib)
+        if state is True:
+            continue
+        if state is None:
+            if host is None:
+                host = host_sonames()
+            if lib in host:
+                continue
+            unverified.append((binary, lib))
+        else:
+            missing.append((binary, lib))
+    return missing, unverified
 
 
 # ---------------------------------------------------------------------------
@@ -1957,11 +2111,12 @@ def sweep_package(pkg, pv, srcs, live, repo_type, workdir):
             if cd_name:
                 teardown_name = cd_name
         dep_missing = []
+        dep_unverified = []
         with tempfile.TemporaryDirectory() as td:
             internal, note, strong, src_like = tear_apart(dst, teardown_name, Path(td))
             # Check for missing shared libraries in extracted binaries
             if strong and td and os.listdir(td):
-                dep_missing = check_deps_in_dir(pkg, Path(td))
+                dep_missing, dep_unverified = check_deps_in_dir(pkg, Path(td))
         if internal and strong:
             if PLACEHOLDER_RE.match(pv or ""):
                 status = STATUS_OK
@@ -2007,6 +2162,10 @@ def sweep_package(pkg, pv, srcs, live, repo_type, workdir):
                 pkg_ok = False
                 note = "%s | hash %s | BINARY ARTIFACT, no internal version evidence" % (note, hash_note)
         # Append dependency check results
+        if dep_unverified:
+            uniq_un = sorted(set(lib for _, lib in dep_unverified))
+            note += (" | deps unverifiable (%d soname(s), no Fedora container "
+                     "and no host ldconfig: %s)" % (len(uniq_un), ", ".join(uniq_un[:5])))
         if dep_missing:
             unique_missing = sorted(set(lib for _, lib in dep_missing))
             dep_note = " | MISSING DEPS: %s" % ", ".join(unique_missing[:10])
@@ -2020,6 +2179,9 @@ def sweep_package(pkg, pv, srcs, live, repo_type, workdir):
                 note += " [DEPS-FAIL]"
             log("[%s] %s : %d missing libs: %s" % (STATUS_FAIL, pkg, len(unique_missing), ", ".join(unique_missing[:5])))
         rows.append((pkg, name, pv, internal, status, note))
+        if internal:
+            INTERNAL_VER.setdefault(pkg, internal)
+            ARTIFACT_PATH.setdefault(pkg, dst)
         log("[%s] %s : %s" % (status, pkg, note))
         if status in (STATUS_OK, STATUS_SOURCE_OK):
             pkg_verified = True
@@ -2051,6 +2213,31 @@ def _replacement_asset_exists(srcs, pv, newver):
     return False if found else None
 
 
+def _extract_commit(*texts):
+    """First full 40-hex git object id found in the given strings."""
+    for t in texts:
+        if not t or not isinstance(t, str):
+            continue
+        m = re.search(r"\b[0-9a-f]{40}\b", t)
+        if m:
+            return m.group(0)
+    return None
+
+
+def _commit_exists(repo, sha):
+    """True when `sha` exists in `repo`, False when the API says it does not,
+    None when the API could not answer (rate limit/network)."""
+    try:
+        fetch("https://api.github.com/repos/%s/commits/%s" % (repo, sha), timeout=30)
+        return True
+    except urllib.error.HTTPError as e:
+        if e.code in (404, 422):
+            return False
+        return None
+    except Exception:
+        return None
+
+
 def check_upstream_latest(pkgs):
     """Deterministic staleness gate: for every release-pinned package whose
     artifact URL points at a known forge, compare PV against upstream's
@@ -2058,16 +2245,46 @@ def check_upstream_latest(pkgs):
       1. GitHub API releases/latest (authoritative)
       2. git ls-remote tags (fallback)
       3. Repology API (universal fallback for 120+ repos)
-    Template versions (RPM macros like %{bumpver}) are auto-detected and skipped."""
+    Template versions (RPM macros like %{bumpver}) are auto-detected and are
+    checked against the commit they pin rather than against release tags."""
     log("")
     log("=== UPSTREAM LATEST CHECK ===")
     for pkg, pv, srcs, live, homepage in pkgs:
         if live or not pv or PLACEHOLDER_RE.match(pv):
             continue
         if is_template_version(pv):
-            log("[%s] %s : template version '%s' (git snapshot, skipping)" % (STATUS_SKIP, pkg, pv))
-            rows.append((pkg, pkg, pv, "", STATUS_SKIP,
-                         "template version (git snapshot, not a release tag)"))
+            # A snapshot has no release tag to compare, but it is not
+            # unverifiable: the template embeds the exact commit it builds
+            # from, so prove that commit exists upstream instead of skipping.
+            cand_urls = [u[0] for u in srcs
+                         if isinstance(u, tuple) and isinstance(u[0], str)
+                         and u[0].startswith("http")]
+            repo = None
+            for cand in cand_urls + ([homepage] if homepage else []):
+                repo, _slug = forge_slug_from_url(cand)
+                if repo:
+                    break
+            sha = _extract_commit(pv, *cand_urls, homepage or "")
+            exists = _commit_exists(repo, sha) if (repo and sha) else None
+            if exists is True:
+                note = ("template version (git snapshot): pinned commit %s "
+                        "verified to exist upstream in %s" % (sha[:12], repo))
+                rows.append((pkg, "upstream %s" % repo, pv, sha[:12], STATUS_OK, note))
+                UPSTREAM_VERDICT[pkg] = ("fresh", "commit:%s" % sha[:12], sha[:12])
+                log("[%s] %s : %s" % (STATUS_OK, pkg, note))
+            elif exists is False:
+                note = ("template version pins commit %s which does not exist "
+                        "upstream in %s (history rewritten or wrong pin)"
+                        % (sha[:12], repo))
+                rows.append((pkg, "upstream %s" % repo, pv, sha[:12], STATUS_STALE, note))
+                UPSTREAM_VERDICT[pkg] = ("stale", "commit:%s" % sha[:12], sha[:12])
+                log("[%s] %s : %s" % (STATUS_STALE, pkg, note))
+            else:
+                note = ("template version (git snapshot): no commit pin and no "
+                        "forge URL to check it against, or commits API unreachable")
+                rows.append((pkg, pkg, pv, "", STATUS_SKIP, note))
+                UPSTREAM_VERDICT[pkg] = ("unknown", "", pv)
+                log("[%s] %s : %s" % (STATUS_SKIP, pkg, note))
             continue
         if srcs and isinstance(srcs[0], tuple) and srcs[0][0] == "__metapackage__":
             continue
@@ -2131,12 +2348,24 @@ def check_upstream_latest(pkgs):
 
         def canon(x):
             """Token-level version identity: 5.0.0~beta9 == v5.0.0-beta.9 ==
-            5.0.0_beta.9 (separators and letter/digit boundaries ignored)."""
-            return tuple(re.findall(r"[a-z]+|\d+", re.sub(r"^[vV]", "", (x or "").lower())))
+            5.0.0_beta.9 (separators and letter/digit boundaries ignored).
+            A leading copy of the project name is not part of the version:
+            tag 'freebuff-v0.2.12' of package 'freebuff' is version 0.2.12."""
+            s = re.sub(r"^" + re.escape(pkg.lower()) + r"[-_.]?", "", (x or "").lower())
+            s = re.sub(r"^[vV]", "", s)
+            return tuple(re.findall(r"[a-z]+|\d+", s))
 
         def same(a, b):
-            for aa in dict.fromkeys([a, staleness_pv(a)]):
-                for bb in dict.fromkeys([b, staleness_pv(b)]):
+            # The internal version read from the torn artifact is compared too:
+            # rebuild tags such as ghostty's '1.3.1-0-ppa2' name exactly the
+            # .deb this package already pins ('1.3.1-0~ppa2').
+            extras = [INTERNAL_VER.get(pkg, "")]
+            for aa in dict.fromkeys([a, staleness_pv(a)] + extras):
+                if not aa:
+                    continue
+                for bb in dict.fromkeys([b, staleness_pv(b)] + extras):
+                    if not bb:
+                        continue
                     if versions_match(aa, bb) or canon(aa) == canon(bb):
                         return True
             return False
@@ -2144,6 +2373,7 @@ def check_upstream_latest(pkgs):
         if same(pv, latest):
             note = "at upstream latest %s [%s]" % (latest, source)
             rows.append((pkg, "upstream %s" % slug, pv, latest, STATUS_OK, note))
+            UPSTREAM_VERDICT[pkg] = ("fresh", source or "forge", latest)
             log("[%s] %s : %s" % (STATUS_OK, pkg, note))
             continue
         if source == "releases/latest":
@@ -2158,18 +2388,20 @@ def check_upstream_latest(pkgs):
                         "stale at %s]" % (match_tag, latest))
                 rows.append((pkg, "upstream %s" % slug, pv, match_tag,
                              STATUS_OK, note))
+                UPSTREAM_VERDICT[pkg] = ("fresh", "tag", match_tag)
                 log("[%s] %s : %s" % (STATUS_OK, pkg, note))
                 continue
             if _replacement_asset_exists(srcs, pv, latest) is False:
-                note = ("upstream released %s but no replacement artifact yet "
-                        "(partial release) - staying on %s" % (latest, pv))
-                rows.append((pkg, "upstream %s" % slug, pv, latest,
-                             STATUS_SKIP, note))
-                log("[%s] %s : %s" % (STATUS_SKIP, pkg, note))
+                st, note = _unusable_release_note(api_repo, srcs, pv, latest, slug)
+                rows.append((pkg, "upstream %s" % slug, pv, latest, st, note))
+                UPSTREAM_VERDICT[pkg] = (
+                    "fresh" if st == STATUS_OK else "unknown", "asset-list", latest)
+                log("[%s] %s : %s" % (st, pkg, note))
                 continue
             note = ("pinned %s but upstream released %s - rerun update.sh"
                     % (pv, latest))
             rows.append((pkg, "upstream %s" % slug, pv, latest, STATUS_STALE, note))
+            UPSTREAM_VERDICT[pkg] = ("stale", source, latest)
             log("[%s] %s : %s" % (STATUS_STALE, pkg, note))
             continue
         # ls-remote only: guard against branded-suffix misordering
@@ -2177,18 +2409,233 @@ def check_upstream_latest(pkgs):
             note = ("pinned %s matches an existing tag but lexical-max is %s "
                     "- ambiguous scheme, verify manually" % (pv, latest))
             rows.append((pkg, "upstream %s" % slug, pv, latest, STATUS_SKIP, note))
+            UPSTREAM_VERDICT[pkg] = ("ambiguous", "ls-remote", latest)
             log("[%s] %s : %s" % (STATUS_SKIP, pkg, note))
             continue
         if _replacement_asset_exists(srcs, pv, latest) is False:
-            note = ("newer tag %s exists but no replacement artifact yet "
-                    "(partial release) - staying on %s" % (latest, pv))
-            rows.append((pkg, "upstream %s" % slug, pv, latest, STATUS_SKIP, note))
-            log("[%s] %s : %s" % (STATUS_SKIP, pkg, note))
+            st, note = _unusable_release_note(api_repo, srcs, pv, latest, slug)
+            rows.append((pkg, "upstream %s" % slug, pv, latest, st, note))
+            UPSTREAM_VERDICT[pkg] = (
+                "fresh" if st == STATUS_OK else "unknown", "asset-list", latest)
+            log("[%s] %s : %s" % (st, pkg, note))
             continue
         note = ("pinned %s is not any published tag; newest is %s - rerun update.sh"
                 % (pv, latest))
         rows.append((pkg, "upstream %s" % slug, pv, latest, STATUS_STALE, note))
+        UPSTREAM_VERDICT[pkg] = ("stale", source, latest)
         log("[%s] %s : %s" % (STATUS_STALE, pkg, note))
+
+
+def _unusable_release_note(api_repo, srcs, pv, latest, slug):
+    """Evidence for a newer upstream release that serves nothing this package
+    can build from. Returns (status, note):
+      OK   - the release's asset list was fetched and holds no file with our
+             artifact's extension: pinned PV is the newest buildable version
+             (verified from the asset list, not skipped)
+      STALE - an asset with our extension exists under another name
+      SKIP - the asset list could not be fetched: no claim either way"""
+    ext = ""
+    for item in srcs:
+        url = item[0] if isinstance(item, tuple) else None
+        if isinstance(url, str) and url.startswith("http") and pv and pv in url:
+            ext = Path(url.split("?")[0].split("#")[0]).suffix.lower()
+            if ext:
+                break
+    assets = None
+    if api_repo:
+        try:
+            data = json.loads(fetch("https://api.github.com/repos/%s/releases/tags/%s"
+                                    % (api_repo, latest), timeout=30).decode())
+            assets = [a.get("name", "") for a in data.get("assets", [])]
+        except Exception:
+            assets = None
+    if assets is None:
+        return (STATUS_SKIP,
+                "upstream released %s but its asset list could not be fetched, so "
+                "the update could not be verified - staying on %s" % (latest, pv))
+    matching = [a for a in assets if ext and a.lower().endswith(ext)]
+    if ext and matching:
+        return (STATUS_STALE,
+                "upstream released %s with asset(s) %s matching our %s pattern - "
+                "rerun update.sh" % (latest, ", ".join(matching[:3]), ext.lstrip(".")))
+    if not ext:
+        return (STATUS_STALE,
+                "upstream released %s (assets: %s) - rerun update.sh"
+                % (latest, ", ".join(assets[:4]) or "none"))
+    return (STATUS_OK,
+            "upstream released %s but its release assets are [%s] - none is a %s "
+            "artifact, so pinned %s is the newest buildable version"
+            % (latest, ", ".join(assets[:6]) or "none", ext.lstrip("."), pv))
+
+
+def _norm_url(u):
+    return re.sub(r"^https?://(www\.)?", "", (u or "").strip().lower()).rstrip("/")
+
+
+def _forge_prefix(u):
+    """scheme://host/owner/repo for forge URLs, so a Source0 archive URL can be
+    matched against an upstream project's homepage."""
+    parts = _norm_url(u).split("/")
+    return "/".join(parts[:5]) if len(parts) > 4 else "/".join(parts[:3])
+
+
+def _pypi_candidate_names(pkg):
+    names = [pkg]
+    for pre in ("python3-", "python-", "py-"):
+        if pkg.startswith(pre):
+            names.append(pkg[len(pre):])
+    out = []
+    for n in names:
+        out.extend([n, n.replace("-", "_"), n.replace("_", "-")])
+    return list(dict.fromkeys(out))
+
+
+def pypi_latest(pkg):
+    """Newest sdist version PyPI publishes for a python-* package."""
+    for name in _pypi_candidate_names(pkg):
+        try:
+            data = json.loads(fetch("https://pypi.org/pypi/%s/json" % name, timeout=20))
+        except Exception:
+            continue
+        ver = (data.get("info") or {}).get("version")
+        if ver:
+            return ver, "pypi:%s" % name
+    return None, None
+
+
+def anitya_latest(pkg):
+    """Newest version Anitya (release-monitoring.org) knows for `pkg`, plus the
+    project's own homepage/repository URLs so a same-named foreign project can
+    be rejected instead of trusted."""
+    q = re.sub(r"[^A-Za-z0-9._-]", "", pkg)
+    try:
+        data = json.loads(fetch(
+            "https://release-monitoring.org/api/v2/projects/?name=%s" % q, timeout=25))
+    except Exception as e:
+        log("[WARN] anitya query failed for %s: %s" % (pkg, e))
+        return None, None, set()
+    items = data.get("items") or []
+    proj = next((i for i in items if i.get("name") == pkg), None)
+    if proj is None and len(items) == 1:
+        proj = items[0]
+    if not proj:
+        return None, None, set()
+    urls = {_norm_url(proj.get("homepage")), _norm_url(proj.get("repository"))}
+    return proj.get("version"), "anitya:%s" % proj.get("id"), {u for u in urls if u}
+
+
+def _version_key(v):
+    out = []
+    for tok in re.findall(r"\d+|[a-z]+", re.sub(r"^[vV]", "", (v or "").lower())):
+        out.append((0, int(tok)) if tok.isdigit() else (1, tok))
+    return tuple(out)
+
+
+def _upstream_newer(up, pinned):
+    a, b = list(_version_key(up)), list(_version_key(pinned))
+    if not a or not b:
+        return False
+    n = max(len(a), len(b))
+    a += [(0, 0)] * (n - len(a))
+    b += [(0, 0)] * (n - len(b))
+    return a > b
+
+
+def live_artifact_fresh(pkg, srcs, clean_pv):
+    """Freshness for a version-less artifact URL - a vendor download host that
+    serves 'Root.AppImage' instead of '/v1.2.3/...' - which no forge, Anitya or
+    PyPI can describe.
+
+    The distfile we already tore apart is upstream's CURRENT build when its
+    bytes are still what that URL serves right now:
+      ETag == md5 of our distfile   -> conclusive (upstream unchanged)
+      Last-Modified <= our download -> upstream has not re-served it since we
+                                       fetched it (weaker, no re-download)
+    Returns (status, version, source): 'newest' | None."""
+    path = ARTIFACT_PATH.get(pkg)
+    if not path or not Path(path).exists() or not clean_pv:
+        return None, None, None
+    url = None
+    for item in srcs or []:
+        u = item[0] if isinstance(item, tuple) else None
+        if isinstance(u, str) and u.startswith("http") and clean_pv not in u:
+            url = u
+            break
+    if not url:
+        return None, None, None
+    try:
+        req = urllib.request.Request(url, method="HEAD", headers=UA)
+        with urllib.request.urlopen(req, timeout=30) as r:
+            etag = (r.headers.get("ETag") or "").strip().strip('"')
+            lm = r.headers.get("Last-Modified")
+    except Exception as e:
+        log("    [fallback] %s live HEAD on %s failed: %s" % (pkg, url, e))
+        return None, None, None
+    if re.fullmatch(r"[0-9a-f]{32}", etag):
+        import hashlib
+        h = hashlib.md5()
+        with open(path, "rb") as f:
+            for chunk in iter(lambda: f.read(1 << 20), b""):
+                h.update(chunk)
+        if h.hexdigest() == etag:
+            return "newest", clean_pv, "live-artifact-md5"
+        log("    [fallback] %s upstream bytes differ from the distfile we tore "
+            "(etag %s) - freshness not provable without re-downloading"
+            % (pkg, etag))
+        return None, None, None
+    if lm:
+        import email.utils
+        try:
+            when = email.utils.parsedate_to_datetime(lm)
+            if when.timestamp() <= Path(path).stat().st_mtime:
+                return "newest", clean_pv, "live-artifact-last-modified"
+        except Exception:
+            pass
+    return None, None, None
+
+
+def fallback_freshness(pkg, clean_pv, homepage, srcs):
+    """Freshness for the case Repology cannot be reached (its DNS is blocked in
+    this environment). Two independent sources, in order:
+
+      Anitya - 120+ forges. Its version proves a package *outdated* only when
+               the project's own homepage/repository matches the spec URL, so
+               a same-named foreign project can never mark a package stale.
+               An equal version is accepted as proof of freshness (nothing is
+               being claimed about staleness in that direction).
+      PyPI   - authoritative for python-* packages.
+
+    Returns (status, version, source): 'newest' | 'outdated' | None (still
+    unverified - the caller must keep the UNVERIFIED row)."""
+    known = {_forge_prefix(homepage)} if homepage else set()
+    for item in srcs or []:
+        url = item[0] if isinstance(item, tuple) else None
+        if isinstance(url, str) and url.startswith("http"):
+            known.add(_forge_prefix(url))
+    known.discard("")
+
+    up, source, proj_urls = anitya_latest(pkg)
+    if up:
+        corroborated = bool(proj_urls & known)
+        if up == clean_pv or _version_key(up) == _version_key(clean_pv):
+            return "newest", up, source
+        if corroborated:
+            return ("outdated" if _upstream_newer(up, clean_pv) else "newest"), up, source
+        log("    [fallback] %s anitya %s not trusted (project URLs %s do not match spec)"
+            % (pkg, up, sorted(proj_urls)))
+
+    up, source = pypi_latest(pkg)
+    if up:
+        if _version_key(up) == _version_key(clean_pv):
+            return "newest", up, source
+        if _upstream_newer(up, clean_pv):
+            return "outdated", up, source
+        return "newest", up, source
+
+    st, ver, source = live_artifact_fresh(pkg, srcs, clean_pv)
+    if st:
+        return st, ver, source
+    return None, None, None
 
 
 def compute_libyear(pkg, pinned_pv, api_repo):
@@ -2287,8 +2734,38 @@ def check_vulns_and_deps(pkgs, repo_type):
             else:
                 log("[INFO] %s@%s status=%s" % (pkg, clean_pv))
         else:
-            log("[WARN] %s: repology unreachable or unknown project, freshness unverified" % pkg)
-            rows.append((pkg, pkg, clean_pv, "", STATUS_UNVERIFIED, "repology unreachable"))
+            verdict = UPSTREAM_VERDICT.get(pkg)
+            if verdict:
+                # check_upstream_latest already recorded this package's verdict
+                # with its own evidence row; a blocked Repology query must not
+                # re-open a question the forge check answered.
+                log("[FRESHNESS] %s : '%s' recorded by the upstream check "
+                    "(%s); repology unreachable" % (pkg, verdict[0],
+                                                    verdict[1] or "forge"))
+            else:
+                st, fb_ver, source = fallback_freshness(pkg, clean_pv, homepage, srcs)
+                if st == "newest":
+                    total_fresh += 1
+                    log("[FRESH] %s@%s (via %s; repology unreachable)"
+                        % (pkg, clean_pv, source))
+                    rows.append((pkg, source, clean_pv, fb_ver, STATUS_OK,
+                                 "upstream %s == pinned %s [freshness via %s; "
+                                 "repology unreachable in this environment]"
+                                 % (fb_ver, clean_pv, source)))
+                elif st == "outdated":
+                    total_outdated += 1
+                    tool = AUTO_UPDATE_TOOLS.get(repo_type, "manual")
+                    log("[OUTDATED] %s: pinned %s, upstream %s [%s] -> use %s"
+                        % (pkg, clean_pv, fb_ver, source, tool))
+                    rows.append((pkg, pkg, clean_pv, fb_ver, "OUTDATED",
+                                 "upstream %s available [%s], use %s"
+                                 % (fb_ver, source, tool)))
+                else:
+                    log("[WARN] %s: repology unreachable and no fallback source "
+                        "could confirm freshness" % pkg)
+                    rows.append((pkg, pkg, clean_pv, "", STATUS_UNVERIFIED,
+                                 "repology unreachable; anitya/pypi could not "
+                                 "confirm"))
 
         api_repo = None
         for item in srcs:
@@ -2396,6 +2873,63 @@ def fix_stale_pkg(pkg, pv, latest, repo_type, root):
     return False
 
 
+_RPM_CONTAINER = {"name": None, "state": None}
+
+
+def _rpm_container(root):
+    """Lazily start ONE long-lived fedora:44 container with the full distro
+    macro set (rpm-build + go-rpm-macros, which pulls forge-srpm-macros) so
+    specs using macros the host rpm does not know (%gometa, %forgemeta, ...)
+    can still be expanded. Returns the container name or None. Cached for the
+    whole run; removed at interpreter exit."""
+    if _RPM_CONTAINER["state"] is None:
+        _RPM_CONTAINER["state"] = "failed"
+        import shutil
+        if not shutil.which("docker"):
+            return None
+        import atexit
+        name = "sweep-rpmspec-%d" % os.getpid()
+        try:
+            subprocess.run(["docker", "rm", "-f", name], capture_output=True, timeout=30)
+            subprocess.run(["docker", "run", "-d", "--name", name,
+                            "-v", "%s:/repo:ro" % Path(root).resolve(),
+                            "registry.fedoraproject.org/fedora:44",
+                            "sleep", "inf"],
+                           capture_output=True, timeout=180, check=True)
+            subprocess.run(["docker", "exec", name, "dnf", "-y", "-q", "install",
+                            "rpm-build", "go-rpm-macros"],
+                           capture_output=True, timeout=900, check=True)
+            _RPM_CONTAINER["name"] = name
+            _RPM_CONTAINER["state"] = "ok"
+            atexit.register(lambda: subprocess.run(
+                ["docker", "rm", "-f", name], capture_output=True, timeout=60))
+        except Exception as e:
+            log("[WARN] rpm helper container unavailable: %s" % e)
+            subprocess.run(["docker", "rm", "-f", name], capture_output=True, timeout=30)
+    return _RPM_CONTAINER["name"] if _RPM_CONTAINER["state"] == "ok" else None
+
+
+def rpmspec_in_container(spec, root):
+    """rpmspec -P on `spec` inside the fedora:44 helper container.
+    Returns '' on success, None when no container is available, else the error."""
+    name = _rpm_container(root)
+    if not name:
+        return None
+    try:
+        rel = Path(spec).resolve().relative_to(Path(root).resolve())
+    except ValueError:
+        return None
+    try:
+        out = subprocess.run(["docker", "exec", name, "rpmspec", "-P",
+                              "--define", "_topdir /tmp", "/repo/%s" % rel],
+                             capture_output=True, text=True, timeout=120)
+        if out.returncode == 0:
+            return ""
+        return (out.stderr or out.stdout).strip() or "container rpmspec failed"
+    except Exception as e:
+        return str(e)
+
+
 def check_rpm_dependencies(root, repo_type):
     """2026 automated RPM dependency verification — modern toolchain.
 
@@ -2473,8 +3007,26 @@ def check_rpm_dependencies(root, repo_type):
                 out = subprocess.run(["rpmspec", "-P", "--define", "_topdir /tmp", str(spec)],
                                      capture_output=True, text=True, timeout=15)
                 if out.returncode != 0:
-                    rpmspec_ok = False
-                    rpmspec_err = out.stderr.strip().split("\n")[0][:120]
+                    err = (out.stderr or out.stdout).strip()
+                    # Host rpm simply does not ship the distro macro set
+                    # (%gometa/%forgemeta/...). That is an environment gap, not
+                    # a broken spec - retry with the Fedora container's rpmspec
+                    # before recording a failure.
+                    if re.search(r"(?i)unknown tag|undefined macro|bad expansion", err):
+                        cerr = rpmspec_in_container(spec, root)
+                        if cerr == "":
+                            log("    [rpmspec] %s expanded in fedora:44 container "
+                                "(host rpm lacks the distro macro set)" % pkg)
+                        elif cerr is None:
+                            rpmspec_err = err.split("\n")[0][:120]
+                        else:
+                            rpmspec_err = cerr.split("\n")[0][:120]
+                        # cerr == "" keeps rpmspec_ok True
+                        if cerr:
+                            rpmspec_ok = False
+                    else:
+                        rpmspec_ok = False
+                        rpmspec_err = err.split("\n")[0][:120]
             except Exception as e:
                 rpmspec_ok = False
                 rpmspec_err = str(e)[:120]
@@ -2508,6 +3060,11 @@ def check_rpm_dependencies(root, repo_type):
                 pass
         # RPM324: build-tool used without BR (static)
         build_script = "\n".join(re.findall(r"^%(?:build|install|check)\b.*?(?=^%|\Z)", txt, re.M | re.S))
+        # Strip full-line comments first: packaging notes routinely name a
+        # build tool without invoking it ('# needs meson >= 1.0' in a spec
+        # whose %build is plain make), which would otherwise read as a use.
+        build_script = "\n".join(line for line in build_script.splitlines()
+                                 if not line.lstrip().startswith("#"))
         for tool, br_atom in BUILD_TOOL_BRS.items():
             if br_atom in br or ("pkgconfig(%s)" % br_atom) in br:
                 continue
