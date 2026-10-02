@@ -1,6 +1,6 @@
 # Teardown Sweep Report
 
-Repo type: **fedora**. Sweep of **92** packages. Exit code is the verdict; this report is the receipt.
+Repo type: **opensuse**. Sweep of **92** packages. Exit code is the verdict; this report is the receipt.
 | Package | Distfile | Pinned | Internal | Status | Note |
 |---|---|---|---|---|---|
 | app2unit | live Vladimir-csp/app2unit | 47e23ec6ab9e | 47e23ec6ab9e | **OK** | live Vladimir-csp/app2unit pin 47e23ec6ab9e vs upstream 47e23ec6ab9e |
@@ -103,7 +103,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | stoat-desktop | stoat-desktop.desktop | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| umbriel-git | live noctalia-dev/umbriel | 3dc05322983a | 3dc05322983a | **OK** | live noctalia-dev/umbriel pin 3dc05322983a vs upstream 3dc05322983a |
+| umbriel-git | live noctalia-dev/umbriel | b197853b0c53 | b197853b0c53 | **OK** | live noctalia-dev/umbriel pin b197853b0c53 vs upstream b197853b0c53 |
 | vesktop | vesktop-1.6.7.x86_64.rpm | 1.6.7 | 1.6.7 | **OK** | rpm header vesktop=1.6.7-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.7 \| internal 1.6.7 |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
 | waypaper | screeninfo-0.8.1.tar.gz | 2.9 | 0.8.1 | **SOURCE-OK** | tar pyproject.toml=0.8.1 (screeninfo-0.8.1/pyproject.toml) \| hash no-checksum-pinned \| weak internal evidence 0.8.1 (not authoritative) |
@@ -182,17 +182,13 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | xcur2png | upstream github.com/eworm-de/xcur2png | 0.7.1 | 0.7.1 | **OK** | at upstream latest 0.7.1 [releases/latest] |
 | xdg-desktop-portal-hyprland | upstream github.com/hyprwm/xdg-desktop-portal-hyprland | 1.4.1 | v1.4.1 | **OK** | at upstream latest v1.4.1 [releases/latest] |
 | zen-browser | upstream github.com/zen-browser/desktop | 1.22.3b | 1.22.3b | **OK** | at upstream latest 1.22.3b [releases/latest] |
-| awww | anitya:388260 | 0.12.1 | 0.12.1 | **OK** | upstream 0.12.1 == pinned 0.12.1 [freshness via anitya:388260; repology unreachable in this environment] |
-| fluxer | anitya:390114 | 2026.1001.230522 | 2026.1001.230522 | **OK** | upstream 2026.1001.230522 == pinned 2026.1001.230522 [freshness via anitya:390114; repology unreachable in this environment] |
-| gpu-screen-recorder | anitya:388142 | 6.1.3 | 6.1.3 | **OK** | upstream 6.1.3 == pinned 6.1.3 [freshness via anitya:388142; repology unreachable in this environment] |
 | python3-materialyoucolor | pypi:materialyoucolor | 3.0.4 | 3.0.4 | **OK** | upstream 3.0.4 == pinned 3.0.4 [freshness via pypi:materialyoucolor; repology unreachable in this environment] |
-| matugen | anitya:388385 | 4.2.0 | 4.2.0 | **OK** | upstream 4.2.0 == pinned 4.2.0 [freshness via anitya:388385; repology unreachable in this environment] |
 | python-pydbus | pypi:pydbus | 0.6.0 | 0.6.0 | **OK** | upstream 0.6.0 == pinned 0.6.0 [freshness via pypi:pydbus; repology unreachable in this environment] |
 | python-yt-dlp-ejs | pypi:yt-dlp-ejs | 0.8.0 | 0.8.0 | **OK** | upstream 0.8.0 == pinned 0.8.0 [freshness via pypi:yt-dlp-ejs; repology unreachable in this environment] |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology unreachable in this environment] |
 | python-yt-dlp-get-pot-rustypipe | pypi:yt-dlp-get-pot-rustypipe | 0.2.0 | 0.2.0 | **OK** | upstream 0.2.0 == pinned 0.2.0 [freshness via pypi:yt-dlp-get-pot-rustypipe; repology unreachable in this environment] |
 | python-ytmusicapi | pypi:ytmusicapi | 1.12.3 | 1.12.3 | **OK** | upstream 1.12.3 == pinned 1.12.3 [freshness via pypi:ytmusicapi; repology unreachable in this environment] |
-| rootapp | live-artifact-md5 | 0.9.145 | 0.9.145 | **OK** | upstream 0.9.145 == pinned 0.9.145 [freshness via live-artifact-md5; repology unreachable in this environment] |
+| rootapp | aur | 0.9.145 | 0.9.144 | **OK** | pinned 0.9.145 >= repology 0.9.144 (aur); tracker behind |
 | LIBYEAR | freshness | 0.32 yr | 3 pkgs | **METRIC** | threshold=20 libyears |
 
 **Verdict: PASS** (0 failure(s))
