@@ -7,12 +7,16 @@
 
 Name:           ly
 Version:        1.4.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Lightweight TUI display manager
 
 License:        WTFPL AND MIT
 URL:            https://codeberg.org/fairyglade/ly
-Source0:        %{url}/archive/v%{version}.tar.gz#/ly-%{version}.tar.gz
+# Codeberg /archive/ endpoints are failing (503, proven 2026-10-03 across
+# multiple projects); fetch the identical tag archive from the official
+# GitHub mirror instead. Codeberg remains the canonical upstream for
+# version checks and for Source1 (release assets still serve 200).
+Source0:        https://github.com/fairyglade/ly/archive/v%{version}.tar.gz#/ly-%{version}.tar.gz
 # Zig dependencies are bundled by upstream in a release asset (see
 # create_vendor_tarball.sh); there is no systemwide Zig package management.
 Source1:        %{url}/releases/download/v%{version}/vendor.tar.zst#/ly-%{version}-vendor.tar.zst
@@ -47,7 +51,7 @@ Ly is a lightweight TUI (ncurses-like) display manager for Linux and BSD
 designed with portability in mind and doesn't require systemd to run.
 
 %prep
-%autosetup -n %{name} -a 1 -p1
+%autosetup -n %{name}-%{version} -a 1 -p1
 %zig_fetch zig-pkg/%{clap_hash}
 %zig_fetch zig-pkg/%{zigini_hash}
 %zig_fetch zig-pkg/%{ini_hash}
@@ -151,6 +155,10 @@ fi
 %config(noreplace) %{_sysconfdir}/ly/lang/*.ini
 
 %changelog
+* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.1-4
+- Fetch Source0 from the official GitHub mirror: codeberg.org
+  /archive/ returns 503 for ly and other projects (proven 2026-10-03).
+
 * Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.1-3
 - Install the bundled aro (MIT + Unicode License v3) and translate_c (MIT)
   license texts via %%license; they ship in the vendor bundle but were

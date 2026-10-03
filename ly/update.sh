@@ -43,7 +43,7 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     # A tag can exist before its release assets do. Bumping on a tag whose
     # sources are missing produces a spec whose Source0/Source1 404s, so every
     # COPR rebuild of that NVR fails. Only bump once everything really exists.
-    ARCHIVE_URL="https://codeberg.org/$CODEBERG_REPO/archive/$LATEST_TAG.tar.gz"
+    ARCHIVE_URL="https://github.com/$CODEBERG_REPO/archive/$LATEST_TAG.tar.gz"
     echo "  -> [CHECK] Verifying $ARCHIVE_URL"
     if ! curl --output /dev/null --silent --location --head --retry 3 --max-time 120 --fail "$ARCHIVE_URL"; then
         echo "  -> [SKIP] Source archive for $LATEST_TAG is not available (yet). Keeping $CURRENT_VERSION."
