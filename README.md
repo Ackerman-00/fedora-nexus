@@ -30,7 +30,9 @@ sudo dnf copr enable ackerman/nexus
 sudo dnf install <package-name>
 ```
 
-> **Supported releases:** Fedora 43, 44, 45 and Rawhide (x86_64). The COPR
+> **Supported releases:** Fedora 44, 45 and Rawhide (x86_64). Fedora 43
+> reaches end-of-life on 2026-12-09 and its chroot will be disabled shortly
+> after — if you are still on F43, upgrade to F44 or newer. The COPR
 > project follows Fedora branching automatically.
 
 ---
@@ -38,7 +40,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 92 packages</summary>
+<summary>Click to expand — 94 packages</summary>
 
 <br />
 
@@ -60,6 +62,7 @@ sudo dnf install <package-name>
 | `caelestia-shell-mango` | Desktop shell for MangoWM | Stable |
 | `cascadia-code-nerd-fonts` | Cascadia Code patched with Nerd Fonts icons | Stable |
 | `cliphist` | Wayland clipboard manager with support for multimedia | Stable |
+| `concat` | Free and open source video editor (CapCut alternative) | Stable |
 | `concord` | Feature-rich TUI client for Discord | Stable |
 | `extension-manager` | Native tool for browsing and managing GNOME Shell Extensions | Stable |
 | `fluxer` | Free and open source instant messaging and VoIP platform | Stable |
@@ -111,6 +114,7 @@ sudo dnf install <package-name>
 | `noctalia-greeter` | Minimal greetd login greeter matching Noctalia Shell (Git Snapshot) | Git |
 | `nwg-look` | GTK3 settings editor adapted for the wlroots environment | Stable |
 | `obsidian` | Knowledge base over a local folder of plain-text Markdown files | Stable |
+| `openchamber` | AI coding agent workspace (Electron) | Stable |
 | `protonplus` | Modern compatibility tools manager | Stable |
 | `pyprland` | Hyprland extensions made easy | Stable |
 | `materialyoucolor` | Material You color generation algorithms (pure Python + C++ quantizer) | Stable |
