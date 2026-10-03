@@ -9,7 +9,7 @@
 
 Name:           concat
 Version:        0.2.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Free and open source video editor (CapCut alternative)
 
 License:        AGPL-3.0-or-later
@@ -27,6 +27,9 @@ Requires:       gtk3
 Requires:       fontconfig
 Requires:       freetype
 Requires:       libxkbcommon
+# X11 keyboard init (xkbcommon-dl dlopens libxkbcommon-x11.so.0 at startup;
+# without it the app panics under X11/Xvfb: proven 2026-10-03)
+Requires:       libxkbcommon-x11
 Requires:       mesa-libGL
 Requires:       alsa-lib
 Requires:       hicolor-icon-theme
@@ -58,13 +61,22 @@ install -Dm0644 usr/share/icons/hicolor/256x256/apps/concat.png \
 desktop-file-validate %{buildroot}%{_datadir}/applications/concat.desktop || true
 
 %files
-%license opt/concat/LICENSE
-%doc opt/concat/THIRD_PARTY_NOTICES.md
+# NOTE: upstream's own RPM installs these under usr/share/doc/concat/
+# (verified by tearing the upstream RPM apart: rpm -qlp shows
+# /usr/share/doc/concat/{LICENSE,THIRD_PARTY_NOTICES.md}, nothing under
+# opt/concat/ besides the binary and lib/). COPR build 11066628 failed
+# 4/4 on the old opt/concat/ paths ("File not found" for both).
+%license usr/share/doc/concat/LICENSE
+%doc usr/share/doc/concat/THIRD_PARTY_NOTICES.md
 %{_bindir}/concat
 /opt/concat/
 %{_datadir}/applications/concat.desktop
 %{_datadir}/icons/hicolor/256x256/apps/concat.png
 
 %changelog
+* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.5-2
+- Fix %license/%doc paths: upstream RPM ships LICENSE + THIRD_PARTY_NOTICES.md
+  under usr/share/doc/concat/, not opt/concat/ (old paths failed COPR 11066628
+  4/4 with "File not found"); verified via rpm -qlp + ldd teardown
 * Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.5-1
 - Initial packaging: repack upstream nfpm-built RPM (Rust+Slint, self-contained FFmpeg)
