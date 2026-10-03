@@ -40,7 +40,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 91 packages</summary>
+<summary>Click to expand — 62 packages</summary>
 
 <br />
 
@@ -48,7 +48,6 @@ sudo dnf install <package-name>
 |---------|-------------|:----:|
 | `appmenu-glib-translator` | GLib menu translator for the AppMenu protocol | Stable |
 | `app2unit` | Launch desktop entries or commands as systemd user units | Stable |
-| `aquamarine` | Light-weight rendering backend library for Hyprland | Stable |
 | `astal` | Building blocks for creating custom desktop shells (Git Snapshot) | Git |
 | `astal-gjs` | Astal GJS package (Git Snapshot) | Git |
 | `astal-gtk4` | Astal GTK4 bindings (Git Snapshot) | Git |
@@ -68,36 +67,10 @@ sudo dnf install <package-name>
 | `fluxer` | Free and open source instant messaging and VoIP platform | Stable |
 | `freebuff` | The free coding agent for your desktop (parallel agents, private workspaces) | Stable |
 | `ghostty` | Fast, feature-rich, cross-platform terminal emulator (Deb repackage) | Stable |
-| `glaze` | Extremely fast, in memory, JSON and interface library | Stable |
 | `gpu-screen-recorder` | Shadowplay-like screen recorder for Linux (NVIDIA/AMD/Intel) | Stable |
 | `hellwal` | Pywal-like color palette generator, but faster and in C | Stable |
 | `helium-browser` | Private, fast, and honest web browser | Stable |
 | `heroic-games-launcher` | Open source launcher for GOG, Epic, and Amazon Games | Stable |
-| `hyprcursor` | The hyprland cursor format, library and utilities | Stable |
-| `hyprgraphics` | Hyprland graphics / resource utilities | Stable |
-| `hypridle` | Hyprland's idle daemon | Stable |
-| `hyprlang` | The official implementation library for the hypr config language | Stable |
-| `hyprlauncher` | A multipurpose and versatile launcher / picker for Hyprland | Stable |
-| `hyprland-autoname-workspaces` | Hyprland autoname workspaces | Stable |
-| `hyprland` | Dynamic tiling Wayland compositor that doesn't sacrifice on its looks | Stable |
-| `hyprland-contrib` | Community scripts and utilities for Hypr projects | Git |
-| `hyprland-guiutils` | Hyprland GUI utilities (welcome, run, dialog, update screens) | Stable |
-| `hyprland-plugins` | Official plugins for Hyprland | Git |
-| `hyprland-protocols` | Wayland protocol extensions for Hyprland | Stable |
-| `hyprland-qt-support` | Qt6 QML style provider for hypr* apps | Stable |
-| `hyprlock` | Hyprland's GPU-accelerated screen locking utility | Stable |
-| `hyprpaper` | Blazing fast wayland wallpaper utility with IPC controls | Stable |
-| `hyprpicker` | A wlroots-compatible Wayland color picker | Stable |
-| `hyprpolkitagent` | A simple polkit authentication agent for Hyprland | Stable |
-| `hyprpwcenter` | A GUI Pipewire control center | Stable |
-| `hyprqt6engine` | Qt6 Theme Provider for Hyprland | Stable |
-| `hyprsunset` | An application to enable a blue-light filter on Hyprland | Stable |
-| `hyprshutdown` | A graceful shutdown utility for Hyprland | Stable |
-| `hyprsysteminfo` | An application to display information about the running system | Stable |
-| `hyprtoolkit` | A modern C++ Wayland-native GUI toolkit | Stable |
-| `hyprutils` | Hyprland utilities library used across the ecosystem | Stable |
-| `hyprwayland-scanner` | A Hyprland implementation of wayland-scanner, in and for C++ | Stable |
-| `hyprwire` | A fast and consistent wire protocol for IPC | Stable |
 | `lazyvim-git` | Neovim setup for lazy people (Git Snapshot) | Git |
 | `libcava` | Fork of CAVA built as a shared library | Stable |
 | `localsend` | Open source cross-platform AirDrop alternative | Stable |
@@ -113,7 +86,6 @@ sudo dnf install <package-name>
 | `obsidian` | Knowledge base over a local folder of plain-text Markdown files | Stable |
 | `openchamber` | AI coding agent workspace (Electron) | Stable |
 | `protonplus` | Modern compatibility tools manager | Stable |
-| `pyprland` | Hyprland extensions made easy | Stable |
 | `materialyoucolor` | Material You color generation algorithms (pure Python + C++ quantizer) | Stable |
 | `python-mprisify` | MPRIS D-Bus interface library for Python | Stable |
 | `python-pydbus` | Pythonic D-Bus library | Stable |
@@ -133,7 +105,6 @@ sudo dnf install <package-name>
 | `waypaper` | GUI wallpaper manager for Wayland and Xorg Linux systems | Stable |
 | `wlroots` | Modular Wayland compositor library | Stable |
 | `xcur2png` | Convert X cursor files into PNG images (hyprcursor-util extract helper) | Stable |
-| `xdg-desktop-portal-hyprland` | xdg-desktop-portal backend for hyprland | Stable |
 | `xdg-desktop-portal-umbriel-git` | XDG Desktop Portal backend for Umbriel (Git Snapshot) | Git |
 | `xwayland-satellite-git` | Rootless Xwayland integration for Wayland compositors (Git Snapshot) | Git |
 | `zen-browser` | Privacy-focused Firefox fork | Stable |
