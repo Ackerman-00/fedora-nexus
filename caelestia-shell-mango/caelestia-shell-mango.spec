@@ -2,13 +2,18 @@
 %global commit          cae55ed689bec8445d187f8057527a5dd515dab8
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20260811081721
+# Single source of truth for the upstream release base version. Used both in
+# the Version tag and passed to CMake as -DVERSION (rpmbuild tarballs carry no
+# .git, so upstream's `git describe` fallback cannot run). update.sh keeps this
+# in sync with the upstream tag that points at %{commit}.
+%global basever         2.1.0
 
 # NOTE: This package is for MangoWM only. It will NOT work with
 # other Wayland compositors (Hyprland, Sway, Niri, etc.).
 
 Name:           caelestia-shell-mango
-Version:        2.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Version:        %{basever}^%{gitdate}git%{shortcommit}
+Release:        3%{?dist}
 Summary:        Desktop shell for MangoWM
 
 License:        GPL-3.0-only
@@ -124,7 +129,7 @@ export CXXFLAGS="%{optflags} -ffat-lto-objects"
     -DINSTALL_LIBDIR=%{_libdir}/caelestia \
     -DINSTALL_QMLDIR=%{_qt6_qmldir} \
     -DINSTALL_QSCONFDIR=%{_datadir}/caelestia-shell \
-    -DVERSION=2.0.0 \
+    -DVERSION=%{basever} \
     -DGIT_REVISION=%{shortcommit} \
     -DDISTRIBUTOR=fedora-copr
 
@@ -177,6 +182,13 @@ fi
 %{_datadir}/caelestia-shell/utils/
 
 %changelog
+* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.0^20260811081721gitcae55ed-3
+- Fix stale -DVERSION hardcode: the built version binary reported 2.0.0
+  while the pinned commit cae55ed is the upstream v2.1.0 tag. Derive
+  -DVERSION from a %global basever macro so Version and the CMake version
+  can no longer diverge, and teach update.sh to resolve basever from the
+  upstream tag pointing at HEAD
+
 * Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.0^20260811081721gitcae55ed-2
 - Require brightnessctl: Brightness.qml falls back to brightnessctl for
   displays that present a backlight interface (ddcutil covers DDC-only panels)

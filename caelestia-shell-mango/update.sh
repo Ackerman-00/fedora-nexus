@@ -32,12 +32,29 @@ if [ "$CURRENT_COMMIT" != "$LATEST_COMMIT" ]; then
         GIT_DATE=$(grep "^%global gitdate" "$SPEC_FILE" | awk '{print $3}')
     fi
 
-    BASE_VER=$(grep "^Version:" "$SPEC_FILE" | awk '{print $2}' | sed 's/\^.*//')
+    # Resolve the upstream release base version from the tag that points at
+    # HEAD. rpmbuild tarballs carry no .git, so the spec passes -DVERSION
+    # explicitly; this keeps that value in sync with the real upstream tag
+    # instead of silently going stale (the 2.0.0-vs-2.1.0 bug).
+    BASE_VER=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null \
+        | awk -v target="$LATEST_COMMIT" '$1==target{ref=$2; sub(/^refs\/tags\//,"",ref); sub(/\^\{\}$/,"",ref); if(ref ~ /^v?[0-9]+\.[0-9]+\.[0-9]+$/){sub(/^v/,"",ref); print ref; exit}}')
+
+    # Fall back to the currently packaged base version if HEAD is not tagged
+    # (e.g. a post-release commit on main).
+    if [ -z "$BASE_VER" ]; then
+        BASE_VER=$(grep "^%global basever" "$SPEC_FILE" | awk '{print $3}')
+    fi
+
+    if [ -z "$BASE_VER" ]; then
+        echo "Error: could not determine upstream base version."
+        exit 1
+    fi
 
     sed -i -E "s/^%global commit.*/%global commit          $LATEST_COMMIT/" "$SPEC_FILE"
     sed -i -E "s/^%global gitdate.*/%global gitdate         $GIT_DATE/" "$SPEC_FILE"
+    sed -i -E "s/^%global basever.*/%global basever         $BASE_VER/" "$SPEC_FILE"
     sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
-    sed -i -E "s/^Version:.*/Version:        ${BASE_VER}^%{gitdate}git%{shortcommit}/" "$SPEC_FILE"
+    sed -i -E "s/^Version:.*/Version:        %{basever}^%{gitdate}git%{shortcommit}/" "$SPEC_FILE"
 
     DATE_STRING=$(LC_ALL=C date +"%a %b %d %Y")
     CHANGELOG_VER="${BASE_VER}^${GIT_DATE}git${SHORT_COMMIT}-1"
