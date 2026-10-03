@@ -28,86 +28,106 @@ if [[ -f "$RELAY" ]]; then
   fi
 
   # version-checked is an honest label for freshness checks without a container
-  # teardown (see PROMPT). It counts here only with same-run upstream evidence
-  # (checked below); the 11 mains additionally need docker-teardown PASS.
-  # Count DISTINCT package names, not matching lines: prose mentioning a
-  # status must not satisfy the inventory bar.
-  dep_rows=$(grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*\| (deps-verified|deps-fixed|version-checked|retired-stub) \|" "$RELAY" 2>/dev/null | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u | wc -l || true)
+  # teardown (see PROMPT). It counts here only with a same-run same-package
+  # upstream evidence row; the 10 mains additionally need a dated
+  # docker-teardown PASS. EVERY check below is scoped to this run's block
+  # (run_id: to the next run_id:) so accumulated history can satisfy nothing.
+  scope=$(awk -v id="run_id: $RUN_ID" '$0==id{f=1;next} f&&/^run_id: /{exit} f' "$RELAY")
+
+  dep_rows=$(printf '%s' "$scope" | grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*\| (deps-verified|deps-fixed|version-checked|retired-stub) \|" | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u | wc -l || true)
   dep_rows=${dep_rows:-0}
   echo "Inventory: $expected specs; strict dependency rows: $dep_rows"
   if [[ "$dep_rows" -lt "$expected" ]]; then
-    echo "FAIL: NOT COMPLETE -- every package needs deps-verified/deps-fixed/version-checked teardown evidence (or retired-stub); found $dep_rows, need $expected"
+    echo "FAIL: NOT COMPLETE -- every package needs deps-verified/deps-fixed/version-checked teardown evidence (or retired-stub) in THIS run's block; found $dep_rows, need $expected"
     FAIL=1
   else
     echo "PASS: strict dependency rows cover inventory"
   fi
 
-  unproven_rows=$(grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*unproven:" "$RELAY" 2>/dev/null | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u | wc -l || true)
+  unproven_rows=$(printf '%s' "$scope" | grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*unproven:" | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u | wc -l || true)
   unproven_rows=${unproven_rows:-0}
   echo "Correctness-contract rows: $unproven_rows (need $expected)"
   if [[ "$unproven_rows" -lt "$expected" ]]; then
-    echo "FAIL: NOT COMPLETE -- every dependency row needs an unproven: contract"
+    echo "FAIL: NOT COMPLETE -- every dependency row needs an unproven: contract in THIS run's block"
     FAIL=1
   else
     echo "PASS: correctness contract covers inventory"
   fi
 
-  # Require a same-run upstream evidence row for every package. The trailing
-  # date field must be today or yesterday: this prevents carrying an old
-  # upstream conclusion forward as a current audit.
-  # (TODAY/YEST are computed in the MAINS block below; precompute here.)
   TODAY=$(date -u +%F)
   YEST=$(date -u -d yesterday +%F 2>/dev/null || date -u -v-1d +%F)
-  upstream_rows=$(grep -cE "\| upstream: [^|]+ \|.*($TODAY|$YEST)" "$RELAY" 2>/dev/null || true)
+  upstream_rows=$(printf '%s' "$scope" | grep -E "upstream: [a-zA-Z0-9._+-]+ .*($TODAY|$YEST)" | grep -oE "upstream: [a-zA-Z0-9._+-]+" | awk '{print $2}' | sort -u | wc -l || true)
   upstream_rows=${upstream_rows:-0}
-  echo "Upstream evidence rows: $upstream_rows (need $expected)"
+  echo "Upstream evidence rows (distinct packages): $upstream_rows (need $expected)"
   if [[ "$upstream_rows" -lt "$expected" ]]; then
-    echo "FAIL: NOT COMPLETE -- every package needs a fresh upstream evidence row"
+    echo "FAIL: NOT COMPLETE -- every package needs a fresh upstream evidence row in THIS run's block"
     FAIL=1
   else
     echo "PASS: upstream evidence covers inventory"
   fi
+  for pkg in $(printf '%s' "$scope" | grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*\| version-checked \|" | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u); do
+    if ! printf '%s' "$scope" | grep -qE "upstream: $pkg .*($TODAY|$YEST)"; then
+      echo "FAIL: NOT COMPLETE -- $pkg is version-checked with no same-run upstream row"
+      FAIL=1
+    fi
+  done
 
-  if ! grep -q "| package | packaged version |" "$RELAY"; then
-    echo "FAIL: NOT COMPLETE -- version accuracy table missing"
+  if ! printf '%s' "$scope" | grep -q "| package | packaged version |"; then
+    echo "FAIL: NOT COMPLETE -- version accuracy table missing from THIS run's block"
     FAIL=1
   else
     echo "PASS: version accuracy table present"
   fi
   for tool in "rpmspec -P" "dnf builddep" "rpmlint"; do
-    if ! grep -qi "$tool.*PASS\|PASS.*$tool" "$RELAY"; then
-      echo "FAIL: NOT COMPLETE -- missing PASS evidence for $tool"
+    if ! printf '%s' "$scope" | grep -qi "$tool.*PASS\|PASS.*$tool"; then
+      echo "FAIL: NOT COMPLETE -- missing PASS evidence for $tool in THIS run's block"
       FAIL=1
     else
       echo "PASS: $tool evidence present"
     fi
   done
-  if ! grep -qi "install-test table" "$RELAY" && ! grep -qiE "\| package \| (chroot \| )?COPR build \|" "$RELAY"; then
-    echo "FAIL: NOT COMPLETE -- install-test table missing"
+  if ! printf '%s' "$scope" | grep -qi "install-test table" && ! printf '%s' "$scope" | grep -qiE "\| package \| (chroot \| )?COPR build \|"; then
+    echo "FAIL: NOT COMPLETE -- install-test table missing from THIS run's block"
     FAIL=1
   else
     echo "PASS: install-test table present"
   fi
-  if ! grep -qiE "^teardown-slice:" "$RELAY"; then
-    echo "FAIL: NOT COMPLETE -- teardown-slice ledger missing"
+
+  slice_line=$(printf '%s' "$scope" | grep -m1 -E "^teardown-slice:" || true)
+  if [[ -z "$slice_line" ]]; then
+    echo "FAIL: NOT COMPLETE -- teardown-slice ledger missing from THIS run's block"
     FAIL=1
   else
-    echo "PASS: teardown-slice ledger present"
+    slice_pkgs=$(printf '%s' "$slice_line" | sed -E 's/^teardown-slice: *//; s/ *\|.*$//')
+    slice_n=$(printf '%s\n' $slice_pkgs | grep -c . || true)
+    min_slice=$(( (expected + 7) / 8 ))
+    if [[ "$slice_n" -lt "$min_slice" ]]; then
+      echo "FAIL: NOT COMPLETE -- teardown slice has $slice_n packages, need >= $min_slice (fleet rotates within 8 runs)"
+      FAIL=1
+    else
+      echo "PASS: teardown slice size $slice_n >= $min_slice"
+    fi
+    for pkg in $slice_pkgs; do
+      if ! printf '%s' "$scope" | grep -qiE "docker-teardown: $pkg .*PASS.*($TODAY|$YEST)"; then
+        echo "FAIL: NOT COMPLETE -- slice package '$pkg' lacks a fresh dated docker-teardown PASS"
+        FAIL=1
+      fi
+    done
   fi
 
   MAINS="umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter ly wlroots"
   for pkg in $MAINS; do
-    if ! grep -qiE "docker-teardown: $pkg .*PASS" "$RELAY"; then
-      echo "FAIL: NOT COMPLETE -- main package '$pkg' lacks fresh docker-teardown PASS"
+    if ! printf '%s' "$scope" | grep -qiE "docker-teardown: $pkg .*PASS.*($TODAY|$YEST)"; then
+      echo "FAIL: NOT COMPLETE -- main package '$pkg' lacks fresh dated docker-teardown PASS"
       FAIL=1
     fi
-    if ! grep -qiE "upstream: $pkg .*($TODAY|$YEST)" "$RELAY"; then
+    if ! printf '%s' "$scope" | grep -qiE "upstream: $pkg .*($TODAY|$YEST)"; then
       echo "FAIL: NOT COMPLETE -- main package '$pkg' lacks fresh upstream evidence"
       FAIL=1
     fi
   done
-  if ! grep -qiE "docker-teardown:.*PASS" "$RELAY"; then
-    echo "FAIL: NOT COMPLETE -- no docker teardown evidence"
+  if ! printf '%s' "$scope" | grep -qiE "docker-teardown:.*PASS.*($TODAY|$YEST)"; then
+    echo "FAIL: NOT COMPLETE -- no docker teardown evidence in THIS run's block"
     FAIL=1
   fi
 else

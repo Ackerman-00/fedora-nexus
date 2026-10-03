@@ -54,7 +54,9 @@ jobs:
           echo ""
           if [ "$failed" -gt 0 ]; then
             echo "::error::$failed update script(s) failed"
-            exit 1
+            echo "failed=$failed" >> "$GITHUB_OUTPUT"
+          else
+            echo "failed=0" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Scan Standard Packages via GitHub API
@@ -147,6 +149,7 @@ jobs:
                       print(f"  -> [ERROR] GitHub API returned {res.status_code}")
               except Exception as e:
                   print(f"  -> [ERROR] {e}")
+          print("scanner-errors: see [ERROR] lines above (0 if none)")
           PYEOF
 
       - name: Check for Changes
@@ -171,4 +174,23 @@ jobs:
           git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git add -A
           git commit -m "auto-update: sync spec files to latest upstream versions"
-          git push origin main
+          git fetch origin main && git rebase origin/main || true
+          for i in 1 2 3; do
+            git push origin main && break
+            sleep 15
+            git pull --rebase origin main || true
+          done
+
+      - name: Report failed updaters
+        if: steps.updater.outputs.failed != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          n="${{ steps.updater.outputs.failed }}"
+          title="auto-updater: $n update.sh failed"
+          exists=$(gh api "repos/${GITHUB_REPOSITORY}/issues?state=open&per_page=100" --jq "[.[] | select(.title == \"$title\")] | length")
+          if [ "$exists" -eq 0 ]; then
+            gh api repos/${GITHUB_REPOSITORY}/issues -f title="$title" -f body="update-engine run $GITHUB_RUN_ID: $n update.sh script(s) failed. The scan and version bumps still ran. Fix the scripts; see the run logs."
+          else
+            echo "issue already open - skipping"
+          fi
