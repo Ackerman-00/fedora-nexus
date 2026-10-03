@@ -40,7 +40,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 62 packages</summary>
+<summary>Click to expand — 63 packages</summary>
 
 <br />
 
@@ -86,6 +86,7 @@ sudo dnf install <package-name>
 | `obsidian` | Knowledge base over a local folder of plain-text Markdown files | Stable |
 | `openchamber` | AI coding agent workspace (Electron) | Stable |
 | `opencode-desktop` | AI coding agent desktop app | Stable |
+| `photon-studio` | Offline image editor with native PSD support | Stable |
 | `protonplus` | Modern compatibility tools manager | Stable |
 | `materialyoucolor` | Material You color generation algorithms (pure Python + C++ quantizer) | Stable |
 | `python-mprisify` | MPRIS D-Bus interface library for Python | Stable |
