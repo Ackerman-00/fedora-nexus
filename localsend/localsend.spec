@@ -10,7 +10,7 @@
 
 Name:           localsend
 Version:        1.18.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        An open source cross-platform alternative to AirDrop
 
 License:        GPL-3.0
@@ -31,6 +31,13 @@ BuildRequires:  tar
 Requires:           hicolor-icon-theme
 Requires:       libayatana-appindicator-gtk3
 Requires:       libayatana-ido-gtk3
+# libflutter_linux_gtk.so (bundled) links libepoxy, which dlopens
+# libEGL.so.1 and libGLESv2.so.2 at startup - invisible to ldd and to RPM
+# auto-deps (excluded above). Clean fedora:44 repro: stock install aborts
+# rc134 "Couldn't open libEGL.so.1", then "Couldn't open libGLESv2.so.2";
+# launches once libglvnd-egl + libglvnd-gles are present.
+Requires:       libEGL.so.1()(64bit)
+Requires:       libGLESv2.so.2()(64bit)
 Requires:       xdg-user-dirs
 
 %description
@@ -86,6 +93,11 @@ chmod 0755 %{buildroot}%{_bindir}/localsend_app
 %{_libdir}/localsend_app/
 
 %changelog
+* Fri Oct 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.18.2-2
+- Declare dlopened GL runtime deps (libEGL.so.1, libGLESv2.so.2): the bundled
+  libflutter_linux_gtk.so links libepoxy, which opens both at startup. A clean
+  fedora:44 container install aborted (rc 134, "Couldn't open libEGL.so.1",
+  then libGLESv2.so.2) until libglvnd-egl and libglvnd-gles were present.
 * Fri Aug 21 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.2-1
 - Update to upstream v1.18.2 (full desktop assets; 1.18.1 was Android-only)
 * Tue Aug 11 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.0-2
