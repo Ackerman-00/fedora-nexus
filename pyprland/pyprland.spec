@@ -1,5 +1,5 @@
 Name:           pyprland
-Version:        3.4.4
+Version:        3.4.5
 Release:        1%{?dist}
 Summary:        Hyprland extensions made easy
 
@@ -41,5 +41,5 @@ install -Dpm0755 client/pypr-client -t %{buildroot}%{_bindir}
 %{_bindir}/pypr-quickstart
 
 %changelog
-* Thu Sep 03 2026 Ackerman-00 <quietcraft@gmail.com> - 3.4.4-1
-- Auto-update to version 3.4.4
+* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 3.4.5-1
+- Auto-update to version 3.4.5
