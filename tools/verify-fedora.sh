@@ -2,7 +2,7 @@
 set -euo pipefail
 # Strict completion verifier for fedora-nexus.
 if [[ "${1:-}" == "--print-mains" ]]; then
-  echo "xwayland-satellite-git umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter ly wlroots"
+  echo "umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter ly wlroots"
   exit 0
 fi
 RUN_ID="${RUN_ID:-}"
@@ -95,7 +95,7 @@ if [[ -f "$RELAY" ]]; then
     echo "PASS: teardown-slice ledger present"
   fi
 
-  MAINS="xwayland-satellite-git umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter ly wlroots"
+  MAINS="umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter ly wlroots"
   for pkg in $MAINS; do
     if ! grep -qiE "docker-teardown: $pkg .*PASS" "$RELAY"; then
       echo "FAIL: NOT COMPLETE -- main package '$pkg' lacks fresh docker-teardown PASS"

@@ -40,7 +40,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 62 packages</summary>
+<summary>Click to expand — 61 packages</summary>
 
 <br />
 
@@ -106,7 +106,6 @@ sudo dnf install <package-name>
 | `wlroots` | Modular Wayland compositor library | Stable |
 | `xcur2png` | Convert X cursor files into PNG images (hyprcursor-util extract helper) | Stable |
 | `xdg-desktop-portal-umbriel-git` | XDG Desktop Portal backend for Umbriel (Git Snapshot) | Git |
-| `xwayland-satellite-git` | Rootless Xwayland integration for Wayland compositors (Git Snapshot) | Git |
 | `zen-browser` | Privacy-focused Firefox fork | Stable |
 
 > `Git` packages track upstream HEAD and rebuild on every new commit.
