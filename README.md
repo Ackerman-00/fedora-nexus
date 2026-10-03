@@ -73,7 +73,6 @@ sudo dnf install <package-name>
 | `hellwal` | Pywal-like color palette generator, but faster and in C | Stable |
 | `helium-browser` | Private, fast, and honest web browser | Stable |
 | `heroic-games-launcher` | Open source launcher for GOG, Epic, and Amazon Games | Stable |
-| `hyprdim` | Automatically dim windows in Hyprland when switching between them | Stable |
 | `hyprcursor` | The hyprland cursor format, library and utilities | Stable |
 | `hyprgraphics` | Hyprland graphics / resource utilities | Stable |
 | `hypridle` | Hyprland's idle daemon | Stable |
@@ -86,7 +85,6 @@ sudo dnf install <package-name>
 | `hyprland-plugins` | Official plugins for Hyprland | Git |
 | `hyprland-protocols` | Wayland protocol extensions for Hyprland | Stable |
 | `hyprland-qt-support` | Qt6 QML style provider for hypr* apps | Stable |
-| `hyprnome` | GNOME-like workspace switching in Hyprland | Stable |
 | `hyprlock` | Hyprland's GPU-accelerated screen locking utility | Stable |
 | `hyprpaper` | Blazing fast wayland wallpaper utility with IPC controls | Stable |
 | `hyprpicker` | A wlroots-compatible Wayland color picker | Stable |
@@ -94,7 +92,6 @@ sudo dnf install <package-name>
 | `hyprpwcenter` | A GUI Pipewire control center | Stable |
 | `hyprqt6engine` | Qt6 Theme Provider for Hyprland | Stable |
 | `hyprsunset` | An application to enable a blue-light filter on Hyprland | Stable |
-| `hyprshot` | Utility to easily take screenshots in Hyprland using your mouse | Stable |
 | `hyprshutdown` | A graceful shutdown utility for Hyprland | Stable |
 | `hyprsysteminfo` | An application to display information about the running system | Stable |
 | `hyprtoolkit` | A modern C++ Wayland-native GUI toolkit | Stable |
