@@ -23,8 +23,6 @@ ExclusiveArch:  x86_64
 
 BuildRequires:  desktop-file-utils
 
-BuildRequires:  desktop-file-utils
-
 # System libraries the binary loads outside its own lib/ — the exact set from
 # upstream assets/linux/nfpm.yaml (rpm.depends), names already Fedora-style.
 Requires:       gtk3
