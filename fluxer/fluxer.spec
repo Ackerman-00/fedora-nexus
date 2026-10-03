@@ -14,8 +14,8 @@
 %global __requires_exclude ^libffmpeg\\.so.*$|^libcbor\\.so.*$
 
 Name:           fluxer
-Version:        2026.1001.230522
-Release:        2%{?dist}
+Version:        2026.1003.155758
+Release:        1%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
@@ -23,7 +23,7 @@ URL:            https://fluxer.app
 Source0:        https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm
 # Rolling "latest" URL: pin the hash of the served artifact so rebuilds and
 # the sweep verify fixed bits. Refreshed by update.sh on every version bump.
-# sha256: 8f2de579ac3951148c1a5c89898068eb7b1fdb23f511bad82951d8758d21577e
+# sha256: 9be79f0559cda25813f52991ee2acb192f11df135ea05be76c98dd778da5fd26
 
 Requires:           hicolor-icon-theme
 Requires:       at-spi2-core
@@ -114,9 +114,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %attr(4755, root, root) %{_libdir}/%{name}/chrome-sandbox
 
 %changelog
-* Fri Oct 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2026.1001.230522-2
-- Fix startup crash: ship chrome-sandbox as %attr(4755, root, root) so the
-  Electron SUID sandbox helper is configured correctly (was 0755 ->
-  FATAL abort for every non-root launch; verified under xvfb before/after).
-* Fri Oct 02 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1001.230522-1
-- Update to version 2026.1001.230522
+* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1003.155758-1
+- Update to version 2026.1003.155758
