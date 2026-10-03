@@ -66,27 +66,27 @@ if [[ -f "$RELAY" ]]; then
     echo "PASS: upstream evidence covers inventory"
   fi
   for pkg in $(printf '%s' "$scope" | grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*\| version-checked \|" | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u); do
-    if ! printf '%s' "$scope" | grep -qE "upstream: $pkg .*($TODAY|$YEST)"; then
+    if ! grep -qE "upstream: $pkg .*($TODAY|$YEST)" <<< "$scope"; then
       echo "FAIL: NOT COMPLETE -- $pkg is version-checked with no same-run upstream row"
       FAIL=1
     fi
   done
 
-  if ! printf '%s' "$scope" | grep -q "| package | packaged version |"; then
+  if ! grep -q "| package | packaged version |" <<< "$scope"; then
     echo "FAIL: NOT COMPLETE -- version accuracy table missing from THIS run's block"
     FAIL=1
   else
     echo "PASS: version accuracy table present"
   fi
   for tool in "rpmspec -P" "dnf builddep" "rpmlint"; do
-    if ! printf '%s' "$scope" | grep -qi "$tool.*PASS\|PASS.*$tool"; then
+    if ! grep -qi "$tool.*PASS\|PASS.*$tool" <<< "$scope"; then
       echo "FAIL: NOT COMPLETE -- missing PASS evidence for $tool in THIS run's block"
       FAIL=1
     else
       echo "PASS: $tool evidence present"
     fi
   done
-  if ! printf '%s' "$scope" | grep -qi "install-test table" && ! printf '%s' "$scope" | grep -qiE "\| package \| (chroot \| )?COPR build \|"; then
+  if ! grep -qi "install-test table" <<< "$scope" && ! grep -qiE "\| package \| (chroot \| )?COPR build \|" <<< "$scope"; then
     echo "FAIL: NOT COMPLETE -- install-test table missing from THIS run's block"
     FAIL=1
   else
@@ -108,7 +108,7 @@ if [[ -f "$RELAY" ]]; then
       echo "PASS: teardown slice size $slice_n >= $min_slice"
     fi
     for pkg in $slice_pkgs; do
-      if ! printf '%s' "$scope" | grep -qiE "docker-teardown: $pkg .*PASS.*($TODAY|$YEST)"; then
+      if ! grep -qiE "docker-teardown: $pkg .*PASS.*($TODAY|$YEST)" <<< "$scope"; then
         echo "FAIL: NOT COMPLETE -- slice package '$pkg' lacks a fresh dated docker-teardown PASS"
         FAIL=1
       fi
@@ -117,16 +117,16 @@ if [[ -f "$RELAY" ]]; then
 
   MAINS="umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter ly wlroots"
   for pkg in $MAINS; do
-    if ! printf '%s' "$scope" | grep -qiE "docker-teardown: $pkg .*PASS.*($TODAY|$YEST)"; then
+    if ! grep -qiE "docker-teardown: $pkg .*PASS.*($TODAY|$YEST)" <<< "$scope"; then
       echo "FAIL: NOT COMPLETE -- main package '$pkg' lacks fresh dated docker-teardown PASS"
       FAIL=1
     fi
-    if ! printf '%s' "$scope" | grep -qiE "upstream: $pkg .*($TODAY|$YEST)"; then
+    if ! grep -qiE "upstream: $pkg .*($TODAY|$YEST)" <<< "$scope"; then
       echo "FAIL: NOT COMPLETE -- main package '$pkg' lacks fresh upstream evidence"
       FAIL=1
     fi
   done
-  if ! printf '%s' "$scope" | grep -qiE "docker-teardown:.*PASS.*($TODAY|$YEST)"; then
+  if ! grep -qiE "docker-teardown:.*PASS.*($TODAY|$YEST)" <<< "$scope"; then
     echo "FAIL: NOT COMPLETE -- no docker teardown evidence in THIS run's block"
     FAIL=1
   fi
