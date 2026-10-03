@@ -3,13 +3,13 @@
 # find-debuginfo emits an empty debugsource list which rpm >= 6 rejects
 # as a hard error (proven by COPR build 10955014).
 %global debug_package %{nil}
-%global commit          00f47077627ba11b34f7cd62eed1c90f519467c1
+%global commit          285ba7dd1cb89e3a4127d336e849e748d3423880
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260912133811
+%global gitdate         20261003010509
 
 Name:           mixtapes
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Modern, Linux-first YouTube Music player (Nexus Git Snapshot)
 
 License:        GPL-3.0-or-later
@@ -115,6 +115,9 @@ chmod 0755 %{buildroot}%{_bindir}/mixtapes
 %{_datadir}/mixtapes/
 
 %changelog
+* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261003010509git285ba7d-1
+- Nightly sync with upstream main branch (Commit: 285ba7d)
+
 * Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260912133811git00f4707-2
 - Require gobject-introspection: it owns the cairo-1.0 typelib that
   gi.repository (Gtk/Adw/Gdk) loads at import time. Fresh-container
