@@ -9,7 +9,7 @@
 
 Name:           openchamber
 Version:        2.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        AI coding agent workspace (Electron)
 
 License:        MIT
@@ -84,7 +84,11 @@ exec /opt/openchamber/AppRun "$@"
 WRAPPER_EOF
 chmod 755 %{buildroot}%{_bindir}/openchamber
 
-install -Dm644 squashfs-root/usr/share/icons/hicolor/scalable/apps/openchamber.svg \
+# Upstream ships the icon at usr/share/icons/hicolor/scalable/openchamber.svg
+# (NO apps/ subdir - verified by tearing the AppImage apart; the old
+# .../scalable/apps/... path failed %install with "cannot stat").
+# Installed to the standard apps/ location.
+install -Dm644 squashfs-root/usr/share/icons/hicolor/scalable/openchamber.svg \
     %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/openchamber.svg
 
 # Upstream desktop entry runs AppRun --no-sandbox; ours goes through the
@@ -114,5 +118,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/openchamber.desktop |
 %attr(4755, root, root) /opt/openchamber/chrome-sandbox
 
 %changelog
+* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.0-2
+- Fix icon source path: upstream AppImage ships it at
+  usr/share/icons/hicolor/scalable/openchamber.svg (no apps/ subdir);
+  old path failed %install. Verified: sha256 pin matches, X-AppImage-Version 2.1.0
 * Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.0-1
 - Initial packaging: extract upstream AppImage (Electron 43), SUID sandbox kept
