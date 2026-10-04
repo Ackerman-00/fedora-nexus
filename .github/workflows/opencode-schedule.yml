@@ -91,6 +91,7 @@ jobs:
 
       - name: Run opencode
         shell: bash
+        timeout-minutes: 300
         run: |
           export PATH="$HOME/.opencode/bin:$PATH"
           # raw.githubusercontent.com serves CDN-stale content (~5min max-age=300) after a
