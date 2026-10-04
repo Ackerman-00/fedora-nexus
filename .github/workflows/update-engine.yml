@@ -18,6 +18,11 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: write
+      # The "Report failed updaters" step files one tracking issue. Without
+      # issues: write that gh api call returned 403
+      # ("Resource not accessible by integration") and failed the whole job,
+      # hiding the real failure it was trying to report (run 37198825220).
+      issues: write
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
@@ -199,7 +204,13 @@ jobs:
           title="auto-updater: $n update.sh failed"
           exists=$(gh api "repos/${GITHUB_REPOSITORY}/issues?state=open&per_page=100" --jq "[.[] | select(.title == \"$title\")] | length")
           if [ "$exists" -eq 0 ]; then
-            gh api repos/${GITHUB_REPOSITORY}/issues -f title="$title" -f body="update-engine run $GITHUB_RUN_ID: $n update.sh script(s) failed. The scan and version bumps still ran. Fix the scripts; see the run logs."
+            # Never let the reporter itself fail the job: a token without
+            # issues: write (or an API hiccup) must not mask the real failure.
+            gh api repos/${GITHUB_REPOSITORY}/issues -f title="$title" -f body="update-engine run $GITHUB_RUN_ID: $n update.sh script(s) failed. The scan and version bumps still ran. Fix the scripts; see the run logs." \
+              || echo "::warning::could not open the tracking issue (API refused); failing updaters are listed in the run log"
           else
             echo "issue already open - skipping"
           fi
+          # Keep the failure loud in the run summary even when the issue path
+          # is unavailable.
+          echo "::error::$n update.sh script(s) failed in run $GITHUB_RUN_ID"
