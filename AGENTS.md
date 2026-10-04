@@ -109,6 +109,15 @@ If the agent skips the dependency table, the job fails and the next run retries 
   logs from the `download.copr.` host. `build/list` rows carry the package name
   in `source_package.name` (nullable, null for a deleted package) and there is
   no top-level `package_name` field.
+- RPM file downloads on `download.copr.` 301-redirect every `*.rpm` request to
+  a `packages.redhat.com/api/pulp-content/public-copr/...` path that 404s
+  (observed 2026-10-04; directory layout is
+  `<chroot>/<buildid>-<pkg>/<state>/...`, results.json still fetches fine).
+  Do not chase RPM files there for install tests: install from the live repo
+  in the container instead (`dnf copr enable ackerman/nexus && dnf install
+  <pkg>`), which also proves the published repodata carries the NVR. Direct
+  results paths that do not end in `.rpm` (build.info, results.json, logs)
+  still serve normally.
 
 ### OSV.dev query gotchas (found 2026-10-04, both produce false "clean")
 

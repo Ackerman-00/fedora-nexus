@@ -963,12 +963,20 @@ jobs:
                packages as your time budget allows, oldest-first. NEVER mark a
                package's install test as done based on a previous run's result
                if the binary changed since then.
-              a. DOWNLOAD THE BUILT RPM from COPR's download server:
-                 https://download.copr.fedorainfracloud.org/results/ackerman/nexus/<chroot>/<pkg>-<ver>.fc<rel>.x86_64.rpm
+              a. GET THE BUILT RPM two ways (the plain file URL pattern is
+                 BROKEN as of 2026-10-04 - every *.rpm request 301-redirects
+                 to a packages.redhat.com Pulp path that 404s, so do not
+                 chase it):
+                 (1) preferred - install from the live repo in the container:
+                     `dnf copr enable ackerman/nexus && dnf install <pkg>`
+                     (proves the published repodata carries the NVR, which is
+                     what users actually get);
+                 (2) direct fetch, layout is
+                     https://download.copr.fedorainfracloud.org/results/ackerman/nexus/<chroot>/<buildid>-<pkg>/results.json
+                     (and <buildid>-<pkg>/build.log.gz etc. still serve);
                  (chroot = any key of chroot_repos from the project API -
                  fedora-43/44/45-x86_64 + fedora-rawhide-x86_64 as of
-                 2026-09-30; list the directory with curl to find the
-                 exact filename)
+                 2026-10-04; discover it fresh every run)
               b. REAL INSTALL TEST IN A CLEAN FEDORA CONTAINER. You need a
                  working container runtime on the runner. Docker is
                  preinstalled on the ubuntu-24.04 runner (never assume
