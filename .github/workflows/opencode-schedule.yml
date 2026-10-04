@@ -161,6 +161,15 @@ jobs:
           # delay desyncs this run from the thundering herd that knocks free-model
           # gateways over (socket-closed flaps). Cheap insurance inside a 360-min job.
           sleep $((RANDOM % 180))
+          # Mechanical wall-clock enforcement: PROMPT claims the agent will
+          # self-stop at 240m, but LLMs miss deadlines (documented in
+          # research-scheduler-timeout.md). `timeout` is the hard stop that
+          # actually fires. Job cap stays 360; run is killed at 250m + 60s
+          # SIGKILL grace, leaving 49m for the relay/cleanup job.
+          DEADLINE_EPOCH=$(date -u +%s); DEADLINE_EPOCH=$((DEADLINE_EPOCH + 250*60))
+          DEADLINE_UTC=$(date -u -d @$DEADLINE_EPOCH +%Y-%m-%dT%H:%MZ)
+          echo "RUN_DEADLINE_UTC=$DEADLINE_UTC" >> $GITHUB_ENV
+          echo "DEADLINE_EPOCH=$DEADLINE_EPOCH" >> $GITHUB_ENV
           # MODEL FRESHNESS (MANDATORY each run): this chain is a cached snapshot.
           # Verify every id against `curl -s https://opencode.ai/zen/v1/models`
           # and re-read https://opencode.ai/docs/zen (free list + "Deprecated
@@ -174,7 +183,7 @@ jobs:
             # dead model - retry the SAME model before falling through. Bounded at
             # 3 tries with full jitter (retry only transient failures, never 4xx).
             for attempt_n in 1 2 3; do
-              if MODEL="$model" opencode run --standalone --model "$model" --agent build "$PROMPT"; then
+              if timeout --signal=TERM --kill-after=60s 250m opencode run --standalone --model "$model" --agent build "$PROMPT"; then
                 exit_code=0
                 break
               else
@@ -225,8 +234,7 @@ jobs:
           GIT_COMMITTER_EMAIL: 41898282+opencode-agent[bot]@users.noreply.github.com
           PROMPT: |
             RELAY / LONG-RUN HANDOFF (MANDATORY): the job cap is 360 minutes,
-            but YOU must finish within 270 minutes (4h30m) on your own - do not
-            rely on the timeout. NEVER let a run die with work unfinished or
+            but YOU must finish within 270 minutes (4h30m) on your own - the run is killed at 250m by `timeout`; at 240m you MUST have pushed `status: unfinished` + triggered the relay, or the kill will lose all progress. Do not rely on the 360m job cap. Never let a run die with work unfinished or
             unrecorded - hand it over to the next runner. The relay state file is
             `.opencode-relay.md` at the repo root - it is the SINGLE completion
             record, and the workflow reads it from main after your process exits:
@@ -1804,8 +1812,7 @@ jobs:
                  <pkg>" with the diagnosis and logs. Then move on.
 
             RELAY / LONG-RUN HANDOFF (MANDATORY): the job cap is 360 minutes,
-            but YOU must finish within 270 minutes (4h30m) on your own - do not
-            rely on the timeout. NEVER let a run die with work unfinished or
+            but YOU must finish within 270 minutes (4h30m) on your own - the run is killed at 250m by `timeout`; at 240m you MUST have pushed `status: unfinished` + triggered the relay, or the kill will lose all progress. Do not rely on the 360m job cap. Never let a run die with work unfinished or
             unrecorded - hand it over to the next runner.
               a. PICKUP ON START: if the relay state file .opencode-relay.md exists
                  on main with status "unfinished", or this run was started with the
