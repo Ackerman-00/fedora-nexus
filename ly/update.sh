@@ -79,8 +79,22 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
         fi
     done < <(grep -oE '^%global\s+[a-z0-9_]+_hash\s+\S+' "$SPEC_FILE" | awk '{print $2, $3}')
     if [ "$MISSING" -eq 1 ]; then
-        echo "  -> [ERROR] Dependency hashes changed in $LATEST_TAG. Update the %global *_hash lines in $SPEC_FILE manually, then re-run."
-        exit 1
+        # A blocked bump is a HOLD, not a script failure. Exiting 1 here made
+        # every single auto-updater run red for as long as the upstream floor
+        # stayed ahead of the distro (proved 2026-10-04: ly v1.5.0 requires zig
+        # >= 0.17.0, F44/F45/rawhide all ship zig 0.16.0), which is noise, not
+        # signal. Report the blocker precisely and leave the spec untouched; a
+        # real bump happens only once the dependency hashes AND the zig floor
+        # can be satisfied.
+        ZIG_FLOOR=$(curl --silent --location --retry 2 --max-time 60 \
+            "https://raw.githubusercontent.com/fairyglade/ly/$LATEST_TAG/build.zig.zon" \
+            | sed -n 's/.*minimum_zig_version[^0-9]*\([0-9.]*\).*/\1/p' | head -1)
+        echo "  -> [HOLD] $LATEST_TAG changed its vendored Zig dependency set; the pinned %global *_hash lines must be updated before a bump."
+        if [ -n "$ZIG_FLOOR" ]; then
+            echo "  -> [HOLD] $LATEST_TAG also declares .minimum_zig_version = $ZIG_FLOOR; bump once the distro ships that zig."
+        fi
+        echo "  -> [HOLD] Keeping $CURRENT_VERSION (no spec change)."
+        exit 0
     fi
     echo "    -> [OK] All pinned dependency hashes present in the vendor tarball"
 
