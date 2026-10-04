@@ -24,7 +24,7 @@ concurrency:
 jobs:
   opencode:
     runs-on: ubuntu-24.04
-    timeout-minutes: 355
+    timeout-minutes: 270
     permissions:
       contents: write
       pull-requests: write
@@ -159,7 +159,7 @@ jobs:
           }
           # Start jitter: many schedulers fire at :00/:10 sharp - a random 0-3 min
           # delay desyncs this run from the thundering herd that knocks free-model
-          # gateways over (socket-closed flaps). Cheap insurance inside a 355-min job.
+          # gateways over (socket-closed flaps). Cheap insurance inside a 270-min job.
           sleep $((RANDOM % 180))
           # MODEL FRESHNESS (MANDATORY each run): this chain is a cached snapshot.
           # Verify every id against `curl -s https://opencode.ai/zen/v1/models`
@@ -224,8 +224,8 @@ jobs:
           GIT_COMMITTER_NAME: opencode-agent[bot]
           GIT_COMMITTER_EMAIL: 41898282+opencode-agent[bot]@users.noreply.github.com
           PROMPT: |
-            RELAY / LONG-RUN HANDOFF (MANDATORY): a run may last up to 355 minutes
-            (timeout-minutes: 355 = 5h55m). NEVER let a run die with work unfinished or
+            RELAY / LONG-RUN HANDOFF (MANDATORY): a run may last up to 270 minutes
+            (timeout-minutes: 270 = 4h30m). NEVER let a run die with work unfinished or
             unrecorded - hand it over to the next runner. The relay state file is
             `.opencode-relay.md` at the repo root - it is the SINGLE completion
             record, and the workflow reads it from main after your process exits:
@@ -242,8 +242,8 @@ jobs:
                  freshness/coverage check from that line to the next `run_id:`
                  line, so evidence placed above it counts as stale and is
                  ignored. Commit + push it together with your fixes.
-              c. HANDOFF TRIGGER: when the run has been going ~4.5-5 hours,
-                 STOP starting new work. Finish and push everything, set
+              c. HANDOFF TRIGGER: when the run has been going ~3:45-4 hours
+                 (225-240 min), STOP starting new work. Finish and push everything, set
                  `.opencode-relay.md` to status "unfinished" with the precise
                  continuation plan, commit + push, then trigger the relay:
                    gh workflow run opencode-schedule.yml --ref main \
@@ -1802,8 +1802,8 @@ jobs:
                  main is not left broken, and open an issue titled "build failure:
                  <pkg>" with the diagnosis and logs. Then move on.
 
-            RELAY / LONG-RUN HANDOFF (MANDATORY): a run may last up to 355 minutes
-            (timeout-minutes: 355 = 5h55m). NEVER let a run die with work unfinished or
+            RELAY / LONG-RUN HANDOFF (MANDATORY): a run may last up to 270 minutes
+            (timeout-minutes: 270 = 4h30m). NEVER let a run die with work unfinished or
             unrecorded - hand it over to the next runner.
               a. PICKUP ON START: if the relay state file .opencode-relay.md exists
                  on main with status "unfinished", or this run was started with the
@@ -1819,8 +1819,8 @@ jobs:
                  what remains, any traps found). Commit + push it together with
                  your fixes - it is the handoff record and your lifeline if this
                  run is cancelled.
-              c. HANDOFF TRIGGER: when the run has been going ~4.5-5 hours (check
-                 elapsed time: `gh run view <id> --json startedAt`, or the
+              c. HANDOFF TRIGGER: when the run has been going ~3:45-4 hours
+                 (225-240 min, check elapsed time: `gh run view <id> --json startedAt`, or the
                  workflow clock), STOP starting new work. Finish and push
                  everything in progress, set .opencode-relay.md to status
                  "unfinished" with the precise continuation plan, commit + push
