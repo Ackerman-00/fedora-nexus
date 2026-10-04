@@ -8,14 +8,14 @@
 %global __requires_exclude_from ^/opt/openchamber/.*$
 
 Name:           openchamber
-Version:        2.1.0
-Release:        2%{?dist}
+Version:        2.1.1
+Release:        1%{?dist}
 Summary:        AI coding agent workspace (Electron)
 
 License:        MIT
 URL:            https://github.com/openchamber/openchamber
-Source0:        %{url}/releases/download/v%{version}/OpenChamber-%{version}-linux-x86_64.AppImage
-# sha256: ab4f20fc7c17ccbcbe720cfcbbbabd0b592c19d8e7ebe0663d7cb3f918a082f2
+Source0:        %{url}/releases/download/v2.1.1/OpenChamber-2.1.1-linux-x86_64.AppImage
+# sha256: 94abc6b185bf55ea9db1ef56ea8c15f439ddeaa700bc440d2a67104dfb973049
 
 ExclusiveArch:  x86_64
 # aarch64 AppImage exists upstream (OpenChamber-2.1.0-linux-arm64.AppImage) but
@@ -118,9 +118,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/openchamber.desktop |
 %attr(4755, root, root) /opt/openchamber/chrome-sandbox
 
 %changelog
-* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.0-2
-- Fix icon source path: upstream AppImage ships it at
-  usr/share/icons/hicolor/scalable/openchamber.svg (no apps/ subdir);
-  old path failed %install. Verified: sha256 pin matches, X-AppImage-Version 2.1.0
-* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.0-1
-- Initial packaging: extract upstream AppImage (Electron 43), SUID sandbox kept
+* Sun Oct 04 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.1-1
+- Auto-update to upstream release v2.1.1
