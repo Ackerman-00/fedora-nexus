@@ -35,6 +35,14 @@ sudo dnf install <package-name>
 > after — if you are still on F43, upgrade to F44 or newer. The COPR
 > project follows Fedora branching automatically.
 
+> **When Fedora ships a newer build of a package than this repo does:** dnf
+> prefers the higher version, so a plain `dnf install <pkg>` can pull Fedora's
+> package instead of ours. This happens today on Rawhide with `ly` (Fedora has
+> the 1.5.0~rc1 prerelease, this repo tracks stable 1.4.1). Ask for the exact
+> build when that happens, for example
+> `sudo dnf install ly-1.4.1-4.fc46`. `dnf list --showduplicates <pkg>` shows
+> every version on offer.
+
 ---
 
 ## 📦 Packages
