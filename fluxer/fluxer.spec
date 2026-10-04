@@ -15,7 +15,7 @@
 
 Name:           fluxer
 Version:        2026.1004.13532
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
@@ -57,6 +57,9 @@ fi
 if [ -d "opt/fluxer" ] && [ ! -e "opt/Fluxer" ]; then
   mv "opt/fluxer" "opt/Fluxer"
 fi
+if [ -f "usr/share/applications/app.fluxer.FluxerDesktop.desktop" ] && [ ! -f "usr/share/applications/fluxer.desktop" ]; then
+  cp "usr/share/applications/app.fluxer.FluxerDesktop.desktop" "usr/share/applications/fluxer.desktop"
+fi
 if [ -f "usr/share/applications/fluxer-canary.desktop" ] && [ ! -f "usr/share/applications/fluxer.desktop" ]; then
   cp "usr/share/applications/fluxer-canary.desktop" "usr/share/applications/fluxer.desktop"
 fi
@@ -78,34 +81,47 @@ cp -a opt/Fluxer/* %{buildroot}%{_libdir}/%{name}/
 mkdir -p %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/%{name} <<'EOF'
 #!/bin/sh
+# Automatically force native Wayland rendering if detected (same wrapper
+# vesktop/stoat-desktop/heroic/splayer-next ship; upstream's fluxer-launcher
+# passes no ozone flags, so without this Fluxer falls back to XWayland on
+# Wayland sessions with blurry rendering and broken taskbar matching)
+if [ "$XDG_SESSION_TYPE" = "wayland" ] || [ -n "$WAYLAND_DISPLAY" ]; then
+    export ELECTRON_OZONE_PLATFORM_HINT="auto"
+fi
 exec %{_libdir}/%{name}/%{name} "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/%{name}
 
+# Upstream renamed fluxer.desktop to app.fluxer.FluxerDesktop.desktop (2026.1004,
+# normalized to fluxer.desktop in %prep). Install it under its upstream basename
+# so StartupWMClass=app.fluxer.FluxerDesktop keeps matching the window - renaming
+# the file would break taskbar matching.
 install -Dm0644 usr/share/applications/fluxer.desktop \
-    %{buildroot}%{_datadir}/applications/%{appid}.desktop
+    %{buildroot}%{_datadir}/applications/app.fluxer.FluxerDesktop.desktop
 
 # Fix Exec= and Icon= for our relocation
 sed -i 's|^Exec=.*|Exec=%{_bindir}/%{name} %U|' \
-    %{buildroot}%{_datadir}/applications/%{appid}.desktop
+    %{buildroot}%{_datadir}/applications/app.fluxer.FluxerDesktop.desktop
 sed -i 's|^Icon=.*|Icon=%{appid}|' \
-    %{buildroot}%{_datadir}/applications/%{appid}.desktop
+    %{buildroot}%{_datadir}/applications/app.fluxer.FluxerDesktop.desktop
 
-# Install all available icon sizes
-for iconpath in usr/share/icons/hicolor/*/apps/fluxer.png; do
-    size=$(echo "$iconpath" | cut -d/ -f5)
+# Upstream hicolor set collapsed to a single 1024x1024 png, a bucket hicolor's
+# index.theme does not declare (largest fixed size is 512x512), so Icon= never
+# resolves. Install the bundled resources size set (16-512) into real buckets.
+for iconpath in opt/Fluxer/resources/icons/[0-9]*x[0-9]*.png; do
+    size=$(basename "$iconpath" .png)
     install -Dm0644 "$iconpath" \
         %{buildroot}%{_datadir}/icons/hicolor/${size}/apps/%{appid}.png
 done
 
-desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || true
+desktop-file-validate %{buildroot}%{_datadir}/applications/app.fluxer.FluxerDesktop.desktop || true
 
 %files
 %license opt/Fluxer/LICENSE.electron.txt
 %doc opt/Fluxer/LICENSES.chromium.html
 %{_bindir}/%{name}
 %{_libdir}/%{name}/
-%{_datadir}/applications/%{appid}.desktop
+%{_datadir}/applications/app.fluxer.FluxerDesktop.desktop
 %{_datadir}/icons/hicolor/*/apps/%{appid}.png
 # Electron aborts at startup ("SUID sandbox helper binary was found, but is
 # not configured correctly", setuid_sandbox_host.cc:166) unless chrome-sandbox
@@ -114,6 +130,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop || t
 %attr(4755, root, root) %{_libdir}/%{name}/chrome-sandbox
 
 %changelog
+* Sun Oct 04 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1004.13532-2
+- Fix desktop entry and icons for upstream rename (app.fluxer.FluxerDesktop.desktop, 1024-only hicolor set); Wayland-native wrapper
+
 * Sun Oct 04 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1004.13532-1
 - Update to version 2026.1004.13532
 
