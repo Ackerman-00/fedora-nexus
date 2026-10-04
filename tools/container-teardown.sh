@@ -16,6 +16,15 @@
 #     "Complete!"), which made an install step look like it produced no output.
 #     With INSTALL_EXIT there is no ambiguity; session 5 of run 37006623550 hit
 #     exactly this on astal-gjs.
+#  5. Retry rpmbuild after "Failed build dependencies" (added 2026-10-04, hit on
+#     all five python-* packages in run 37154151210): %generate_buildrequires
+#     specs stop the FIRST rpmbuild pass with the dynamic deps it just
+#     discovered (e.g. python3dist(setuptools) >= 40.8). mock/COPR install those
+#     and retry automatically, so a one-shot local rpmbuild reports a false
+#     failure. The loop below runs `dnf builddep` on the generated
+#     *.buildreqs.nosrc.rpm (holds the exact dynamic dep set, including
+#     versioned and boolean forms a naive parse mangles) and retries, up to
+#     3 passes, exactly like mock does.
 #
 # usage: container-teardown.sh <pkgdir> <spec> <smoke-cmd> [rpmV-name]
 set -u
@@ -29,9 +38,20 @@ echo '--- builddep ---'; dnf -y --setopt=gpgcheck=0 builddep $SPEC 2>&1 | tail -
 mkdir -p /root/rpmbuild/{SOURCES,BUILD,BUILDROOT,RPMS,SRPMS,SPECS}
 echo '--- spectool ---'; spectool -g -C /root/rpmbuild/SOURCES $SPEC 2>&1 | tail -1
 find . -maxdepth 1 -type f -exec cp -f {} /root/rpmbuild/SOURCES/ \;
-echo '--- rpmbuild ---'; rpmbuild -bb --define '_topdir /root/rpmbuild' $SPEC > /tmp/bb.log 2>&1; echo RPMBUILD_EXIT=\$?; tail -2 /tmp/bb.log
+echo '--- rpmbuild ---'
+for pass in 1 2 3; do
+  rpmbuild -bb --define '_topdir /root/rpmbuild' $SPEC > /tmp/bb.log 2>&1
+  rc=\$?
+  [ \$rc -eq 0 ] && break
+  grep -q '^error: Failed build dependencies:' /tmp/bb.log || break
+  nosrc=\$(ls -t /root/rpmbuild/SRPMS/*.buildreqs.nosrc.rpm 2>/dev/null | head -1)
+  [ \${#nosrc} -eq 0 ] && break
+  echo DYNAMIC_BUILDDEPS: \$nosrc
+  dnf -y --setopt=gpgcheck=0 builddep \$nosrc >> /tmp/bb.log 2>&1 || break
+done
+echo RPMBUILD_EXIT=\$rc; tail -2 /tmp/bb.log
 RPM=\$(ls /root/rpmbuild/RPMS/*/*.rpm 2>/dev/null | head -1); echo BUILT=\$RPM
 echo '--- install ---'; dnf -y --setopt=gpgcheck=0 --setopt=install_weak_deps=False install \$RPM 2>&1 | tail -1; echo INSTALL_EXIT=\${PIPESTATUS[0]}
 if [ -n '$RPMVNAME' ]; then rpm -V $RPMVNAME && echo RPMV_OK; fi
 echo '--- smoke ---'; $SMOKE; echo SMOKE_EXIT=\$?
-" 2>&1 | grep -aE -- '---|RPMBUILD_EXIT|INSTALL_EXIT|BUILT=|RPMV_OK|SMOKE_EXIT|Complete!|Error' | head -20
+" 2>&1 | grep -aE -- '---|RPMBUILD_EXIT|INSTALL_EXIT|BUILT=|RPMV_OK|SMOKE_EXIT|DYNAMIC_BUILDDEPS|Complete!|Error' | head -22
