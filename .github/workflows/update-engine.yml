@@ -152,6 +152,15 @@ jobs:
           print("scanner-errors: see [ERROR] lines above (0 if none)")
           PYEOF
 
+      - name: Restore changelog history
+        # Most per-package update.sh scripts rebuild %changelog from scratch
+        # (sed '/^%changelog/,$d' then append one entry), which deletes every
+        # earlier entry on each version bump. Re-insert the dropped entries from
+        # the pre-update spec in git, newest entry first, before committing.
+        # continue-on-error: a repair bug must never stop the auto-updater.
+        continue-on-error: true
+        run: python3 tools/changelog-repair.py
+
       - name: Check for Changes
         id: changes
         run: |

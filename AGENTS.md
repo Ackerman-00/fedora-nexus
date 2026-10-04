@@ -120,6 +120,31 @@ If the agent skips the dependency table, the job fails and the next run retries 
   Fork detection, template version detection, libyear budget, and
   Trivy CVE scanning prevent the known false positive classes.
 
+## Changelog history rule (added 2026-10-04, generator fix)
+
+Most `update.sh` scripts rebuild `%changelog` from scratch: `sed -i '/^%changelog/,$d'`
+then append one entry. Every version bump therefore deletes the whole history of
+that spec. 36 of 63 specs carry two or more entries today, so this is real data
+loss, not a cosmetic nit.
+
+Two rules, both enforced from 2026-10-04:
+
+1. A NEW `update.sh` inserts its entry right after the `%changelog` line instead
+   of wiping the section. Use the pattern from `freebuff/update.sh`:
+   `sed -i "/^%changelog$/r $ENTRY_TMP" "$SPEC_FILE"`. Newest entry goes on top,
+   which is the RPM convention.
+2. The 43 legacy scripts still wipe. `tools/changelog-repair.py` runs in
+   update-engine.yml before the commit step and restores the dropped entries from
+   the pre-update spec in git, so history survives even for the old scripts. It
+   is fail-safe (`continue-on-error`, exceptions swallowed). Its regression tests
+   are `tools/test-changelog-repair.py`; run both after touching the logic.
+
+Mechanical migration of the 43 legacy scripts to pattern 1 is still open. It was
+deliberately NOT done in one sweep: every edited `update.sh` sits in a package
+subdir, so each one triggers a COPR rebuild of an unchanged NVR, and this project
+drains roughly one build an hour. Do it in small batches when the queue is idle.
+Never migrate by hand-editing 40 files in one commit and calling it done.
+
 ## Electron chrome-sandbox rule (added 2026-10-02, real incident)
 
 Five Electron packages (fluxer, obsidian, logseq, heroic-games-launcher,
