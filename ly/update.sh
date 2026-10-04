@@ -10,8 +10,10 @@ echo "Checking for upstream updates on codeberg.org/$CODEBERG_REPO..."
 # Get latest tag via git ls-remote (no rate limit).
 # Development happens on Codeberg (GitHub is only a mirror), so the
 # authoritative source is codeberg - but codeberg's git service is flaky,
-# so retry a few times and fall back to the GitHub mirror for tag detection
-# only; source/asset URLs always stay on codeberg.
+# so retry a few times and fall back to the GitHub mirror for tag detection.
+# Source0 is the GitHub mirror archive (codeberg /archive/ went 503 on
+# 2026-10-03); only the vendor tarball Source1 stays on codeberg release
+# assets, and the availability check below keeps it a hard gate.
 get_latest_tag() {
     local remote="$1"
     git ls-remote --tags "$remote" 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1
