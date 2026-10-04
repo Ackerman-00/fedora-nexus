@@ -24,7 +24,7 @@ concurrency:
 jobs:
   opencode:
     runs-on: ubuntu-24.04
-    timeout-minutes: 270
+    timeout-minutes: 360
     permissions:
       contents: write
       pull-requests: write
@@ -159,7 +159,7 @@ jobs:
           }
           # Start jitter: many schedulers fire at :00/:10 sharp - a random 0-3 min
           # delay desyncs this run from the thundering herd that knocks free-model
-          # gateways over (socket-closed flaps). Cheap insurance inside a 270-min job.
+          # gateways over (socket-closed flaps). Cheap insurance inside a 360-min job.
           sleep $((RANDOM % 180))
           # MODEL FRESHNESS (MANDATORY each run): this chain is a cached snapshot.
           # Verify every id against `curl -s https://opencode.ai/zen/v1/models`
@@ -224,8 +224,9 @@ jobs:
           GIT_COMMITTER_NAME: opencode-agent[bot]
           GIT_COMMITTER_EMAIL: 41898282+opencode-agent[bot]@users.noreply.github.com
           PROMPT: |
-            RELAY / LONG-RUN HANDOFF (MANDATORY): a run may last up to 270 minutes
-            (timeout-minutes: 270 = 4h30m). NEVER let a run die with work unfinished or
+            RELAY / LONG-RUN HANDOFF (MANDATORY): the job cap is 360 minutes,
+            but YOU must finish within 270 minutes (4h30m) on your own - do not
+            rely on the timeout. NEVER let a run die with work unfinished or
             unrecorded - hand it over to the next runner. The relay state file is
             `.opencode-relay.md` at the repo root - it is the SINGLE completion
             record, and the workflow reads it from main after your process exits:
@@ -1802,8 +1803,9 @@ jobs:
                  main is not left broken, and open an issue titled "build failure:
                  <pkg>" with the diagnosis and logs. Then move on.
 
-            RELAY / LONG-RUN HANDOFF (MANDATORY): a run may last up to 270 minutes
-            (timeout-minutes: 270 = 4h30m). NEVER let a run die with work unfinished or
+            RELAY / LONG-RUN HANDOFF (MANDATORY): the job cap is 360 minutes,
+            but YOU must finish within 270 minutes (4h30m) on your own - do not
+            rely on the timeout. NEVER let a run die with work unfinished or
             unrecorded - hand it over to the next runner.
               a. PICKUP ON START: if the relay state file .opencode-relay.md exists
                  on main with status "unfinished", or this run was started with the
