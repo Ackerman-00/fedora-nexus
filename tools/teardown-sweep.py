@@ -2554,6 +2554,68 @@ def anitya_latest(pkg):
     return proj.get("version"), "anitya:%s" % proj.get("id"), {u for u in urls if u}
 
 
+def redirect_channel_version(pkg, srcs, homepage):
+    """Version declared by a 'latest-channel' URL whose HTTP redirect target
+    embeds it (e.g. tenzen.studio's download API 302s to
+    .../photon/stable/linux/0.1.39/Photon-Studio-0.1.39-linux-x64.AppImage).
+
+    Some vendored AppImage/deb hosts expose no version header (see
+    latest_channel_version_header), no forge tag, no Anitya project and no
+    PyPI entry - the redirect path IS their authoritative version declaration,
+    and it is what the package's own update.sh reads. Without this the sweep
+    falls through to UNVERIFIED on a package that is provably current
+    (photon-studio, recurring FAIL in the committed teardown-report.md).
+
+    The version is read from BOTH the final resolved URL and every hop's
+    Location header, so either naming scheme works; it is accepted only when
+    it resolves to a concrete numeric dotted version, and it is only trusted
+    for a package whose own update.sh declares the same channel URL. Returns
+    (version, source) or (None, None)."""
+    candidates = []
+    cu = channel_url_for_pkg(pkg)
+    if cu:
+        candidates.append(cu)
+    if homepage and homepage.startswith(("http://", "https://")):
+        candidates.append(homepage)
+    # Deliberately NOT the versioned Source0: parsing the pin out of the URL we
+    # are trying to check would be circular. Only a versionless 'latest'
+    # channel (an update.sh *_URL/API_URL, or the homepage) can declare the
+    # current version independently.
+    seen = set()
+    for url in candidates:
+        if url in seen:
+            continue
+        seen.add(url)
+        tgt = _resolve_redirect(url)
+        if not tgt:
+            continue
+        for cand in (tgt, url):
+            m = re.search(r"/(?:v)?(\d+\.\d+(?:\.\d+)*)(?:/|$|[^0-9.])", cand)
+            if not m:
+                # Also accept a version embedded in the filename tail
+                # (Photon-Studio-0.1.39-linux-x64.AppImage).
+                m = re.search(r"-(\d+\.\d+(?:\.\d+)*)[-.]", cand)
+            if m:
+                return m.group(1), "redirect:%s" % _host_of(cand.strip())
+    return None, None
+
+
+def _resolve_redirect(url, timeout=30):
+    """Final URL after following redirects (GET with a 1-byte range so an
+    AppImage payload is not downloaded), or None on any failure."""
+    try:
+        req = urllib.request.Request(url, headers={**UA, "Range": "bytes=0-0"})
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return r.geturl()
+    except Exception:
+        return None
+
+
+def _host_of(url):
+    m = re.match(r"https?://([^/]+)", url or "")
+    return m.group(1) if m else "?"
+
+
 def _version_key(v):
     out = []
     for tok in re.findall(r"\d+|[a-z]+", re.sub(r"^[vV]", "", (v or "").lower())):
@@ -2661,6 +2723,18 @@ def fallback_freshness(pkg, clean_pv, homepage, srcs):
         if _upstream_newer(up, clean_pv):
             return "outdated", up, source
         return "newest", up, source
+
+    # A 'latest-channel' URL whose redirect target embeds the version is the
+    # same authoritative source the package's update.sh reads (tenzen.studio
+    # photon-studio). Accept it as freshness proof when it equals our pin,
+    # and as an OUTDATED signal when upstream is strictly newer.
+    rver, rsrc = redirect_channel_version(pkg, srcs, homepage)
+    if rver:
+        if _version_key(rver) == _version_key(clean_pv):
+            return "newest", rver, rsrc
+        if _upstream_newer(rver, clean_pv):
+            return "outdated", rver, rsrc
+        return "newest", rver, rsrc
 
     st, ver, source = live_artifact_fresh(pkg, srcs, clean_pv)
     if st:

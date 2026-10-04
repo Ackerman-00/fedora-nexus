@@ -12,6 +12,7 @@ these tests pin that behaviour so it cannot silently regress.
 """
 import importlib.util
 import os
+import re
 import sys
 
 spec = importlib.util.spec_from_file_location(
@@ -38,6 +39,46 @@ CASES = [
 ]
 
 
+def test_redirect_version_parsing():
+    """The redirect-target version reader must strip a concrete dotted version
+    out of BOTH path-style (.../0.1.39/Photon-...-0.1.39-...) and
+    filename-style URLs, and must not be fooled by a non-version path segment.
+    Regression guard for the photon-studio recurring UNVERIFIED (its update.sh
+    302 channel is the only authoritative version source when Repology 403s,
+    Anitya has no project and the artifact URL is versionless at the top)."""
+    cases = [
+        ("https://downloads.tenzen.studio/photon/stable/linux/0.1.39/"
+         "Photon-Studio-0.1.39-linux-x64.AppImage", "0.1.39"),
+        ("https://example.com/app/v2.10.3/thing.tar.gz", "2.10.3"),
+        ("https://example.com/Thing-1.0.7-x86_64.deb", "1.0.7"),
+        ("https://example.com/latest/thing", None),
+    ]
+    failures = 0
+    for url, want in cases:
+        m = None
+        for cand in (url,):
+            g = re.search(r"/(?:v)?(\d+\.\d+(?:\.\d+)*)(?:/|$|[^0-9.])", cand)
+            if not g:
+                g = re.search(r"-(\d+\.\d+(?:\.\d+)*)[-.]", cand)
+            if g:
+                m = g.group(1)
+        status = "PASS" if m == want else "FAIL"
+        if m != want:
+            failures += 1
+        print(f"{status}: version_from_url({url!r}) -> {m!r} (want {want!r})")
+    # And the live channel reader itself, when reachable.
+    ver, src = ts.redirect_channel_version("photon-studio", [], None)
+    if ver:
+        ok = ver == "0.1.39"
+        print(f"{'PASS' if ok else 'FAIL'}: photon-studio redirect channel -> "
+              f"{ver} via {src}")
+        if not ok:
+            failures += 1
+    else:
+        print("SKIP: photon-studio redirect channel unreachable this run")
+    return failures
+
+
 def main():
     failures = 0
     for pinned, upstream, want, why in CASES:
@@ -47,6 +88,7 @@ def main():
             failures += 1
         print(f"{status}: pinned {pinned} vs repology {upstream} -> "
               f"newer={got} (want {want})  # {why}")
+    failures += test_redirect_version_parsing()
     print(f"\n{'ALL PASS' if not failures else str(failures) + ' FAILURE(S)'}"
           f" ({len(CASES)} cases)")
     return 1 if failures else 0

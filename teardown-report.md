@@ -73,7 +73,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | stoat-desktop | stoat-desktop.desktop | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| umbriel-git | live noctalia-dev/umbriel | 2948b456c248 | 2948b456c248 | **OK** | live noctalia-dev/umbriel pin 2948b456c248 vs upstream 2948b456c248 |
+| umbriel-git | live noctalia-dev/umbriel | ea0386af6d3e | ea0386af6d3e | **OK** | live noctalia-dev/umbriel pin ea0386af6d3e vs upstream ea0386af6d3e |
 | vesktop | vesktop-1.6.7.x86_64.rpm | 1.6.7 | 1.6.7 | **OK** | rpm header vesktop=1.6.7-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.7 \| internal 1.6.7 |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
 | waypaper | screeninfo-0.8.1.tar.gz | 2.9 | 0.8.1 | **SOURCE-OK** | tar pyproject.toml=0.8.1 (screeninfo-0.8.1/pyproject.toml) \| hash no-checksum-pinned \| weak internal evidence 0.8.1 (not authoritative) |
@@ -121,7 +121,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | xcur2png | upstream github.com/eworm-de/xcur2png | 0.7.1 | 0.7.1 | **OK** | at upstream latest 0.7.1 [releases/latest] |
 | zen-browser | upstream github.com/zen-browser/desktop | 1.23b | 1.23b | **OK** | at upstream latest 1.23b [releases/latest] |
 | python3-materialyoucolor | pypi:materialyoucolor | 3.0.4 | 3.0.4 | **OK** | upstream 3.0.4 == pinned 3.0.4 [freshness via pypi:materialyoucolor; repology unreachable in this environment] |
-| photon-studio | photon-studio | 0.1.39 |  | **UNVERIFIED** | repology unreachable; anitya/pypi could not confirm |
+| photon-studio | redirect:downloads.tenzen.studio | 0.1.39 | 0.1.39 | **OK** | upstream 0.1.39 == pinned 0.1.39 [freshness via redirect:downloads.tenzen.studio; repology unreachable in this environment] |
 | python-pydbus | pypi:pydbus | 0.6.0 | 0.6.0 | **OK** | upstream 0.6.0 == pinned 0.6.0 [freshness via pypi:pydbus; repology unreachable in this environment] |
 | python-yt-dlp-ejs | pypi:yt-dlp-ejs | 0.8.0 | 0.8.0 | **OK** | upstream 0.8.0 == pinned 0.8.0 [freshness via pypi:yt-dlp-ejs; repology unreachable in this environment] |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology unreachable in this environment] |
@@ -130,4 +130,4 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | rootapp | aur | 0.9.145 | 0.9.145 | **OK** | pinned 0.9.145 >= repology 0.9.145 (aur); tracker behind |
 | LIBYEAR | freshness | 0.33 yr | 3 pkgs | **METRIC** | threshold=20 libyears |
 
-**Verdict: FAIL** (1 failure(s))
+**Verdict: PASS** (0 failure(s))
