@@ -17,14 +17,14 @@
 %global __provides_exclude_from ^%{helium_base}/.*$
 
 Name:               helium-browser
-Version:        0.18.2.1
+Version:        0.18.3.1
 Release:        1%{?dist}
 Summary:            Private, fast, and honest web browser
 
 License:            GPL-3.0-only AND BSD-3-Clause
 URL:                https://github.com/imputnet/helium-linux
 Source0:            https://github.com/imputnet/helium-linux/releases/download/%{version}/helium-%{version}-x86_64_linux.tar.xz
-# sha256: 4493d756b98afbe3fd7d45c0ec215c23f5a0551fae715586fe6ce3b2298b155c
+# sha256: 89bd962ca5e5159916a4c4befa5a9a08f540d2d8cd794f2f955e8d5d4a463bf2
 # The official binary tarball does not ship the metainfo file, so pull it
 # from the repo at the matching release tag (all release tags carry it).
 Source1:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/package/net.imput.helium.metainfo.xml
@@ -119,6 +119,8 @@ esac
 %{_datadir}/icons/hicolor/256x256/apps/helium.png
 
 %changelog
+* Sun Oct 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.3.1-1
+- Update to upstream release 0.18.3.1 (Chromium 154.0.8037.97)
 * Wed Sep 30 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.2.1-1
 - Update to upstream release 0.18.2.1 (Chromium 154.0.8037.92)
 * Thu Sep 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.1.1-1
