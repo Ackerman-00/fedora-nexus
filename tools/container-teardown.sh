@@ -30,11 +30,25 @@
 set -u
 PKGDIR=$1; SPEC=$2; SMOKE=$3; RPMVNAME=${4:-}
 R=${R:-$PWD}
-docker run --rm -v "$R:/srv:ro" registry.fedoraproject.org/fedora:44 bash -lc "
+OUT=$(docker run --rm -v "$R:/srv:ro" registry.fedoraproject.org/fedora:44 bash -lc "
 dnf -y -q --setopt=gpgcheck=0 install dnf-plugins-core rpm-build rpmdevtools >/dev/null 2>&1
 dnf -y -q --setopt=gpgcheck=0 copr enable ackerman/nexus >/dev/null 2>&1
 cd /tmp && rm -rf w && cp -r /srv/$PKGDIR ./w && cd w
-echo '--- builddep ---'; dnf -y --setopt=gpgcheck=0 builddep $SPEC 2>&1 | tail -1
+echo '--- builddep ---'
+# A failed builddep used to be invisible: the harness only echoed the last line
+# of dnf, so a transient metadata/download error left the BuildRequires
+# uninstalled and rpmbuild then failed with \"patchelf is needed by ...\",
+# which reads exactly like a broken spec (hit on zen-browser 2026-10-04).
+# Print the exit code and retry once, so that class of failure is provably a
+# harness/network artifact instead of a packaging bug.
+for bpass in 1 2; do
+  dnf -y --setopt=gpgcheck=0 builddep $SPEC > /tmp/bd.log 2>&1
+  brc=\$?
+  [ \$brc -eq 0 ] && break
+  echo BUILDEP_RETRY after failure:; tail -3 /tmp/bd.log
+  sleep 10
+done
+echo BUILDEP_EXIT=\$brc; tail -1 /tmp/bd.log
 mkdir -p /root/rpmbuild/{SOURCES,BUILD,BUILDROOT,RPMS,SRPMS,SPECS}
 echo '--- spectool ---'; spectool -g -C /root/rpmbuild/SOURCES $SPEC 2>&1 | tail -1
 find . -maxdepth 1 -type f -exec cp -f {} /root/rpmbuild/SOURCES/ \;
@@ -50,8 +64,23 @@ for pass in 1 2 3; do
   dnf -y --setopt=gpgcheck=0 builddep \$nosrc >> /tmp/bb.log 2>&1 || break
 done
 echo RPMBUILD_EXIT=\$rc; tail -2 /tmp/bb.log
+# If the static builddep pass never resolved, say so before rpmbuild's
+# is-needed-by line is mistaken for a spec bug.
+if [ \$brc -ne 0 ]; then echo WARNING_BUILDEP_UNRESOLVED rc=\$brc - a later is-needed-by failure is a dependency-resolution artifact, not proof of a broken spec; fi
 RPM=\$(ls /root/rpmbuild/RPMS/*/*.rpm 2>/dev/null | head -1); echo BUILT=\$RPM
 echo '--- install ---'; dnf -y --setopt=gpgcheck=0 --setopt=install_weak_deps=False install \$RPM 2>&1 | tail -1; echo INSTALL_EXIT=\${PIPESTATUS[0]}
 if [ -n '$RPMVNAME' ]; then rpm -V $RPMVNAME && echo RPMV_OK; fi
 echo '--- smoke ---'; $SMOKE; echo SMOKE_EXIT=\$?
-" 2>&1 | grep -aE -- '---|RPMBUILD_EXIT|INSTALL_EXIT|BUILT=|RPMV_OK|SMOKE_EXIT|DYNAMIC_BUILDDEPS|Complete!|Error' | head -22
+" 2>&1 | grep -aE -- '---|RPMBUILD_EXIT|INSTALL_EXIT|BUILDEP_EXIT|BUILDEP_RETRY|WARNING_BUILDEP_UNRESOLVED|BUILT=|RPMV_OK|SMOKE_EXIT|DYNAMIC_BUILDDEPS|Complete!|Error' | head -22)
+printf '%s\n' "$OUT"
+
+# 6. The whole container payload lives inside ONE outer double-quoted string, so
+#    an unescaped quote in a payload line silently truncates the script the
+#    container receives: the run stops at the previous echo and every later
+#    marker (INSTALL_EXIT, SMOKE_EXIT) simply goes missing, which reads like a
+#    package that "printed nothing". Hit on 2026-10-04 while adding the
+#    builddep diagnostics. Guard it loudly instead of guessing afterwards.
+case "$OUT" in
+  *SMOKE_EXIT=*) ;;
+  *) echo "HARNESS_TRUNCATED: no SMOKE_EXIT marker in the output above; the container payload was cut short (check for an unescaped quote in this script)" ;;
+esac
