@@ -292,7 +292,10 @@ jobs:
                             (every package in the COPR project - for reconciling
                              against repo dirs and README)
                 Builds:     GET https://copr.fedorainfracloud.org/api_3/build/list?ownername=ackerman&projectname=nexus&limit=20
-                            (add &packagename=<pkg> to filter one package)
+                            (add &packagename=<pkg> to filter one package;
+                            the package name lives in `source_package.name`
+                            (nullable, null for a deleted package) - there is
+                            no top-level `package_name` field)
                 Build logs: GET https://copr.fedorainfracloud.org/api_3/build/<id>
                             (state only; no log URLs in the payload)
                 Chroot results: GET .../api_3/build-chroot/list/<id>
@@ -1422,6 +1425,19 @@ jobs:
                   believe an older build was fine, users see "failed" in the
                   COPR UI and the only thing that clears it is a fresh green
                   rebuild of the current sources.
+                - EXCEPTION: COPR dist-git race (infra, not your spec). If the
+                  build state is `failed`, one chroot task has NO
+                  `builder-live.log.gz` (404), and the per-task log at
+                  `https://copr-dist-git.fedorainfracloud.org/per-task-logs/<buildid>.log`
+                  shows `setup_git_package ... already exists!` (rc 128):
+                  do NOT "fix" the spec and do NOT bump Release (same NVR,
+                  not churn) - resubmit the same NVR and record the race
+                  evidence (build id + log lines). A build row is `failed`
+                  if ANY chroot task failed, and its `chroots` list covers
+                  only that build: never report a chroot gap from
+                  `build/list` rows - check the published repodata instead
+                  (`<repo>/<chroot>/repodata/repomd.xml` -> `primary.xml.gz`,
+                  `name` + `version` attributes carry the NVR).
                 - Work ONE package to green before starting the next:
                   update.sh -> spec sync -> local rebuild -> install test ->
                   push -> poll COPR until the new build SUCCEEDS. Do NOT
@@ -1621,7 +1637,14 @@ jobs:
                 queries). Map each package to its REAL upstream ecosystem
                 (PyPI / crates.io / npm / Go / etc. where one exists; -git
                 snapshots and ecosystem-less binaries get `cve: n/a-(reason)` -
-                never a fabricated mapping). Any HIGH/CRITICAL CVE with a fixed
+                never a fabricated mapping). Every query MUST carry `ecosystem`
+                or `purl`: a bare `{"package": {"name", "version"}}` is HTTP
+                400 `invalid query`, not an empty result. `querybatch` does NOT
+                version-filter for every ecosystem: re-check each hit against
+                the advisory's own `ranges` events (`introduced` / `fixed` /
+                `last_affected`) via `v1/vulns/<id>`, and confirm the name
+                exists in that ecosystem's registry first so a typo cannot
+                read as clean. Any HIGH/CRITICAL CVE with a fixed
                 version available = a bug: bump or patch it exactly like a
                 STALE package. Cross-check every HIGH/CRITICAL hit against a
                 second source, the GitHub Advisory Database (`gh api
