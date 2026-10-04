@@ -103,6 +103,50 @@ If the agent skips the dependency table, the job fails and the next run retries 
   current. The Layer 2 toolchain above remains the excellence floor.
 - Repology API: bulk clients must send a User-Agent and stay ≤1 req/s.
   OSV.dev `v1/querybatch` takes up to 1000 queries per POST, no auth.
+- COPR migrated its file host: `download.fedorainfracloud.org` no longer
+  resolves, `download.copr.fedorainfracloud.org` is the live one. Build-log
+  links rendered in COPR's own web UI still point at the dead host, so fetch
+  logs from the `download.copr.` host. `build/list` rows carry the package name
+  in `source_package.name` (nullable, null for a deleted package) and there is
+  no top-level `package_name` field.
+
+### OSV.dev query gotchas (found 2026-10-04, both produce false "clean")
+
+- A query without `ecosystem` or `purl` is rejected outright: HTTP 400
+  `error in query at index 0: invalid query`. `{"package": {"name": ...,
+  "version": ...}}` alone is not a valid query, it is a 400, not an empty
+  result.
+- `v1/querybatch` does NOT version-filter for every ecosystem. Asking for
+  `crates.io starship 1.19.0` and `1.26.0` returns the identical advisory
+  list (CVE-2024-41815, fixed in 1.20.0). Re-check every hit against the
+  advisory's own `ranges` events (`introduced` / `fixed` / `last_affected`)
+  from `v1/vulns/<id>` before calling a package affected, and confirm the name
+  exists in the ecosystem's registry first so a typo cannot read as clean.
+
+### COPR dist-git race: a failed build that is not your spec (found 2026-10-04)
+
+Symptom: a COPR build goes to state `failed`, one chroot task has no
+`builder-live.log.gz` at all (HTTP 404), and
+`https://copr-dist-git.fedorainfracloud.org/per-task-logs/<buildid>.log`
+contains
+
+    cmd: ['/usr/share/dist-git/setup_git_package', 'ackerman/nexus/<pkg>'], rc: 128,
+    msg: ERROR: Package module ackerman/nexus/<pkg> already exists!
+
+Cause: two builds for the same package land within seconds of each other and
+race to create the COPR dist-git module. Nothing in the spec is wrong. 7 of 8
+sampled failed builds in this repo's 1074-row history are this race
+(wlroots 11027369, fluxer 11004735, openchamber 11066631, concat 11066628,
+mixtapes 11065903, cliphist 11065113, freebuff 11054110, python-pydbus
+11021893). Fix: resubmit the same NVR. Do not "fix" the spec.
+
+Consequence for audits: a build row's state is failed if ANY chroot task
+failed, and its `chroots` list only covers that one build. python-pydbus
+0.6.0-4 looks single-chroot on its newest build 11021979, but f43/f45/rawhide
+were published by 11021893. Never report a chroot gap from `build/list` rows;
+check the published repodata instead
+(`<repo>/<chroot>/repodata/repomd.xml` -> `primary.xml.gz`, `name` and
+`version` attributes carry the NVR).
 
 ### Why this architecture
 
