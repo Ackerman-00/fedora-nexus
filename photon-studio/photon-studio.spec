@@ -8,7 +8,7 @@
 %global __requires_exclude_from ^/opt/photon-studio/.*$
 
 Name:           photon-studio
-Version:        0.1.39
+Version:        0.1.41
 Release:        1%{?dist}
 Summary:        Offline image editor with native PSD support
 
@@ -17,8 +17,8 @@ Summary:        Offline image editor with native PSD support
 # around it). Same treatment as rootapp.spec in this repo.
 License:        Proprietary
 URL:            https://tenzen.studio
-Source0:        https://downloads.tenzen.studio/photon/stable/linux/0.1.39/Photon-Studio-0.1.39-linux-x64.AppImage
-# sha256: 3bfe9ce6e3c6f06908c9e323ebd6512a8e5ed5fcc086f27fdd2155f56fd81b8d
+Source0:        https://downloads.tenzen.studio/photon/stable/linux/0.1.41/Photon-Studio-0.1.41-linux-x64.AppImage
+# sha256: 5bd5ee65837af3e1eedd48582737717843e5f9fb6540bcec274240fa2ca2041d
 
 ExclusiveArch:  x86_64
 
@@ -112,5 +112,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/photon-studio.desktop
 %attr(4755, root, root) /opt/photon-studio/chrome-sandbox
 
 %changelog
-* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.39-1
-- Auto-update to upstream release 0.1.39
+* Sun Oct 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.41-1
+- Auto-update to upstream release 0.1.41
