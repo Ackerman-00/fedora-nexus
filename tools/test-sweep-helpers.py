@@ -66,12 +66,26 @@ def test_redirect_version_parsing():
         if m != want:
             failures += 1
         print(f"{status}: version_from_url({url!r}) -> {m!r} (want {want!r})")
-    # And the live channel reader itself, when reachable.
+    # And the live channel reader itself, when reachable.  The expectation is
+    # read from the spec (not hardcoded) so the test tracks the packaged
+    # version instead of rotting every time upstream ships a new release.
+    spec_ver = None
+    spec = os.path.join(os.path.dirname(ts.__file__ if hasattr(ts, "__file__")
+                                       else "."),
+                        "..", "photon-studio", "photon-studio.spec")
+    try:
+        with open(os.path.normpath(spec)) as fh:
+            for line in fh:
+                if line.startswith("Version:"):
+                    spec_ver = line.split(":", 1)[1].strip()
+                    break
+    except OSError:
+        spec_ver = None
     ver, src = ts.redirect_channel_version("photon-studio", [], None)
     if ver:
-        ok = ver == "0.1.39"
+        ok = spec_ver is not None and ver == spec_ver
         print(f"{'PASS' if ok else 'FAIL'}: photon-studio redirect channel -> "
-              f"{ver} via {src}")
+              f"{ver} via {src} (spec Version: {spec_ver})")
         if not ok:
             failures += 1
     else:
