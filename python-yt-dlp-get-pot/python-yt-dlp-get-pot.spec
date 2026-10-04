@@ -5,7 +5,7 @@
 
 Name:           python-yt-dlp-get-pot
 Version:        0.3.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        PO token provider plugin for yt-dlp
 
 License:        Unlicense
@@ -19,6 +19,14 @@ Source0:        https://files.pythonhosted.org/packages/source/y/yt-dlp-get-pot/
 Provides:       python3-yt-dlp-get-pot
 
 BuildRequires:  python3-devel
+
+# The shipped extractor imports yt_dlp at module import time and is
+# only ever loaded by yt-dlp's plugin loader, so the package is inert
+# without it. Proven 2026-10-04 in a fresh fedora:44 container:
+# `python3 -c "import yt_dlp_plugins.extractor.getpot"` failed with
+# "ModuleNotFoundError: No module named 'yt_dlp'" while yt-dlp was
+# absent (evidence recorded in .opencode-relay.md run 37154151210).
+Requires:       yt-dlp
 
 %description
 yt-dlp-get-pot is a yt-dlp plugin that fetches PO tokens so
@@ -44,6 +52,10 @@ for the Nexus repository as a dependency of mixtapes.
 %files -f %{pyproject_files}
 
 %changelog
+* Sun Oct 04 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.3.0-4
+- Declare Requires: yt-dlp (plugin ships yt_dlp_plugins extractor code
+  that only loads inside yt-dlp; fresh-container smoke import failed
+  with ModuleNotFoundError without it).
 * Sun Sep 06 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.3.0-3
 - Provide python3-yt-dlp-get-pot (name expected by mixtapes Requires;
   COPR mixtapes install failed on unresolvable python3-* names).

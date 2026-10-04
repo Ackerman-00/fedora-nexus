@@ -5,7 +5,7 @@
 
 Name:           python-yt-dlp-ejs
 Version:        0.8.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        External JavaScript runtimes for yt-dlp
 
 License:        Unlicense AND MIT AND ISC
@@ -22,6 +22,13 @@ BuildRequires:  python3-devel
 # Upstream hatch build hook bundles the JS solvers at build time and
 # requires one of pnpm/deno/bun/npm (proven: build fails without it).
 BuildRequires:  nodejs-npm
+
+# The solvers only serve yt-dlp (yt_dlp/extractor/youtube/jsc/_builtin/
+# ejs.py imports yt_dlp_ejs behind its optional _has_ejs guard), so pull
+# yt-dlp in by default. Soft dep, not Requires: both sides are optional
+# and verified 2026-10-04 -- `import yt_dlp_ejs` works with yt-dlp
+# absent, and yt-dlp runs with this package removed.
+Recommends:     yt-dlp
 
 %description
 yt-dlp-ejs provides external JavaScript runtimes (node/deno/quickjs)
@@ -47,6 +54,10 @@ repository as a dependency of mixtapes.
 %files -f %{pyproject_files}
 
 %changelog
+* Sun Oct 04 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.8.0-4
+- Add Recommends: yt-dlp (JS solvers only serve yt-dlp's YouTube
+  challenge provider; both directions verified optional, so Recommends
+  rather than Requires).
 * Sun Sep 06 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.8.0-3
 - Provide python3-yt-dlp-ejs (name expected by mixtapes Requires;
   COPR mixtapes install failed on unresolvable python3-* names).
