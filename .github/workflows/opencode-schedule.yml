@@ -195,6 +195,13 @@ jobs:
                 sleep "$delay"
               fi
             done
+            # DONE FIRST = DONE. Once a model run exits 0 AND gate_passes
+            # confirms the relay has `run_id: $RUN_ID` + `status: complete` +
+            # dependencies table on main, we exit 0 immediately. There is no
+            # re-run with the next model - a successful gate means the spec
+            # checks, COPR usage, upstream checks, dependency audit, and relay
+            # verification were all satisfied; re-running would just burn 6h
+            # on the job timeout and open a second COPR rebuild window.
             if [ "$exit_code" -eq 0 ]; then
               ok=0
               for attempt in $(seq 1 10); do
