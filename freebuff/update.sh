@@ -45,14 +45,17 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     SHA256=$(curl -sL "$ASSET_URL" | sha256sum | awk '{print $1}')
     sed -i "s/^# sha256:.*/# sha256: $SHA256/" "$SPEC_FILE"
 
-    # Replace changelog with single entry
+    # Insert the new entry directly after the %changelog line. Never delete
+    # existing entries: history (manual fix notes included) must survive every
+    # auto-update. Verified fix 2026-10-04 after 0.2.12-2 notes were wiped.
     DATE_STR=$(date +"%a %b %d %Y")
-    sed -i '/^%changelog/,$d' "$SPEC_FILE"
+    ENTRY_TMP=$(mktemp)
     {
-        echo "%changelog"
         echo "* $DATE_STR Ackerman-00 <quietcraft@gmail.com> - $LATEST_VERSION-1"
         echo "- Auto-updated to $LATEST_VERSION via update.sh"
-    } >> "$SPEC_FILE"
+    } > "$ENTRY_TMP"
+    sed -i "/^%changelog$/r $ENTRY_TMP" "$SPEC_FILE"
+    rm -f "$ENTRY_TMP"
 
     echo "  -> [DONE] $SPEC_FILE is ready for build."
 else
