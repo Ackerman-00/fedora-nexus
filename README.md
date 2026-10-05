@@ -30,10 +30,12 @@ sudo dnf copr enable ackerman/nexus
 sudo dnf install <package-name>
 ```
 
-> **Supported releases:** Fedora 44, 45 and Rawhide (x86_64). Fedora 43
-> reaches end-of-life on 2026-12-09 and its chroot will be disabled shortly
-> after — if you are still on F43, upgrade to F44 or newer. The COPR
-> project follows Fedora branching automatically.
+> **Supported releases:** Fedora 43, 44, 45 and Rawhide (x86_64), exactly the
+> four chroots this COPR builds (project API `chroot_repos`, checked
+> 2026-10-05). Fedora 44 is the current stable release, Fedora 45 is not
+> released yet, and Fedora 43 reaches end-of-life on 2026-12-09, after which
+> its chroot will be disabled. If you are still on F43, upgrade to F44 or
+> newer. The COPR project follows Fedora branching automatically.
 
 > **When Fedora ships a newer build of a package than this repo does:** dnf
 > prefers the higher version, so a plain `dnf install <pkg>` can pull Fedora's
