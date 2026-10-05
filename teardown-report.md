@@ -22,7 +22,7 @@ Repo type: **fedora**. Sweep of **63** packages. Exit code is the verdict; this 
 | concat | Concat-0.2.5-linux-x86_64.rpm | 0.2.5 | 0.2.5 | **OK** | rpm header concat=0.2.5-1 (tags NAME/VERSION/RELEASE) \| pinned 0.2.5 \| internal 0.2.5 |
 | concord | v2.6.1.tar.gz | 2.6.1 | 2.6.1 | **SOURCE-OK** | tar Cargo.toml=2.6.1 (concord-2.6.1/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 2.6.1 (not authoritative) |
 | extension-manager | extension-manager-0.6.5.tar.gz | 0.6.5 | >= 0.59.0 | **SOURCE-OK** | tar meson.build=>= 0.59.0 (extension-manager-0.6.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 0.59.0 (not authoritative) |
-| fluxer | rpm | 2026.1003.155758 | 2026.1003.155758 | **OK** | rpm header fluxer=2026.1003.155758-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1003.155758 \| internal 2026.1003.155758 |
+| fluxer | rpm | 2026.1004.13532 | 2026.1004.13532 | **OK** | rpm header fluxer=2026.1004.13532-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1004.13532 \| internal 2026.1004.13532 |
 | freebuff | freebuff-linux-x64.tar.gz | 0.2.13 | 0.2.13 | **OK** | tar runtime probe freebuff --version: 0.2.13 \| pinned 0.2.13 \| internal 0.2.13 |
 | ghostty | ghostty_1.3.1-0.ppa2_amd64_24.04.deb | 1.3.1 | 1.3.1-0~ppa2 | **OK** | deb pkg=ghostty (control control.tar.zst) \| pinned 1.3.1 \| internal 1.3.1-0~ppa2 |
 | gpu-screen-recorder | gpu-screen-recorder.git.6.1.3.tar.gz | 6.1.3 | 6.1.3 | **SOURCE-OK** | tar meson.build=6.1.3 (meson.build) \| hash no-checksum-pinned \| weak internal evidence 6.1.3 (not authoritative) |
@@ -45,12 +45,12 @@ Repo type: **fedora**. Sweep of **63** packages. Exit code is the verdict; this 
 | matugen | matugen-4.2.0.crate | 4.2.0 |  | **SOURCE-OK** | crate (cargo package tarball), source by construction \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | mixtapes | live m-obeid/Mixtapes | 285ba7dd1cb8 | 285ba7dd1cb8 | **OK** | live m-obeid/Mixtapes pin 285ba7dd1cb8 vs upstream 285ba7dd1cb8 |
 | mpvpaper | 1.9.tar.gz | 1.9 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
-| noctalia-greeter | live noctalia-dev/noctalia-greeter | 6127c31e6462 | 6127c31e6462 | **OK** | live noctalia-dev/noctalia-greeter pin 6127c31e6462 vs upstream 6127c31e6462 |
+| noctalia-greeter | live noctalia-dev/noctalia-greeter | 89cccf48cc55 | 89cccf48cc55 | **OK** | live noctalia-dev/noctalia-greeter pin 89cccf48cc55 vs upstream 89cccf48cc55 |
 | nwg-look | v1.1.2.tar.gz | 1.1.2 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | obsidian | obsidian_1.13.7_amd64.deb | 1.13.7 | 1.13.7 | **OK** | deb pkg=obsidian (control control.tar.xz) \| pinned 1.13.7 \| internal 1.13.7 |
-| openchamber | OpenChamber-2.1.0-linux-x86_64.AppImage | 2.1.0 | 2.1.0 | **OK** | AppImage 2.1.0 (resources/app.asar) \| pinned 2.1.0 \| internal 2.1.0 |
+| openchamber | OpenChamber-2.1.1-linux-x86_64.AppImage | 2.1.1 | 2.1.1 | **OK** | AppImage 2.1.1 (resources/app.asar) \| pinned 2.1.1 \| internal 2.1.1 |
 | opencode-desktop | opencode-desktop-linux-x86_64.rpm | 2.0.22 | 2.0.22 | **OK** | rpm header opencode=2.0.22-1 (tags NAME/VERSION/RELEASE) \| pinned 2.0.22 \| internal 2.0.22 |
-| photon-studio | Photon-Studio-0.1.39-linux-x64.AppImage | 0.1.39 | 0.1.39 | **OK** | AppImage 0.1.39 (photon-studio.desktop) \| pinned 0.1.39 \| internal 0.1.39 |
+| photon-studio | Photon-Studio-0.1.41-linux-x64.AppImage | 0.1.41 | 0.1.41 | **OK** | AppImage 0.1.41 (photon-studio.desktop) \| pinned 0.1.41 \| internal 0.1.41 |
 | protonplus | ProtonPlus-v0.6.8.tar.gz | 0.6.8 | >= 1.0.0 | **SOURCE-OK** | tar meson.build=>= 1.0.0 (ProtonPlus-0.6.8/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 1.0.0 (not authoritative) |
 | python-mprisify | mprisify-v1.0.1.tar.gz | 1.0.1 | 1.0.1 | **SOURCE-OK** | tar changelog=1.0.1 (mprisify-v1.0.1/CHANGELOG.md) \| hash no-checksum-pinned \| weak internal evidence 1.0.1 (not authoritative) |
 | python-pydbus | pydbus-0.6.0.tar.gz | 0.6.0 | 0.6.0 | **SOURCE-OK** | tar setup.py=0.6.0 (pydbus-0.6.0/setup.py) \| hash no-checksum-pinned \| weak internal evidence 0.6.0 (not authoritative) |
@@ -73,7 +73,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | stoat-desktop | stoat-desktop.desktop | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| umbriel-git | live noctalia-dev/umbriel | ea0386af6d3e | ea0386af6d3e | **OK** | live noctalia-dev/umbriel pin ea0386af6d3e vs upstream ea0386af6d3e |
+| umbriel-git | live noctalia-dev/umbriel | 8d436bfbd6af | 8d436bfbd6af | **OK** | live noctalia-dev/umbriel pin 8d436bfbd6af vs upstream 8d436bfbd6af |
 | vesktop | vesktop-1.6.7.x86_64.rpm | 1.6.7 | 1.6.7 | **OK** | rpm header vesktop=1.6.7-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.7 \| internal 1.6.7 |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
 | waypaper | screeninfo-0.8.1.tar.gz | 2.9 | 0.8.1 | **SOURCE-OK** | tar pyproject.toml=0.8.1 (screeninfo-0.8.1/pyproject.toml) \| hash no-checksum-pinned \| weak internal evidence 0.8.1 (not authoritative) |
@@ -106,7 +106,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | mpvpaper | upstream github.com/GhostNaN/mpvpaper | 1.9 | 1.9 | **OK** | at upstream latest 1.9 [releases/latest] |
 | nwg-look | upstream github.com/nwg-piotr/nwg-look | 1.1.2 | v1.1.2 | **OK** | at upstream latest v1.1.2 [releases/latest] |
 | obsidian | upstream github.com/obsidianmd/obsidian-releases | 1.13.7 | v1.13.8 | **OK** | at upstream latest v1.13.8 [releases/latest] |
-| openchamber | upstream github.com/openchamber/openchamber | 2.1.0 | v2.1.0 | **OK** | at upstream latest v2.1.0 [releases/latest] |
+| openchamber | upstream github.com/openchamber/openchamber | 2.1.1 | v2.1.1 | **OK** | at upstream latest v2.1.1 [releases/latest] |
 | protonplus | upstream github.com/vysp3r/ProtonPlus | 0.6.8 | v0.6.8 | **OK** | at upstream latest v0.6.8 [releases/latest] |
 | python-mprisify | upstream gitlab.com/zehkira/mprisify | 1.0.1 | v1.0.1 | **OK** | at upstream latest v1.0.1 [ls-remote] |
 | rustypipe-botguard | upstream codeberg.org/ThetaDev/rustypipe-botguard | 0.1.2 | v0.1.2 | **OK** | at upstream latest v0.1.2 [ls-remote] |
@@ -121,7 +121,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | xcur2png | upstream github.com/eworm-de/xcur2png | 0.7.1 | 0.7.1 | **OK** | at upstream latest 0.7.1 [releases/latest] |
 | zen-browser | upstream github.com/zen-browser/desktop | 1.23b | 1.23b | **OK** | at upstream latest 1.23b [releases/latest] |
 | python3-materialyoucolor | pypi:materialyoucolor | 3.0.4 | 3.0.4 | **OK** | upstream 3.0.4 == pinned 3.0.4 [freshness via pypi:materialyoucolor; repology unreachable in this environment] |
-| photon-studio | redirect:downloads.tenzen.studio | 0.1.39 | 0.1.39 | **OK** | upstream 0.1.39 == pinned 0.1.39 [freshness via redirect:downloads.tenzen.studio; repology unreachable in this environment] |
+| photon-studio | redirect:downloads.tenzen.studio | 0.1.41 | 0.1.41 | **OK** | upstream 0.1.41 == pinned 0.1.41 [freshness via redirect:downloads.tenzen.studio; repology unreachable in this environment] |
 | python-pydbus | pypi:pydbus | 0.6.0 | 0.6.0 | **OK** | upstream 0.6.0 == pinned 0.6.0 [freshness via pypi:pydbus; repology unreachable in this environment] |
 | python-yt-dlp-ejs | pypi:yt-dlp-ejs | 0.8.0 | 0.8.0 | **OK** | upstream 0.8.0 == pinned 0.8.0 [freshness via pypi:yt-dlp-ejs; repology unreachable in this environment] |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology unreachable in this environment] |
