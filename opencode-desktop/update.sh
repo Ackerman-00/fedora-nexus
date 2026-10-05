@@ -32,7 +32,7 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
 
     sed -i -E "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
-    sed -i -E "s|files/bin/[^/]+/opencode-desktop-linux-x86_64.rpm|files/bin/$LATEST_VERSION/opencode-desktop-linux-x86_64.rpm|" "$SPEC_FILE"
+    sed -i -E "s|files/bin/[^/]+/opencode-desktop-linux-x86_64.rpm|files/bin/%{version}/opencode-desktop-linux-x86_64.rpm|" "$SPEC_FILE"
 
     # Refresh the pinned sha256 for the new rpm (teardown-sweep verifies
     # Source0 against this pin; a stale pin fails the next run)
