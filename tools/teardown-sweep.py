@@ -436,10 +436,27 @@ def detect_type(root):
         return "nix"
     specs = list(root.rglob("*.spec"))
     if specs:
+        # SUSE evidence must be a real openSUSE construct, not the word
+        # "openSUSE" in a comment: on 2026-10-05 a Fedora spec that merely
+        # *mentions* openSUSE (splayer-next: "openSUSE-style debuginfo links
+        # into /opt") flipped this repo to opensuse, which silently reroutes
+        # Source0 resolution through resolve_opensuse_urls().
+        suse_re = re.compile(
+            r"%\{\s*\??suse_version|openSUSE-buildservice|Vendor:\s*openSUSE"
+            r"|\bobs_project\b")
+        fedora_re = re.compile(
+            r"%\{\s*\??dist\b|\.fc\d+|%fedora\b|fedoraproject\.org", re.I)
+        suse = fedora = False
         for s in specs:
             content = s.read_text(errors="ignore")
-            if "obs_" in content or "SUSE" in content or "OBS" in content:
-                return "opensuse"
+            if not suse and suse_re.search(content):
+                suse = True
+            if not fedora and fedora_re.search(content):
+                fedora = True
+            if suse and fedora:
+                break
+        if suse and not fedora:
+            return "opensuse"
         return "fedora"
     return None
 

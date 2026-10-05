@@ -93,6 +93,48 @@ def test_redirect_version_parsing():
     return failures
 
 
+def test_detect_type():
+    """detect_type must not classify a Fedora repo as opensuse just because a
+    spec comment *mentions* openSUSE. Regression guard: on 2026-10-05 the
+    sweep wrote "Repo type: opensuse" for this Fedora overlay because
+    splayer-next.spec says "openSUSE-style debuginfo links into /opt", which
+    silently rerouted Source0 resolution through resolve_opensuse_urls()."""
+    import pathlib
+    import tempfile
+    failures = 0
+    cases = [
+        ("fedora", "# (openSUSE-style debuginfo links into /opt)\n"
+                   "Name: splayer-next\nVersion: 1.0\n"
+                   "Release: 1%{?dist}\nSource0: https://x/y.tar.gz\n"),
+        ("fedora", "Name: plain\nVersion: 1\nRelease: 1%{?dist}\n"
+                   "Source0: https://src.fedoraproject.org/x.tar.gz\n"),
+        ("opensuse", "Name: susy\nVersion: 1\n"
+                     "Release: 1%{?suse_version}\nSource0: foo.tar.gz\n"),
+        (None, None),
+    ]
+    for want, content in cases:
+        with tempfile.TemporaryDirectory(prefix="dt-") as td:
+            p = pathlib.Path(td)
+            if content is not None:
+                sub = p / "pkg"
+                sub.mkdir()
+                (sub / "pkg.spec").write_text(content)
+            got = ts.detect_type(p)
+        ok = got == want
+        failures += 0 if ok else 1
+        print(f"{'PASS' if ok else 'FAIL'}: detect_type() -> {got!r} "
+              f"(want {want!r}) for "
+              f"{(content or chr(60)+'no spec files'+chr(62)).splitlines()[0][:48]!r}")
+    # And this overlay itself must still read as fedora.
+    root = pathlib.Path(os.path.dirname(os.path.abspath(__file__))) / ".."
+    got = ts.detect_type(root.resolve())
+    ok = got == "fedora"
+    failures += 0 if ok else 1
+    print(f"{'PASS' if ok else 'FAIL'}: detect_type(overlay) -> {got!r} "
+          f"(want 'fedora')")
+    return failures
+
+
 def main():
     failures = 0
     for pinned, upstream, want, why in CASES:
@@ -103,6 +145,7 @@ def main():
         print(f"{status}: pinned {pinned} vs repology {upstream} -> "
               f"newer={got} (want {want})  # {why}")
     failures += test_redirect_version_parsing()
+    failures += test_detect_type()
     print(f"\n{'ALL PASS' if not failures else str(failures) + ' FAILURE(S)'}"
           f" ({len(CASES)} cases)")
     return 1 if failures else 0
