@@ -2,8 +2,8 @@
 %global debug_package %{nil}
 
 Name:           obsidian
-Version:        1.13.7
-Release:        2%{?dist}
+Version:        1.14.4
+Release:        1%{?dist}
 Summary:        A powerful knowledge base that works on top of a local folder of plain text Markdown files
 
 License:        Commercial
@@ -87,14 +87,15 @@ ln -sf /opt/Obsidian/obsidian %{buildroot}%{_bindir}/obsidian
 # same fix vesktop/stoat-desktop already ship, matches Google Chrome's rpm.
 %attr(4755, root, root) /opt/Obsidian/chrome-sandbox
 %{_datadir}/applications/%{app_id}.desktop
+# 1.14 added a MIME database entry (x-obsidian-canvas/base + obsidian: URL
+# handler) that the 1.14 desktop file's MimeType= line now depends on.
+# shared-mime-info ships the file trigger for /usr/share/mime, so no
+# update-mime-database scriptlet is needed here.
+%{_datadir}/mime/packages/obsidian.xml
 %{_datadir}/icons/hicolor/*/apps/obsidian.png
 # Include doc directory if upstream continues to package it
 %doc %{_datadir}/doc/obsidian/
 
 %changelog
-* Fri Oct 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.13.7-2
-- Fix startup crash: ship chrome-sandbox as %attr(4755, root, root) so the
-  Electron SUID sandbox helper is configured correctly (was 0755 ->
-  FATAL abort for every non-root launch; verified under xvfb before/after).
-* Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 1.13.7-1
-- Auto-updated to 1.13.7 via update.sh
+* Mon Oct 05 2026 Ackerman-00 <quietcraft@gmail.com> - 1.14.4-1
+- Auto-updated to 1.14.4 via update.sh
