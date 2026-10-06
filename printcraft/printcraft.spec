@@ -6,13 +6,16 @@
 
 Name:           printcraft
 Version:        0.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        PDF reading, organizing and protection
 
 License:        MIT AND Apache-2.0
 URL:            https://getartcraft.com/apps/printcraft
 Source0:        https://github.com/storytold/printcraft/releases/download/v%{version}/printcraft-%{version}-linux-x86_64.rpm
 # sha256: 2db70ee767995c29cc528e524752e0accaaeca88ddbeeee7e5d53a163d1c3a07
+
+# %install runs desktop-file-validate; the buildroot does not provide it.
+BuildRequires:  desktop-file-utils
 
 # Verified against upstream nfpm.yaml. The binary dlopens both stacks (eframe
 # enables wayland+x11), so loaders are hard Requires. PDF rendering is
@@ -89,5 +92,8 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-2
+- Add BuildRequires: desktop-file-utils for desktop-file-validate in %install
+
 * Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-1
 - Initial packaging: repack upstream nfpm rpm (native Rust app, no sandbox)

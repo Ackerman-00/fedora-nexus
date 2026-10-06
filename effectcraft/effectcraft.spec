@@ -6,13 +6,16 @@
 
 Name:           effectcraft
 Version:        0.3.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Motion graphics and visual effects compositor
 
 License:        MIT AND Apache-2.0
 URL:            https://getartcraft.com/apps/effectcraft
 Source0:        https://github.com/storytold/effectcraft/releases/download/v%{version}/effectcraft-%{version}-linux-x86_64.rpm
 # sha256: c1f1bdb97c60dad9376570f74f35fd7d0673f794494c1098d9844b6bec643fc6
+
+# %install runs desktop-file-validate; the buildroot does not provide it.
+BuildRequires:  desktop-file-utils
 
 # Verified against upstream nfpm.yaml and the AUR repack. The binary dlopens
 # both stacks (eframe enables wayland+x11), so loaders are hard Requires.
@@ -92,5 +95,8 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0-2
+- Add BuildRequires: desktop-file-utils for desktop-file-validate in %install
+
 * Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0-1
 - Initial packaging: repack upstream nfpm rpm (native Rust app, no sandbox)

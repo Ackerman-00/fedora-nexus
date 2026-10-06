@@ -6,13 +6,16 @@
 
 Name:           designcraft
 Version:        0.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Page layout and publishing
 
 License:        MIT AND Apache-2.0
 URL:            https://getartcraft.com/apps/designcraft
 Source0:        https://github.com/storytold/designcraft/releases/download/v%{version}/designcraft-%{version}-linux-x86_64.rpm
 # sha256: aed6eec19fe7a10e978df4e17644396b1719344e0f4ed4da2d38bf32c79e71bc
+
+# %install runs desktop-file-validate; the buildroot does not provide it.
+BuildRequires:  desktop-file-utils
 
 # Verified against upstream nfpm.yaml. The binary dlopens both stacks (eframe
 # enables wayland+x11), so loaders are hard Requires. Fonts are embedded in
@@ -91,5 +94,8 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-2
+- Add BuildRequires: desktop-file-utils for desktop-file-validate in %install
+
 * Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-1
 - Initial packaging: repack upstream nfpm rpm (native Rust app, no sandbox)

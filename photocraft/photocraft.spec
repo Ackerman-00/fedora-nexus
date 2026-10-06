@@ -6,13 +6,16 @@
 
 Name:           photocraft
 Version:        0.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Native image editor with layers, masks and PSD support
 
 License:        MIT AND Apache-2.0
 URL:            https://getartcraft.com/apps/photocraft
 Source0:        https://github.com/storytold/photocraft/releases/download/v%{version}/photocraft-%{version}-linux-x86_64.rpm
 # sha256: 5f96dbe3ac9c4de5684e05720cbb5a4549a3c2488a4e320d9c97eec33a9eb9f0
+
+# %install runs desktop-file-validate; the buildroot does not provide it.
+BuildRequires:  desktop-file-utils
 
 # Verified against upstream nfpm.yaml. The binary dlopens both stacks (eframe
 # enables wayland+x11), so loaders are hard Requires.
@@ -97,5 +100,8 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-2
+- Add BuildRequires: desktop-file-utils for desktop-file-validate in %install
+
 * Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-1
 - Initial packaging: repack upstream nfpm rpm (native Rust app, no sandbox)

@@ -6,13 +6,16 @@
 
 Name:           lightcraft
 Version:        0.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Photo library and raw development
 
 License:        MIT AND Apache-2.0
 URL:            https://getartcraft.com/apps/lightcraft
 Source0:        https://github.com/storytold/lightcraft/releases/download/v%{version}/lightcraft-%{version}-linux-x86_64.rpm
 # sha256: 5a27a0784305c73957036e2f3d7076d5ec5c270f0c864b9b41676468b0c701c8
+
+# %install runs desktop-file-validate; the buildroot does not provide it.
+BuildRequires:  desktop-file-utils
 
 # Verified against upstream nfpm.yaml. The binary dlopens both stacks (eframe
 # enables wayland+x11), so loaders are hard Requires. RAW decoding is pure
@@ -90,5 +93,8 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-2
+- Add BuildRequires: desktop-file-utils for desktop-file-validate in %install
+
 * Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-1
 - Initial packaging: repack upstream nfpm rpm (native Rust app, no sandbox)
