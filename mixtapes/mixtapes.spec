@@ -2,8 +2,8 @@
 # verify-fedora-branch: main
 # verify-fedora-run: 37070898478
 # verify-fedora-tool: tools/teardown-sweep.py
-# verify-fedora-source0: https://github.com/m-obeid/Mixtapes/archive/285ba7dd1cb89e3a4127d336e849e748d3423880.tar.gz
-# verify-fedora-sha256: ef2dc2b6c25819b74cddf497b18a2ae1a5e933c004f792a101c5b1dd5b325103
+# verify-fedora-source0: https://github.com/m-obeid/Mixtapes/archive/e95c9e9a6979f088fc7486e50cb86ac727d8a842.tar.gz
+# verify-fedora-sha256: e66d74b5dfc3d5b83c19971e474e3e6e5c1c96927c9ca45b5612b955a1be3f90
 # verify-fedora-copr: https://copr.fedorainfracloud.org/coprs/g/fedora-nexus/mixtapes/package/mixtapes/
 # verify-fedora-evidence: upstream@2026-10-03 commit 285ba7d == "Rustification of Mixtapes" merge (Rust rewrite; source tarball extracted, Cargo.lock 629 crates, gresource built by build.rs, desktop Exec=muse); sha256 match; RPM323 (all 4 sections present) RPM324 N-OK; osv-query 0 CVEs on pinned rev; repology 404 (new package); libyear 0.0 (0 days)
 # verify-fedora-evidence: upstream 2026-10-03 https://api.github.com/repos/m-obeid/Mixtapes/commits/285ba7d sha 285ba7dd1cb89e3a4127d336e849e748d3423880 == spec Source0 rev; https://raw.githubusercontent.com/m-obeid/Mixtapes/285ba7d/LICENSE unknown license text present
@@ -26,8 +26,8 @@
 # Cargo release strips debuginfo; empty %%debugsource is a hard error on rpm>=6
 # (concord/matugen pattern), hence debug_package nil.
 %global debug_package %{nil}
-%global commit          285ba7dd1cb89e3a4127d336e849e748d3423880
-%global gitdate         20261003010509
+%global commit          e95c9e9a6979f088fc7486e50cb86ac727d8a842
+%global gitdate         20261006195339
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           mixtapes
@@ -52,10 +52,13 @@ BuildRequires:  curl
 BuildRequires:  pkgconf-pkg-config
 BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  glib2-devel
-BuildRequires:  pkgconfig(gtk4)
-BuildRequires:  pkgconfig(libadwaita-1)
-BuildRequires:  pkgconfig(webkitgtk-6.0)
-BuildRequires:  pkgconfig(gstreamer-1.0)
+# Version floors come from the crate features in upstream Cargo.toml
+# (gtk4 v4_18, libadwaita v1_8, gstreamer v1_24, webkit6 v2_44); the
+# system-deps build-time check enforces them, so name them here too.
+BuildRequires:  pkgconfig(gtk4) >= 4.18
+BuildRequires:  pkgconfig(libadwaita-1) >= 1.8
+BuildRequires:  pkgconfig(webkitgtk-6.0) >= 2.44
+BuildRequires:  pkgconfig(gstreamer-1.0) >= 1.24
 BuildRequires:  pkgconfig(gstreamer-base-1.0)
 BuildRequires:  pkgconfig(gstreamer-video-1.0)
 BuildRequires:  pkgconfig(gstreamer-audio-1.0)
@@ -127,6 +130,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/com.pocoguy.Muse.desk
 %{_datadir}/icons/hicolor/scalable/apps/com.pocoguy.Muse*.svg
 
 %changelog
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261006195339gite95c9e9-1
+- Nightly sync with upstream main branch (Commit: e95c9e9)
+
 * Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261003010509git285ba7d-1
 - Nightly sync with upstream main branch (Commit: 285ba7d)
 
