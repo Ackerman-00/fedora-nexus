@@ -8,17 +8,17 @@
 %global __requires_exclude_from ^/opt/concat/.*$
 
 Name:           concat
-Version:        0.2.5
+Version:        0.2.6
 # 2 = %license/%doc path fix (COPR 11066628); 3 = restore libxkbcommon-x11
 # Requires dropped by a concurrent edit + desktop-file-utils BuildRequires.
 # COPR already published 0.2.5-2, so a same-version fix must exceed it.
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        Free and open source video editor (CapCut alternative)
 
 License:        AGPL-3.0-or-later
 URL:            https://github.com/jub0t/Concat
-Source0:        %{url}/releases/download/v%{version}/Concat-%{version}-linux-x86_64.rpm
-# sha256: 48cfca1b864b58799b0642b847d7ac13e2b35c6841235ec73480d1ebc697c950
+Source0:        %{url}/releases/download/v0.2.6/Concat-0.2.6-linux-x86_64.rpm
+# sha256: 069caef461a41e5a59524351174382cadddec0adee8935dfa9b0b4d22367d28b
 
 ExclusiveArch:  x86_64
 # aarch64 asset exists upstream (Concat-0.2.5-linux-aarch64.rpm) but this repo
@@ -76,15 +76,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/concat.desktop || tru
 %{_datadir}/icons/hicolor/256x256/apps/concat.png
 
 %changelog
-* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.5-3
-- Restore Requires: libxkbcommon-x11 (xkbcommon-dl dlopens it at X11 startup;
-  dropped by a concurrent edit; gtk3 only pulls libxkbcommon.so.0 - proven via
-  dnf repoquery + non-root xvfb teardown panic) and keep the desktop-file-utils
-  BuildRequires added in the same edit; Release 1 -> 3 because COPR already
-  published 0.2.5-2 (a spec-only fix must never regress the Release number)
-* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.5-2
-- Fix %license/%doc paths: upstream RPM ships LICENSE + THIRD_PARTY_NOTICES.md
-  under usr/share/doc/concat/, not opt/concat/ (old paths failed COPR 11066628
-  4/4 with "File not found"); verified via rpm -qlp + ldd teardown
-* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.5-1
-- Initial packaging: repack upstream nfpm-built RPM (Rust+Slint, self-contained FFmpeg)
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.6-1
+- Auto-update to upstream release v0.2.6
