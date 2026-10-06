@@ -53,6 +53,7 @@ exec /opt/OpenCode/ai.opencode.desktop "$@"
 WRAPPER_EOF
 chmod 755 %{buildroot}%{_bindir}/opencode-desktop
 
+
 install -Dm0644 usr/share/icons/hicolor/32x32/apps/ai.opencode.desktop.png \
     %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/opencode-desktop.png
 install -Dm0644 usr/share/icons/hicolor/64x64/apps/ai.opencode.desktop.png \
