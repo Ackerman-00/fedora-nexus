@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          38555ded3ca8e5ef69fc3021e0b0472622cbba87
+%global commit          9091e3feb75473f38a6cc300ea99f03ad0b2b6e8
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261006173453
+%global gitdate         20261006182921
 
 # Fedora's default LTO flags (-flto=auto -ffat-lto-objects) trip a
 # binutils/GCC linker-plugin bug when linking umbriel's test binaries
@@ -38,6 +38,7 @@ BuildRequires:  pkgconfig(wayland-protocols) >= 1.47
 BuildRequires:  pkgconfig(xkbcommon)
 BuildRequires:  pkgconfig(libinput) >= 1.23
 BuildRequires:  pkgconfig(pixman-1) >= 0.43.0
+BuildRequires:  pkgconfig(libdisplay-info) >= 0.3.0
 BuildRequires:  pkgconfig(libdrm) >= 2.4.129
 BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(pangocairo)
@@ -119,5 +120,5 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261006173453git38555de-1
-- Nightly sync with upstream main branch (Commit: 38555de)
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261006182921git9091e3f-1
+- Nightly sync with upstream main branch (Commit: 9091e3f)
