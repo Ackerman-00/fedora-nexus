@@ -1,6 +1,6 @@
 Name:           scenefx
 Version:        0.5
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        A drop-in replacement for the wlroots scene API for eye-candy effects
 URL:            https://github.com/wlrfx/scenefx
@@ -12,21 +12,22 @@ Source0:        %{url}/archive/%{version}.tar.gz
 BuildRequires:  cmake
 BuildRequires:  gcc
 BuildRequires:  glslang
-BuildRequires:  meson >= 0.59.0
+BuildRequires:  meson >= 1.3
 
 BuildRequires:  pkgconfig(egl)
 BuildRequires:  pkgconfig(gbm) >= 17.1.0
 BuildRequires:  pkgconfig(glesv2)
 BuildRequires:  pkgconfig(hwdata)
-BuildRequires:  pkgconfig(libdrm) >= 2.4.114
-BuildRequires:  pkgconfig(pixman-1) >= 0.42.0
+BuildRequires:  pkgconfig(libdrm) >= 2.4.129
+BuildRequires:  pkgconfig(pixman-1) >= 0.43.0
 BuildRequires:  pkgconfig(wayland-client)
-BuildRequires:  pkgconfig(wayland-protocols) >= 1.32
+BuildRequires:  pkgconfig(wayland-protocols) >= 1.41
 BuildRequires:  pkgconfig(wayland-scanner)
-BuildRequires:  pkgconfig(wayland-server) >= 1.22
-BuildRequires:  pkgconfig(wlroots-0.20)
+BuildRequires:  pkgconfig(wayland-server) >= 1.24.0
+BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.0
 BuildRequires:  pkgconfig(xkbcommon) >= 1.8.0
 BuildRequires:  pkgconfig(libglvnd)
+BuildRequires:  pkgconfig(lcms2)
 
 %description
 %{summary}
@@ -65,6 +66,12 @@ MESON_OPTIONS=(
 %{_libdir}/pkgconfig/%{name}-*.pc
 
 %changelog
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5-3
+- Reconcile BuildRequires floors with upstream meson.build (meson >= 1.3,
+  libdrm >= 2.4.129, pixman-1 >= 0.43.0, wayland-server >= 1.24.0,
+  wayland-protocols >= 1.41, wlroots-0.20 >= 0.20.0) and pin auto-detected
+  color-management with explicit pkgconfig(lcms2) (shipped 0.5-2 already
+  linked liblcms2.so.2 via transitive luck)
 * Mon Aug 03 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5-2
 - Add missing BuildRequires pkgconfig(xkbcommon) >= 1.8.0 (hard dependency in
   meson.build; previously resolved only via meson fallback)
