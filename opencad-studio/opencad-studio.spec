@@ -10,7 +10,7 @@
 
 Name:           opencad-studio
 Version:        2026.40.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source 2D/3D CAD with native DWG/DXF support
 
 License:        GPL-3.0-only
@@ -63,13 +63,15 @@ unsquashfs -q -d squashfs-root -o "$OFFSET" %{SOURCE0}
 chmod go-w squashfs-root
 
 %install
+# The AppImage tree is FHS usr/-rooted; flatten one level so the tree lands
+# as /opt/opencad-studio/{bin,lib,share} and the wrapper path below holds.
 mkdir -p %{buildroot}/opt/opencad-studio
-cp -a squashfs-root/usr/bin squashfs-root/usr/share squashfs-root/usr/lib* %{buildroot}/opt/opencad-studio/ 2>/dev/null || cp -a squashfs-root/usr/* %{buildroot}/opt/opencad-studio/
+cp -a squashfs-root/usr/* %{buildroot}/opt/opencad-studio/
 
 mkdir -p %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/opencad-studio <<'EOF'
 #!/bin/sh
-exec /opt/opencad-studio/usr/bin/OpenCADStudio "$@"
+exec /opt/opencad-studio/bin/OpenCADStudio "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/opencad-studio
 
@@ -104,5 +106,8 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.40.1-2
+- Fix wrapper path: the flattened /opt tree holds bin/, not usr/bin/
+
 * Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.40.1-1
 - Initial packaging: repack upstream AppImage (native Rust app, no sandbox)
