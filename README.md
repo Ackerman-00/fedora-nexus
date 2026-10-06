@@ -50,7 +50,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 63 packages</summary>
+<summary>Click to expand — 64 packages</summary>
 
 <br />
 
@@ -73,6 +73,7 @@ sudo dnf install <package-name>
 | `cliphist` | Wayland clipboard manager with support for multimedia | Stable |
 | `concat` | Free and open source video editor (CapCut alternative) | Stable |
 | `concord` | Feature-rich TUI client for Discord | Stable |
+| `effectcraft` | Motion graphics and visual effects compositor (native Rust) | Stable |
 | `extension-manager` | Native tool for browsing and managing GNOME Shell Extensions | Stable |
 | `fluxer` | Free and open source instant messaging and VoIP platform | Stable |
 | `freebuff` | The free coding agent for your desktop (parallel agents, private workspaces) | Stable |
