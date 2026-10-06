@@ -1,10 +1,11 @@
 # Debuginfo disabled: every binary here is prebuilt upstream, so there are
 # no build sources to extract debug symbols from (Fedora requires stating why).
 %global debug_package %{nil}
-# No brp-strip protection needed here: %global debug_package %{nil} above
-# already gates the whole strip block out of __os_install_post
-# (%{!?__debug_package: ...} in redhat-rpm-config), so our build never
-# strips. The damage happened in upstream's own build; we inherit the binary.
+# No strip protection needed: the only strip-fragile file upstream ships
+# (the Bun-compiled sidecar) is replaced by a shell wrapper below, and plain
+# strip is a no-op on the remaining prebuilt ELFs. Never write RPM macro
+# syntax inside comments: conditionals and directives get expanded even
+# there and break parsing (COPR build 11085303 failed exactly this way).
 
 # Electron app repacked from upstream's own .rpm. Everything travels under
 # /opt/OpenCode, so bundled Chromium libraries must not leak into system
@@ -14,7 +15,7 @@
 
 Name:           opencode-desktop
 Version:        2.0.24
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        AI coding agent desktop app
 
 License:        MIT
@@ -23,6 +24,9 @@ Source0:        https://opencode.ai/files/bin/%{version}/opencode-desktop-linux-
 # sha256: 0c64733ea978132155bf89eb9c2bd9f386d83ee275e44ead56f3fb22e24db897
 
 ExclusiveArch:  x86_64
+
+# The install section validates the desktop entry; minimal buildroots lack it.
+BuildRequires:  desktop-file-utils
 
 # Runtime deps: upstream rpm's own Requires (verified from the 2.0.22 header:
 # gtk3, nss, libXScrnSaver, libnotify, at-spi2-core, xdg-utils), with the
@@ -136,9 +140,12 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/opencode-desktop.desk
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-5
+- Purge RPM macro syntax from comments (it broke parsing in 11085303);
+  add the missing desktop-file-utils BuildRequires
+
 * Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-4
 - Prune musl modules, warn on bundle regression; no strip hack needed
-  (debug_package nil already gates brp-strip out)
 
 * Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-3
 - Replace strip-damaged bundled opencode-cli with a v2 resolver wrapper
