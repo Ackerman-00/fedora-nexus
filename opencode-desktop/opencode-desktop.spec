@@ -33,8 +33,6 @@ Requires:       libXtst
 Requires:       libuuid
 Requires:       hicolor-icon-theme
 
-Provides:       opencode-desktop = %{version}-%{release}
-
 %description
 OpenCode desktop app: chat sessions, background commands and subagents, file
 editing, terminal, browser panel and session management driven by local or
