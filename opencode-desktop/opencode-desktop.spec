@@ -7,14 +7,14 @@
 %global __requires_exclude_from ^/opt/OpenCode/.*$
 
 Name:           opencode-desktop
-Version:        2.0.23
+Version:        2.0.24
 Release:        1%{?dist}
 Summary:        AI coding agent desktop app
 
 License:        MIT
 URL:            https://opencode.ai
 Source0:        https://opencode.ai/files/bin/%{version}/opencode-desktop-linux-x86_64.rpm
-# sha256: 5d5b93f3aa5d2be6968815784109f087b4c5f740a6e53bbd41dbf512873e4ae3
+# sha256: 0c64733ea978132155bf89eb9c2bd9f386d83ee275e44ead56f3fb22e24db897
 
 ExclusiveArch:  x86_64
 
@@ -90,5 +90,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/opencode-desktop.desk
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
-* Mon Oct 05 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.23-1
-- Auto-update to upstream release 2.0.23
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-1
+- Auto-update to upstream release 2.0.24
