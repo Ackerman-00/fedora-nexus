@@ -132,6 +132,23 @@ If the agent skips the dependency table, the job fails and the next run retries 
   from `v1/vulns/<id>` before calling a package affected, and confirm the name
   exists in the ecosystem's registry first so a typo cannot read as clean.
 
+### Check criteria that produce false failures (found 2026-10-06)
+
+- `dnf builddep --assumeno <spec>` EXITS 1 whenever a transaction would run, which is the
+  normal case for a spec whose BuildRequires are not installed yet. Treating that exit code
+  as the pass/fail criterion reported 43 false failures across 70 specs in a clean
+  fedora:44 container. The real criterion is the OUTPUT: grep it for `no package matched`,
+  `nothing provides`, `no match for argument`, `failed to solve`. With that criterion all 70
+  specs resolved; the five that looked unresolved (astal-gjs, astal-gtk4, astal-libs, astal,
+  caelestia-shell-mango) are this repo's own -devel packages and resolve as soon as
+  ackerman/nexus is enabled, providers proved per package with
+  `dnf repoquery --whatprovides`.
+- A smoke test must use what the package actually installs, not an assumed name.
+  python-yt-dlp-get-pot and python-yt-dlp-get-pot-rustypipe install into the
+  `yt_dlp_plugins/extractor/` namespace (they are yt-dlp plugins), so
+  `python3 -c 'import yt_dlp_get_pot'` fails with ModuleNotFoundError on a package that is
+  perfectly healthy. Read `rpm -qpl <rpm>` first and import the real path.
+
 ### COPR dist-git race: a failed build that is not your spec (found 2026-10-04)
 
 Symptom: a COPR build goes to state `failed`, one chroot task has no
