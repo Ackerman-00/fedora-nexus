@@ -8,7 +8,7 @@
 
 Name:           opencode-desktop
 Version:        2.0.24
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        AI coding agent desktop app
 
 License:        MIT
@@ -45,6 +45,11 @@ rpm2cpio %{SOURCE0} | cpio -idmv
 %install
 install -dm755 %{buildroot}/opt/OpenCode
 cp -a opt/OpenCode/* %{buildroot}/opt/OpenCode/
+# No bundled self-updater on a distro package: electron-updater reads
+# resources/app-update.yml, and Electron's own docs say Linux updates belong
+# to the package manager. Deleting it is the documented kill-switch
+# (electron-builder#8838). dnf/COPR owns updates from here.
+rm -f %{buildroot}/opt/OpenCode/resources/app-update.yml
 
 install -dm755 %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/opencode-desktop <<'WRAPPER_EOF'
@@ -90,5 +95,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/opencode-desktop.desk
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-2
+- Drop bundled electron-updater config; dnf owns updates on Fedora
+
 * Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-1
 - Auto-update to upstream release 2.0.24
