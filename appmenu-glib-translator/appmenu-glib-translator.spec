@@ -7,19 +7,19 @@
 
 Name:           appmenu-glib-translator
 Version:        25.04^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        appmenu-glib-translator
 
 License:        LGPL-3.0-or-later
 URL:            https://github.com/rilian-la-te/vala-panel-appmenu/blob/master/subprojects/appmenu-glib-translator
 Source:         https://github.com/rilian-la-te/vala-panel-appmenu/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
 
-BuildRequires:  meson
+BuildRequires:  meson >= 0.61.0
 BuildRequires:  gcc
 BuildRequires:  /usr/bin/vapigen
 
 BuildRequires:  pkgconfig(gdk-pixbuf-2.0)
-BuildRequires:  pkgconfig(gio-unix-2.0)
+BuildRequires:  pkgconfig(gio-unix-2.0) >= 2.52.0
 BuildRequires:  pkgconfig(gobject-introspection-1.0)
 
 %package        devel
@@ -56,5 +56,8 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 25.04^20261006212827git2b754b1-2
+- Declare upstream build floors (subprojects/appmenu-glib-translator/meson.build):
+  meson >= 0.61.0, glib2 gio-unix-2.0 >= 2.52.0
 * Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 25.04^20261006212827git2b754b1-1
 - Nightly sync with upstream main branch (Commit: 2b754b1)
