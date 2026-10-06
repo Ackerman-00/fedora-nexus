@@ -50,7 +50,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 71 packages</summary>
+<summary>Click to expand — 70 packages</summary>
 
 <br />
 
@@ -102,7 +102,6 @@ sudo dnf install <package-name>
 | `openchamber` | AI coding agent workspace (Electron) | Stable |
 | `opencode-desktop` | AI coding agent desktop app | Stable |
 | `photocraft` | Native image editor with layers, masks and PSD support | Stable |
-| `photon-studio` | Offline image editor with native PSD support | Stable |
 | `printcraft` | PDF reading, organizing and protection (native Rust) | Stable |
 | `protonplus` | Modern compatibility tools manager | Stable |
 | `materialyoucolor` | Material You color generation algorithms (pure Python + C++ quantizer) | Stable |
