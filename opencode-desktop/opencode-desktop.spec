@@ -10,7 +10,7 @@
 
 Name:           opencode-desktop
 Version:        2.0.24
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        AI coding agent desktop app
 
 License:        MIT
@@ -50,6 +50,30 @@ cp -a opt/OpenCode/* %{buildroot}/opt/OpenCode/
 # to the package manager. Deleting it is the documented kill-switch
 # (electron-builder#8838). dnf/COPR owns updates from here.
 rm -f %{buildroot}/opt/OpenCode/resources/app-update.yml
+# Upstream's bundled opencode-cli is a Bun --compile binary that rpm
+# stripping truncates into bare bun: it answers 1.4.2 while its stamp says
+# 2.x, and `serve` dies with Script not found. The desktop stages and spawns
+# exactly this path with no fallback and no checksum, so every fresh install
+# is broken. Replace it with a resolver wrapper (survives the desktop's
+# copy+chmod staging); the original stays as last resort.
+mv %{buildroot}/opt/OpenCode/resources/opencode-cli %{buildroot}/opt/OpenCode/resources/opencode-cli.bundled
+cat > %{buildroot}/opt/OpenCode/resources/opencode-cli <<'CLI_EOF'
+#!/bin/sh
+# Resolve a working v2 CLI: user install first, then system paths, then the
+# upstream bundle as last resort. Each candidate must answer `opencode v2*`.
+for c in "$HOME/.opencode/bin/opencode" /usr/local/bin/opencode /usr/bin/opencode; do
+    if [ -x "$c" ]; then
+        case $("$c" --version 2>/dev/null) in
+            "opencode v2"*) exec "$c" "$@" ;;
+        esac
+    fi
+done
+b=$(dirname "$0")/opencode-cli.bundled
+[ -x "$b" ] && exec "$b" "$@"
+echo "error: no working opencode v2 CLI (checked ~/.opencode/bin, /usr/local/bin, /usr/bin)" >&2
+exit 127
+CLI_EOF
+chmod 0755 %{buildroot}/opt/OpenCode/resources/opencode-cli
 
 install -dm755 %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/opencode-desktop <<'WRAPPER_EOF'
@@ -99,6 +123,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/opencode-desktop.desk
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-3
+- Replace strip-damaged bundled opencode-cli with a v2 resolver wrapper
+
 * Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-2
 - Drop bundled electron-updater config; dnf owns updates on Fedora
 
