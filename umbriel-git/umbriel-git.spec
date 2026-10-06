@@ -14,7 +14,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -38,7 +38,16 @@ BuildRequires:  pkgconfig(wayland-protocols) >= 1.47
 BuildRequires:  pkgconfig(xkbcommon)
 BuildRequires:  pkgconfig(libinput) >= 1.23
 BuildRequires:  pkgconfig(pixman-1) >= 0.43.0
+# Upstream 9091e3f floors libdisplay-info at >= 0.3.0 (HDR EDID support);
+# F43 ships 0.2.0 which already carries the used symbol
+# (di_info_get_hdr_static_metadata, verified in F43 header). F44+ take the
+# upstream floor; F43 takes unversioned + a %prep floor relaxation below.
+# Remove the %else branch at F43 EOL (2026-12-09).
+%if 0%{?fedora} >= 44
 BuildRequires:  pkgconfig(libdisplay-info) >= 0.3.0
+%else
+BuildRequires:  pkgconfig(libdisplay-info)
+%endif
 BuildRequires:  pkgconfig(libdrm) >= 2.4.129
 BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(pangocairo)
@@ -87,6 +96,12 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 
 %prep
 %autosetup -n umbriel-%{commit}
+# F43 compat (see libdisplay-info BR above): relax upstream's >= 0.3.0 floor
+# to the F43-shipped 0.2.0, whose headers carry the used HDR symbol.
+# Remove at F43 EOL (2026-12-09).
+%if 0%{?fedora} == 43
+sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdisplay-info', version: '>=0.2.0')/" meson.build
+%endif
 
 %build
 # -Dtests=disabled states the release-build intent explicitly (PACKAGING.md;
@@ -120,5 +135,7 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261006182921git9091e3f-2
+- F43 compat: relax libdisplay-info floor to F43-shipped 0.2.0 (HDR symbol verified present)
 * Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261006182921git9091e3f-1
 - Nightly sync with upstream main branch (Commit: 9091e3f)
