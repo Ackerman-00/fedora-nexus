@@ -81,6 +81,12 @@ def test_redirect_version_parsing():
                     break
     except OSError:
         spec_ver = None
+    if spec_ver is None:
+        # The package was dropped from the repo (owner removed photon-studio on
+        # 2026-10-06); the parsing cases above still cover the helper, and a
+        # live channel read would have nothing to compare against.
+        print("SKIP: photon-studio no longer packaged - live channel check skipped")
+        return failures
     ver, src = ts.redirect_channel_version("photon-studio", [], None)
     if ver:
         ok = spec_ver is not None and ver == spec_ver
