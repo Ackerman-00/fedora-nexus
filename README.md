@@ -50,7 +50,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 70 packages</summary>
+<summary>Click to expand — 71 packages</summary>
 
 <br />
 
@@ -98,6 +98,7 @@ sudo dnf install <package-name>
 | `noctalia-greeter` | Minimal greetd login greeter matching Noctalia Shell (Git Snapshot) | Git |
 | `nwg-look` | GTK3 settings editor adapted for the wlroots environment | Stable |
 | `obsidian` | Knowledge base over a local folder of plain-text Markdown files | Stable |
+| `opencad-studio` | Open-source 2D/3D CAD with native DWG/DXF support | Stable |
 | `openchamber` | AI coding agent workspace (Electron) | Stable |
 | `opencode-desktop` | AI coding agent desktop app | Stable |
 | `photocraft` | Native image editor with layers, masks and PSD support | Stable |
