@@ -1,3 +1,5 @@
+# Debuginfo disabled: every binary here is prebuilt upstream, so there are
+# no build sources to extract debug symbols from (Fedora requires stating why).
 %global debug_package %{nil}
 
 # Electron app repacked from upstream's own .rpm. Everything travels under
@@ -54,6 +56,10 @@ rm -f %{buildroot}/opt/OpenCode/resources/app-update.yml
 install -dm755 %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/opencode-desktop <<'WRAPPER_EOF'
 #!/bin/sh
+# The sidecar CLI self-updates out from under the desktop version
+# (packages/cli updater.ts, default policy "notify", "auto" installs).
+# A distro package owns its versions, so updates stay off here.
+export OPENCODE_DISABLE_AUTOUPDATE=1
 exec /opt/OpenCode/ai.opencode.desktop "$@"
 WRAPPER_EOF
 chmod 755 %{buildroot}%{_bindir}/opencode-desktop
