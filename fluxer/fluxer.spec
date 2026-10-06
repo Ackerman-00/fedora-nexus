@@ -14,8 +14,8 @@
 %global __requires_exclude ^libffmpeg\\.so.*$|^libcbor\\.so.*$
 
 Name:           fluxer
-Version:        2026.1004.13532
-Release:        2%{?dist}
+Version:        2026.1006.171735
+Release:        1%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
@@ -23,7 +23,7 @@ URL:            https://fluxer.app
 Source0:        https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm
 # Rolling "latest" URL: pin the hash of the served artifact so rebuilds and
 # the sweep verify fixed bits. Refreshed by update.sh on every version bump.
-# sha256: af664e0f34f6a19044d1161f0c3e76f991af0423606edd7a6866d17667a822d2
+# sha256: 0ae5d81f86dcdf1040f71a1895208e32a6ce53331f53bdea667fb3ac3362dae8
 
 Requires:           hicolor-icon-theme
 Requires:       at-spi2-core
@@ -130,11 +130,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/app.fluxer.FluxerDesk
 %attr(4755, root, root) %{_libdir}/%{name}/chrome-sandbox
 
 %changelog
-* Sun Oct 04 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1004.13532-2
-- Fix desktop entry and icons for upstream rename (app.fluxer.FluxerDesktop.desktop, 1024-only hicolor set); Wayland-native wrapper
-
-* Sun Oct 04 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1004.13532-1
-- Update to version 2026.1004.13532
-
-* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1003.155758-1
-- Update to version 2026.1003.155758
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1006.171735-1
+- Update to version 2026.1006.171735
