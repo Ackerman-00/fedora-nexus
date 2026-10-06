@@ -1,6 +1,10 @@
 # Debuginfo disabled: every binary here is prebuilt upstream, so there are
 # no build sources to extract debug symbols from (Fedora requires stating why).
 %global debug_package %{nil}
+# No brp-strip protection needed here: %global debug_package %{nil} above
+# already gates the whole strip block out of __os_install_post
+# (%{!?__debug_package: ...} in redhat-rpm-config), so our build never
+# strips. The damage happened in upstream's own build; we inherit the binary.
 
 # Electron app repacked from upstream's own .rpm. Everything travels under
 # /opt/OpenCode, so bundled Chromium libraries must not leak into system
@@ -10,7 +14,7 @@
 
 Name:           opencode-desktop
 Version:        2.0.24
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        AI coding agent desktop app
 
 License:        MIT
@@ -50,6 +54,15 @@ cp -a opt/OpenCode/* %{buildroot}/opt/OpenCode/
 # to the package manager. Deleting it is the documented kill-switch
 # (electron-builder#8838). dnf/COPR owns updates from here.
 rm -f %{buildroot}/opt/OpenCode/resources/app-update.yml
+# Prune musl native modules: dead weight on glibc Fedora (same prune as AUR).
+find %{buildroot}/opt/OpenCode -name '*.musl.node' -delete
+find %{buildroot}/opt/OpenCode -depth -type d -name '*-musl' -exec rm -rf {} + 2>/dev/null || true
+# Warn if upstream's bundle is strip-damaged again (answers 1.x, not opencode
+# v2*). Non-fatal: the wrapper below resolves a working CLI regardless, but
+# the log should say when the bundle regresses.
+if ! opt/OpenCode/resources/opencode-cli --version 2>/dev/null | grep -q '^opencode v2'; then
+  echo "WARNING: bundled opencode-cli does not answer as v2 (strip damage?)" >&2
+fi
 # Upstream's bundled opencode-cli is a Bun --compile binary that rpm
 # stripping truncates into bare bun: it answers 1.4.2 while its stamp says
 # 2.x, and `serve` dies with Script not found. The desktop stages and spawns
@@ -123,6 +136,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/opencode-desktop.desk
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-4
+- Prune musl modules, warn on bundle regression; no strip hack needed
+  (debug_package nil already gates brp-strip out)
+
 * Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-3
 - Replace strip-damaged bundled opencode-cli with a v2 resolver wrapper
 
