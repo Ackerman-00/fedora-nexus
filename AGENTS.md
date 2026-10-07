@@ -109,6 +109,18 @@ If the agent skips the dependency table, the job fails and the next run retries 
   logs from the `download.copr.` host. `build/list` rows carry the package name
   in `source_package.name` (nullable, null for a deleted package) and there is
   no top-level `package_name` field.
+- `build/list` response envelope changed (found 2026-10-07): it now answers
+  `{"items": [...], "meta": {limit, offset, order, ...}}`; the old `{"builds": [...]}`
+  key is gone. Read `items` (fall back to `builds` if you must) and page with
+  `offset`/`limit` — offset paging returned distinct rows (1288 unique builds
+  pulled with limit=200). Treating a missing `builds` key as an empty project
+  reads as "no builds at all", which would hide a red newest build.
+- SRPM-stage failures (before any chroot task exists) publish their logs under
+  `results/<owner>/<proj>/srpm-builds/<buildid>/builder-live.log.gz` on the
+  `download.copr.` host — there is no `<chroot>/<buildid>-<pkg>/` directory at
+  all, so a per-chroot scan finds nothing for that build. The frontend build page
+  is `/coprs/<owner>/<proj>/build/<buildid>/` (singular `build`, not `builds`);
+  it lists that log URL. `copr-cli status <id>` gives only the state.
 - RPM file downloads on `download.copr.` 301-redirect every `*.rpm` request to
   a `packages.redhat.com/api/pulp-content/public-copr/...` path that 404s
   (observed 2026-10-04; directory layout is
