@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          9091e3feb75473f38a6cc300ea99f03ad0b2b6e8
+%global commit          3e4e519f0908146df57fb7016b47dc2959a1e4fa
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261006182921
+%global gitdate         20261007030918
 
 # Fedora's default LTO flags (-flto=auto -ffat-lto-objects) trip a
 # binutils/GCC linker-plugin bug when linking umbriel's test binaries
@@ -14,7 +14,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -135,7 +135,5 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261006182921git9091e3f-2
-- F43 compat: relax libdisplay-info floor to F43-shipped 0.2.0 (HDR symbol verified present)
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261006182921git9091e3f-1
-- Nightly sync with upstream main branch (Commit: 9091e3f)
+* Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261007030918git3e4e519-1
+- Nightly sync with upstream main branch (Commit: 3e4e519)
