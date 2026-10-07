@@ -15,17 +15,25 @@
 
 Name:           opencode-desktop
 Version:        2.0.24
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        AI coding agent desktop app
 
 License:        MIT
 URL:            https://opencode.ai
-Source0:        https://opencode.ai/files/bin/%{version}/opencode-desktop-linux-x86_64.rpm
-# sha256: 0c64733ea978132155bf89eb9c2bd9f386d83ee275e44ead56f3fb22e24db897
+# Upstream rpm carries a strip-damaged opencode-cli (answers 1.4.2, serve dies
+# Script not found); the same-release deb verified good (v2.0.24, serve OK).
+# fpm-built debs have no rpmbuild brp-strip phase, so repack from the deb.
+Source0:        https://opencode.ai/files/bin/%{version}/opencode-desktop-linux-amd64.deb
+# sha256: e69f2e7d535fdfcfb504fa39dade7ef76316bd499fe112c5312ec4352b8ae30d
 
 ExclusiveArch:  x86_64
 
 # The install section validates the desktop entry; minimal buildroots lack it.
+# Unpack the upstream deb natively (same idiom as ghostty).
+BuildRequires:  binutils
+BuildRequires:  tar
+BuildRequires:  xz
+BuildRequires:  zstd
 BuildRequires:  desktop-file-utils
 
 # Runtime deps: upstream rpm's own Requires (verified from the 2.0.22 header:
@@ -39,6 +47,7 @@ Requires:       at-spi2-core
 Requires:       xdg-utils
 Requires:       libXtst
 Requires:       libuuid
+Requires:       libsecret
 Requires:       hicolor-icon-theme
 
 %description
@@ -48,7 +57,14 @@ remote models. (For the CLI, use the upstream installer instead.)
 
 %prep
 %setup -T -c
-rpm2cpio %{SOURCE0} | cpio -idmv
+# Rip open the upstream deb natively; detect whichever data archive it holds.
+ar x %{SOURCE0}
+for data_archive in data.tar.zst data.tar.xz data.tar.gz; do
+    if [ -f "$data_archive" ]; then
+        tar xf "$data_archive"
+        break
+    fi
+done
 
 %install
 install -dm755 %{buildroot}/opt/OpenCode
@@ -140,6 +156,11 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/opencode-desktop.desk
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-6
+- Repack from the upstream deb: its bundled opencode-cli is intact
+  (v2.0.24, serve OK) where the rpm's is strip-damaged; add libsecret
+  from the deb Depends
+
 * Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-5
 - Purge RPM macro syntax from comments (it broke parsing in 11085303);
   add the missing desktop-file-utils BuildRequires
