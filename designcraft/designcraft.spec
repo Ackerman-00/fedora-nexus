@@ -5,14 +5,14 @@
 %global debug_package %{nil}
 
 Name:           designcraft
-Version:        0.2.0
-Release:        2%{?dist}
+Version:        0.2.1
+Release:        1%{?dist}
 Summary:        Page layout and publishing
 
 License:        MIT AND Apache-2.0
 URL:            https://getartcraft.com/apps/designcraft
-Source0:        https://github.com/storytold/designcraft/releases/download/v%{version}/designcraft-%{version}-linux-x86_64.rpm
-# sha256: aed6eec19fe7a10e978df4e17644396b1719344e0f4ed4da2d38bf32c79e71bc
+Source0:        https://github.com/storytold/designcraft/releases/download/v0.2.1/designcraft-%{version}-linux-x86_64.rpm
+# sha256: a26857e40da6dc0e78674d4ad44a15ec3a548f69389d3c91e50e338a8a1a5581
 
 # %install runs desktop-file-validate; the buildroot does not provide it.
 BuildRequires:  desktop-file-utils
@@ -94,8 +94,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-2
-- Add BuildRequires: desktop-file-utils for desktop-file-validate in %install
-
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-1
-- Initial packaging: repack upstream nfpm rpm (native Rust app, no sandbox)
+* Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.1-1
+- Auto-update to upstream release v0.2.1
