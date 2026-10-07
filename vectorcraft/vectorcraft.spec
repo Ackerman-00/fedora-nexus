@@ -5,14 +5,14 @@
 %global debug_package %{nil}
 
 Name:           vectorcraft
-Version:        0.3.1
+Version:        0.4.0
 Release:        1%{?dist}
 Summary:        Native vector illustration app with SVG and PDF support
 
 License:        MIT AND Apache-2.0
 URL:            https://getartcraft.com/apps/vectorcraft
-Source0:        https://github.com/storytold/vectorcraft/releases/download/v0.3.1/vectorcraft-%{version}-linux-x86_64.rpm
-# sha256: fa36a5ad8a08650bfb190ef518f87a5127a0cbd39075341bebc29bbbd7d81c8d
+Source0:        https://github.com/storytold/vectorcraft/releases/download/v0.4.0/vectorcraft-%{version}-linux-x86_64.rpm
+# sha256: b5bc1756c863b94faa28167e6a9fee4830ba5ca140364c077af999318cbaa918
 
 # %install runs desktop-file-validate; the buildroot does not provide it.
 BuildRequires:  desktop-file-utils
@@ -92,5 +92,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
-* Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.1-1
-- Auto-update to upstream release v0.3.1
+* Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.4.0-1
+- Auto-update to upstream release v0.4.0
