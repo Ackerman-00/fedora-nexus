@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name:           logseq
-Version:        2.0.1
-Release:        4%{?dist}
+Version:        2.0.2
+Release:        1%{?dist}
 Summary:        A privacy-first, local-first platform for knowledge management and collaboration
 
 License:        AGPL-3.0-only
@@ -10,7 +10,7 @@ URL:            https://logseq.com/
 ExclusiveArch:  x86_64
 
 # Official Linux x86_64 payload (same files the AppImage wraps)
-# sha256: 981bf1f37403685ef83223193795d29bb0729b50929d543c2c4bce771e307a17
+# sha256: 289eadd4dfcbdd2ab71aeb6cf02a53d0b5d7340865c528b1434bef8001900a9a
 Source0:        https://github.com/logseq/logseq/releases/download/%{version}/Logseq-linux-x86_64-%{version}.zip
 # Official icon from the matching release tag
 Source1:        https://raw.githubusercontent.com/logseq/logseq/%{version}/resources/icons/logseq.png
@@ -113,27 +113,5 @@ install -m644 %{SOURCE1} %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/logs
 %{_datadir}/icons/hicolor/512x512/apps/logseq.png
 
 %changelog
-* Fri Oct 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.0.1-4
-- Fix startup crash: ship chrome-sandbox as %attr(4755, root, root) so the
-  Electron SUID sandbox helper is configured correctly (was 0755 ->
-  FATAL abort for every non-root launch; verified under xvfb before/after).
-* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.1-3
-- Correct changelog bookkeeping: the Aug 05 check-rpaths entry was labelled
-  2.0.1-2 although the spec's Release was still 1 at that commit (89a9846),
-  which left two different entries claiming 2.0.1-2. Relabelled to 2.0.1-1
-  so each entry names the Release it actually shipped as.
-
-* Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.1-2
-- Add Requires: libaio. The bundled @zvec/bindings-linux-x64 DiskANN plugin
-  (resources/app.asar.unpacked/node_modules/@zvec/bindings-linux-x64/
-  libzvec_diskann_plugin.so, dlopen'd by zvec_node_binding.node) links
-  against libaio.so.1, which is not part of a minimal Fedora install:
-    ldd .../libzvec_diskann_plugin.so -> libaio.so.1 => not found
-  This package sets AutoReqProv: no, so the dependency was never generated
-  automatically. Provider confirmed with
-  dnf repoquery --whatprovides 'libaio.so.1()(64bit)' -> libaio
-
-* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.1-1
-- Initial package: Logseq 2.0.1 (DB version), official Linux x86_64 payload
-- Fix build: strip build-machine RUNPATH from bundled @zvec native addon
-  (check-rpaths 0002); add BuildRequires binutils/patchelf
+* Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.2-1
+- Auto-updated to 2.0.2 via update.sh
