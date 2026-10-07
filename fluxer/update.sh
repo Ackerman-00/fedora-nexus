@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Run this from its own package directory. update-engine.yml does `pushd <pkg>`
+# first; running update.sh from the repo root instead let the changelog append
+# create a stray <pkg>.spec at the repo root, and the Name: check then reported
+# a false corruption (hit twice, 2026-10-07: stray umbriel-git.spec, then 32
+# stray root specs during an agent sweep).
+_update_sh_dir=$(cd "$(dirname "$0")" && pwd) || exit 1
+if [ "$(pwd)" != "$_update_sh_dir" ]; then
+    echo "FATAL: run update.sh from its package directory:" >&2
+    echo "  cd $_update_sh_dir && bash update.sh" >&2
+    exit 1
+fi
+
 SPEC_FILE="fluxer.spec"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 API_URL="https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm"
