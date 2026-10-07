@@ -7,7 +7,7 @@
 # syntax inside comments: conditionals and directives get expanded even
 # there and break parsing (COPR build 11085303 failed exactly this way).
 
-# Electron app repacked from upstream's own .rpm. Everything travels under
+# Electron app repacked from upstream's own .deb. Everything travels under
 # /opt/OpenCode, so bundled Chromium libraries must not leak into system
 # Provides/Requires; genuine system deps are declared explicitly below.
 %global __provides_exclude_from ^/opt/OpenCode/.*$
@@ -15,7 +15,7 @@
 
 Name:           opencode-desktop
 Version:        2.0.24
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        AI coding agent desktop app
 
 License:        MIT
@@ -36,9 +36,11 @@ BuildRequires:  xz
 BuildRequires:  zstd
 BuildRequires:  desktop-file-utils
 
-# Runtime deps: upstream rpm's own Requires (verified from the 2.0.22 header:
-# gtk3, nss, libXScrnSaver, libnotify, at-spi2-core, xdg-utils), with the
-# Debian-style rich deps mapped to Fedora names (libXtst, libuuid).
+# Runtime deps: upstream deb's own Depends (control file: libgtk-3-0,
+# libnotify4, libnss3, libxss1, libxtst6, xdg-utils, libatspi2.0-0, libuuid1,
+# libsecret-1-0), mapped to Fedora names, plus the Electron floor this repo's
+# vesktop spec proves out (audio, printing, GBM/DRI for the GPU process).
+# pango and libXcomposite/libXdamage/libXrandr are hard gtk3 deps already.
 Requires:       gtk3
 Requires:       nss
 Requires:       libXScrnSaver
@@ -48,6 +50,10 @@ Requires:       xdg-utils
 Requires:       libXtst
 Requires:       libuuid
 Requires:       libsecret
+Requires:       alsa-lib
+Requires:       cups-libs
+Requires:       mesa-libgbm
+Requires:       libdrm
 Requires:       hicolor-icon-theme
 
 %description
@@ -156,6 +162,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/opencode-desktop.desk
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
+* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-7
+- Complete the Electron dep floor (alsa-lib, cups-libs, mesa-libgbm,
+  libdrm) per vesktop and AUR; fix stale rpm-era comments
+
 * Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-6
 - Repack from the upstream deb: its bundled opencode-cli is intact
   (v2.0.24, serve OK) where the rpm's is strip-damaged; add libsecret
