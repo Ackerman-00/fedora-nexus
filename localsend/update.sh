@@ -56,3 +56,10 @@ else
     echo "Already up to date ($CURRENT_VERSION)."
 fi
 # Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).
+# Guard: an updater must never leave a spec without its header. If the
+# changelog rewrite or a sed wiped the file, restore from git and fail loudly.
+if ! grep -q "^Name:" "$SPEC_FILE"; then
+    echo "FATAL: $SPEC_FILE lost its Name: header during update; restoring" >&2
+    git checkout -- "$SPEC_FILE" 2>/dev/null || true
+    exit 1
+fi

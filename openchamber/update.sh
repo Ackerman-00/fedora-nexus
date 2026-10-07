@@ -54,3 +54,10 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
 else
     echo "Package is already at $LATEST_VERSION. No update needed."
 fi
+# Guard: an updater must never leave a spec without its header. If the
+# changelog rewrite or a sed wiped the file, restore from git and fail loudly.
+if ! grep -q "^Name:" "$SPEC_FILE"; then
+    echo "FATAL: $SPEC_FILE lost its Name: header during update; restoring" >&2
+    git checkout -- "$SPEC_FILE" 2>/dev/null || true
+    exit 1
+fi
