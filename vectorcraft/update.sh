@@ -38,7 +38,7 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
         echo "  -> [SKIP] Release API unreachable for $LATEST_TAG. Keeping $CURRENT_VERSION."
         exit 0
     fi
-    if ! printf '%s' "$API_JSON" | grep -q "\"name\":\"vectorcraft-${LATEST_VERSION}-linux-x86_64.rpm\""; then
+    if ! printf '%s' "$API_JSON" | grep -q "\"name\": *\"vectorcraft-${LATEST_VERSION}-linux-x86_64.rpm\""; then
         echo "  -> [SKIP] Release $LATEST_TAG has no vectorcraft-${LATEST_VERSION}-linux-x86_64.rpm asset yet. Keeping $CURRENT_VERSION."
         exit 0
     fi
