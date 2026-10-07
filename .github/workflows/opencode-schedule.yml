@@ -337,11 +337,14 @@ jobs:
                  (PyPI `copr-cli`, authentic upstream: Pierre-Yves Chibon /
                  fedora-copr, GPLv2+), write ~/.config/copr from the secrets
                  with printf (NEVER echo secrets to stdout). The file MUST
+                 use the section header `[copr-cli]` (copr-cli 2.6 reads
+                 raw_config["copr-cli"]; a `[copr]` header raises
+                 `KeyError: 'copr-cli'` - real hit 2026-10-07) and MUST
                  carry four keys - login, username, token, and
                  `copr_url = https://copr.fedorainfracloud.org`: current
                  copr-cli crashes with `AttributeError: 'NoneType' object has
-                 no attribute 'startswith'` when copr_url is absent, and that
-                 crash is a CONFIG bug, never proof the token expired - fix
+                 no attribute 'startswith'` when copr_url is absent, and both
+                 crashes are CONFIG bugs, never proof the token expired - fix
                  the file first. Then
                  `copr-cli whoami` MUST print the owner's username - record one
                  line in the relay: `copr-auth: OK <user> @<UTC-date>` or
