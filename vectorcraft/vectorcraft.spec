@@ -5,14 +5,14 @@
 %global debug_package %{nil}
 
 Name:           vectorcraft
-Version:        0.3.0
-Release:        2%{?dist}
+Version:        0.3.1
+Release:        1%{?dist}
 Summary:        Native vector illustration app with SVG and PDF support
 
 License:        MIT AND Apache-2.0
 URL:            https://getartcraft.com/apps/vectorcraft
-Source0:        https://github.com/storytold/vectorcraft/releases/download/v%{version}/vectorcraft-%{version}-linux-x86_64.rpm
-# sha256: 60d4003c01386af88e00bf31ee8dd2cb6d52fc4934eddd2044f31702f00dd28c
+Source0:        https://github.com/storytold/vectorcraft/releases/download/v0.3.1/vectorcraft-%{version}-linux-x86_64.rpm
+# sha256: fa36a5ad8a08650bfb190ef518f87a5127a0cbd39075341bebc29bbbd7d81c8d
 
 # %install runs desktop-file-validate; the buildroot does not provide it.
 BuildRequires:  desktop-file-utils
@@ -92,8 +92,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0-2
-- Add BuildRequires: desktop-file-utils for desktop-file-validate in %install
-
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.0-1
-- Initial packaging: repack upstream nfpm rpm (native Rust app, no sandbox)
+* Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.1-1
+- Auto-update to upstream release v0.3.1
