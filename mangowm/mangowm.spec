@@ -1,90 +1,92 @@
--Name:           mangowm
--Version:        0.17.5
--Release:        1%{?dist}
--Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
--License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
--Packager:       Ackerman-00 <quietcraft@gmail.com>
--URL:            https://github.com/mangowm/mango
--Source:         %{url}/archive/%{version}.tar.gz
--
--BuildRequires:  meson
--BuildRequires:  ninja-build
--BuildRequires:  gcc
--BuildRequires:  gcc-c++
--BuildRequires:  pkgconfig(xcb)
--BuildRequires:  pkgconfig(xcb-icccm)
--# xwayland defaults to enabled upstream: xcb-randr is required, not auto.
--# Resolves via libxcb-devel today, but every upstream dep needs its own BR.
--BuildRequires:  pkgconfig(xcb-randr)
--# No upstream floor, but the staging XMLs consumed in protocols/ (cursor-shape,
--# ext-workspace, image-capture, …) need a recent protocols package.
--BuildRequires:  pkgconfig(wayland-protocols) >= 1.41
--BuildRequires:  pkgconfig(wayland-server) >= 1.23.1
--# Protocol codegen uses meson find_program('wayland-scanner'), not
--# dependency() - still needs an explicit BR, it never self-declares.
--BuildRequires:  pkgconfig(wayland-scanner)
--BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.0
--BuildRequires:  pkgconfig(xkbcommon)
--BuildRequires:  pkgconfig(libinput) >= 1.27.1
--BuildRequires:  pkgconfig(wayland-client)
--BuildRequires:  pkgconfig(libpcre2-8)
--BuildRequires:  pkgconfig(libcjson)
--BuildRequires:  pkgconfig(pangocairo)
--BuildRequires:  pkgconfig(pixman-1)
--BuildRequires:  pkgconfig(libdrm)
--# Upstream meson.build demands dependency('scenefx-0.5', version: '>=0.5.0').
--# Must stay in pkgconfig() form: our scenefx NVR is 0.5-2 (RPM: 0.5 < 0.5.0)
--# but its scenefx-0.5.pc carries Version 0.5.0, so only the pkgconfig() floor
--# resolves (COPR build 10982842 failed on plain scenefx-devel >= 0.5.0).
--BuildRequires:  pkgconfig(scenefx-0.5) >= 0.5.0
--
--Requires:       xorg-x11-server-Xwayland
--Requires:       vulkan-loader
--Recommends:     xdg-desktop-portal >= 1.18
--Recommends:     xdg-desktop-portal-gtk
--
--%global mangowc_ver 0.12.5-1
--
--Conflicts:      mangowc < %{mangowc_ver}
--Obsoletes:      mangowc < %{mangowc_ver}
--Provides:       mangowc = %{mangowc_ver}
--Provides:       wayland-compositor
--
--%description
--MangoWM is a modern, lightweight, high-performance Wayland compositor built on
--dwl — crafted for speed, flexibility, and a customizable desktop experience.
--
--%prep
--%autosetup -n mango-%{version}
--
--# OPTIMIZATION DISCIPLINE: upstream hardcodes '-U_FORTIFY_SOURCE' in its c_args
--# (meson.build, mango + mmsg targets), which cancels Fedora's
--# -Wp,-D_FORTIFY_SOURCE=3 optflag after it. Strip the undef so the distro
--# hardening baseline applies; upstream's -O2/-g match optflags so nothing else
--# changes. Re-check on every version bump (workaround-expiry rule).
--sed -i "s/'-U_FORTIFY_SOURCE',//g" meson.build
--
--%build
--%meson
--%meson_build
--
--%install
--%meson_install
--
--%files
--%doc README.md
--%license LICENSE
--%{_bindir}/mango
--%{_bindir}/mmsg
--%{_mandir}/man1/mmsg.1*
--%config(noreplace) %{_sysconfdir}/mango/config.conf
--%{_datadir}/wayland-sessions/mango.desktop
--%config(noreplace) %{_datadir}/xdg-desktop-portal/mango-portals.conf
--# New in 0.17.1: mango-session.target (meson install_data assets/ ->
--# prefix/lib/systemd/user). mango activates it itself, see set_activation_env()
--# in src/main.c. COPR 10988486 failed with "Installed (but unpackaged) file(s)
--# found: /usr/lib/systemd/user/mango-session.target".
--%{_userunitdir}/mango-session.target
--
+Name:           mangowm
+ Version:        0.17.5
+ Release:        1%{?dist}
+ Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
+ License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
+ Packager:       Ackerman-00 <quietcraft@gmail.com>
+ URL:            https://github.com/mangowm/mango
+ Source:         %{url}/archive/%{version}.tar.gz
+ 
+ BuildRequires:  meson
+ BuildRequires:  ninja-build
+ BuildRequires:  gcc
+ BuildRequires:  gcc-c++
+ BuildRequires:  pkgconfig(xcb)
+ BuildRequires:  pkgconfig(xcb-icccm)
+ # xwayland defaults to enabled upstream: xcb-randr is required, not auto.
+ # Resolves via libxcb-devel today, but every upstream dep needs its own BR.
+ BuildRequires:  pkgconfig(xcb-randr)
+ # No upstream floor, but the staging XMLs consumed in protocols/ (cursor-shape,
+ # ext-workspace, image-capture, …) need a recent protocols package.
+ BuildRequires:  pkgconfig(wayland-protocols) >= 1.41
+ BuildRequires:  pkgconfig(wayland-server) >= 1.23.1
+ # Protocol codegen uses meson find_program('wayland-scanner'), not
+ # dependency() - still needs an explicit BR, it never self-declares.
+ BuildRequires:  pkgconfig(wayland-scanner)
+ BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.0
+ BuildRequires:  pkgconfig(xkbcommon)
+ BuildRequires:  pkgconfig(libinput) >= 1.27.1
+ BuildRequires:  pkgconfig(wayland-client)
+ BuildRequires:  pkgconfig(libpcre2-8)
+ BuildRequires:  pkgconfig(libcjson)
+ BuildRequires:  pkgconfig(pangocairo)
+ BuildRequires:  pkgconfig(pixman-1)
+ BuildRequires:  pkgconfig(libdrm)
+ # Upstream meson.build demands dependency('scenefx-0.5', version: '>=0.5.0').
+ # Must stay in pkgconfig() form: our scenefx NVR is 0.5-2 (RPM: 0.5 < 0.5.0)
+ # but its scenefx-0.5.pc carries Version 0.5.0, so only the pkgconfig() floor
+ # resolves (COPR build 10982842 failed on plain scenefx-devel >= 0.5.0).
+ BuildRequires:  pkgconfig(scenefx-0.5) >= 0.5.0
+ 
+ Requires:       xorg-x11-server-Xwayland
+ Requires:       vulkan-loader
+ Recommends:     xdg-desktop-portal >= 1.18
+ Recommends:     xdg-desktop-portal-gtk
+ 
+ %global mangowc_ver 0.12.5-1
+ 
+ Conflicts:      mangowc < %{mangowc_ver}
+ Obsoletes:      mangowc < %{mangowc_ver}
+ Provides:       mangowc = %{mangowc_ver}
+ Provides:       wayland-compositor
+ 
+ %description
+ MangoWM is a modern, lightweight, high-performance Wayland compositor built on
+ dwl — crafted for speed, flexibility, and a customizable desktop experience.
+ 
+ %prep
+ %autosetup -n mango-%{version}
+ 
+ # OPTIMIZATION DISCIPLINE: upstream hardcodes '-U_FORTIFY_SOURCE' in its c_args
+ # (meson.build, mango + mmsg targets), which cancels Fedora's
+ # -Wp,-D_FORTIFY_SOURCE=3 optflag after it. Strip the undef so the distro
+ # hardening baseline applies; upstream's -O2/-g match optflags so nothing else
+ # changes. Re-check on every version bump (workaround-expiry rule).
+ sed -i "s/'-U_FORTIFY_SOURCE',//g" meson.build
+ 
+ %build
+ %meson
+ %meson_build
+ 
+ %install
+ %meson_install
+ 
+ %files
+ %doc README.md
+ %license LICENSE
+ %{_bindir}/mango
+ %{_bindir}/mmsg
+ %{_mandir}/man1/mmsg.1*
+ %config(noreplace) %{_sysconfdir}/mango/config.conf
+ %{_datadir}/wayland-sessions/mango.desktop
+ %config(noreplace) %{_datadir}/xdg-desktop-portal/mango-portals.conf
+ # New in 0.17.1: mango-session.target (meson install_data assets/ ->
+ # prefix/lib/systemd/user). mango activates it itself, see set_activation_env()
+ # in src/main.c. COPR 10988486 failed with "Installed (but unpackaged) file(s)
+ # found: /usr/lib/systemd/user/mango-session.target".
+ %{_userunitdir}/mango-session.target
+ 
  %changelog
--* Fri Oct 02 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.5-1
+ * Fri Oct 02 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.5-1
+* Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.5-1
+ - Auto-update to version 0.17.5
