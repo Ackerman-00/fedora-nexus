@@ -1,13 +1,13 @@
 # These will be automatically populated by update.sh
-%global commit          2b754b139caeff944f6926be5354ecd9708016db
+%global commit          6de205220732c9fbafb2f1706b3f3e781a532404
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261006212827
+%global gitdate         20261007083410
 
 %global _vpath_srcdir subprojects/appmenu-glib-translator
 
 Name:           appmenu-glib-translator
 Version:        25.04^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        appmenu-glib-translator
 
 License:        LGPL-3.0-or-later
@@ -56,8 +56,5 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 25.04^20261006212827git2b754b1-2
-- Declare upstream build floors (subprojects/appmenu-glib-translator/meson.build):
-  meson >= 0.61.0, glib2 gio-unix-2.0 >= 2.52.0
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 25.04^20261006212827git2b754b1-1
-- Nightly sync with upstream main branch (Commit: 2b754b1)
+* Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 25.04^20261007083410git6de2052-1
+- Nightly sync with upstream main branch (Commit: 6de2052)
