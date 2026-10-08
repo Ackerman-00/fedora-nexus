@@ -141,6 +141,42 @@ def test_detect_type():
     return failures
 
 
+def test_strings_version():
+    """strings_version must find `<name>/<version>` tokens inside binary
+    artifacts that ship no structured metadata, and must report what the
+    artifact REALLY says (never rubber-stamp the pinned version).
+    Regression guard: on 2026-10-08 the sweep marked opencad-studio UNVERIFIED
+    even though its AppImage's ELF carries the string `OpenCADStudio/2026.40.1`
+    and the sha256 matched the spec pin."""
+    import pathlib
+    import tempfile
+    failures = 0
+    cases = [
+        # (distname, file body, want_version)
+        ("OpenCADStudio-v2026.40.1-linux-x86_64.AppImage",
+         b"\x7fELF noise OpenCADStudio/2026.40.1 more noise", "2026.40.1"),
+        # stale artifact: body says 2026.39.0 -> report that, not the pin
+        ("OpenCADStudio-v2026.40.1-linux-x86_64.AppImage",
+         b"OpenCADStudio/2026.39.0", "2026.39.0"),
+        # no name-prefixed token at all -> give up rather than guess
+        ("OpenCADStudio-v2026.40.1-linux-x86_64.AppImage",
+         b"unrelated version 1.2.3 of some embedded lib", None),
+        # filename carries no separable app name (starts at the version),
+        # so no anchored token can match -> give up rather than guess
+        ("v2026.40.1-linux-x86_64.AppImage", b"v2026.40.1", None),
+    ]
+    for distname, body, want in cases:
+        with tempfile.TemporaryDirectory(prefix="sv-") as td:
+            sub = pathlib.Path(td)
+            (sub / "payload").write_bytes(body)
+            got, rel = ts.strings_version(sub, distname)
+        ok = got == want
+        failures += 0 if ok else 1
+        print(f"{'PASS' if ok else 'FAIL'}: strings_version({distname!r}) -> "
+              f"{got!r} (want {want!r})")
+    return failures
+
+
 def main():
     failures = 0
     for pinned, upstream, want, why in CASES:
@@ -152,6 +188,7 @@ def main():
               f"newer={got} (want {want})  # {why}")
     failures += test_redirect_version_parsing()
     failures += test_detect_type()
+    failures += test_strings_version()
     print(f"\n{'ALL PASS' if not failures else str(failures) + ' FAILURE(S)'}"
           f" ({len(CASES)} cases)")
     return 1 if failures else 0

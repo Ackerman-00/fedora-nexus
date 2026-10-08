@@ -1566,6 +1566,50 @@ def probe_binary_version(sub, distname):
     return None, None, None
 
 
+def strings_version(sub, distname, max_files=12, max_total=400_000_000):
+    """Fallback version probe for binary artifacts that ship no structured
+    metadata (added 2026-10-08: opencad-studio's AppImage carries no
+    X-AppImage-Version, no package.json, no version file - the version exists
+    only as the string `OpenCADStudio/2026.40.1` inside its 108 MB ELF, so the
+    sweep reported UNVERIFIED on a hash-OK, genuinely-current package).
+
+    Looks for `<artifact-name><sep><version>` tokens INSIDE the extracted
+    tree. The name half comes from the upstream asset filename; the version
+    half comes from the artifact body, so a stale download still reports its
+    REAL internal version and the pinned-vs-internal comparison fails it.
+    This never rubber-stamps the pin."""
+    name = re.split(r"[-_ ]+v?\d", distname, maxsplit=1)[0]
+    name = re.sub(r"\.(appimage|deb|rpm|exe|zip|tgz|zst|xz|gz|bz2)$", "",
+                  name, flags=re.I)
+    name = name.rstrip("._- ")
+    if len(name) < 4:
+        return None, None
+    pat = (re.escape(name.encode()) +
+           rb"[/ _-]v?(\d+(?:\.\d+)+[a-zA-Z0-9]{0,3})")
+    scanned = 0
+    total = 0
+    for f in sorted(sub.rglob("*")):
+        if scanned >= max_files or total >= max_total:
+            break
+        try:
+            if not f.is_file():
+                continue
+            size = f.stat().st_size
+            if size == 0:
+                continue
+            data = f.read_bytes()
+        except Exception:
+            continue
+        scanned += 1
+        total += len(data)
+        m = re.search(pat, data)
+        if m:
+            ver = m.group(1).decode(errors="ignore").rstrip(".-_")
+            if ver:
+                return ver, str(f.relative_to(sub))
+    return None, None
+
+
 def tear_apart(path, distname, tmp):
     """Return (internal_version, note, strong, source_like)."""
     ext = distname.lower()
@@ -1585,6 +1629,9 @@ def tear_apart(path, distname, tmp):
                         return v, "AppImage %s (%s)" % (v, rel), True, False
                 if hits:
                     return hits[0][1], "AppImage %s=%s (%s)" % (hits[0][0], hits[0][1], hits[0][2]), False, False
+                sv, srel = strings_version(root, distname)
+                if sv:
+                    return sv, "AppImage strings %s (%s)" % (sv, srel), True, False
                 return None, "AppImage extracted, no version evidence found (rc=%d)" % res.returncode, False, False
             return None, "AppImage --appimage-extract failed (rc=%d): %s" % (
                 res.returncode, res.stderr.decode(errors="ignore")[-300:]), False, False
