@@ -17,14 +17,14 @@
 %global __provides_exclude_from ^%{helium_base}/.*$
 
 Name:               helium-browser
-Version:        0.18.3.1
+Version:        0.19.1.2
 Release:        1%{?dist}
 Summary:            Private, fast, and honest web browser
 
 License:            GPL-3.0-only AND BSD-3-Clause
 URL:                https://github.com/imputnet/helium-linux
 Source0:            https://github.com/imputnet/helium-linux/releases/download/%{version}/helium-%{version}-x86_64_linux.tar.xz
-# sha256: 89bd962ca5e5159916a4c4befa5a9a08f540d2d8cd794f2f955e8d5d4a463bf2
+# sha256: d31ea7f64637934ac54438fb9a5cd2d3653e99dfa39bbe1f432b93b631aeafad
 # The official binary tarball does not ship the metainfo file, so pull it
 # from the repo at the matching release tag (all release tags carry it).
 Source1:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/package/net.imput.helium.metainfo.xml
@@ -119,17 +119,5 @@ esac
 %{_datadir}/icons/hicolor/256x256/apps/helium.png
 
 %changelog
-* Sun Oct 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.3.1-1
-- Update to upstream release 0.18.3.1 (Chromium 154.0.8037.97)
-* Wed Sep 30 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.2.1-1
-- Update to upstream release 0.18.2.1 (Chromium 154.0.8037.92)
-* Thu Sep 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.1.1-1
-- Update to upstream release 0.18.1.1 (Chromium 154.0.8037.57)
-* Fri Sep 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.2.1-1
-- Update to upstream release 0.17.2.1 (Chromium 153.0.8010.52, uBlock 1.75.0)
-* Thu Sep 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.1.1-2
-- Ship license texts (%license LICENSE + LICENSE.ungoogled_chromium from tag; License tag now GPL-3.0-only AND BSD-3-Clause, matching Terra/s6muel)
-- Add Requires: dbus-daemon (Chromium dlopens dbus, invisible to auto-deps)
-- COPR-only manual maintenance, auto-update disabled (update.sh is now a no-op)
-* Wed Sep 16 2026 Ackerman-00 <quietcraft@gmail.com> - 0.17.1.1-1
-- Auto-update to upstream release 0.17.1.1
+* Thu Oct 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.19.1.2-1
+- Update to upstream release 0.19.1.2 (Chromium 155.0.8059.39)
