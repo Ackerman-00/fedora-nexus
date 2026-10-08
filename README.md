@@ -104,7 +104,7 @@ sudo dnf install <package-name>
 | `photocraft` | Native image editor with layers, masks and PSD support | Stable |
 | `printcraft` | PDF reading, organizing and protection (native Rust) | Stable |
 | `protonplus` | Modern compatibility tools manager | Stable |
-| `materialyoucolor` | Material You color generation algorithms (pure Python + C++ quantizer) | Stable |
+| `materialyoucolor` | Material You color generation algorithms (pure Python + C++ quantizer); install as `python3-materialyoucolor` | Stable |
 | `python-mprisify` | MPRIS D-Bus interface library for Python | Stable |
 | `python-pydbus` | Pythonic D-Bus library | Stable |
 | `python-yt-dlp-ejs` | External JavaScript runtimes for yt-dlp | Stable |
