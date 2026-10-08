@@ -11,10 +11,12 @@ if [ "$(pwd)" != "$_update_sh_dir" ]; then
     echo "  cd $_update_sh_dir && bash update.sh" >&2
     exit 1
 fi
-# update.sh for PrintCraft (upstream .rpm repack)
+# update.sh for PdfCraft (upstream .rpm repack). The package keeps the
+# printcraft name for installed systems; upstream renamed repo + assets to
+# pdfcraft at v0.4.0, so the asset this script hunts is pdfcraft-*.
 
 SPEC_FILE="printcraft.spec"
-GITHUB_REPO="storytold/printcraft"
+GITHUB_REPO="storytold/pdfcraft"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
@@ -34,7 +36,7 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     echo "Update found: $CURRENT_VERSION -> $LATEST_VERSION"
 
     # Asset name carries the bare version (no v prefix).
-    RPM_URL="https://github.com/$GITHUB_REPO/releases/download/$LATEST_TAG/printcraft-${LATEST_VERSION}-linux-x86_64.rpm"
+    RPM_URL="https://github.com/$GITHUB_REPO/releases/download/$LATEST_TAG/pdfcraft-${LATEST_VERSION}-linux-x86_64.rpm"
     echo "  -> [CHECK] Verifying $RPM_URL"
     if ! curl --output /dev/null --silent --location --head --fail "$RPM_URL"; then
         echo "  -> [SKIP] Linux x86_64 rpm for $LATEST_TAG is not published (yet). Keeping $CURRENT_VERSION."
@@ -50,8 +52,8 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
         echo "  -> [SKIP] Release API unreachable for $LATEST_TAG. Keeping $CURRENT_VERSION."
         exit 0
     fi
-    if ! printf '%s' "$API_JSON" | grep -q "\"name\": *\"printcraft-${LATEST_VERSION}-linux-x86_64.rpm\""; then
-        echo "  -> [SKIP] Release $LATEST_TAG has no printcraft-${LATEST_VERSION}-linux-x86_64.rpm asset yet. Keeping $CURRENT_VERSION."
+    if ! printf '%s' "$API_JSON" | grep -q "\"name\": *\"pdfcraft-${LATEST_VERSION}-linux-x86_64.rpm\""; then
+        echo "  -> [SKIP] Release $LATEST_TAG has no pdfcraft-${LATEST_VERSION}-linux-x86_64.rpm asset yet. Keeping $CURRENT_VERSION."
         exit 0
     fi
 
@@ -59,7 +61,7 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
     # Source0 embeds %{version}; only the tag literal needs refreshing.
-    sed -i -E "s|releases/download/v[^/]+/printcraft-|releases/download/${LATEST_TAG}/printcraft-|" "$SPEC_FILE"
+    sed -i -E "s|releases/download/v[^/]+/pdfcraft-|releases/download/${LATEST_TAG}/pdfcraft-|" "$SPEC_FILE"
 
     # Refresh the pinned sha256 (teardown-sweep verifies Source0 against it).
     echo "  -> [HASH] Computing sha256 of $RPM_URL"
