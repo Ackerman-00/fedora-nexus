@@ -26,8 +26,8 @@
 # Cargo release strips debuginfo; empty %%debugsource is a hard error on rpm>=6
 # (concord/matugen pattern), hence debug_package nil.
 %global debug_package %{nil}
-%global commit          38c175fb0400c4b2fb0ee6fce155d3478322f5f7
-%global gitdate         20261007001719
+%global commit          790bd8363a417d09b5741d1acb6f4ffd1da4ce99
+%global gitdate         20261007233409
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           mixtapes
@@ -130,6 +130,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/com.pocoguy.Muse.desk
 %{_datadir}/icons/hicolor/scalable/apps/com.pocoguy.Muse*.svg
 
 %changelog
+* Thu Oct 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261007233409git790bd83-1
+- Nightly sync with upstream main branch (Commit: 790bd83)
+
 * Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261007001719git38c175f-1
 - Nightly sync with upstream main branch (Commit: 38c175f)
 
