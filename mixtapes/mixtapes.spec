@@ -1,14 +1,15 @@
 # VERIFICATION-DO-NOT-REMOVE
 # verify-fedora-branch: main
-# verify-fedora-run: 37070898478
+# verify-fedora-run: 37699851922
 # verify-fedora-tool: tools/teardown-sweep.py
-# verify-fedora-source0: https://github.com/m-obeid/Mixtapes/archive/e95c9e9a6979f088fc7486e50cb86ac727d8a842.tar.gz
-# verify-fedora-sha256: e66d74b5dfc3d5b83c19971e474e3e6e5c1c96927c9ca45b5612b955a1be3f90
+# verify-fedora-source0: https://github.com/m-obeid/Mixtapes/archive/790bd8363a417d09b5741d1acb6f4ffd1da4ce99/mixtapes-790bd83.tar.gz
+# verify-fedora-sha256: ecebbba377b75bd1b274b9733dc6eb4fbf966104f489d423012978c7fd2d6e3e
 # verify-fedora-copr: https://copr.fedorainfracloud.org/coprs/g/fedora-nexus/mixtapes/package/mixtapes/
 # verify-fedora-evidence: upstream@2026-10-03 commit 285ba7d == "Rustification of Mixtapes" merge (Rust rewrite; source tarball extracted, Cargo.lock 629 crates, gresource built by build.rs, desktop Exec=muse); sha256 match; RPM323 (all 4 sections present) RPM324 N-OK; osv-query 0 CVEs on pinned rev; repology 404 (new package); libyear 0.0 (0 days)
 # verify-fedora-evidence: upstream 2026-10-03 https://api.github.com/repos/m-obeid/Mixtapes/commits/285ba7d sha 285ba7dd1cb89e3a4127d336e849e748d3423880 == spec Source0 rev; https://raw.githubusercontent.com/m-obeid/Mixtapes/285ba7d/LICENSE unknown license text present
 # verify-fedora-evidence: docker fedora:44 install-test 2026-10-03 install clean, dep PROVEN, smoke=ELF+0 references clean (torn apart)
 # verify-fedora-evidence: source 2026-10-03 tarball sha256 match, spectool -g, Cargo.lock present, gresource built in build.rs (gio::resources_register_include), desktop Exec=muse %%U, metainfo com.pocoguy.Muse.metainfo.xml, icons hicolor scalable SVG
+# verify-fedora-evidence: 2026-10-08 run 37699851922 refreshed source0+sha256 to pin 790bd83 (spectool -g download sha256 ecebbba3 == header, both GitHub archive URL styles hash identically); Cargo.toml byte-identical vs 38c175f, no dep delta; fresh fedora:44 teardown BUILDEP=0 RPMBUILD=0 INSTALL=0 SMOKE=0
 # verify-fedora-deps: cargo:crates-io registry index ✓|cargo:crates.io index ✓|github.com:alexcrichton:curl-sys ✓|github.com:denoland:deno_core ✓|github.com:google:v8-rust ✓|github.com:rust-lang:rusty_v8 ✓|github.com:servo:fonts ✓|github.com:westover:lys ✓|gitlab.freedesktop.org:wayland:wayland-protocols ✓|pypi:PyGObject ✓|pypi:cffi ✓|pypi:pycparser ✓|pypi:setuptools ✓|pypi:wheel ✓|src:4 ✓|src:pango ✓|Static/Direct-WebGL:no direct dependency in source|docs:sphinx ✓|tests:pytest ✗|buildsys:glib2 ✗
 # verify-fedora-deps: build:RUSTC ✓|build:CARGO ✓|build:PKG_CONFIG ✓|build:CC ✓|build:CXX ✓|build:MAKE ✓|build:GSETTINGS_COMPILE ✓|build:MSGFMT ✓|build:DESKTOP_FILE_VALIDATE ✓|build:APPSTREAMCLI ✓|build:GLIB_COMPILE_RESOURCES ✓|runtime:GIO-2.0 ✓|runtime:GDK-3.0 ✗|runtime:GDK-4.0 ✓|runtime:GDK-PIXBUF-2.0 ✓|runtime:GSK-4.0 ✓|runtime:PANGOCAIRO-1.0 ✓|runtime:GSTREAMER-1.0 ✓|runtime:GSTREAMER-BASE-1.0 ✓|runtime:GSTREAMER-VIDEO-1.0 ✓|runtime:GSTREAMER-AUDIO-1.0 ✓|runtime:GSTREAMER-PBUTILS-1.0 ✓|runtime:GSTREAMER-APP-1.0 ✓|runtime:GSTREAMER-PLAY-1.0 ✓|runtime:GTK4 ✓|runtime:GTK4-HAMCREST ✓|runtime:GTK4-WEBKIT6 ✓|runtime:ICU-I18N ✓|runtime:ICU-UC ✓|runtime:JavaScriptCore-6.0 ✓|runtime:JavaScriptCoreGTK-6.0 ✓|runtime:WEBKIT-6.0 ✓|runtime:OPENSSL ✓|runtime:GSTREAMER-SCTP-1.0 ✓
 # verify-fedora-deps: py:PyGObject ✗|py:dbus ✗|py:requests ✗|py:urllib3 ✗|py:certifi ✗|py:charset-normalizer ✗|py:idna ✗|py:os ✓ ✗(stdlib)|py:sys ✓ ✗(stdlib)|py:asyncio ✓ ✗(stdlib)|py:typing ✓ ✗(stdlib)|py:dataclasses ✓ ✗(stdlib)|py:logging ✓ ✗(stdlib)|py:json ✓ ✗(stdlib)|py:subprocess ✓ ✗(stdlib)|py:re ✓ ✗(stdlib)|py:math ✓ ✗(stdlib)|py:abc ✓ ✗(stdlib)|py:base64 ✓ ✗(stdlib)|py:contextlib ✓ ✗(stdlib)|py:functools ✓ ✗(stdlib)|py:itertools ✓ ✗(stdlib)|py:threading ✓ ✗(stdlib)|py:traceback ✓ ✗(stdlib)|py:pathlib ✓ ✗(stdlib)|py:shutil ✓ ✗(stdlib)|py:tempfile ✓ ✗(stdlib)|py:datetime ✓ ✗(stdlib)|py:random ✓ ✗(stdlib)|py:hashlib ✓ ✗(stdlib)|py:socket ✓ ✗(stdlib)|py:ssl ✓ ✗(stdlib)|py:http ✓ ✗(stdlib)|py:urllib ✓ ✗(stdlib)|py:argparse ✓ ✗(stdlib)|py:copy ✓ ✗(stdlib)|py:enum ✓ ✗(stdlib)|py:errno ✓ ✗(stdlib)|py:fnmatch ✓ ✗(stdlib)|py:glob ✓ ✗(stdlib)|py:io ✓ ✗(stdlib)|py:locale ✓ ✗(stdlib)|py:operator ✓ ✗(stdlib)|py:platform ✓ ✗(stdlib)|py:queue ✓ ✗(stdlib)|py:sys ✓ ✗(stdlib)|py:textwrap ✓ ✗(stdlib)|py:types ✓ ✗(stdlib)|py:uuid ✓ ✗(stdlib)|py:warnings ✓ ✗(stdlib)|py:weakref ✓ ✗(stdlib)|py:asyncio ✓ ✗(stdlib)|py:typing_extensions ✗|py:anyio ✗|py:attrs ✗|py:exceptiongroup ✗|py:idna ✗|py:outcome ✗|py:sniffio ✗|py(sortedcontainers) ✗|py:six ✗
@@ -32,7 +33,7 @@
 
 Name:           mixtapes
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A cross-platform GTK4/Libadwaita YouTube Music client written in Rust
 
 License:        GPL-3.0-or-later
@@ -130,6 +131,11 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/com.pocoguy.Muse.desk
 %{_datadir}/icons/hicolor/scalable/apps/com.pocoguy.Muse*.svg
 
 %changelog
+* Thu Oct 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261007233409git790bd83-2
+- Refresh the stale verification header: Source0 url and sha256 now match
+  pin 790bd83 (the header still named the 2026-10-03 pin e95c9e9).
+- Teach update.sh to refresh both lines on every future pin change.
+
 * Thu Oct 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261007233409git790bd83-1
 - Nightly sync with upstream main branch (Commit: 790bd83)
 

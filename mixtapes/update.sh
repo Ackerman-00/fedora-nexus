@@ -68,6 +68,25 @@ else
     printf '\n%%changelog\n%b' "$CHANGELOG_ENTRY" >> "$SPEC_FILE"
 fi
 
+# Refresh the verification header (verify-fedora-source0 / -sha256) so it
+# never drifts behind the pin again: 2026-10-08 the header still named the
+# 2026-10-03 pin e95c9e9 while Source0 pointed at 790bd83, which would make
+# the next sha256 audit compare the wrong tarball. Best effort: a download
+# failure warns loudly but does not abort a valid version bump.
+if grep -q '^# verify-fedora-source0:' "$SPEC_FILE"; then
+    SRC0_URL="https://github.com/$GITHUB_REPO/archive/$LATEST_COMMIT/mixtapes-$SHORT_COMMIT.tar.gz"
+    TMP_TAR=$(mktemp -t mixtapes-src0.XXXXXX)
+    if curl -fsSL "$SRC0_URL" -o "$TMP_TAR"; then
+        SRC0_SHA=$(sha256sum "$TMP_TAR" | awk '{print $1}')
+        sed -i -E "s|^# verify-fedora-source0:.*|# verify-fedora-source0: $SRC0_URL|" "$SPEC_FILE"
+        sed -i -E "s|^# verify-fedora-sha256:.*|# verify-fedora-sha256: $SRC0_SHA|" "$SPEC_FILE"
+        echo "  -> [OK] verification header refreshed for $SHORT_COMMIT (sha256 $SRC0_SHA)"
+    else
+        echo "  -> [WARN] could not download Source0; verification header still names the old pin" >&2
+    fi
+    rm -f "$TMP_TAR"
+fi
+
 echo "  -> [DONE] Successfully patched $SPEC_FILE."
 # Guard: an updater must never leave a spec without its header. If the
 # changelog rewrite or a sed wiped the file, restore from git and fail loudly.
