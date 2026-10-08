@@ -5,14 +5,14 @@
 %global debug_package %{nil}
 
 Name:           filmcraft
-Version:        0.2.1
+Version:        0.4.0
 Release:        1%{?dist}
 Summary:        Video editing, color and sound
 
 License:        MIT AND Apache-2.0
 URL:            https://getartcraft.com/apps/filmcraft
-Source0:        https://github.com/storytold/filmcraft/releases/download/v0.2.1/filmcraft-%{version}-linux-x86_64.rpm
-# sha256: e808951b37476e7916b81e250d8f023e0c383b01c2cca938125caa284b3a80b8
+Source0:        https://github.com/storytold/filmcraft/releases/download/v0.4.0/filmcraft-%{version}-linux-x86_64.rpm
+# sha256: 97be65f1cd21073d9f252866cd9df54279f327be913d63a9005df46efb4fd59c
 
 # %install runs desktop-file-validate; the buildroot does not provide it.
 BuildRequires:  desktop-file-utils
@@ -93,5 +93,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
-* Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.1-1
-- Auto-update to upstream release v0.2.1
+* Thu Oct 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.4.0-1
+- Auto-update to upstream release v0.4.0
