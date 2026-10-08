@@ -23,8 +23,19 @@ echo "Checking for upstream updates..."
 # The stable URL 302-redirects to the versioned file
 # (.../files/bin/<version>/opencode-desktop-linux-amd64.deb);
 # the redirect target is the version source of truth.
-EFFECTIVE_URL=$(curl -sIL -o /dev/null -w '%{url_effective}' --max-time 30 "$STABLE_URL")
-LATEST_VERSION=$(echo "$EFFECTIVE_URL" | grep -oP 'files/bin/\K[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+# One transient network blip here used to fail the whole updater run:
+# on 2026-10-08 the single curl below timed out before following the
+# redirect, so url_effective came back as the original URL and the script
+# exited 1 even though upstream was unchanged. Retry, and only fail when
+# every attempt failed.
+EFFECTIVE_URL=""
+for attempt in 1 2 3; do
+    EFFECTIVE_URL=$(curl -sIL -o /dev/null -w '%{url_effective}' --max-time 30 "$STABLE_URL")
+    LATEST_VERSION=$(echo "$EFFECTIVE_URL" | grep -oP 'files/bin/\K[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+    [ -n "$LATEST_VERSION" ] && break
+    echo "  -> version lookup attempt $attempt failed (got: $EFFECTIVE_URL), retrying..."
+    sleep 5
+done
 
 if [ -z "$LATEST_VERSION" ]; then
     echo "Error: Could not resolve version from $STABLE_URL (got: $EFFECTIVE_URL)."
