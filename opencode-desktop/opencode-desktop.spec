@@ -14,8 +14,8 @@
 %global __requires_exclude_from ^/opt/OpenCode/.*$
 
 Name:           opencode-desktop
-Version:        2.0.24
-Release:        7%{?dist}
+Version:        2.0.25
+Release:        1%{?dist}
 Summary:        AI coding agent desktop app
 
 License:        MIT
@@ -24,7 +24,7 @@ URL:            https://opencode.ai
 # Script not found); the same-release deb verified good (v2.0.24, serve OK).
 # fpm-built debs have no rpmbuild brp-strip phase, so repack from the deb.
 Source0:        https://opencode.ai/files/bin/%{version}/opencode-desktop-linux-amd64.deb
-# sha256: e69f2e7d535fdfcfb504fa39dade7ef76316bd499fe112c5312ec4352b8ae30d
+# sha256: e6e5310bd975fb857e86356a1774d6c5b082f96208eb1464d4d8c979a3f5cad1
 
 ExclusiveArch:  x86_64
 
@@ -162,27 +162,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/opencode-desktop.desk
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-7
-- Complete the Electron dep floor (alsa-lib, cups-libs, mesa-libgbm,
-  libdrm) per vesktop and AUR; fix stale rpm-era comments
-
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-6
-- Repack from the upstream deb: its bundled opencode-cli is intact
-  (v2.0.24, serve OK) where the rpm's is strip-damaged; add libsecret
-  from the deb Depends
-
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-5
-- Purge RPM macro syntax from comments (it broke parsing in 11085303);
-  add the missing desktop-file-utils BuildRequires
-
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-4
-- Prune musl modules, warn on bundle regression; no strip hack needed
-
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-3
-- Replace strip-damaged bundled opencode-cli with a v2 resolver wrapper
-
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-2
-- Drop bundled electron-updater config; dnf owns updates on Fedora
-
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.24-1
-- Auto-update to upstream release 2.0.24
+* Thu Oct 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.25-1
+- Auto-update to upstream release 2.0.25
