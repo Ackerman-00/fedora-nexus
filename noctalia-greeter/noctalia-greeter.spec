@@ -5,7 +5,7 @@
 
 Name:           noctalia-greeter
 Version:        1.6.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 License:        MIT
@@ -25,7 +25,8 @@ BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20
 # Protocol codegen uses meson find_program('wayland-scanner'), not
 # dependency() - still needs an explicit BR, it never self-declares.
 BuildRequires:  pkgconfig(wayland-scanner)
-BuildRequires:  libEGL-devel
+# libEGL-devel removed 2026-10-09: duplicate twin of pkgconfig(egl) below
+# (both resolve to mesa-libEGL-devel); keep the pkgconfig() form.
 BuildRequires:  mesa-libGLES-devel
 BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(cairo-ft)
@@ -117,5 +118,8 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Fri Oct 09 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.6.0^20261007111952git836071b-2
+- Drop duplicate libEGL-devel BuildRequires (twin of pkgconfig(egl), same
+  provider); keep the pkgconfig() form. Same upstream pin 836071b.
 * Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.0^20261007111952git836071b-1
 - Nightly sync with upstream main branch (Commit: 836071b)
