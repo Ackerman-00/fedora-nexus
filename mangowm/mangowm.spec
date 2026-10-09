@@ -1,6 +1,6 @@
 Name:           mangowm
 Version:        0.18.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <quietcraft@gmail.com>
@@ -76,8 +76,11 @@ sed -i "s/'-U_FORTIFY_SOURCE',//g" meson.build
 %license LICENSE
 %{_bindir}/mango
 %{_bindir}/mmsg
+%{_bindir}/mangonag
 %{_mandir}/man1/mmsg.1*
+%{_mandir}/man1/mangonag.1*
 %config(noreplace) %{_sysconfdir}/mango/config.conf
+%config(noreplace) %{_sysconfdir}/mango/config.toml
 %{_datadir}/wayland-sessions/mango.desktop
 %config(noreplace) %{_datadir}/xdg-desktop-portal/mango-portals.conf
 # New in 0.17.1: mango-session.target (meson install_data assets/ ->
@@ -87,5 +90,8 @@ sed -i "s/'-U_FORTIFY_SOURCE',//g" meson.build
 %{_userunitdir}/mango-session.target
 
 %changelog
+* Fri Oct 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.0-2
+- Package new mangonag binary, man page, and config.toml (missing from 0.18.0)
+
 * Fri Oct 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.0-1
 - Auto-update to version 0.18.0
