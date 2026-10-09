@@ -6,7 +6,7 @@
 
 Name:           protonplus
 Version:        %{fileref}
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A modern compatibility tools manager
 ExclusiveArch:  x86_64
 
@@ -19,7 +19,9 @@ BuildRequires:  meson >= 1.0.0
 BuildRequires:  python3
 BuildRequires:  vala
 BuildRequires:  desktop-file-utils
-BuildRequires:  libappstream-glib
+# libappstream-glib removed 2026-10-09: no in-spec consumer (%check uses
+# desktop-file-validate from desktop-file-utils; upstream meson needs only
+# the freedesktop appstream library below).
 BuildRequires:  pkgconfig(appstream)
 BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(gee-0.8)
@@ -66,6 +68,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
 %{_metainfodir}/%{app_id}.metainfo.xml
 
 %changelog
+* Fri Oct 09 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.6.8-4
+- Drop unused libappstream-glib BuildRequires (no in-spec consumer; upstream
+  meson needs only the freedesktop appstream library). Same upstream v0.6.8.
 * Sun Sep 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.8-3
 - Wrap %description to fix rpmlint E: description-line-too-long
 
