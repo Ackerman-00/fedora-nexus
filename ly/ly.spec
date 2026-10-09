@@ -7,7 +7,7 @@
 
 Name:           ly
 Version:        1.4.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Lightweight TUI display manager
 
 License:        WTFPL AND MIT
@@ -155,6 +155,9 @@ fi
 %config(noreplace) %{_sysconfdir}/ly/lang/*.ini
 
 %changelog
+* Fri Oct 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.1-5
+- Rebuild to retry after transient codeberg.org 429 rate limit on vendor.tar.zst
+
 * Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.1-4
 - Fetch Source0 from the official GitHub mirror: codeberg.org
   /archive/ returns 503 for ly and other projects (proven 2026-10-03).
