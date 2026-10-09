@@ -4,7 +4,7 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | Package | Distfile | Pinned | Internal | Status | Note |
 |---|---|---|---|---|---|
 | app2unit | live Vladimir-csp/app2unit | 47e23ec6ab9e | 47e23ec6ab9e | **OK** | live Vladimir-csp/app2unit pin 47e23ec6ab9e vs upstream 47e23ec6ab9e |
-| appmenu-glib-translator | appmenu-glib-translator-fda6f09.tar.gz | 25.04^20261008192211gitfda6f09 | >=1.3.0 | **SOURCE-OK** | tar meson.build=>=1.3.0 (vala-panel-appmenu-fda6f0934b1bf0db4629098d68e468fd4effb308/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3.0 (not authoritative) |
+| appmenu-glib-translator | appmenu-glib-translator-eb3077e.tar.gz | 25.04^20261009135843giteb3077e | >=1.3.0 | **SOURCE-OK** | tar meson.build=>=1.3.0 (vala-panel-appmenu-eb3077eac96f0e1836d7d455bf847367c9eb0c2e/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3.0 (not authoritative) |
 | astal | live Aylur/astal | cbcd9f49dd6b | cbcd9f49dd6b | **OK** | live Aylur/astal pin cbcd9f49dd6b vs upstream cbcd9f49dd6b |
 | astal-gjs | live Aylur/astal | cbcd9f49dd6b | cbcd9f49dd6b | **OK** | live Aylur/astal pin cbcd9f49dd6b vs upstream cbcd9f49dd6b |
 | astal-gtk4 | live Aylur/astal | cbcd9f49dd6b | cbcd9f49dd6b | **OK** | live Aylur/astal pin cbcd9f49dd6b vs upstream cbcd9f49dd6b |
@@ -79,7 +79,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | stoat-desktop | stoat-desktop.desktop | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| umbriel-git | live noctalia-dev/umbriel | 1d01b3aed9ce | 1d01b3aed9ce | **OK** | live noctalia-dev/umbriel pin 1d01b3aed9ce vs upstream 1d01b3aed9ce |
+| umbriel-git | live noctalia-dev/umbriel | 44c1069af80a | 44c1069af80a | **OK** | live noctalia-dev/umbriel pin 44c1069af80a vs upstream 44c1069af80a |
 | vectorcraft | vectorcraft-0.7.0-linux-x86_64.rpm | 0.7.0 | 0.7.0 | **OK** | rpm header vectorcraft=0.7.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.7.0 \| internal 0.7.0 |
 | vesktop | vesktop-1.6.7.x86_64.rpm | 1.6.7 | 1.6.7 | **OK** | rpm header vesktop=1.6.7-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.7 \| internal 1.6.7 |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
@@ -92,7 +92,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | zen-browser | zen-browser.desktop | 1.23.1b |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | zen-browser | policies.json | 1.23.1b |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | zen-browser | zen-browser | 1.23.1b |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| appmenu-glib-translator | upstream github.com/rilian-la-te/vala-panel-appmenu | 25.04^20261008192211gitfda6f09 | 0.6.1 | **OK** | at upstream latest 0.6.1 [releases/latest] |
+| appmenu-glib-translator | upstream github.com/rilian-la-te/vala-panel-appmenu | 25.04^20261009135843giteb3077e | 0.6.1 | **OK** | at upstream latest 0.6.1 [releases/latest] |
 | aylurs-gtk-shell | upstream github.com/Aylur/ags | 3.1.2 | v3.1.2 | **OK** | at upstream latest v3.1.2 [releases/latest] |
 | bibata-cursor-theme | upstream github.com/ful1e5/Bibata_Cursor | 2.0.7 | v2.0.7 | **OK** | at upstream latest v2.0.7 [releases/latest] |
 | cascadia-code-nerd-fonts | upstream github.com/ryanoasis/nerd-fonts | 3.5.1 | v3.5.1 | **OK** | at upstream latest v3.5.1 [releases/latest] |
