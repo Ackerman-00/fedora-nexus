@@ -79,7 +79,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | stoat-desktop | stoat-desktop.desktop | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| umbriel-git | live noctalia-dev/umbriel | 44c1069af80a | 44c1069af80a | **OK** | live noctalia-dev/umbriel pin 44c1069af80a vs upstream 44c1069af80a |
+| umbriel-git | live noctalia-dev/umbriel | e58758533853 | e58758533853 | **OK** | live noctalia-dev/umbriel pin e58758533853 vs upstream e58758533853 |
 | vectorcraft | vectorcraft-0.7.0-linux-x86_64.rpm | 0.7.0 | 0.7.0 | **OK** | rpm header vectorcraft=0.7.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.7.0 \| internal 0.7.0 |
 | vesktop | vesktop-1.6.7.x86_64.rpm | 1.6.7 | 1.6.7 | **OK** | rpm header vesktop=1.6.7-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.7 \| internal 1.6.7 |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
@@ -88,10 +88,10 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | wlroots | wlroots-0.20.2.tar.gz | 0.20.2 | >=1.3 | **SOURCE-OK** | tar meson.build=>=1.3 (wlroots-0.20.2/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3 (not authoritative) |
 | xcur2png | xcur2png-0.7.1.tar.gz | 0.7.1 | 0.7.1 | **SOURCE-OK** | tar configure.ac=0.7.1 (xcur2png-0.7.1/configure.ac) \| hash hash-OK \| weak internal evidence 0.7.1 (not authoritative) |
 | xdg-desktop-portal-umbriel-git | live noctalia-dev/xdg-desktop-portal-umbriel | d6bd72cabd83 | d6bd72cabd83 | **OK** | live noctalia-dev/xdg-desktop-portal-umbriel pin d6bd72cabd83 vs upstream d6bd72cabd83 |
-| zen-browser | zen.linux-x86_64.tar.xz | 1.23.1b | 1.23.1b | **OK** | tar application.ini=1.23.1b (zen/application.ini) \| pinned 1.23.1b \| internal 1.23.1b |
-| zen-browser | zen-browser.desktop | 1.23.1b |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| zen-browser | policies.json | 1.23.1b |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| zen-browser | zen-browser | 1.23.1b |  | **OK** | bundled aux/doc asset in repo, no download needed |
+| zen-browser | zen.linux-x86_64.tar.xz | 1.23.2b | 1.23.2b | **OK** | tar application.ini=1.23.2b (zen/application.ini) \| pinned 1.23.2b \| internal 1.23.2b |
+| zen-browser | zen-browser.desktop | 1.23.2b |  | **OK** | bundled aux/doc asset in repo, no download needed |
+| zen-browser | policies.json | 1.23.2b |  | **OK** | bundled aux/doc asset in repo, no download needed |
+| zen-browser | zen-browser | 1.23.2b |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | appmenu-glib-translator | upstream github.com/rilian-la-te/vala-panel-appmenu | 25.04^20261009135843giteb3077e | 0.6.1 | **OK** | at upstream latest 0.6.1 [releases/latest] |
 | aylurs-gtk-shell | upstream github.com/Aylur/ags | 3.1.2 | v3.1.2 | **OK** | at upstream latest v3.1.2 [releases/latest] |
 | bibata-cursor-theme | upstream github.com/ful1e5/Bibata_Cursor | 2.0.7 | v2.0.7 | **OK** | at upstream latest v2.0.7 [releases/latest] |
@@ -134,7 +134,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | waypaper | upstream github.com/anufrievroman/waypaper | 2.9 | 2.9 | **OK** | at upstream latest 2.9 [releases/latest] |
 | wlroots | upstream gitlab.freedesktop.org/wlroots/wlroots | 0.20.2 | 0.20.2 | **OK** | at upstream latest 0.20.2 [ls-remote] |
 | xcur2png | upstream github.com/eworm-de/xcur2png | 0.7.1 | 0.7.1 | **OK** | at upstream latest 0.7.1 [releases/latest] |
-| zen-browser | upstream github.com/zen-browser/desktop | 1.23.1b | 1.23.1b | **OK** | at upstream latest 1.23.1b [releases/latest] |
+| zen-browser | upstream github.com/zen-browser/desktop | 1.23.2b | 1.23.2b | **OK** | at upstream latest 1.23.2b [releases/latest] |
 | python3-materialyoucolor | pypi:materialyoucolor | 3.0.4 | 3.0.4 | **OK** | upstream 3.0.4 == pinned 3.0.4 [freshness via pypi:materialyoucolor; repology unreachable in this environment] |
 | python-pydbus | pypi:pydbus | 0.6.0 | 0.6.0 | **OK** | upstream 0.6.0 == pinned 0.6.0 [freshness via pypi:pydbus; repology unreachable in this environment] |
 | python-yt-dlp-ejs | pypi:yt-dlp-ejs | 0.8.0 | 0.8.0 | **OK** | upstream 0.8.0 == pinned 0.8.0 [freshness via pypi:yt-dlp-ejs; repology unreachable in this environment] |
