@@ -142,6 +142,6 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | python-yt-dlp-get-pot-rustypipe | pypi:yt-dlp-get-pot-rustypipe | 0.2.0 | 0.2.0 | **OK** | upstream 0.2.0 == pinned 0.2.0 [freshness via pypi:yt-dlp-get-pot-rustypipe; repology unreachable in this environment] |
 | python-ytmusicapi | pypi:ytmusicapi | 1.12.3 | 1.12.3 | **OK** | upstream 1.12.3 == pinned 1.12.3 [freshness via pypi:ytmusicapi; repology unreachable in this environment] |
 | rootapp | aur | 0.9.147 | 0.9.147 | **OK** | pinned 0.9.147 >= repology 0.9.147 (aur); tracker behind |
-| LIBYEAR | freshness | 0.08 yr | 1 pkgs | **METRIC** | threshold=20 libyears |
+| LIBYEAR | freshness | 0.09 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
 
 **Verdict: PASS** (0 failure(s))
