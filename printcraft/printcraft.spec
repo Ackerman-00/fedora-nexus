@@ -8,7 +8,7 @@
 %global debug_package %{nil}
 
 Name:           printcraft
-Version:        0.4.0
+Version:        0.5.0
 Release:        1%{?dist}
 Summary:        PDF reading, organizing and protection
 
@@ -17,8 +17,8 @@ Summary:        PDF reading, organizing and protection
 # embedded in the binaries and their OFL texts ship as %license files.
 License:        (MIT OR Apache-2.0) AND OFL-1.1
 URL:            https://getartcraft.com/apps/pdfcraft
-Source0:        https://github.com/storytold/pdfcraft/releases/download/v0.4.0/pdfcraft-%{version}-linux-x86_64.rpm
-# sha256: 8861ee8e50a186ad44e9ae4d0deabf89d0e726040f5f4d6bc14a15cd308402de
+Source0:        https://github.com/storytold/pdfcraft/releases/download/v0.5.0/pdfcraft-%{version}-linux-x86_64.rpm
+# sha256: 421f344c46fef182badb97900c41bc5b9f04ae82d2427f2662fa91a2b6650a77
 
 # Upstream renamed at v0.4.0, but the package keeps its name so existing
 # `dnf install printcraft` invocations keep resolving; provide the new name
@@ -116,9 +116,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
-* Thu Oct 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.4.0-1
-- Update to upstream release v0.4.0
-- Follow upstream's printcraft -> pdfcraft rename in binaries, appid, doc
-  dir and URLs; keep the package name so dnf install printcraft still works
-- Ship the new shared-mime-info stub and the three bundled OFL font
-  licenses; extend License with OFL-1.1
+* Sat Oct 10 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.0-1
+- Auto-update to upstream release v0.5.0
