@@ -5,14 +5,14 @@
 %global debug_package %{nil}
 
 Name:           effectcraft
-Version:        0.6.0
+Version:        0.7.0
 Release:        1%{?dist}
 Summary:        Motion graphics and visual effects compositor
 
 License:        MIT AND Apache-2.0
 URL:            https://getartcraft.com/apps/effectcraft
-Source0:        https://github.com/storytold/effectcraft/releases/download/v0.6.0/effectcraft-%{version}-linux-x86_64.rpm
-# sha256: 5535bb256eae5cb8c8f4d010a4d50653cd75e1bf8b91a029ca48497a209f9c49
+Source0:        https://github.com/storytold/effectcraft/releases/download/v0.7.0/effectcraft-%{version}-linux-x86_64.rpm
+# sha256: b42fe104ad4d8fa44434f40b1b9a91b021b5e294ad8f0e6be090b18f71d33f06
 
 # %install runs desktop-file-validate; the buildroot does not provide it.
 BuildRequires:  desktop-file-utils
@@ -95,5 +95,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
-* Thu Oct 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.0-1
-- Auto-update to upstream release v0.6.0
+* Sat Oct 10 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.0-1
+- Auto-update to upstream release v0.7.0
