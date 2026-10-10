@@ -32,7 +32,7 @@ sudo dnf install <package-name>
 
 > **Supported releases:** Fedora 43, 44, 45 and Rawhide (x86_64), exactly the
 > four chroots this COPR builds (project API `chroot_repos`, checked
-> 2026-10-05). Fedora 44 is the current stable release, Fedora 45 is not
+> 2026-10-10). Fedora 44 is the current stable release, Fedora 45 is not
 > released yet, and Fedora 43 reaches end-of-life on 2026-12-09, after which
 > its chroot will be disabled. If you are still on F43, upgrade to F44 or
 > newer. The COPR project follows Fedora branching automatically.
@@ -42,7 +42,7 @@ sudo dnf install <package-name>
 > package instead of ours. This happens today on Rawhide with `ly` (Fedora has
 > the 1.5.0~rc1 prerelease, this repo tracks stable 1.4.1). Ask for the exact
 > build when that happens, for example
-> `sudo dnf install ly-1.4.1-4.fc46`. `dnf list --showduplicates <pkg>` shows
+> `sudo dnf install 'ly-1.4.1-*'`. `dnf list --showduplicates <pkg>` shows
 > every version on offer.
 
 ---
