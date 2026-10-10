@@ -21,10 +21,10 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | cliphist | cliphist-v0.7.0.tar.gz | 0.7.0 | 0.7.0 | **SOURCE-OK** | tar version file=0.7.0 (cliphist-0.7.0/version.txt) \| hash no-checksum-pinned \| weak internal evidence 0.7.0 (not authoritative) |
 | concat | Concat-0.2.6-linux-x86_64.rpm | 0.2.6 | 0.2.6 | **OK** | rpm header concat=0.2.6-1 (tags NAME/VERSION/RELEASE) \| pinned 0.2.6 \| internal 0.2.6 |
 | concord | v2.6.1.tar.gz | 2.6.1 | 2.6.1 | **SOURCE-OK** | tar Cargo.toml=2.6.1 (concord-2.6.1/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 2.6.1 (not authoritative) |
-| designcraft | designcraft-0.4.0-linux-x86_64.rpm | 0.4.0 | 0.4.0 | **OK** | rpm header designcraft=0.4.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.4.0 \| internal 0.4.0 |
-| effectcraft | effectcraft-0.6.0-linux-x86_64.rpm | 0.6.0 | 0.6.0 | **OK** | rpm header effectcraft=0.6.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.6.0 \| internal 0.6.0 |
+| designcraft | designcraft-0.5.0-linux-x86_64.rpm | 0.5.0 | 0.5.0 | **OK** | rpm header designcraft=0.5.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.5.0 \| internal 0.5.0 |
+| effectcraft | effectcraft-0.7.0-linux-x86_64.rpm | 0.7.0 | 0.7.0 | **OK** | rpm header effectcraft=0.7.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.7.0 \| internal 0.7.0 |
 | extension-manager | extension-manager-0.6.5.tar.gz | 0.6.5 | >= 0.59.0 | **SOURCE-OK** | tar meson.build=>= 0.59.0 (extension-manager-0.6.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 0.59.0 (not authoritative) |
-| filmcraft | filmcraft-0.4.0-linux-x86_64.rpm | 0.4.0 | 0.4.0 | **OK** | rpm header filmcraft=0.4.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.4.0 \| internal 0.4.0 |
+| filmcraft | filmcraft-0.5.0-linux-x86_64.rpm | 0.5.0 | 0.5.0 | **OK** | rpm header filmcraft=0.5.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.5.0 \| internal 0.5.0 |
 | fluxer | rpm | 2026.1006.171735 | 2026.1006.171735 | **OK** | rpm header fluxer=2026.1006.171735-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1006.171735 \| internal 2026.1006.171735 |
 | freebuff | freebuff-linux-x64.tar.gz | 0.2.26 | 0.2.26 | **OK** | tar runtime probe freebuff --version: 0.2.26 \| pinned 0.2.26 \| internal 0.2.26 |
 | ghostty | ghostty_1.3.1-0.ppa2_amd64_24.04.deb | 1.3.1 | 1.3.1-0~ppa2 | **OK** | deb pkg=ghostty (control control.tar.zst) \| pinned 1.3.1 \| internal 1.3.1-0~ppa2 |
@@ -37,7 +37,7 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | heroic-games-launcher | Heroic-2.22.3-linux-x86_64.rpm | 2.22.3 | 2.22.3 | **OK** | rpm header heroic=2.22.3-1 (tags NAME/VERSION/RELEASE) \| pinned 2.22.3 \| internal 2.22.3 |
 | lazyvim-git | live LazyVim/LazyVim | 999700997f72 | 999700997f72 | **OK** | live LazyVim/LazyVim pin 999700997f72 vs upstream 999700997f72 |
 | libcava | 1.0.0.tar.gz | 1.0.0 | $(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) | **SOURCE-OK** | tar Makefile.am=$(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) (cava-1.0.0/Makefile.am) \| hash no-checksum-pinned \| weak internal evidence $(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) (not authoritative) |
-| lightcraft | lightcraft-0.4.0-linux-x86_64.rpm | 0.4.0 | 0.4.0 | **OK** | rpm header lightcraft=0.4.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.4.0 \| internal 0.4.0 |
+| lightcraft | lightcraft-0.5.0-linux-x86_64.rpm | 0.5.0 | 0.5.0 | **OK** | rpm header lightcraft=0.5.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.5.0 \| internal 0.5.0 |
 | localsend | LocalSend-1.18.2-linux-x86-64.deb | 1.18.2 | 1.18.2+64 | **OK** | deb pkg=localsend (control control.tar.zst) \| pinned 1.18.2 \| internal 1.18.2+64 |
 | logseq | Logseq-linux-x86_64-2.0.2.zip | 2.0.2 | 2.0.2 | **OK** | zip asar=2.0.2 (resources/app.asar) \| pinned 2.0.2 \| internal 2.0.2 |
 | logseq | logseq.png | 2.0.2 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
@@ -55,8 +55,8 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | opencad-studio | OpenCADStudio-v2026.40.1-linux-x86_64.AppImage | 2026.40.1 | 2026.40.1 | **OK** | AppImage strings 2026.40.1 (AppRun) \| pinned 2026.40.1 \| internal 2026.40.1 |
 | openchamber | OpenChamber-2.2.0-linux-x86_64.AppImage | 2.2.0 | 2.2.0 | **OK** | AppImage 2.2.0 (resources/app.asar) \| pinned 2.2.0 \| internal 2.2.0 |
 | opencode-desktop | opencode-desktop-linux-amd64.deb | 2.0.26 | 2.0.26 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.0.26 \| internal 2.0.26 |
-| photocraft | photocraft-0.5.0-linux-x86_64.rpm | 0.5.0 | 0.5.0 | **OK** | rpm header photocraft=0.5.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.5.0 \| internal 0.5.0 |
-| printcraft | pdfcraft-0.4.0-linux-x86_64.rpm | 0.4.0 | 0.4.0 | **OK** | rpm header pdfcraft=0.4.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.4.0 \| internal 0.4.0 |
+| photocraft | photocraft-0.6.0-linux-x86_64.rpm | 0.6.0 | 0.6.0 | **OK** | rpm header photocraft=0.6.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.6.0 \| internal 0.6.0 |
+| printcraft | pdfcraft-0.5.0-linux-x86_64.rpm | 0.5.0 | 0.5.0 | **OK** | rpm header pdfcraft=0.5.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.5.0 \| internal 0.5.0 |
 | protonplus | ProtonPlus-v0.6.8.tar.gz | 0.6.8 | >= 1.0.0 | **SOURCE-OK** | tar meson.build=>= 1.0.0 (ProtonPlus-0.6.8/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 1.0.0 (not authoritative) |
 | python-mprisify | mprisify-v1.0.1.tar.gz | 1.0.1 | 1.0.1 | **SOURCE-OK** | tar changelog=1.0.1 (mprisify-v1.0.1/CHANGELOG.md) \| hash no-checksum-pinned \| weak internal evidence 1.0.1 (not authoritative) |
 | python-pydbus | pydbus-0.6.0.tar.gz | 0.6.0 | 0.6.0 | **SOURCE-OK** | tar setup.py=0.6.0 (pydbus-0.6.0/setup.py) \| hash no-checksum-pinned \| weak internal evidence 0.6.0 (not authoritative) |
@@ -79,8 +79,8 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | stoat-desktop | stoat-desktop.desktop | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| umbriel-git | live noctalia-dev/umbriel | ee0f049c33a2 | ee0f049c33a2 | **OK** | live noctalia-dev/umbriel pin ee0f049c33a2 vs upstream ee0f049c33a2 |
-| vectorcraft | vectorcraft-0.7.0-linux-x86_64.rpm | 0.7.0 | 0.7.0 | **OK** | rpm header vectorcraft=0.7.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.7.0 \| internal 0.7.0 |
+| umbriel-git | live noctalia-dev/umbriel | 21456686a8f2 | 21456686a8f2 | **OK** | live noctalia-dev/umbriel pin 21456686a8f2 vs upstream 21456686a8f2 |
+| vectorcraft | vectorcraft-0.8.0-linux-x86_64.rpm | 0.8.0 | 0.8.0 | **OK** | rpm header vectorcraft=0.8.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.8.0 \| internal 0.8.0 |
 | vesktop | vesktop-1.6.7.x86_64.rpm | 1.6.7 | 1.6.7 | **OK** | rpm header vesktop=1.6.7-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.7 \| internal 1.6.7 |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
 | waypaper | screeninfo-0.8.1.tar.gz | 2.9 | 0.8.1 | **SOURCE-OK** | tar pyproject.toml=0.8.1 (screeninfo-0.8.1/pyproject.toml) \| hash no-checksum-pinned \| weak internal evidence 0.8.1 (not authoritative) |
@@ -99,17 +99,17 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | cliphist | upstream github.com/sentriz/cliphist | 0.7.0 | v0.7.0 | **OK** | at upstream latest v0.7.0 [releases/latest] |
 | concat | upstream github.com/jub0t/Concat | 0.2.6 | v0.2.6 | **OK** | at upstream latest v0.2.6 [releases/latest] |
 | concord | upstream github.com/chojs23/concord | 2.6.1 | v2.6.1 | **OK** | at upstream latest v2.6.1 [releases/latest] |
-| designcraft | upstream github.com/storytold/designcraft | 0.4.0 | v0.4.0 | **OK** | at upstream latest v0.4.0 [releases/latest] |
-| effectcraft | upstream github.com/storytold/effectcraft | 0.6.0 | v0.6.0 | **OK** | at upstream latest v0.6.0 [releases/latest] |
+| designcraft | upstream github.com/storytold/designcraft | 0.5.0 | v0.5.0 | **OK** | at upstream latest v0.5.0 [releases/latest] |
+| effectcraft | upstream github.com/storytold/effectcraft | 0.7.0 | v0.7.0 | **OK** | at upstream latest v0.7.0 [releases/latest] |
 | extension-manager | upstream github.com/mjakeman/extension-manager | 0.6.5 | v0.6.5 | **OK** | at upstream latest v0.6.5 [releases/latest] |
-| filmcraft | upstream github.com/storytold/filmcraft | 0.4.0 | v0.4.0 | **OK** | at upstream latest v0.4.0 [releases/latest] |
+| filmcraft | upstream github.com/storytold/filmcraft | 0.5.0 | v0.5.0 | **OK** | at upstream latest v0.5.0 [releases/latest] |
 | freebuff | upstream github.com/CodebuffAI/codebuff-community | 0.2.26 | freebuff-v0.2.26 | **OK** | at upstream latest freebuff-v0.2.26 [releases/latest] |
 | ghostty | upstream github.com/mkasberg/ghostty-ubuntu | 1.3.1 | 1.3.1-0-ppa2 | **OK** | at upstream latest 1.3.1-0-ppa2 [releases/latest] |
 | helium-browser | upstream github.com/imputnet/helium-linux | 0.19.2.1 | 0.19.2.1 | **OK** | at upstream latest 0.19.2.1 [releases/latest] |
 | hellwal | upstream github.com/danihek/hellwal | 1.0.8 | 1.0.8 | **OK** | at upstream latest 1.0.8 [releases/latest] |
 | heroic-games-launcher | upstream github.com/Heroic-Games-Launcher/HeroicGamesLauncher | 2.22.3 | v2.22.3 | **OK** | at upstream latest v2.22.3 [releases/latest] |
 | libcava | upstream github.com/LukashonakV/cava | 1.0.0 | 1.0.0 | **OK** | at upstream latest 1.0.0 [releases/latest] |
-| lightcraft | upstream github.com/storytold/lightcraft | 0.4.0 | v0.4.0 | **OK** | at upstream latest v0.4.0 [releases/latest] |
+| lightcraft | upstream github.com/storytold/lightcraft | 0.5.0 | v0.5.0 | **OK** | at upstream latest v0.5.0 [releases/latest] |
 | localsend | upstream github.com/localsend/localsend | 1.18.2 | v1.18.2 | **OK** | at upstream latest v1.18.2 [releases/latest] |
 | logseq | upstream github.com/logseq/logseq | 2.0.2 | 2.0.2 | **OK** | at upstream latest 2.0.2 [releases/latest] |
 | ly | upstream github.com/fairyglade/ly | 1.4.1 | v1.0.3 | **OK** | at upstream latest v1.0.3 [releases/latest] |
@@ -119,8 +119,8 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | obsidian | upstream github.com/obsidianmd/obsidian-releases | 1.14.4 | v1.14.4 | **OK** | at upstream latest v1.14.4 [releases/latest] |
 | opencad-studio | upstream github.com/HakanSeven12/OpenCADStudio | 2026.40.1 | v2026.40.1 | **OK** | at upstream latest v2026.40.1 [releases/latest] |
 | openchamber | upstream github.com/openchamber/openchamber | 2.2.0 | v2.2.0 | **OK** | at upstream latest v2.2.0 [releases/latest] |
-| photocraft | upstream github.com/storytold/photocraft | 0.5.0 | v0.5.0 | **OK** | at upstream latest v0.5.0 [releases/latest] |
-| printcraft | upstream github.com/storytold/pdfcraft | 0.4.0 | v0.4.0 | **OK** | at upstream latest v0.4.0 [releases/latest] |
+| photocraft | upstream github.com/storytold/photocraft | 0.6.0 | v0.6.0 | **OK** | at upstream latest v0.6.0 [releases/latest] |
+| printcraft | upstream github.com/storytold/pdfcraft | 0.5.0 | v0.5.0 | **OK** | at upstream latest v0.5.0 [releases/latest] |
 | protonplus | upstream github.com/vysp3r/ProtonPlus | 0.6.8 | v0.6.8 | **OK** | at upstream latest v0.6.8 [releases/latest] |
 | python-mprisify | upstream gitlab.com/zehkira/mprisify | 1.0.1 | v1.0.1 | **OK** | at upstream latest v1.0.1 [ls-remote] |
 | rustypipe-botguard | upstream codeberg.org/ThetaDev/rustypipe-botguard | 0.1.2 | v0.1.2 | **OK** | at upstream latest v0.1.2 [ls-remote] |
@@ -129,7 +129,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | splayer-next | upstream github.com/SPlayer-Dev/SPlayer-Next | 1.1.0 | v1.1.0 | **OK** | at upstream latest v1.1.0 [releases/latest] |
 | starship | upstream github.com/starship/starship | 1.26.0 | v1.26.0 | **OK** | at upstream latest v1.26.0 [releases/latest] |
 | stoat-desktop | upstream github.com/stoatchat/for-desktop | 1.5.4 | v1.5.4 | **OK** | at upstream latest v1.5.4 [releases/latest] |
-| vectorcraft | upstream github.com/storytold/vectorcraft | 0.7.0 | v0.7.0 | **OK** | at upstream latest v0.7.0 [releases/latest] |
+| vectorcraft | upstream github.com/storytold/vectorcraft | 0.8.0 | v0.8.0 | **OK** | at upstream latest v0.8.0 [releases/latest] |
 | vesktop | upstream github.com/Vencord/Vesktop | 1.6.7 | v1.6.7 | **OK** | at upstream latest v1.6.7 [releases/latest] |
 | waypaper | upstream github.com/anufrievroman/waypaper | 2.9 | 2.9 | **OK** | at upstream latest 2.9 [releases/latest] |
 | wlroots | upstream gitlab.freedesktop.org/wlroots/wlroots | 0.20.2 | 0.20.2 | **OK** | at upstream latest 0.20.2 [ls-remote] |
