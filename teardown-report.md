@@ -79,7 +79,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | stoat-desktop | stoat-desktop.desktop | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| umbriel-git | live noctalia-dev/umbriel | e58758533853 | e58758533853 | **OK** | live noctalia-dev/umbriel pin e58758533853 vs upstream e58758533853 |
+| umbriel-git | live noctalia-dev/umbriel | ee0f049c33a2 | ee0f049c33a2 | **OK** | live noctalia-dev/umbriel pin ee0f049c33a2 vs upstream ee0f049c33a2 |
 | vectorcraft | vectorcraft-0.7.0-linux-x86_64.rpm | 0.7.0 | 0.7.0 | **OK** | rpm header vectorcraft=0.7.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.7.0 \| internal 0.7.0 |
 | vesktop | vesktop-1.6.7.x86_64.rpm | 1.6.7 | 1.6.7 | **OK** | rpm header vesktop=1.6.7-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.7 \| internal 1.6.7 |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
