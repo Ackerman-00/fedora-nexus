@@ -242,3 +242,16 @@ RULE for every package that ships an Electron/Chromium binary:
    artifact, the `setuid_sandbox_host` FATAL is the real bug.)
 3. `tools/teardown-sweep.py:check_rpm_dependencies` statically flags any spec
    that names chrome-sandbox without the %attr (or an explicit rm).
+
+## Container teardown harness rule (added 2026-10-10, real hit)
+
+When you rebuild a package in a clean container with `rpmbuild -bb`, the
+SOURCES dir must contain the package directory's LOCAL files (Patch files,
+extra Source files like .desktop / policies.json / wrapper scripts), not just
+what `spectool -g` downloads. spectool fetches URL-declared sources only.
+COPR never hits this because its SCM clone carries the whole package dir, so
+a teardown that fails with "Cannot read ... .patch" or a missing Source1-3 in
+%install is a HARNESS bug, not a package bug - check the package dir for
+tracked files before touching the spec. Fix: `cp -a <pkgdir>/. SOURCES/`
+before running spectool. Hit on wlroots, ly, zen-browser 2026-10-10 (all
+three COPR builds were green the whole time).
