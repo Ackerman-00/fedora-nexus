@@ -9,14 +9,14 @@
 %global debug_package %{nil}
 
 Name:           craft-launcher
-Version:        0.2.1
+Version:        0.3.2
 Release:        1%{?dist}
 Summary:        App launcher for the Craft suite
 
 License:        MIT OR Apache-2.0
 URL:            https://github.com/storytold/craft-launcher
-Source0:        https://github.com/storytold/craft-launcher/releases/download/v0.2.1/artcraft-launcher-0.2.1-linux-x86_64.rpm
-# sha256: a02127c4aa47affeef6e1163d12bbd52777e7e39ba29b82693fb6b2e75b133de
+Source0:        https://github.com/storytold/craft-launcher/releases/download/v0.3.2/artcraft-launcher-0.3.2-linux-x86_64.rpm
+# sha256: e9723c4c6f3ff014c042a684d2c0d90b4a7129baedb60f96d5c520d1d3e1d1e4
 
 ExclusiveArch:  x86_64
 # Only the x86_64 rpm is repacked here; upstream also ships aarch64/riscv64
@@ -96,7 +96,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
-* Sun Oct 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.1-1
-- Initial package: ArtCraft Launcher v0.2.1 (upstream rpm repack)
-- Retires designcraft, effectcraft, filmcraft, lightcraft, photocraft,
-  printcraft and vectorcraft: install the suite through the launcher
+* Sun Oct 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.3.2-1
+- Auto-update to upstream release v0.3.2

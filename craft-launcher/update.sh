@@ -58,8 +58,9 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     sed -i -E "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
-    # Source0 embeds %{version}; only the tag literal needs refreshing.
+    # Source0 embeds %{version} twice (tag dir + rpm filename); refresh both.
     sed -i -E "s|releases/download/v[^/]+/artcraft-launcher-|releases/download/${LATEST_TAG}/artcraft-launcher-|" "$SPEC_FILE"
+    sed -i -E "s|artcraft-launcher-[0-9.]+-linux-x86_64\\.rpm|artcraft-launcher-${LATEST_VERSION}-linux-x86_64.rpm|" "$SPEC_FILE"
 
     # Refresh the pinned sha256 (teardown-sweep verifies Source0 against it).
     echo "  -> [HASH] Computing sha256 of $RPM_URL"
