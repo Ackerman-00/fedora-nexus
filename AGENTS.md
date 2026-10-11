@@ -255,3 +255,34 @@ a teardown that fails with "Cannot read ... .patch" or a missing Source1-3 in
 tracked files before touching the spec. Fix: `cp -a <pkgdir>/. SOURCES/`
 before running spectool. Hit on wlroots, ly, zen-browser 2026-10-10 (all
 three COPR builds were green the whole time).
+
+## Host `rpmspec -P` expansion gotcha (added 2026-10-11, real hit)
+
+`rpmspec -P` on the Ubuntu runner expands `%( ... )` shell macros with
+`/bin/sh`, which is dash there, and dash cannot parse the bash-only
+`${v//'~'/-}` substitution. wlroots uses exactly that:
+`%global tag %(v='%{version}'; echo "${v//'~'/-}")`. On the host the macro
+expands to EMPTY, so Source0 reads
+`.../-/archive//wlroots-.tar.gz` (curl 404) while `rpmspec -P` still exits 0.
+That is a HOST artifact, never a broken Source URL - COPR and the Fedora
+containers all expand it to `.../-/archive/0.20.2/wlroots-0.20.2.tar.gz`
+(HTTP 200, verified 2026-10-11). The same host run reports nwg-look
+(`%gosource`) and protonplus (`%forgesource`/`%forgemeta`) as unexpandable,
+because `golang-srpm-macros` and `forge-srpm-macros` are not installed there.
+
+RULE: any URL or macro expansion check (spectool, curl of Source0, sha256
+comparison) must run in a Fedora container with `rpm-build rpmdevtools
+forge-srpm-macros golang-srpm-macros` installed. On the host, treat an empty
+or `.tar.gz`-less expansion as "check in container", not as a finding.
+
+## Harness smoke probes must match what the harness installed (added 2026-10-11, real hit)
+
+A smoke that asserts a compression-specific path (`.../man1/mpvpaper.1.gz`)
+fails on the harness-built RPM even when the published COPR RPM ships that
+file: bare `rpmbuild -bb` in the container does not always run the brp
+compression step that mock/COPR run. Hit on mpvpaper 2026-10-11
+(SMOKE_EXIT=1 on the probe, `rpm -ql` from a live `dnf install mpvpaper`
+listing `/usr/share/man/man1/mpvpaper.1.gz`, `rpm -V` clean both times).
+Probe bug, not a package bug. Write harness smokes with a glob or check the
+published package (`dnf install` from the COPR repo) for compression-specific
+paths; keep `rpm -V` and `ldd` checks as the real verdict.
