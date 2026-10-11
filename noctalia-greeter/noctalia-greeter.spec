@@ -1,11 +1,11 @@
 # These will be automatically populated by update.sh
-%global commit          836071bcbc490c6ab7095d0aae5d0885bd2c5659
+%global commit          f6714c9e04801a9f15dae0a543122925c86284b3
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261007111952
+%global gitdate         20261011024933
 
 Name:           noctalia-greeter
 Version:        1.6.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 License:        MIT
@@ -118,8 +118,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Fri Oct 09 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.6.0^20261007111952git836071b-2
-- Drop duplicate libEGL-devel BuildRequires (twin of pkgconfig(egl), same
-  provider); keep the pkgconfig() form. Same upstream pin 836071b.
-* Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.0^20261007111952git836071b-1
-- Nightly sync with upstream main branch (Commit: 836071b)
+* Sun Oct 11 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.0^20261011024933gitf6714c9-1
+- Nightly sync with upstream main branch (Commit: f6714c9)
