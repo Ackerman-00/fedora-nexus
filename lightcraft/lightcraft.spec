@@ -5,14 +5,14 @@
 %global debug_package %{nil}
 
 Name:           lightcraft
-Version:        0.5.0
+Version:        0.6.0
 Release:        1%{?dist}
 Summary:        Photo library and raw development
 
 License:        MIT AND Apache-2.0
 URL:            https://getartcraft.com/apps/lightcraft
-Source0:        https://github.com/storytold/lightcraft/releases/download/v0.5.0/lightcraft-%{version}-linux-x86_64.rpm
-# sha256: 134b5069ae5a8238c9d7c76dc3d6901fedb6dcf583a93f75fa30bedf26c05d5b
+Source0:        https://github.com/storytold/lightcraft/releases/download/v0.6.0/lightcraft-%{version}-linux-x86_64.rpm
+# sha256: 25c124663e55973c8a6006b237e1d25c2d9058e142bc72916295c4da5c28ba32
 
 # %install runs desktop-file-validate; the buildroot does not provide it.
 BuildRequires:  desktop-file-utils
@@ -93,5 +93,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
-* Sat Oct 10 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.0-1
-- Auto-update to upstream release v0.5.0
+* Sun Oct 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.0-1
+- Auto-update to upstream release v0.6.0
