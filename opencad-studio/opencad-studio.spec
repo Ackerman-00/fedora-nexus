@@ -9,15 +9,15 @@
 %global __requires_exclude_from ^/opt/opencad-studio/.*$
 
 Name:           opencad-studio
-Version:        2026.40.1
-Release:        2%{?dist}
+Version:        2026.41
+Release:        1%{?dist}
 Summary:        Open-source 2D/3D CAD with native DWG/DXF support
 
 License:        GPL-3.0-only
 URL:            https://www.opencadstudio.com
 ExclusiveArch:  x86_64
-Source0:        https://github.com/HakanSeven12/OpenCADStudio/releases/download/v%{version}/OpenCADStudio-v%{version}-linux-x86_64.AppImage
-# sha256: 4b8f5d2dfee932bd557308d1b4c66ca8d23f0f4ffe37c8c1ab77980c45c84f98
+Source0:        https://github.com/HakanSeven12/OpenCADStudio/releases/download/v2026.41/OpenCADStudio-v2026.41-linux-x86_64.AppImage
+# sha256: 716ff0f8a2c215114d5fe283548ecc860b0f887cc87d7772dcc00e680778fae9
 
 # AppImage teardown needs readelf (ELF offset) + unsquashfs.
 BuildRequires:  binutils
@@ -106,8 +106,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.40.1-2
-- Fix wrapper path: the flattened /opt tree holds bin/, not usr/bin/
-
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.40.1-1
-- Initial packaging: repack upstream AppImage (native Rust app, no sandbox)
+* Sun Oct 11 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.41-1
+- Auto-update to upstream release v2026.41

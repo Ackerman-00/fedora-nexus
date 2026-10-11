@@ -2,8 +2,8 @@
 # verify-fedora-branch: main
 # verify-fedora-run: 37699851922
 # verify-fedora-tool: tools/teardown-sweep.py
-# verify-fedora-source0: https://github.com/m-obeid/Mixtapes/archive/d8cfa4e3a166ec6c32513a75a0233dc54a241767/mixtapes-d8cfa4e.tar.gz
-# verify-fedora-sha256: c5a11f8cd610af7d6ac8e3a982290fea402f140eed459e26a9df4cc6830f3260
+# verify-fedora-source0: https://github.com/m-obeid/Mixtapes/archive/1b5f1e8cd58f418de577cac4c341b82dbfc500a4/mixtapes-1b5f1e8.tar.gz
+# verify-fedora-sha256: 555af72c6a28c89d735de4c973d226c5407e549570d799106c2e23b4e3e8a4a3
 # verify-fedora-copr: https://copr.fedorainfracloud.org/coprs/g/fedora-nexus/mixtapes/package/mixtapes/
 # verify-fedora-evidence: upstream@2026-10-03 commit 285ba7d == "Rustification of Mixtapes" merge (Rust rewrite; source tarball extracted, Cargo.lock 629 crates, gresource built by build.rs, desktop Exec=muse); sha256 match; RPM323 (all 4 sections present) RPM324 N-OK; osv-query 0 CVEs on pinned rev; repology 404 (new package); libyear 0.0 (0 days)
 # verify-fedora-evidence: upstream 2026-10-03 https://api.github.com/repos/m-obeid/Mixtapes/commits/285ba7d sha 285ba7dd1cb89e3a4127d336e849e748d3423880 == spec Source0 rev; https://raw.githubusercontent.com/m-obeid/Mixtapes/285ba7d/LICENSE unknown license text present
@@ -27,8 +27,8 @@
 # Cargo release strips debuginfo; empty %%debugsource is a hard error on rpm>=6
 # (concord/matugen pattern), hence debug_package nil.
 %global debug_package %{nil}
-%global commit          d8cfa4e3a166ec6c32513a75a0233dc54a241767
-%global gitdate         20261011154526
+%global commit          1b5f1e8cd58f418de577cac4c341b82dbfc500a4
+%global gitdate         20261011192142
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           mixtapes
@@ -131,6 +131,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/com.pocoguy.Muse.desk
 %{_datadir}/icons/hicolor/scalable/apps/com.pocoguy.Muse*.svg
 
 %changelog
+* Sun Oct 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261011192142git1b5f1e8-1
+- Nightly sync with upstream main branch (Commit: 1b5f1e8)
+
 * Sun Oct 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261011154526gitd8cfa4e-1
 - Nightly sync with upstream main branch (Commit: d8cfa4e)
 
