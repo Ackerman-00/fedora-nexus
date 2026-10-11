@@ -11,10 +11,10 @@ if [ "$(pwd)" != "$_update_sh_dir" ]; then
     echo "  cd $_update_sh_dir && bash update.sh" >&2
     exit 1
 fi
-# update.sh for PhotoCraft (upstream .rpm repack)
+# update.sh for ArtCraft Launcher (upstream .rpm repack)
 
-SPEC_FILE="photocraft.spec"
-GITHUB_REPO="storytold/photocraft"
+SPEC_FILE="artcraft-launcher.spec"
+GITHUB_REPO="storytold/craft-launcher"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
@@ -34,7 +34,7 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     echo "Update found: $CURRENT_VERSION -> $LATEST_VERSION"
 
     # Asset name carries the bare version (no v prefix).
-    RPM_URL="https://github.com/$GITHUB_REPO/releases/download/$LATEST_TAG/photocraft-${LATEST_VERSION}-linux-x86_64.rpm"
+    RPM_URL="https://github.com/$GITHUB_REPO/releases/download/$LATEST_TAG/artcraft-launcher-${LATEST_VERSION}-linux-x86_64.rpm"
     echo "  -> [CHECK] Verifying $RPM_URL"
     if ! curl --output /dev/null --silent --location --head --fail "$RPM_URL"; then
         echo "  -> [SKIP] Linux x86_64 rpm for $LATEST_TAG is not published (yet). Keeping $CURRENT_VERSION."
@@ -50,8 +50,8 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
         echo "  -> [SKIP] Release API unreachable for $LATEST_TAG. Keeping $CURRENT_VERSION."
         exit 0
     fi
-    if ! printf '%s' "$API_JSON" | grep -q "\"name\": *\"photocraft-${LATEST_VERSION}-linux-x86_64.rpm\""; then
-        echo "  -> [SKIP] Release $LATEST_TAG has no photocraft-${LATEST_VERSION}-linux-x86_64.rpm asset yet. Keeping $CURRENT_VERSION."
+    if ! printf '%s' "$API_JSON" | grep -q "\"name\": *\"artcraft-launcher-${LATEST_VERSION}-linux-x86_64.rpm\""; then
+        echo "  -> [SKIP] Release $LATEST_TAG has no artcraft-launcher-${LATEST_VERSION}-linux-x86_64.rpm asset yet. Keeping $CURRENT_VERSION."
         exit 0
     fi
 
@@ -59,7 +59,7 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
     # Source0 embeds %{version}; only the tag literal needs refreshing.
-    sed -i -E "s|releases/download/v[^/]+/photocraft-|releases/download/${LATEST_TAG}/photocraft-|" "$SPEC_FILE"
+    sed -i -E "s|releases/download/v[^/]+/artcraft-launcher-|releases/download/${LATEST_TAG}/artcraft-launcher-|" "$SPEC_FILE"
 
     # Refresh the pinned sha256 (teardown-sweep verifies Source0 against it).
     echo "  -> [HASH] Computing sha256 of $RPM_URL"

@@ -50,7 +50,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 70 packages</summary>
+<summary>Click to expand — 64 packages</summary>
 
 <br />
 
@@ -58,6 +58,7 @@ sudo dnf install <package-name>
 |---------|-------------|:----:|
 | `appmenu-glib-translator` | GLib menu translator for the AppMenu protocol | Stable |
 | `app2unit` | Launch desktop entries or commands as systemd user units | Stable |
+| `artcraft-launcher` | App launcher for the Craft suite (native Rust) | Stable |
 | `astal` | Building blocks for creating custom desktop shells (Git Snapshot) | Git |
 | `astal-gjs` | Astal GJS package (Git Snapshot) | Git |
 | `astal-gtk4` | Astal GTK4 bindings (Git Snapshot) | Git |
@@ -73,10 +74,7 @@ sudo dnf install <package-name>
 | `cliphist` | Wayland clipboard manager with support for multimedia | Stable |
 | `concat` | Free and open source video editor (CapCut alternative) | Stable |
 | `concord` | Feature-rich TUI client for Discord | Stable |
-| `designcraft` | Page layout and publishing (native Rust) | Stable |
-| `effectcraft` | Motion graphics and visual effects compositor (native Rust) | Stable |
 | `extension-manager` | Native tool for browsing and managing GNOME Shell Extensions | Stable |
-| `filmcraft` | Video editing, color and sound (native Rust) | Stable |
 | `fluxer` | Free and open source instant messaging and VoIP platform | Stable |
 | `freebuff` | The free coding agent for your desktop (parallel agents, private workspaces) | Stable |
 | `ghostty` | Fast, feature-rich, cross-platform terminal emulator (Deb repackage) | Stable |
@@ -86,7 +84,6 @@ sudo dnf install <package-name>
 | `heroic-games-launcher` | Open source launcher for GOG, Epic, and Amazon Games | Stable |
 | `lazyvim-git` | Neovim setup for lazy people (Git Snapshot) | Git |
 | `libcava` | Fork of CAVA built as a shared library | Stable |
-| `lightcraft` | Photo library and raw development (native Rust) | Stable |
 | `localsend` | Open source cross-platform AirDrop alternative | Stable |
 | `logseq` | Privacy-first, local-first knowledge management and collaboration platform | Stable |
 | `ly` | Lightweight TUI display manager | Stable |
@@ -101,8 +98,6 @@ sudo dnf install <package-name>
 | `opencad-studio` | Open-source 2D/3D CAD with native DWG/DXF support | Stable |
 | `openchamber` | AI coding agent workspace (Electron) | Stable |
 | `opencode-desktop` | AI coding agent desktop app | Stable |
-| `photocraft` | Native image editor with layers, masks and PSD support | Stable |
-| `printcraft` | PDF reading, organizing and protection (native Rust) | Stable |
 | `protonplus` | Modern compatibility tools manager | Stable |
 | `materialyoucolor` | Material You color generation algorithms (pure Python + C++ quantizer); install as `python3-materialyoucolor` | Stable |
 | `python-mprisify` | MPRIS D-Bus interface library for Python | Stable |
@@ -119,7 +114,6 @@ sudo dnf install <package-name>
 | `starship` | Minimal, blazing-fast, customizable prompt for any shell | Stable |
 | `stoat-desktop` | Open source, user-first chat platform desktop client | Stable |
 | `umbriel-git` | Wayland compositor with scrolling and dwindle layouts, built on wlroots + SceneFX (Git Snapshot) | Git |
-| `vectorcraft` | Native vector illustration app with SVG and PDF support | Stable |
 | `vesktop` | Custom Discord client with Vencord preinstalled | Stable |
 | `waypaper` | GUI wallpaper manager for Wayland and Xorg Linux systems | Stable |
 | `wlroots` | Modular Wayland compositor library | Stable |
