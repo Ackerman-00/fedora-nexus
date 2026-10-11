@@ -5,14 +5,14 @@
 %global debug_package %{nil}
 
 Name:           photocraft
-Version:        0.6.0
+Version:        0.7.0
 Release:        1%{?dist}
 Summary:        Native image editor with layers, masks and PSD support
 
 License:        MIT AND Apache-2.0
 URL:            https://getartcraft.com/apps/photocraft
-Source0:        https://github.com/storytold/photocraft/releases/download/v0.6.0/photocraft-%{version}-linux-x86_64.rpm
-# sha256: b804e2d37a4cb031d7c65a28ae00f3d75a5c021bbf193ae7bcf5dba53a995a5f
+Source0:        https://github.com/storytold/photocraft/releases/download/v0.7.0/photocraft-%{version}-linux-x86_64.rpm
+# sha256: 46e29ebaa30286dfd464e48eef239f64c7d297ebd515f0b8be4f7631af9539e1
 
 # %install runs desktop-file-validate; the buildroot does not provide it.
 BuildRequires:  desktop-file-utils
@@ -100,5 +100,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
-* Sat Oct 10 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.0-1
-- Auto-update to upstream release v0.6.0
+* Sun Oct 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.0-1
+- Auto-update to upstream release v0.7.0
