@@ -13,7 +13,7 @@ if [ "$(pwd)" != "$_update_sh_dir" ]; then
 fi
 # update.sh for ArtCraft Launcher (upstream .rpm repack)
 
-SPEC_FILE="artcraft-launcher.spec"
+SPEC_FILE="craft-launcher.spec"
 GITHUB_REPO="storytold/craft-launcher"
 PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 

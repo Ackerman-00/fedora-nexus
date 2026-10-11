@@ -58,7 +58,6 @@ sudo dnf install <package-name>
 |---------|-------------|:----:|
 | `appmenu-glib-translator` | GLib menu translator for the AppMenu protocol | Stable |
 | `app2unit` | Launch desktop entries or commands as systemd user units | Stable |
-| `artcraft-launcher` | App launcher for the Craft suite (native Rust) | Stable |
 | `astal` | Building blocks for creating custom desktop shells (Git Snapshot) | Git |
 | `astal-gjs` | Astal GJS package (Git Snapshot) | Git |
 | `astal-gtk4` | Astal GTK4 bindings (Git Snapshot) | Git |
@@ -74,6 +73,7 @@ sudo dnf install <package-name>
 | `cliphist` | Wayland clipboard manager with support for multimedia | Stable |
 | `concat` | Free and open source video editor (CapCut alternative) | Stable |
 | `concord` | Feature-rich TUI client for Discord | Stable |
+| `craft-launcher` | App launcher for the Craft suite (native Rust) | Stable |
 | `extension-manager` | Native tool for browsing and managing GNOME Shell Extensions | Stable |
 | `fluxer` | Free and open source instant messaging and VoIP platform | Stable |
 | `freebuff` | The free coding agent for your desktop (parallel agents, private workspaces) | Stable |

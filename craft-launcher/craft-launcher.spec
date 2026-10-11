@@ -3,11 +3,12 @@
 
 # NOTE: upstream repo is storytold/craft-launcher but every artifact
 # (rpm/deb/AppImage name, binary, desktop file, Cargo crates) is called
-# artcraft-launcher - the package follows the artifact name.
+# artcraft-launcher - only the RPM package name follows this repo's
+# short name; all payload paths keep the upstream artcraft-launcher name.
 # Native binary: no bundled runtime, so no Provides pruning, no setuid sandbox.
 %global debug_package %{nil}
 
-Name:           artcraft-launcher
+Name:           craft-launcher
 Version:        0.2.1
 Release:        1%{?dist}
 Summary:        App launcher for the Craft suite
