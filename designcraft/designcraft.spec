@@ -5,14 +5,14 @@
 %global debug_package %{nil}
 
 Name:           designcraft
-Version:        0.5.0
+Version:        0.6.0
 Release:        1%{?dist}
 Summary:        Page layout and publishing
 
 License:        MIT AND Apache-2.0
 URL:            https://getartcraft.com/apps/designcraft
-Source0:        https://github.com/storytold/designcraft/releases/download/v0.5.0/designcraft-%{version}-linux-x86_64.rpm
-# sha256: a9a83b186803946f7a7d2151bc7467de199c2f4503b3fa9375806cc070f7e136
+Source0:        https://github.com/storytold/designcraft/releases/download/v0.6.0/designcraft-%{version}-linux-x86_64.rpm
+# sha256: a6fe96aaf17e299d7c3db348b67db3c54b24d5be1da1b5f802778f5f4c73d7a9
 
 # %install runs desktop-file-validate; the buildroot does not provide it.
 BuildRequires:  desktop-file-utils
@@ -94,5 +94,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
-* Sat Oct 10 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.0-1
-- Auto-update to upstream release v0.5.0
+* Sun Oct 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.0-1
+- Auto-update to upstream release v0.6.0
