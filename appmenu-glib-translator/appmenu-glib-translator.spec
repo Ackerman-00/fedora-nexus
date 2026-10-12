@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          eb3077eac96f0e1836d7d455bf847367c9eb0c2e
+%global commit          8281a2534ef4b0e0f69a0eeb5a812d2cb69beddc
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261009135843
+%global gitdate         20261012202807
 
 %global _vpath_srcdir subprojects/appmenu-glib-translator
 
@@ -56,5 +56,5 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
-* Fri Oct 09 2026 Ackerman-00 <quietcraft@gmail.com> - 25.04^20261009135843giteb3077e-1
-- Nightly sync with upstream main branch (Commit: eb3077e)
+* Mon Oct 12 2026 Ackerman-00 <quietcraft@gmail.com> - 25.04^20261012202807git8281a25-1
+- Nightly sync with upstream main branch (Commit: 8281a25)
