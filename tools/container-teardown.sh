@@ -26,6 +26,16 @@
 #     versioned and boolean forms a naive parse mangles) and retries, up to
 #     3 passes, exactly like mock does.
 #
+#  7. GTK4 GUI smokes under xvfb (added 2026-10-12, hit on protonplus):
+#     a minimal fedora:44 container lacks libGLESv2.so.2 and /etc/machine-id,
+#     so a GTK4 app SIGABRTs ("Couldn't open libGLESv2.so.2") and a bare
+#     `app --help` exits 1 with "Unknown command" - both read like package
+#     bugs but are container artifacts. Install mesa-dri-drivers mesa-libGLES
+#     mesa-libEGL dbus-daemon, generate /etc/machine-id, then
+#     `timeout 20 xvfb-run -a <app>` and check the process is still alive
+#     (GUI_ALIVE=yes). Electron apps still need --security-opt
+#     seccomp=unconfined on the docker run plus the chrome-sandbox %attr rule.
+#
 # usage: container-teardown.sh <pkgdir> <spec> <smoke-cmd> [rpmV-name]
 set -u
 PKGDIR=$1; SPEC=$2; SMOKE=$3; RPMVNAME=${4:-}
