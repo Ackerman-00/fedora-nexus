@@ -21,6 +21,12 @@ if [[ -f "$RELAY" ]]; then
     echo "PASS: relay run_id matches this run"
   fi
 
+  # The two checks below mirror gate_passes() in opencode-schedule.yml. Both
+  # files must fail on the same contract: on 2026-10-12 (run 38209609609) this
+  # verifier passed a run block whose dependency table header read
+  # "| package | upstream deps |" while the workflow gate demands
+  # "| package | upstream deps found |", so the run was scored incomplete by
+  # the gate and complete here. Never let the two drift again.
   expected=$(find . -mindepth 2 -maxdepth 2 -name '*.spec' -type f -print | wc -l)
   if [[ "$expected" -eq 0 ]]; then
     echo "FAIL: NOT COMPLETE -- no package specs found"
@@ -33,6 +39,24 @@ if [[ -f "$RELAY" ]]; then
   # docker-teardown PASS. EVERY check below is scoped to this run's block
   # (run_id: to the next run_id:) so accumulated history can satisfy nothing.
   scope=$(awk -v id="run_id: $RUN_ID" '$0==id{f=1;next} f&&/^run_id: /{exit} f' "$RELAY")
+
+  # Mirror gate_passes() in opencode-schedule.yml so the two cannot drift: on
+  # 2026-10-12 (run 38209609609) this verifier passed a block whose dependency
+  # table header read "| package | upstream deps |" while the workflow gate
+  # demands "| package | upstream deps found |", so the gate scored the run
+  # incomplete after the verifier had passed it.
+  if ! grep -qix "status: complete" <<< "$scope"; then
+    echo "FAIL: NOT COMPLETE -- this run's block does not carry status: complete"
+    FAIL=1
+  else
+    echo "PASS: status complete in this run's block"
+  fi
+  if ! grep -q "| package | upstream deps found |" <<< "$scope"; then
+    echo "FAIL: NOT COMPLETE -- dependency audit table header missing from THIS run's block (gate requires '| package | upstream deps found |')"
+    FAIL=1
+  else
+    echo "PASS: dependency audit table header present"
+  fi
 
   dep_rows=$(printf '%s' "$scope" | grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*\| (deps-verified|deps-fixed|version-checked|retired-stub) \|" | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u | wc -l || true)
   dep_rows=${dep_rows:-0}
