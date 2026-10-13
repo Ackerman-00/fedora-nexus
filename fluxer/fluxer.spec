@@ -14,7 +14,7 @@
 %global __requires_exclude ^libffmpeg\\.so.*$|^libcbor\\.so.*$
 
 Name:           fluxer
-Version:        2026.1012.202129
+Version:        2026.1013.15209
 Release:        1%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
@@ -23,7 +23,7 @@ URL:            https://fluxer.app
 Source0:        https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm
 # Rolling "latest" URL: pin the hash of the served artifact so rebuilds and
 # the sweep verify fixed bits. Refreshed by update.sh on every version bump.
-# sha256: 08637a6112fbba81cd15e6677a0d25a94293a5392793e3522cee3c8c3d5f7434
+# sha256: 4f49e134c2fd27b59bb1951672679dd8f2690222f9edc1b761f22a98ae2e835f
 
 Requires:           hicolor-icon-theme
 Requires:       at-spi2-core
@@ -130,5 +130,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/app.fluxer.FluxerDesk
 %attr(4755, root, root) %{_libdir}/%{name}/chrome-sandbox
 
 %changelog
-* Mon Oct 12 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1012.202129-1
-- Update to version 2026.1012.202129
+* Tue Oct 13 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1013.15209-1
+- Update to version 2026.1013.15209

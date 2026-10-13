@@ -8,14 +8,14 @@
 %global __requires_exclude_from ^/opt/openchamber/.*$
 
 Name:           openchamber
-Version:        2.3.0
+Version:        2.3.1
 Release:        1%{?dist}
 Summary:        AI coding agent workspace (Electron)
 
 License:        MIT
 URL:            https://github.com/openchamber/openchamber
-Source0:        %{url}/releases/download/v2.3.0/OpenChamber-2.3.0-linux-x86_64.AppImage
-# sha256: ba326adaad5b682d5c272ecdf0c6b0166ddef2332bb7fccf2e008243dd134511
+Source0:        %{url}/releases/download/v2.3.1/OpenChamber-2.3.1-linux-x86_64.AppImage
+# sha256: c0b2388e3845a751fc09c14d5837fbc845caaa3a1a8a46d31c72ab3a7c6439d0
 
 ExclusiveArch:  x86_64
 # aarch64 AppImage exists upstream (OpenChamber-2.1.0-linux-arm64.AppImage) but
@@ -118,5 +118,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/openchamber.desktop |
 %attr(4755, root, root) /opt/openchamber/chrome-sandbox
 
 %changelog
-* Mon Oct 12 2026 Ackerman-00 <quietcraft@gmail.com> - 2.3.0-1
-- Auto-update to upstream release v2.3.0
+* Tue Oct 13 2026 Ackerman-00 <quietcraft@gmail.com> - 2.3.1-1
+- Auto-update to upstream release v2.3.1
