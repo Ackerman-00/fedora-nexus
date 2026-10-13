@@ -9,7 +9,7 @@
 
 Name:           openchamber
 Version:        2.3.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        AI coding agent workspace (Electron)
 
 License:        MIT
@@ -84,12 +84,12 @@ exec /opt/openchamber/AppRun "$@"
 WRAPPER_EOF
 chmod 755 %{buildroot}%{_bindir}/openchamber
 
-# Upstream ships the icon at usr/share/icons/hicolor/scalable/openchamber.svg
-# (NO apps/ subdir - verified by tearing the AppImage apart; the old
-# .../scalable/apps/... path failed %install with "cannot stat").
-# Installed to the standard apps/ location.
-install -Dm644 squashfs-root/usr/share/icons/hicolor/scalable/openchamber.svg \
-    %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/openchamber.svg
+# Upstream 2.3.1 replaced the scalable SVG with a 512x512 PNG (torn apart
+# 2026-10-13: only usr/share/icons/hicolor/512x512/apps/openchamber.png
+# plus a root openchamber.png symlink to it). Installed to the standard
+# apps/ location.
+install -Dm644 squashfs-root/usr/share/icons/hicolor/512x512/apps/openchamber.png \
+    %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/openchamber.png
 
 # Upstream desktop entry runs AppRun --no-sandbox; ours goes through the
 # wrapper with the SUID sandbox intact (see %files %attr below).
@@ -112,11 +112,14 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/openchamber.desktop |
 %{_bindir}/openchamber
 /opt/openchamber/
 %{_datadir}/applications/openchamber.desktop
-%{_datadir}/icons/hicolor/scalable/apps/openchamber.svg
+%{_datadir}/icons/hicolor/512x512/apps/openchamber.png
 # Chromium SUID sandbox MUST stay setuid root (AGENTS.md Electron rule, Oct 2026:
 # 0755 fatally aborts launch for every non-root user, proven rc=133 under xvfb).
 %attr(4755, root, root) /opt/openchamber/chrome-sandbox
 
 %changelog
+* Tue Oct 13 2026 Ackerman-00 <quietcraft@gmail.com> - 2.3.1-2
+- Fix %install: upstream 2.3.1 replaced scalable/openchamber.svg with
+  512x512/apps/openchamber.png; install the PNG instead
 * Tue Oct 13 2026 Ackerman-00 <quietcraft@gmail.com> - 2.3.1-1
 - Auto-update to upstream release v2.3.1
