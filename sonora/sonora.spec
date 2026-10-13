@@ -3,7 +3,7 @@
 %global appid io.github.nolight132.sonora
 
 Name:           sonora
-Version:        0.42.2
+Version:        0.43.0
 Release:        1%{?dist}
 Summary:        Native music streaming client
 # Workspace is GPL-3.0-or-later; the binary embeds the Inter typeface
@@ -129,5 +129,5 @@ esac
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
-* Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.42.2-1
-- Auto-update to upstream stable release v0.42.2
+* Tue Oct 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.43.0-1
+- Auto-update to upstream stable release v0.43.0
