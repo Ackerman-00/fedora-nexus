@@ -3,6 +3,13 @@ name: opencode-schedule
 on:
   schedule:
     - cron: '10 */6 * * *'   # Every 6 hours at :10 - 10 min after update-engine.yml ('0 */6')
+  workflow_dispatch:
+    inputs:
+      relay:
+        description: 'Relay continuation run - pick up unfinished work from .opencode-relay.md'
+        required: false
+        default: 'false'
+        type: boolean
 
 permissions:
   contents: write
