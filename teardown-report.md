@@ -4,7 +4,7 @@ Repo type: **fedora**. Sweep of **64** packages. Exit code is the verdict; this 
 | Package | Distfile | Pinned | Internal | Status | Note |
 |---|---|---|---|---|---|
 | app2unit | live Vladimir-csp/app2unit | 47e23ec6ab9e | 47e23ec6ab9e | **OK** | live Vladimir-csp/app2unit pin 47e23ec6ab9e vs upstream 47e23ec6ab9e |
-| appmenu-glib-translator | appmenu-glib-translator-eb3077e.tar.gz | 25.04^20261009135843giteb3077e | >=1.3.0 | **SOURCE-OK** | tar meson.build=>=1.3.0 (vala-panel-appmenu-eb3077eac96f0e1836d7d455bf847367c9eb0c2e/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3.0 (not authoritative) |
+| appmenu-glib-translator | appmenu-glib-translator-8281a25.tar.gz | 25.04^20261012202807git8281a25 | >=1.3.0 | **SOURCE-OK** | tar meson.build=>=1.3.0 (vala-panel-appmenu-8281a2534ef4b0e0f69a0eeb5a812d2cb69beddc/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3.0 (not authoritative) |
 | astal | live Aylur/astal | cbcd9f49dd6b | cbcd9f49dd6b | **OK** | live Aylur/astal pin cbcd9f49dd6b vs upstream cbcd9f49dd6b |
 | astal-gjs | live Aylur/astal | cbcd9f49dd6b | cbcd9f49dd6b | **OK** | live Aylur/astal pin cbcd9f49dd6b vs upstream cbcd9f49dd6b |
 | astal-gtk4 | live Aylur/astal | cbcd9f49dd6b | cbcd9f49dd6b | **OK** | live Aylur/astal pin cbcd9f49dd6b vs upstream cbcd9f49dd6b |
@@ -19,14 +19,14 @@ Repo type: **fedora**. Sweep of **64** packages. Exit code is the verdict; this 
 | caelestia-shell-mango | live Ackerman-00/caelestia-shell-mango | cae55ed689be | cae55ed689be | **OK** | live Ackerman-00/caelestia-shell-mango pin cae55ed689be vs upstream cae55ed689be |
 | cascadia-code-nerd-fonts | CascadiaCode.tar.xz | 3.5.1 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | cliphist | cliphist-v0.7.0.tar.gz | 0.7.0 | 0.7.0 | **SOURCE-OK** | tar version file=0.7.0 (cliphist-0.7.0/version.txt) \| hash no-checksum-pinned \| weak internal evidence 0.7.0 (not authoritative) |
-| concat | Concat-0.2.6-linux-x86_64.rpm | 0.2.6 | 0.2.6 | **OK** | rpm header concat=0.2.6-1 (tags NAME/VERSION/RELEASE) \| pinned 0.2.6 \| internal 0.2.6 |
+| concat | Concat-0.2.7-linux-x86_64.rpm | 0.2.7 | 0.2.7 | **OK** | rpm header concat=0.2.7-1 (tags NAME/VERSION/RELEASE) \| pinned 0.2.7 \| internal 0.2.7 |
 | concord | v2.6.1.tar.gz | 2.6.1 | 2.6.1 | **SOURCE-OK** | tar Cargo.toml=2.6.1 (concord-2.6.1/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 2.6.1 (not authoritative) |
-| craft-launcher | artcraft-launcher-0.2.1-linux-x86_64.rpm | 0.2.1 | 0.2.1 | **OK** | rpm header artcraft-launcher=0.2.1-1 (tags NAME/VERSION/RELEASE) \| pinned 0.2.1 \| internal 0.2.1 |
+| craft-launcher | artcraft-launcher-0.4.1-linux-x86_64.rpm | 0.4.1 | 0.4.1 | **OK** | rpm header artcraft-launcher=0.4.1-1 (tags NAME/VERSION/RELEASE) \| pinned 0.4.1 \| internal 0.4.1 |
 | extension-manager | extension-manager-0.6.5.tar.gz | 0.6.5 | >= 0.59.0 | **SOURCE-OK** | tar meson.build=>= 0.59.0 (extension-manager-0.6.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 0.59.0 (not authoritative) |
-| fluxer | rpm | 2026.1006.171735 | 2026.1006.171735 | **OK** | rpm header fluxer=2026.1006.171735-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1006.171735 \| internal 2026.1006.171735 |
-| freebuff | freebuff-linux-x64.tar.gz | 0.2.26 | 0.2.26 | **OK** | tar runtime probe freebuff --version: 0.2.26 \| pinned 0.2.26 \| internal 0.2.26 |
+| fluxer | rpm | 2026.1013.174455 | 2026.1013.174455 | **OK** | rpm header fluxer=2026.1013.174455-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1013.174455 \| internal 2026.1013.174455 |
+| freebuff | freebuff-linux-x64.tar.gz | 0.2.27 | 0.2.27 | **OK** | tar runtime probe freebuff --version: 0.2.27 \| pinned 0.2.27 \| internal 0.2.27 |
 | ghostty | ghostty_1.3.1-0.ppa2_amd64_24.04.deb | 1.3.1 | 1.3.1-0~ppa2 | **OK** | deb pkg=ghostty (control control.tar.zst) \| pinned 1.3.1 \| internal 1.3.1-0~ppa2 |
-| gpu-screen-recorder | gpu-screen-recorder.git.6.1.3.tar.gz | 6.1.3 | 6.1.3 | **SOURCE-OK** | tar meson.build=6.1.3 (meson.build) \| hash no-checksum-pinned \| weak internal evidence 6.1.3 (not authoritative) |
+| gpu-screen-recorder | gpu-screen-recorder.git.6.1.4.tar.gz | 6.1.4 | 6.1.4 | **SOURCE-OK** | tar meson.build=6.1.4 (meson.build) \| hash no-checksum-pinned \| weak internal evidence 6.1.4 (not authoritative) |
 | helium-browser | helium-0.19.2.1-x86_64_linux.tar.xz | 0.19.2.1 | 0.19.2.1 | **OK** | tar runtime probe chrome --version: Helium 0.19.2.1 (Chromium 155.0.8059.39) \| pinned 0.19.2.1 \| internal 0.19.2.1 |
 | helium-browser | net.imput.helium.metainfo.xml | 0.19.2.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | helium-browser | LICENSE | 0.19.2.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
@@ -44,14 +44,14 @@ Repo type: **fedora**. Sweep of **64** packages. Exit code is the verdict; this 
 | material-symbols-fonts | live google/material-design-icons | 49d4db35df87 | 49d4db35df87 | **OK** | live google/material-design-icons pin 49d4db35df87 vs upstream 49d4db35df87 |
 | python3-materialyoucolor | materialyoucolor-3.0.4.tar.gz | 3.0.4 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | matugen | matugen-4.2.0.crate | 4.2.0 |  | **SOURCE-OK** | crate (cargo package tarball), source by construction \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
-| mixtapes | live m-obeid/Mixtapes | d8cfa4e3a166 | d8cfa4e3a166 | **OK** | live m-obeid/Mixtapes pin d8cfa4e3a166 vs upstream d8cfa4e3a166 |
+| mixtapes | live m-obeid/Mixtapes | 1b5f1e8cd58f | 1b5f1e8cd58f | **OK** | live m-obeid/Mixtapes pin 1b5f1e8cd58f vs upstream 1b5f1e8cd58f |
 | mpvpaper | 1.9.tar.gz | 1.9 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
-| noctalia-greeter | live noctalia-dev/noctalia-greeter | f6714c9e0480 | f6714c9e0480 | **OK** | live noctalia-dev/noctalia-greeter pin f6714c9e0480 vs upstream f6714c9e0480 |
-| nwg-look | v1.1.2.tar.gz | 1.1.2 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
+| noctalia-greeter | live noctalia-dev/noctalia-greeter | 05fc8e3763de | 05fc8e3763de | **OK** | live noctalia-dev/noctalia-greeter pin 05fc8e3763de vs upstream 05fc8e3763de |
+| nwg-look | v1.2.0.tar.gz | 1.2.0 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | obsidian | obsidian_1.14.4_amd64.deb | 1.14.4 | 1.14.4 | **OK** | deb pkg=obsidian (control control.tar.xz) \| pinned 1.14.4 \| internal 1.14.4 |
-| opencad-studio | OpenCADStudio-v2026.40.1-linux-x86_64.AppImage | 2026.40.1 | 2026.40.1 | **OK** | AppImage strings 2026.40.1 (AppRun) \| pinned 2026.40.1 \| internal 2026.40.1 |
-| openchamber | OpenChamber-2.2.0-linux-x86_64.AppImage | 2.2.0 | 2.2.0 | **OK** | AppImage 2.2.0 (resources/app.asar) \| pinned 2.2.0 \| internal 2.2.0 |
-| opencode-desktop | opencode-desktop-linux-amd64.deb | 2.0.26 | 2.0.26 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.0.26 \| internal 2.0.26 |
+| opencad-studio | OpenCADStudio-v2026.41-linux-x86_64.AppImage | 2026.41 | 2026.41 | **OK** | AppImage strings 2026.41 (AppRun) \| pinned 2026.41 \| internal 2026.41 |
+| openchamber | OpenChamber-2.3.1-linux-x86_64.AppImage | 2.3.1 | 2.3.1 | **OK** | AppImage 2.3.1 (resources/app.asar) \| pinned 2.3.1 \| internal 2.3.1 |
+| opencode-desktop | opencode-desktop-linux-amd64.deb | 2.0.28 | 2.0.28 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.0.28 \| internal 2.0.28 |
 | protonplus | ProtonPlus-v0.6.8.tar.gz | 0.6.8 | >= 1.0.0 | **SOURCE-OK** | tar meson.build=>= 1.0.0 (ProtonPlus-0.6.8/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 1.0.0 (not authoritative) |
 | python-mprisify | mprisify-v1.0.1.tar.gz | 1.0.1 | 1.0.1 | **SOURCE-OK** | tar changelog=1.0.1 (mprisify-v1.0.1/CHANGELOG.md) \| hash no-checksum-pinned \| weak internal evidence 1.0.1 (not authoritative) |
 | python-pydbus | pydbus-0.6.0.tar.gz | 0.6.0 | 0.6.0 | **SOURCE-OK** | tar setup.py=0.6.0 (pydbus-0.6.0/setup.py) \| hash no-checksum-pinned \| weak internal evidence 0.6.0 (not authoritative) |
@@ -59,7 +59,7 @@ Repo type: **fedora**. Sweep of **64** packages. Exit code is the verdict; this 
 | python-yt-dlp-get-pot | yt_dlp_get_pot-0.3.0.tar.gz | 0.3.0 | 0.3.0 | **SOURCE-OK** | tar pyproject.toml=0.3.0 (yt_dlp_get_pot-0.3.0/pyproject.toml) \| hash no-checksum-pinned \| weak internal evidence 0.3.0 (not authoritative) |
 | python-yt-dlp-get-pot-rustypipe | yt_dlp_get_pot_rustypipe-0.2.0.tar.gz | 0.2.0 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | python-ytmusicapi | ytmusicapi-1.12.3.tar.gz | 1.12.3 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
-| rootapp | Root.AppImage | 0.9.147 | 0.9.147 | **OK** | AppImage 0.9.147 (Root.desktop) \| pinned 0.9.147 \| internal 0.9.147 |
+| rootapp | Root.AppImage | 0.9.148 | 0.9.148 | **OK** | AppImage 0.9.148 (Root.desktop) \| pinned 0.9.148 \| internal 0.9.148 |
 | rustypipe-botguard | rustypipe-botguard-v0.1.2-x86_64-unknown-linux-gnu.tar.xz | 0.1.2 | 0.1.2 | **OK** | tar runtime probe rustypipe-botguard --version: rustypipe-botguard 0.1.2
 rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | scenefx | 0.5.tar.gz | 0.5 | >=1.3 | **SOURCE-OK** | tar meson.build=>=1.3 (scenefx-0.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3 (not authoritative) |
@@ -74,28 +74,28 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | stoat-desktop | stoat-desktop.desktop | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| umbriel-git | live noctalia-dev/umbriel | 2339fc37297b | 2339fc37297b | **OK** | live noctalia-dev/umbriel pin 2339fc37297b vs upstream 2339fc37297b |
+| umbriel-git | live noctalia-dev/umbriel | 72ea11fa1b68 | 72ea11fa1b68 | **OK** | live noctalia-dev/umbriel pin 72ea11fa1b68 vs upstream 72ea11fa1b68 |
 | vesktop | vesktop-1.6.7.x86_64.rpm | 1.6.7 | 1.6.7 | **OK** | rpm header vesktop=1.6.7-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.7 \| internal 1.6.7 |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
 | waypaper | screeninfo-0.8.1.tar.gz | 2.9 | 0.8.1 | **SOURCE-OK** | tar pyproject.toml=0.8.1 (screeninfo-0.8.1/pyproject.toml) \| hash no-checksum-pinned \| weak internal evidence 0.8.1 (not authoritative) |
 | waypaper | imageio_ffmpeg-0.6.0.tar.gz | 2.9 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | wlroots | wlroots-0.20.2.tar.gz | 0.20.2 | >=1.3 | **SOURCE-OK** | tar meson.build=>=1.3 (wlroots-0.20.2/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3 (not authoritative) |
 | xcur2png | xcur2png-0.7.1.tar.gz | 0.7.1 | 0.7.1 | **SOURCE-OK** | tar configure.ac=0.7.1 (xcur2png-0.7.1/configure.ac) \| hash hash-OK \| weak internal evidence 0.7.1 (not authoritative) |
-| xdg-desktop-portal-umbriel-git | live noctalia-dev/xdg-desktop-portal-umbriel | d6bd72cabd83 | d6bd72cabd83 | **OK** | live noctalia-dev/xdg-desktop-portal-umbriel pin d6bd72cabd83 vs upstream d6bd72cabd83 |
+| xdg-desktop-portal-umbriel-git | live noctalia-dev/xdg-desktop-portal-umbriel | 9350c63ea2bd | 9350c63ea2bd | **OK** | live noctalia-dev/xdg-desktop-portal-umbriel pin 9350c63ea2bd vs upstream 9350c63ea2bd |
 | zen-browser | zen.linux-x86_64.tar.xz | 1.23.2b | 1.23.2b | **OK** | tar application.ini=1.23.2b (zen/application.ini) \| pinned 1.23.2b \| internal 1.23.2b |
 | zen-browser | zen-browser.desktop | 1.23.2b |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | zen-browser | policies.json | 1.23.2b |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | zen-browser | zen-browser | 1.23.2b |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| appmenu-glib-translator | upstream github.com/rilian-la-te/vala-panel-appmenu | 25.04^20261009135843giteb3077e | 0.6.1 | **OK** | at upstream latest 0.6.1 [releases/latest] |
+| appmenu-glib-translator | upstream github.com/rilian-la-te/vala-panel-appmenu | 25.04^20261012202807git8281a25 | 0.6.1 | **OK** | at upstream latest 0.6.1 [releases/latest] |
 | aylurs-gtk-shell | upstream github.com/Aylur/ags | 3.1.2 | v3.1.2 | **OK** | at upstream latest v3.1.2 [releases/latest] |
 | bibata-cursor-theme | upstream github.com/ful1e5/Bibata_Cursor | 2.0.7 | v2.0.7 | **OK** | at upstream latest v2.0.7 [releases/latest] |
 | cascadia-code-nerd-fonts | upstream github.com/ryanoasis/nerd-fonts | 3.5.1 | v3.5.1 | **OK** | at upstream latest v3.5.1 [releases/latest] |
 | cliphist | upstream github.com/sentriz/cliphist | 0.7.0 | v0.7.0 | **OK** | at upstream latest v0.7.0 [releases/latest] |
-| concat | upstream github.com/jub0t/Concat | 0.2.6 | v0.2.6 | **OK** | at upstream latest v0.2.6 [releases/latest] |
+| concat | upstream github.com/jub0t/Concat | 0.2.7 | v0.2.7 | **OK** | at upstream latest v0.2.7 [releases/latest] |
 | concord | upstream github.com/chojs23/concord | 2.6.1 | v2.6.1 | **OK** | at upstream latest v2.6.1 [releases/latest] |
-| craft-launcher | upstream github.com/storytold/craft-launcher | 0.2.1 | v0.2.1 | **OK** | at upstream latest v0.2.1 [releases/latest] |
+| craft-launcher | upstream github.com/storytold/craft-launcher | 0.4.1 | v0.4.1 | **OK** | at upstream latest v0.4.1 [releases/latest] |
 | extension-manager | upstream github.com/mjakeman/extension-manager | 0.6.5 | v0.6.5 | **OK** | at upstream latest v0.6.5 [releases/latest] |
-| freebuff | upstream github.com/CodebuffAI/codebuff-community | 0.2.26 | freebuff-v0.2.26 | **OK** | at upstream latest freebuff-v0.2.26 [releases/latest] |
+| freebuff | upstream github.com/CodebuffAI/codebuff-community | 0.2.27 | freebuff-v0.2.27 | **OK** | at upstream latest freebuff-v0.2.27 [releases/latest] |
 | ghostty | upstream github.com/mkasberg/ghostty-ubuntu | 1.3.1 | 1.3.1-0-ppa2 | **OK** | at upstream latest 1.3.1-0-ppa2 [releases/latest] |
 | helium-browser | upstream github.com/imputnet/helium-linux | 0.19.2.1 | 0.19.2.1 | **OK** | at upstream latest 0.19.2.1 [releases/latest] |
 | hellwal | upstream github.com/danihek/hellwal | 1.0.8 | 1.0.8 | **OK** | at upstream latest 1.0.8 [releases/latest] |
@@ -106,10 +106,10 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | ly | upstream github.com/fairyglade/ly | 1.4.1 | v1.0.3 | **OK** | at upstream latest v1.0.3 [releases/latest] |
 | mangowm | upstream github.com/mangowm/mango | 0.18.0 | 0.18.0 | **OK** | at upstream latest 0.18.0 [releases/latest] |
 | mpvpaper | upstream github.com/GhostNaN/mpvpaper | 1.9 | 1.9 | **OK** | at upstream latest 1.9 [releases/latest] |
-| nwg-look | upstream github.com/nwg-piotr/nwg-look | 1.1.2 | v1.1.2 | **OK** | at upstream latest v1.1.2 [releases/latest] |
+| nwg-look | upstream github.com/nwg-piotr/nwg-look | 1.2.0 | v1.2.0 | **OK** | at upstream latest v1.2.0 [releases/latest] |
 | obsidian | upstream github.com/obsidianmd/obsidian-releases | 1.14.4 | v1.14.4 | **OK** | at upstream latest v1.14.4 [releases/latest] |
-| opencad-studio | upstream github.com/HakanSeven12/OpenCADStudio | 2026.40.1 | v2026.40.1 | **OK** | at upstream latest v2026.40.1 [releases/latest] |
-| openchamber | upstream github.com/openchamber/openchamber | 2.2.0 | v2.2.0 | **OK** | at upstream latest v2.2.0 [releases/latest] |
+| opencad-studio | upstream github.com/HakanSeven12/OpenCADStudio | 2026.41 | v2026.41 | **OK** | at upstream latest v2026.41 [releases/latest] |
+| openchamber | upstream github.com/openchamber/openchamber | 2.3.1 | v2.3.1 | **OK** | at upstream latest v2.3.1 [releases/latest] |
 | protonplus | upstream github.com/vysp3r/ProtonPlus | 0.6.8 | v0.6.8 | **OK** | at upstream latest v0.6.8 [releases/latest] |
 | python-mprisify | upstream gitlab.com/zehkira/mprisify | 1.0.1 | v1.0.1 | **OK** | at upstream latest v1.0.1 [ls-remote] |
 | rustypipe-botguard | upstream codeberg.org/ThetaDev/rustypipe-botguard | 0.1.2 | v0.1.2 | **OK** | at upstream latest v0.1.2 [ls-remote] |
@@ -129,7 +129,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology unreachable in this environment] |
 | python-yt-dlp-get-pot-rustypipe | pypi:yt-dlp-get-pot-rustypipe | 0.2.0 | 0.2.0 | **OK** | upstream 0.2.0 == pinned 0.2.0 [freshness via pypi:yt-dlp-get-pot-rustypipe; repology unreachable in this environment] |
 | python-ytmusicapi | pypi:ytmusicapi | 1.12.3 | 1.12.3 | **OK** | upstream 1.12.3 == pinned 1.12.3 [freshness via pypi:ytmusicapi; repology unreachable in this environment] |
-| rootapp | aur | 0.9.147 | 0.9.147 | **OK** | pinned 0.9.147 >= repology 0.9.147 (aur); tracker behind |
-| LIBYEAR | freshness | 0.09 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
+| rootapp | aur | 0.9.148 | 0.9.147 | **OK** | pinned 0.9.148 >= repology 0.9.147 (aur); tracker behind |
+| LIBYEAR | freshness | 0.12 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
 
 **Verdict: PASS** (0 failure(s))
