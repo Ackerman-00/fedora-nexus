@@ -268,11 +268,13 @@ That is a HOST artifact, never a broken Source URL - COPR and the Fedora
 containers all expand it to `.../-/archive/0.20.2/wlroots-0.20.2.tar.gz`
 (HTTP 200, verified 2026-10-11). The same host run reports nwg-look
 (`%gosource`) and protonplus (`%forgesource`/`%forgemeta`) as unexpandable,
-because `golang-srpm-macros` and `forge-srpm-macros` are not installed there.
+because `go-srpm-macros` and `forge-srpm-macros` are not installed there
+(the Fedora package is named `go-srpm-macros`; `golang-srpm-macros` does
+not exist, verified in fedora:44 2026-10-13).
 
 RULE: any URL or macro expansion check (spectool, curl of Source0, sha256
 comparison) must run in a Fedora container with `rpm-build rpmdevtools
-forge-srpm-macros golang-srpm-macros` installed. On the host, treat an empty
+forge-srpm-macros go-srpm-macros` installed. On the host, treat an empty
 or `.tar.gz`-less expansion as "check in container", not as a finding.
 
 ## Harness smoke probes must match what the harness installed (added 2026-10-11, real hit)
