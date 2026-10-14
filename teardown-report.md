@@ -46,7 +46,7 @@ Repo type: **fedora**. Sweep of **64** packages. Exit code is the verdict; this 
 | matugen | matugen-4.2.0.crate | 4.2.0 |  | **SOURCE-OK** | crate (cargo package tarball), source by construction \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | mixtapes | live m-obeid/Mixtapes | 1b5f1e8cd58f | 1b5f1e8cd58f | **OK** | live m-obeid/Mixtapes pin 1b5f1e8cd58f vs upstream 1b5f1e8cd58f |
 | mpvpaper | 1.9.tar.gz | 1.9 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
-| noctalia-greeter | live noctalia-dev/noctalia-greeter | 05fc8e3763de | 05fc8e3763de | **OK** | live noctalia-dev/noctalia-greeter pin 05fc8e3763de vs upstream 05fc8e3763de |
+| noctalia-greeter | live noctalia-dev/noctalia-greeter | a8683078d798 | a8683078d798 | **OK** | live noctalia-dev/noctalia-greeter pin a8683078d798 vs upstream a8683078d798 |
 | nwg-look | v1.2.0.tar.gz | 1.2.0 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | obsidian | obsidian_1.14.4_amd64.deb | 1.14.4 | 1.14.4 | **OK** | deb pkg=obsidian (control control.tar.xz) \| pinned 1.14.4 \| internal 1.14.4 |
 | opencad-studio | OpenCADStudio-v2026.41-linux-x86_64.AppImage | 2026.41 | 2026.41 | **OK** | AppImage strings 2026.41 (AppRun) \| pinned 2026.41 \| internal 2026.41 |
@@ -74,7 +74,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | stoat-desktop | stoat-desktop.desktop | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| umbriel-git | live noctalia-dev/umbriel | 6a9e1e96bd7e | 6a9e1e96bd7e | **OK** | live noctalia-dev/umbriel pin 6a9e1e96bd7e vs upstream 6a9e1e96bd7e |
+| umbriel-git | live noctalia-dev/umbriel | 693b68996a83 | 693b68996a83 | **OK** | live noctalia-dev/umbriel pin 693b68996a83 vs upstream 693b68996a83 |
 | vesktop | vesktop-1.6.7.x86_64.rpm | 1.6.7 | 1.6.7 | **OK** | rpm header vesktop=1.6.7-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.7 \| internal 1.6.7 |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
 | waypaper | screeninfo-0.8.1.tar.gz | 2.9 | 0.8.1 | **SOURCE-OK** | tar pyproject.toml=0.8.1 (screeninfo-0.8.1/pyproject.toml) \| hash no-checksum-pinned \| weak internal evidence 0.8.1 (not authoritative) |
