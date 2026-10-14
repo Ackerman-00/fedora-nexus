@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          a8683078d798c30403905f5356729d1c2b7d88a4
+%global commit          c0d328447e3093107a6002cd947c7b5f4a289eed
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261014133931
+%global gitdate         20261014164448
 
 Name:           noctalia-greeter
 Version:        1.6.0^%{gitdate}git%{shortcommit}
@@ -38,6 +38,8 @@ BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(gobject-2.0)
 BuildRequires:  pkgconfig(harfbuzz)
 BuildRequires:  pkgconfig(librsvg-2.0)
+BuildRequires:  pkgconfig(libjxl)
+BuildRequires:  pkgconfig(libjxl_threads)
 BuildRequires:  pkgconfig(libwebp)
 BuildRequires:  pkgconfig(libxml-2.0)
 BuildRequires:  pkgconfig(nlohmann_json)
@@ -118,5 +120,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Wed Oct 14 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.0^20261014133931gita868307-1
-- Nightly sync with upstream main branch (Commit: a868307)
+* Wed Oct 14 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.0^20261014164448gitc0d3284-1
+- Nightly sync with upstream main branch (Commit: c0d3284, JPEG XL wallpaper support, add libjxl/libjxl_threads BuildRequires)
