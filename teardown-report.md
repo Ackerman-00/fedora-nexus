@@ -51,7 +51,7 @@ Repo type: **fedora**. Sweep of **64** packages. Exit code is the verdict; this 
 | obsidian | obsidian_1.14.4_amd64.deb | 1.14.4 | 1.14.4 | **OK** | deb pkg=obsidian (control control.tar.xz) \| pinned 1.14.4 \| internal 1.14.4 |
 | opencad-studio | OpenCADStudio-v2026.41-linux-x86_64.AppImage | 2026.41 | 2026.41 | **OK** | AppImage strings 2026.41 (AppRun) \| pinned 2026.41 \| internal 2026.41 |
 | openchamber | OpenChamber-2.3.2-linux-x86_64.AppImage | 2.3.2 | 2.3.2 | **OK** | AppImage 2.3.2 (resources/app.asar) \| pinned 2.3.2 \| internal 2.3.2 |
-| opencode-desktop | opencode-desktop-linux-amd64.deb | 2.0.28 | 2.0.28 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.0.28 \| internal 2.0.28 |
+| opencode-desktop | opencode-desktop-linux-amd64.deb | 2.0.29 | 2.0.29 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.0.29 \| internal 2.0.29 |
 | protonplus | ProtonPlus-v0.6.8.tar.gz | 0.6.8 | >= 1.0.0 | **SOURCE-OK** | tar meson.build=>= 1.0.0 (ProtonPlus-0.6.8/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 1.0.0 (not authoritative) |
 | python-mprisify | mprisify-v1.0.1.tar.gz | 1.0.1 | 1.0.1 | **SOURCE-OK** | tar changelog=1.0.1 (mprisify-v1.0.1/CHANGELOG.md) \| hash no-checksum-pinned \| weak internal evidence 1.0.1 (not authoritative) |
 | python-pydbus | pydbus-0.6.0.tar.gz | 0.6.0 | 0.6.0 | **SOURCE-OK** | tar setup.py=0.6.0 (pydbus-0.6.0/setup.py) \| hash no-checksum-pinned \| weak internal evidence 0.6.0 (not authoritative) |
