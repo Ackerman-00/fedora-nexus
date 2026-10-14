@@ -36,6 +36,14 @@
 #     (GUI_ALIVE=yes). Electron apps still need --security-opt
 #     seccomp=unconfined on the docker run plus the chrome-sandbox %attr rule.
 #
+#  8. Fedora container images ship dnf tsflags=nodocs (hit on cliphist
+#     2026-10-14): after a dnf install, the /usr/share/doc/<pkg>/ files that
+#     `rpm -ql` lists are NOT on disk and rpm -V stays clean, so a smoke
+#     probing a %doc path fails (ls exit 2) and reads like a packaging bug.
+#     The payload is fine - a direct `rpm -ivh` does install the doc files.
+#     Never probe %doc paths in smokes: probe the binary (e.g. `cliphist
+#     version`) or a non-doc file instead.
+#
 # usage: container-teardown.sh <pkgdir> <spec> <smoke-cmd> [rpmV-name]
 set -u
 PKGDIR=$1; SPEC=$2; SMOKE=$3; RPMVNAME=${4:-}
