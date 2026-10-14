@@ -1,6 +1,6 @@
 Name:           awww
 Version:        0.12.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Efficient animated wallpaper daemon for Wayland, controlled at runtime
 
 License:        GPL-3.0-only AND MIT AND Apache-2.0 AND MPL-2.0 AND BSD-3-Clause AND ISC
@@ -16,7 +16,8 @@ BuildRequires:  pkgconf
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols)
 BuildRequires:  libxkbcommon-devel
-BuildRequires:  lz4-devel
+# common/build.rs probes liblz4 with atleast_version("1.8") - carry the floor
+BuildRequires:  pkgconfig(liblz4) >= 1.8
 BuildRequires:  systemd-rpm-macros
 
 %description
@@ -45,6 +46,10 @@ install -Dpm 0644 contrib/systemd/awww-daemon.service %{buildroot}%{_userunitdir
 %{_userunitdir}/awww-daemon.service
 
 %changelog
+* Wed Oct 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.1-4
+- Replace lz4-devel with pkgconfig(liblz4) >= 1.8 to carry upstream's
+  liblz4 1.8 minimum (common/build.rs pkg-config probe)
+
 * Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.1-3
 - Fix autosetup: tarball extracts to awww-0.12.1/, not awww/
 
