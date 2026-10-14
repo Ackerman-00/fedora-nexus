@@ -1,6 +1,6 @@
 %global goipath         github.com/nwg-piotr/nwg-look
 
-Version:        1.2.0
+Version:        1.2.1
 
 %gometa
 
@@ -52,6 +52,9 @@ make build
 %{_datadir}/pixmaps/nwg-look.svg
 
 %changelog
+* Wed Oct 14 2026 Nexus Auto-Updater <bot@github.com> - 1.2.1-1
+- Update to version 1.2.1
+
 * Mon Oct 12 2026 Nexus Auto-Updater <bot@github.com> - 1.2.0-1
 - Update to version 1.2.0
 
