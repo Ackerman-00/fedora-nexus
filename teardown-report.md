@@ -23,7 +23,7 @@ Repo type: **fedora**. Sweep of **64** packages. Exit code is the verdict; this 
 | concord | v2.6.1.tar.gz | 2.6.1 | 2.6.1 | **SOURCE-OK** | tar Cargo.toml=2.6.1 (concord-2.6.1/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 2.6.1 (not authoritative) |
 | craft-launcher | artcraft-launcher-0.4.1-linux-x86_64.rpm | 0.4.1 | 0.4.1 | **OK** | rpm header artcraft-launcher=0.4.1-1 (tags NAME/VERSION/RELEASE) \| pinned 0.4.1 \| internal 0.4.1 |
 | extension-manager | extension-manager-0.6.5.tar.gz | 0.6.5 | >= 0.59.0 | **SOURCE-OK** | tar meson.build=>= 0.59.0 (extension-manager-0.6.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 0.59.0 (not authoritative) |
-| fluxer | rpm | 2026.1014.143444 | 2026.1014.143444 | **OK** | rpm header fluxer=2026.1014.143444-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1014.143444 \| internal 2026.1014.143444 |
+| fluxer | rpm | 2026.1014.161544 | 2026.1014.161544 | **OK** | rpm header fluxer=2026.1014.161544-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1014.161544 \| internal 2026.1014.161544 |
 | freebuff | freebuff-linux-x64.tar.gz | 0.2.27 | 0.2.27 | **OK** | tar runtime probe freebuff --version: 0.2.27 \| pinned 0.2.27 \| internal 0.2.27 |
 | ghostty | ghostty_1.3.1-0.ppa2_amd64_24.04.deb | 1.3.1 | 1.3.1-0~ppa2 | **OK** | deb pkg=ghostty (control control.tar.zst) \| pinned 1.3.1 \| internal 1.3.1-0~ppa2 |
 | gpu-screen-recorder | gpu-screen-recorder.git.6.1.4.tar.gz | 6.1.4 | 6.1.4 | **SOURCE-OK** | tar meson.build=6.1.4 (meson.build) \| hash no-checksum-pinned \| weak internal evidence 6.1.4 (not authoritative) |
