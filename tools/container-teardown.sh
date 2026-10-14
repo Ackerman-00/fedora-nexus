@@ -44,6 +44,23 @@
 #     Never probe %doc paths in smokes: probe the binary (e.g. `cliphist
 #     version`) or a non-doc file instead.
 #
+#  9. One-shot spectool is a false-failure generator (hit on cliphist
+#     2026-10-14, run 38558721815): the first harness attempt got a failed
+#     Source0 download, so rpmbuild died with "Bad source" (RPMBUILD_EXIT=1,
+#     BUILT= empty) and the outer grep swallowed the lowercase "error:" line -
+#     a network hiccup wearing a broken-spec costume. The prompt's own repro
+#     snippet retries spectool three times; this harness now does too, prints
+#     SPECTOOL_FILES, and prints BUILD_ERROR: lines on any rpmbuild failure.
+#     Same package rebuilt green manually and on harness retry that session.
+#
+# 10. Smoke probes must survive a TTY-less container (hit on concord
+#     2026-10-14): a TUI that gets an unknown flag starts its alternate
+#     screen, finds no terminal, and exits 101 (rc=133 for Electron apps) -
+#     package fine, probe wrong. Probe with `--version`, `-h`, a file
+#     presence test, or an ldd check; only use xvfb for GUI apps. If a smoke
+#     fails, re-probe with another working flag before calling the package
+#     broken (concord -h and --version both exited 0 in a fresh container).
+#
 # usage: container-teardown.sh <pkgdir> <spec> <smoke-cmd> [rpmV-name]
 set -u
 PKGDIR=$1; SPEC=$2; SMOKE=$3; RPMVNAME=${4:-}
@@ -68,8 +85,14 @@ for bpass in 1 2; do
 done
 echo BUILDEP_EXIT=\$brc; tail -1 /tmp/bd.log
 mkdir -p /root/rpmbuild/{SOURCES,BUILD,BUILDROOT,RPMS,SRPMS,SPECS}
-echo '--- spectool ---'; spectool -g -C /root/rpmbuild/SOURCES $SPEC 2>&1 | tail -1
+echo '--- spectool ---'
+for sp in 1 2 3; do
+  spectool -g -C /root/rpmbuild/SOURCES $SPEC > /tmp/sp.log 2>&1 && break
+  echo SPECTOOL_RETRY pass \$sp:; tail -2 /tmp/sp.log; sleep 5
+done
+tail -1 /tmp/sp.log
 find . -maxdepth 1 -type f -exec cp -f {} /root/rpmbuild/SOURCES/ \;
+echo SPECTOOL_FILES=\$(ls /root/rpmbuild/SOURCES | wc -l)
 echo '--- rpmbuild ---'
 for pass in 1 2 3; do
   rpmbuild -bb --define '_topdir /root/rpmbuild' $SPEC > /tmp/bb.log 2>&1
@@ -82,6 +105,9 @@ for pass in 1 2 3; do
   dnf -y --setopt=gpgcheck=0 builddep \$nosrc >> /tmp/bb.log 2>&1 || break
 done
 echo RPMBUILD_EXIT=\$rc; tail -2 /tmp/bb.log
+# Lesson 9: never leave a red rpmbuild without its error line (the outer
+# grep filter only keeps marker lines; lowercase "error:" used to vanish).
+if [ \$rc -ne 0 ]; then grep -ai error /tmp/bb.log | tail -5 | sed 's/^/BUILD_ERROR: /'; fi
 # If the static builddep pass never resolved, say so before rpmbuild's
 # is-needed-by line is mistaken for a spec bug.
 if [ \$brc -ne 0 ]; then echo WARNING_BUILDEP_UNRESOLVED rc=\$brc - a later is-needed-by failure is a dependency-resolution artifact, not proof of a broken spec; fi
@@ -89,7 +115,7 @@ RPM=\$(ls /root/rpmbuild/RPMS/*/*.rpm 2>/dev/null | head -1); echo BUILT=\$RPM
 echo '--- install ---'; dnf -y --setopt=gpgcheck=0 --setopt=install_weak_deps=False install \$RPM 2>&1 | tail -1; echo INSTALL_EXIT=\${PIPESTATUS[0]}
 if [ -n '$RPMVNAME' ]; then rpm -V $RPMVNAME && echo RPMV_OK; fi
 echo '--- smoke ---'; ( $SMOKE ); echo SMOKE_EXIT=\$?
-" 2>&1 | grep -aE -- '---|RPMBUILD_EXIT|INSTALL_EXIT|BUILDEP_EXIT|BUILDEP_RETRY|WARNING_BUILDEP_UNRESOLVED|BUILT=|RPMV_OK|SMOKE_EXIT|DYNAMIC_BUILDDEPS|Complete!|Error|SMOKE_OK|ELF_OK|WRAPPER_OK|not_found=|help_rc=|version_file=' | head -80)
+" 2>&1 | grep -aE -- '---|RPMBUILD_EXIT|INSTALL_EXIT|BUILDEP_EXIT|BUILDEP_RETRY|WARNING_BUILDEP_UNRESOLVED|BUILT=|RPMV_OK|SMOKE_EXIT|DYNAMIC_BUILDDEPS|SPECTOOL_RETRY|SPECTOOL_FILES|BUILD_ERROR|Complete!|Error|SMOKE_OK|ELF_OK|WRAPPER_OK|not_found=|help_rc=|version_file=' | head -140)
 printf '%s\n' "$OUT"
 
 # 6. The whole container payload lives inside ONE outer double-quoted string, so
