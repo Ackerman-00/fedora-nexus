@@ -23,7 +23,7 @@ Repo type: **fedora**. Sweep of **64** packages. Exit code is the verdict; this 
 | concord | v2.6.1.tar.gz | 2.6.1 | 2.6.1 | **SOURCE-OK** | tar Cargo.toml=2.6.1 (concord-2.6.1/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 2.6.1 (not authoritative) |
 | craft-launcher | artcraft-launcher-0.4.1-linux-x86_64.rpm | 0.4.1 | 0.4.1 | **OK** | rpm header artcraft-launcher=0.4.1-1 (tags NAME/VERSION/RELEASE) \| pinned 0.4.1 \| internal 0.4.1 |
 | extension-manager | extension-manager-0.6.5.tar.gz | 0.6.5 | >= 0.59.0 | **SOURCE-OK** | tar meson.build=>= 0.59.0 (extension-manager-0.6.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 0.59.0 (not authoritative) |
-| fluxer | rpm | 2026.1014.161544 | 2026.1014.161544 | **OK** | rpm header fluxer=2026.1014.161544-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1014.161544 \| internal 2026.1014.161544 |
+| fluxer | rpm | 2026.1014.180559 | 2026.1014.180559 | **OK** | rpm header fluxer=2026.1014.180559-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1014.180559 \| internal 2026.1014.180559 |
 | freebuff | freebuff-linux-x64.tar.gz | 0.2.27 | 0.2.27 | **OK** | tar runtime probe freebuff --version: 0.2.27 \| pinned 0.2.27 \| internal 0.2.27 |
 | ghostty | ghostty_1.3.1-0.ppa2_amd64_24.04.deb | 1.3.1 | 1.3.1-0~ppa2 | **OK** | deb pkg=ghostty (control control.tar.zst) \| pinned 1.3.1 \| internal 1.3.1-0~ppa2 |
 | gpu-screen-recorder | gpu-screen-recorder.git.6.1.4.tar.gz | 6.1.4 | 6.1.4 | **SOURCE-OK** | tar meson.build=6.1.4 (meson.build) \| hash no-checksum-pinned \| weak internal evidence 6.1.4 (not authoritative) |
@@ -47,7 +47,7 @@ Repo type: **fedora**. Sweep of **64** packages. Exit code is the verdict; this 
 | mixtapes | live m-obeid/Mixtapes | 1b5f1e8cd58f | 1b5f1e8cd58f | **OK** | live m-obeid/Mixtapes pin 1b5f1e8cd58f vs upstream 1b5f1e8cd58f |
 | mpvpaper | 1.9.tar.gz | 1.9 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | noctalia-greeter | live noctalia-dev/noctalia-greeter | c0d328447e30 | c0d328447e30 | **OK** | live noctalia-dev/noctalia-greeter pin c0d328447e30 vs upstream c0d328447e30 |
-| nwg-look | v1.2.0.tar.gz | 1.2.0 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
+| nwg-look | v1.2.1.tar.gz | 1.2.1 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | obsidian | obsidian_1.14.4_amd64.deb | 1.14.4 | 1.14.4 | **OK** | deb pkg=obsidian (control control.tar.xz) \| pinned 1.14.4 \| internal 1.14.4 |
 | opencad-studio | OpenCADStudio-v2026.41-linux-x86_64.AppImage | 2026.41 | 2026.41 | **OK** | AppImage strings 2026.41 (AppRun) \| pinned 2026.41 \| internal 2026.41 |
 | openchamber | OpenChamber-2.3.2-linux-x86_64.AppImage | 2.3.2 | 2.3.2 | **OK** | AppImage 2.3.2 (resources/app.asar) \| pinned 2.3.2 \| internal 2.3.2 |
@@ -106,7 +106,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | ly | upstream github.com/fairyglade/ly | 1.4.1 | v1.0.3 | **OK** | at upstream latest v1.0.3 [releases/latest] |
 | mangowm | upstream github.com/mangowm/mango | 0.18.0 | 0.18.0 | **OK** | at upstream latest 0.18.0 [releases/latest] |
 | mpvpaper | upstream github.com/GhostNaN/mpvpaper | 1.9 | 1.9 | **OK** | at upstream latest 1.9 [releases/latest] |
-| nwg-look | upstream github.com/nwg-piotr/nwg-look | 1.2.0 | v1.2.0 | **OK** | at upstream latest v1.2.0 [releases/latest] |
+| nwg-look | upstream github.com/nwg-piotr/nwg-look | 1.2.1 | v1.2.1 | **OK** | at upstream latest v1.2.1 [releases/latest] |
 | obsidian | upstream github.com/obsidianmd/obsidian-releases | 1.14.4 | v1.14.4 | **OK** | at upstream latest v1.14.4 [releases/latest] |
 | opencad-studio | upstream github.com/HakanSeven12/OpenCADStudio | 2026.41 | v2026.41 | **OK** | at upstream latest v2026.41 [releases/latest] |
 | openchamber | upstream github.com/openchamber/openchamber | 2.3.2 | v2.3.2 | **OK** | at upstream latest v2.3.2 [releases/latest] |
