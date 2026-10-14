@@ -23,7 +23,7 @@ Repo type: **fedora**. Sweep of **64** packages. Exit code is the verdict; this 
 | concord | v2.6.1.tar.gz | 2.6.1 | 2.6.1 | **SOURCE-OK** | tar Cargo.toml=2.6.1 (concord-2.6.1/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 2.6.1 (not authoritative) |
 | craft-launcher | artcraft-launcher-0.4.1-linux-x86_64.rpm | 0.4.1 | 0.4.1 | **OK** | rpm header artcraft-launcher=0.4.1-1 (tags NAME/VERSION/RELEASE) \| pinned 0.4.1 \| internal 0.4.1 |
 | extension-manager | extension-manager-0.6.5.tar.gz | 0.6.5 | >= 0.59.0 | **SOURCE-OK** | tar meson.build=>= 0.59.0 (extension-manager-0.6.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 0.59.0 (not authoritative) |
-| fluxer | rpm | 2026.1013.174455 | 2026.1013.174455 | **OK** | rpm header fluxer=2026.1013.174455-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1013.174455 \| internal 2026.1013.174455 |
+| fluxer | rpm | 2026.1013.200953 | 2026.1013.200953 | **OK** | rpm header fluxer=2026.1013.200953-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1013.200953 \| internal 2026.1013.200953 |
 | freebuff | freebuff-linux-x64.tar.gz | 0.2.27 | 0.2.27 | **OK** | tar runtime probe freebuff --version: 0.2.27 \| pinned 0.2.27 \| internal 0.2.27 |
 | ghostty | ghostty_1.3.1-0.ppa2_amd64_24.04.deb | 1.3.1 | 1.3.1-0~ppa2 | **OK** | deb pkg=ghostty (control control.tar.zst) \| pinned 1.3.1 \| internal 1.3.1-0~ppa2 |
 | gpu-screen-recorder | gpu-screen-recorder.git.6.1.4.tar.gz | 6.1.4 | 6.1.4 | **SOURCE-OK** | tar meson.build=6.1.4 (meson.build) \| hash no-checksum-pinned \| weak internal evidence 6.1.4 (not authoritative) |
@@ -50,7 +50,7 @@ Repo type: **fedora**. Sweep of **64** packages. Exit code is the verdict; this 
 | nwg-look | v1.2.0.tar.gz | 1.2.0 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | obsidian | obsidian_1.14.4_amd64.deb | 1.14.4 | 1.14.4 | **OK** | deb pkg=obsidian (control control.tar.xz) \| pinned 1.14.4 \| internal 1.14.4 |
 | opencad-studio | OpenCADStudio-v2026.41-linux-x86_64.AppImage | 2026.41 | 2026.41 | **OK** | AppImage strings 2026.41 (AppRun) \| pinned 2026.41 \| internal 2026.41 |
-| openchamber | OpenChamber-2.3.1-linux-x86_64.AppImage | 2.3.1 | 2.3.1 | **OK** | AppImage 2.3.1 (resources/app.asar) \| pinned 2.3.1 \| internal 2.3.1 |
+| openchamber | OpenChamber-2.3.2-linux-x86_64.AppImage | 2.3.2 | 2.3.2 | **OK** | AppImage 2.3.2 (resources/app.asar) \| pinned 2.3.2 \| internal 2.3.2 |
 | opencode-desktop | opencode-desktop-linux-amd64.deb | 2.0.28 | 2.0.28 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.0.28 \| internal 2.0.28 |
 | protonplus | ProtonPlus-v0.6.8.tar.gz | 0.6.8 | >= 1.0.0 | **SOURCE-OK** | tar meson.build=>= 1.0.0 (ProtonPlus-0.6.8/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 1.0.0 (not authoritative) |
 | python-mprisify | mprisify-v1.0.1.tar.gz | 1.0.1 | 1.0.1 | **SOURCE-OK** | tar changelog=1.0.1 (mprisify-v1.0.1/CHANGELOG.md) \| hash no-checksum-pinned \| weak internal evidence 1.0.1 (not authoritative) |
@@ -63,7 +63,7 @@ Repo type: **fedora**. Sweep of **64** packages. Exit code is the verdict; this 
 | rustypipe-botguard | rustypipe-botguard-v0.1.2-x86_64-unknown-linux-gnu.tar.xz | 0.1.2 | 0.1.2 | **OK** | tar runtime probe rustypipe-botguard --version: rustypipe-botguard 0.1.2
 rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | scenefx | 0.5.tar.gz | 0.5 | >=1.3 | **SOURCE-OK** | tar meson.build=>=1.3 (scenefx-0.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3 (not authoritative) |
-| sonora | v0.42.2.tar.gz | 0.42.2 | @VERSION@ | **SOURCE-OK** | tar Info.plist=@VERSION@ (sonora-0.42.2/assets/macos/Info.plist) \| hash no-checksum-pinned \| weak internal evidence @VERSION@ (not authoritative) |
+| sonora | v0.43.0.tar.gz | 0.43.0 | @VERSION@ | **SOURCE-OK** | tar Info.plist=@VERSION@ (sonora-0.43.0/assets/macos/Info.plist) \| hash no-checksum-pinned \| weak internal evidence @VERSION@ (not authoritative) |
 | splayer-next | splayer-next-1.1.0-x86_64.rpm | 1.1.0 | 1.1.0 | **OK** | rpm header splayer-next=1.1.0-1 (tags NAME/VERSION/RELEASE) \| pinned 1.1.0 \| internal 1.1.0 |
 | starship | starship-x86_64-unknown-linux-gnu.tar.gz | 1.26.0 | 1.26.0 | **OK** | tar runtime probe starship --version: starship 1.26.0
 branch:main
@@ -74,7 +74,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | stoat-desktop | stoat-desktop.desktop | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| umbriel-git | live noctalia-dev/umbriel | 72ea11fa1b68 | 72ea11fa1b68 | **OK** | live noctalia-dev/umbriel pin 72ea11fa1b68 vs upstream 72ea11fa1b68 |
+| umbriel-git | live noctalia-dev/umbriel | 6a9e1e96bd7e | 6a9e1e96bd7e | **OK** | live noctalia-dev/umbriel pin 6a9e1e96bd7e vs upstream 6a9e1e96bd7e |
 | vesktop | vesktop-1.6.7.x86_64.rpm | 1.6.7 | 1.6.7 | **OK** | rpm header vesktop=1.6.7-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.7 \| internal 1.6.7 |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
 | waypaper | screeninfo-0.8.1.tar.gz | 2.9 | 0.8.1 | **SOURCE-OK** | tar pyproject.toml=0.8.1 (screeninfo-0.8.1/pyproject.toml) \| hash no-checksum-pinned \| weak internal evidence 0.8.1 (not authoritative) |
@@ -109,12 +109,12 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | nwg-look | upstream github.com/nwg-piotr/nwg-look | 1.2.0 | v1.2.0 | **OK** | at upstream latest v1.2.0 [releases/latest] |
 | obsidian | upstream github.com/obsidianmd/obsidian-releases | 1.14.4 | v1.14.4 | **OK** | at upstream latest v1.14.4 [releases/latest] |
 | opencad-studio | upstream github.com/HakanSeven12/OpenCADStudio | 2026.41 | v2026.41 | **OK** | at upstream latest v2026.41 [releases/latest] |
-| openchamber | upstream github.com/openchamber/openchamber | 2.3.1 | v2.3.1 | **OK** | at upstream latest v2.3.1 [releases/latest] |
+| openchamber | upstream github.com/openchamber/openchamber | 2.3.2 | v2.3.2 | **OK** | at upstream latest v2.3.2 [releases/latest] |
 | protonplus | upstream github.com/vysp3r/ProtonPlus | 0.6.8 | v0.6.8 | **OK** | at upstream latest v0.6.8 [releases/latest] |
 | python-mprisify | upstream gitlab.com/zehkira/mprisify | 1.0.1 | v1.0.1 | **OK** | at upstream latest v1.0.1 [ls-remote] |
 | rustypipe-botguard | upstream codeberg.org/ThetaDev/rustypipe-botguard | 0.1.2 | v0.1.2 | **OK** | at upstream latest v0.1.2 [ls-remote] |
 | scenefx | upstream github.com/wlrfx/scenefx | 0.5 | 0.5 | **OK** | at upstream latest 0.5 [releases/latest] |
-| sonora | upstream github.com/sonorahq/sonora | 0.42.2 | v0.42.2 | **OK** | at upstream latest v0.42.2 [releases/latest] |
+| sonora | upstream github.com/sonorahq/sonora | 0.43.0 | v0.43.0 | **OK** | at upstream latest v0.43.0 [releases/latest] |
 | splayer-next | upstream github.com/SPlayer-Dev/SPlayer-Next | 1.1.0 | v1.1.0 | **OK** | at upstream latest v1.1.0 [releases/latest] |
 | starship | upstream github.com/starship/starship | 1.26.0 | v1.26.0 | **OK** | at upstream latest v1.26.0 [releases/latest] |
 | stoat-desktop | upstream github.com/stoatchat/for-desktop | 1.5.4 | v1.5.4 | **OK** | at upstream latest v1.5.4 [releases/latest] |
@@ -129,7 +129,7 @@ build_env:rustc 1.96.0 (ac68faa20  \| pinned 1.26.0 \| internal 1.26.0 |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology unreachable in this environment] |
 | python-yt-dlp-get-pot-rustypipe | pypi:yt-dlp-get-pot-rustypipe | 0.2.0 | 0.2.0 | **OK** | upstream 0.2.0 == pinned 0.2.0 [freshness via pypi:yt-dlp-get-pot-rustypipe; repology unreachable in this environment] |
 | python-ytmusicapi | pypi:ytmusicapi | 1.12.3 | 1.12.3 | **OK** | upstream 1.12.3 == pinned 1.12.3 [freshness via pypi:ytmusicapi; repology unreachable in this environment] |
-| rootapp | aur | 0.9.148 | 0.9.147 | **OK** | pinned 0.9.148 >= repology 0.9.147 (aur); tracker behind |
-| LIBYEAR | freshness | 0.12 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
+| rootapp | aur | 0.9.148 | 0.9.148 | **OK** | pinned 0.9.148 >= repology 0.9.148 (aur); tracker behind |
+| LIBYEAR | freshness | 0.13 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
 
 **Verdict: PASS** (0 failure(s))
