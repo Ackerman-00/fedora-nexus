@@ -8,8 +8,8 @@
 %global comet_version 0.2.0
 
 Name:           heroic-games-launcher
-Version:        2.22.3
-Release:        3%{?dist}
+Version:        2.22.4
+Release:        1%{?dist}
 Summary:        Open source launcher for GOG, Epic, and Amazon Games (Nexus Optimized)
 
 License:        GPL-3.0-only AND MIT AND BSD-3-Clause
@@ -107,6 +107,9 @@ find %{buildroot}/opt/Heroic -type f -name "*.a" -delete
 %attr(4755, root, root) /opt/Heroic/chrome-sandbox
 
 %changelog
+* Thu Oct 15 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.4-1
+- Auto-update to upstream release v2.22.4
+
 * Fri Oct 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.22.3-3
 - Fix startup crash: ship chrome-sandbox as %attr(4755, root, root) so the
   Electron SUID sandbox helper is configured correctly (was 0755 ->
