@@ -132,7 +132,7 @@ if [[ -f "$RELAY" ]]; then
       echo "PASS: teardown slice size $slice_n >= $min_slice"
     fi
     for pkg in $slice_pkgs; do
-      if ! grep -qiE "docker-teardown: $pkg .*PASS.*($TODAY|$YEST)" <<< "$scope"; then
+      if ! echo "$scope" | grep -qiE "docker-teardown: $pkg .*PASS.*($TODAY|$YEST)"; then
         echo "FAIL: NOT COMPLETE -- slice package '$pkg' lacks a fresh dated docker-teardown PASS"
         FAIL=1
       fi
@@ -141,11 +141,11 @@ if [[ -f "$RELAY" ]]; then
 
   MAINS="umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter ly wlroots"
   for pkg in $MAINS; do
-    if ! grep -qiE "docker-teardown: $pkg .*PASS.*($TODAY|$YEST)" <<< "$scope"; then
+    if ! echo "$scope" | grep -qiE "docker-teardown: $pkg .*PASS.*($TODAY|$YEST)"; then
       echo "FAIL: NOT COMPLETE -- main package '$pkg' lacks fresh dated docker-teardown PASS"
       FAIL=1
     fi
-    if ! grep -qiE "upstream: $pkg .*($TODAY|$YEST)" <<< "$scope"; then
+    if ! echo "$scope" | grep -qiE "upstream: $pkg .*($TODAY|$YEST)"; then
       echo "FAIL: NOT COMPLETE -- main package '$pkg' lacks fresh upstream evidence"
       FAIL=1
     fi
