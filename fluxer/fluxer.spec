@@ -14,8 +14,8 @@
 %global __requires_exclude ^libffmpeg\\.so.*$|^libcbor\\.so.*$
 
 Name:           fluxer
-Version:        2026.1014.180559
-Release:        2%{?dist}
+Version:        2026.1014.223835
+Release:        1%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD
@@ -23,7 +23,7 @@ URL:            https://fluxer.app
 Source0:        https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm
 # Rolling "latest" URL: pin the hash of the served artifact so rebuilds and
 # the sweep verify fixed bits. Refreshed by update.sh on every version bump.
-# sha256: 399fcc7ee9eb24fc2dde28ceba04cc2109a471b4eee6f4e73161aa6bb085d85d
+# sha256: 63328f06abc35ca1193825e147a4cc8f988fb3a988ebceabcec80f6a8a746fda
 
 Requires:           hicolor-icon-theme
 Requires:       at-spi2-core
@@ -130,9 +130,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/app.fluxer.FluxerDesk
 %attr(4755, root, root) %{_libdir}/%{name}/chrome-sandbox
 
 %changelog
-* Wed Oct 14 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1014.180559-2
-- Re-pin to the RPM the rolling "latest" URL actually serves (2026.1014.180559,
-  sha256 399fcc7e). The 2026.1014.200615 pin came from upstream's X-Fluxer-Version
-  header, which ran ahead of the served file; upstream then rolled the CDN back
-  to 180559, so the 200615-1 SRPM download failed (HTTP 502) and the version
-  could not be reproduced. Release bumped to ship the verified artifact.
+* Thu Oct 15 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1014.223835-1
+- Update to version 2026.1014.223835
