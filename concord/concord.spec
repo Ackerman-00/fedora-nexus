@@ -2,7 +2,7 @@
 %global crate concord
 
 Name:           concord
-Version:        2.6.1
+Version:        2.6.2
 Release:        1%{?dist}
 Summary:        Feature-rich TUI client for Discord
 License:        GPL-3.0-only
@@ -64,5 +64,5 @@ install -Dm755 target/release/concord %{buildroot}%{_bindir}/concord
 %{_bindir}/concord
 
 %changelog
-* Tue Sep 29 2026 Ackerman-00 <quietcraft@gmail.com> - 2.6.1-1
-- Auto-update to upstream stable release v2.6.1
+* Thu Oct 15 2026 Ackerman-00 <quietcraft@gmail.com> - 2.6.2-1
+- Auto-update to upstream stable release v2.6.2
