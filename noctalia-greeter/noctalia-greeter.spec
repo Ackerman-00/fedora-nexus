@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          c0d328447e3093107a6002cd947c7b5f4a289eed
+%global commit          8d24358b12cd5ab481b987878028542d576d3453
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261014164448
+%global gitdate         20261016131606
 
 Name:           noctalia-greeter
 Version:        1.6.0^%{gitdate}git%{shortcommit}
@@ -120,5 +120,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Wed Oct 14 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.0^20261014164448gitc0d3284-1
-- Nightly sync with upstream main branch (Commit: c0d3284, JPEG XL wallpaper support, add libjxl/libjxl_threads BuildRequires)
+* Fri Oct 16 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.0^20261016131606git8d24358-1
+- Nightly sync with upstream main branch (Commit: 8d24358)
