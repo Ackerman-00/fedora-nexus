@@ -18,14 +18,14 @@ Name:               zen-browser
 # 1.21.13b-1, so dnf would keep offering users the withdrawn build forever.
 # An Epoch is the only correct way to supersede a higher version.
 Epoch:              1
-Version:        1.23.3b
+Version:        1.23.2b
 Release:        1%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPL-2.0
 URL:                https://github.com/zen-browser/desktop
-Source0:            https://github.com/zen-browser/desktop/releases/download/1.23.3b/zen.linux-x86_64.tar.xz
-# sha256: 77d70789cb1ac48871774169cf1750772e89eb671f4a258724ef45d69c886f15
+Source0:            https://github.com/zen-browser/desktop/releases/download/1.23.2b/zen.linux-x86_64.tar.xz
+# sha256: 5e67f4fa081b1b437243c464449ea1bd2a3b15b6f932487a8aa0c25aa8514600
 Source1:            %{full_name}.desktop
 Source2:            policies.json
 Source3:            %{full_name}
@@ -99,5 +99,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
-* Fri Oct 16 2026 Ackerman-00 <quietcraft@gmail.com> - 1:1.23.3b-1
-- Auto-update to upstream release 1.23.3b
+* Fri Oct 16 2026 Ackerman-00 <quietcraft@gmail.com> - 1:1.23.2b-1
+- Auto-update to upstream release 1.23.2b
