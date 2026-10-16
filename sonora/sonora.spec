@@ -4,7 +4,7 @@
 
 Name:           sonora
 Version:        0.43.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Native music streaming client
 # Workspace is GPL-3.0-or-later; the binary embeds the Inter typeface
 # (OFL-1.1) and four icon packs (Lucide ISC, Iconoir MIT, Remix Apache-2.0,
@@ -87,6 +87,17 @@ sed -e "s/@VERSION@/%{version}/" -e "s/@DATE@/$(date -u +%F)/" \
     flatpak/io.github.nolight132.sonora.metainfo.xml > %{appid}.metainfo.xml
 install -Dm644 %{appid}.metainfo.xml %{buildroot}%{_metainfodir}/%{appid}.metainfo.xml
 
+# The six embedded icon-pack license files all share the basename LICENSE;
+# the rpmbuilt-in license copier keeps one and silently drops the rest.
+# Install them under distinct names so every bundled license actually ships.
+mkdir -p %{buildroot}%{_licensedir}/%{name}
+install -Dm644 assets/icons/LICENSE %{buildroot}%{_licensedir}/%{name}/icons-LICENSE
+install -Dm644 assets/icons/common/LICENSE %{buildroot}%{_licensedir}/%{name}/icons-common-LICENSE
+install -Dm644 assets/icons/iconoir/LICENSE %{buildroot}%{_licensedir}/%{name}/icons-iconoir-LICENSE
+install -Dm644 assets/icons/lucide/LICENSE %{buildroot}%{_licensedir}/%{name}/icons-lucide-LICENSE
+install -Dm644 assets/icons/remix/LICENSE %{buildroot}%{_licensedir}/%{name}/icons-remix-LICENSE
+install -Dm644 assets/icons/solar/LICENSE %{buildroot}%{_licensedir}/%{name}/icons-solar-LICENSE
+
 %post
 /usr/bin/update-desktop-database > /dev/null 2>&1 || :
 /bin/touch --no-create %{_datadir}/icons/hicolor > /dev/null 2>&1 || :
@@ -107,12 +118,12 @@ esac
 %license COPYING
 %license THIRD-PARTY.md
 %license assets/fonts/LICENSE.txt
-%license assets/icons/LICENSE
-%license assets/icons/common/LICENSE
-%license assets/icons/iconoir/LICENSE
-%license assets/icons/lucide/LICENSE
-%license assets/icons/remix/LICENSE
-%license assets/icons/solar/LICENSE
+%{_licensedir}/%{name}/icons-LICENSE
+%{_licensedir}/%{name}/icons-common-LICENSE
+%{_licensedir}/%{name}/icons-iconoir-LICENSE
+%{_licensedir}/%{name}/icons-lucide-LICENSE
+%{_licensedir}/%{name}/icons-remix-LICENSE
+%{_licensedir}/%{name}/icons-solar-LICENSE
 %doc README.md
 %doc CHANGELOG.md
 %{_bindir}/sonora
@@ -129,5 +140,9 @@ esac
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
+* Fri Oct 16 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.43.0-2
+- Install the six same-basename icon-pack LICENSE files under distinct names
+  so all bundled licenses ship (one survived before)
+
 * Tue Oct 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.43.0-1
 - Auto-update to upstream stable release v0.43.0
