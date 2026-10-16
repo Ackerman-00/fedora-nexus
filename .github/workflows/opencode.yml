@@ -130,7 +130,8 @@ jobs:
             done
             if [ "$exit_code" -eq 0 ]; then
               git fetch origin main >/dev/null 2>&1
-              if git show origin/main:.opencode-relay.md 2>/dev/null | grep -qx "run_id: $RUN_ID" && git show origin/main:.opencode-relay.md 2>/dev/null | grep -qi "status: complete"; then
+              relay=$(git show origin/main:.opencode-relay.md 2>/dev/null || true)
+              if grep -qx "run_id: $RUN_ID" <<< "$relay" && grep -qi "status: complete" <<< "$relay"; then
                 echo "=== $model completed (.opencode-relay.md on main confirms run $RUN_ID complete) ==="
                 exit 0
               fi

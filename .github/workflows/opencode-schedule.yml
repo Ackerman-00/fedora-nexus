@@ -108,13 +108,13 @@ jobs:
             # gate must never be weaker than the external verifier: on 2026-09-18
             # (run 35338074771) a relay passed this gate with status complete yet
             # failed verification on a missing rpmlint evidence line, failing the run.
-            printf '%s' "$content" | grep -qx "run_id: $RUN_ID" || return 1
+            grep -qx "run_id: $RUN_ID" <<< "$content" || return 1
             # Scope EVERY evidence check to this run's block: from the
             # `run_id: $RUN_ID` line to the next `run_id:` line. Accumulated
             # blocks from earlier runs must satisfy nothing.
             content=$(printf '%s\n' "$content" | awk -v id="run_id: $RUN_ID" '$0==id{f=1;next} f&&/^run_id: /{exit} f')
-            printf '%s' "$content" | grep -qix "status: complete" || return 1
-            printf '%s' "$content" | grep -q "| package | upstream deps found |" || return 1
+            grep -qix "status: complete" <<< "$content" || return 1
+            grep -q "| package | upstream deps found |" <<< "$content" || return 1
             local expected dep_rows unproven_rows tool today yest pkg
             expected=$(ls */*.spec 2>/dev/null | wc -l)
             [ "$expected" -gt 0 ] || return 1
@@ -131,31 +131,31 @@ jobs:
             upstream_rows=$(printf '%s' "$content" | grep -E "upstream: [a-zA-Z0-9._+-]+ .*($today|$yest)" | grep -oE "upstream: [a-zA-Z0-9._+-]+" | awk '{print $2}' | sort -u | wc -l || true)
             [ "$upstream_rows" -ge "$expected" ] || return 1
             for pkg in $(printf '%s' "$content" | grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*\| version-checked \|" | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u); do
-              printf '%s' "$content" | grep -qE "upstream: $pkg .*($today|$yest)" || return 1
+              grep -qE "upstream: $pkg .*($today|$yest)" <<< "$content" || return 1
             done
             # The rotating slice must be big enough to clear the fleet within
             # 8 runs, and every slice-named package needs a dated teardown.
             local slice_line slice_pkgs slice_n min_slice
-            slice_line=$(printf '%s' "$content" | grep -m1 -E "^teardown-slice:")
+            slice_line=$(grep -m1 -E "^teardown-slice:" <<< "$content" || true)
             [ -n "$slice_line" ] || return 1
             slice_pkgs=$(printf '%s' "$slice_line" | sed -E 's/^teardown-slice: *//; s/ *\|.*$//')
             slice_n=$(printf '%s\n' $slice_pkgs | grep -c . || true)
             min_slice=$(( (expected + 7) / 8 ))
             [ "$slice_n" -ge "$min_slice" ] || return 1
             for pkg in $slice_pkgs; do
-              printf '%s' "$content" | grep -qiE "docker-teardown: $pkg .*PASS.*($today|$yest)" || return 1
+              grep -qiE "docker-teardown: $pkg .*PASS.*($today|$yest)" <<< "$content" || return 1
             done
             local mains_pkg
             mains="$(bash tools/verify-fedora.sh --print-mains)"
             for mains_pkg in $mains; do
-              printf '%s' "$content" | grep -qiE "docker-teardown: $mains_pkg .*PASS.*($today|$yest)" || return 1
-              printf '%s' "$content" | grep -qiE "upstream: $mains_pkg .*($today|$yest)" || return 1
+              grep -qiE "docker-teardown: $mains_pkg .*PASS.*($today|$yest)" <<< "$content" || return 1
+              grep -qiE "upstream: $mains_pkg .*($today|$yest)" <<< "$content" || return 1
             done
             for tool in "rpmspec -P" "dnf builddep" "rpmlint"; do
-              printf '%s' "$content" | grep -qi "$tool.*PASS\|PASS.*$tool" || return 1
+              grep -qi "$tool.*PASS\|PASS.*$tool" <<< "$content" || return 1
             done
-            printf '%s' "$content" | grep -q "| package | packaged version |" || return 1
-            printf '%s' "$content" | grep -qi "install-test table" || return 1
+            grep -q "| package | packaged version |" <<< "$content" || return 1
+            grep -qi "install-test table" <<< "$content" || return 1
             return 0
           }
           # Start jitter: many schedulers fire at :00/:10 sharp - a random 0-3 min
