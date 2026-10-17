@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           starship
-Version:        1.26.0
+Version:        1.27.0
 Release:        1%{?dist}
 Summary:        Minimal, blazing-fast, and customizable prompt for any shell (Nexus Optimized)
 
@@ -43,6 +43,9 @@ install -d -m 0755 %{buildroot}%{fish_completions_dir}
 %{fish_completions_dir}/starship.fish
 
 %changelog
+* Sat Oct 17 2026 Nexus Auto-Updater <bot@github.com> - 1.27.0-1
+- Update to version 1.27.0
+
 * Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1.26.0-1
 - Update to version 1.26.0
 
