@@ -5,7 +5,7 @@
 
 Name:           wlroots
 Version:        0.20.2
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        A modular Wayland compositor library
 
 # Convert tilde to dash for source tag (e.g. 0.20.0~rc2 -> 0.20.0-rc2)
@@ -52,7 +52,7 @@ BuildRequires:  pkgconfig(lcms2)
 BuildRequires:  pkgconfig(libdisplay-info) >= 0.2.0
 BuildRequires:  pkgconfig(libdrm) >= 2.4.129
 BuildRequires:  pkgconfig(libinput) >= 1.21.0
-BuildRequires:  pkgconfig(libseat)
+BuildRequires:  pkgconfig(libseat) >= 0.2.0
 BuildRequires:  pkgconfig(libudev)
 BuildRequires:  pkgconfig(pixman-1) >= 0.46.0
 BuildRequires:  pkgconfig(vulkan) >= 1.2.182
@@ -60,7 +60,6 @@ BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.47
 BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(wayland-server) >= 1.24.0
-BuildRequires:  pkgconfig(x11-xcb)
 BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-composite)
 BuildRequires:  pkgconfig(xcb-dri3)
@@ -118,6 +117,12 @@ MESON_OPTIONS=(
 %{_libdir}/pkgconfig/wlroots-%{abi_ver}.pc
 
 %changelog
+* Sat Oct 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-7
+- Pin pkgconfig(libseat) >= 0.2.0 to match upstream floor
+  (backend/session/meson.build dependency('libseat', version: '>=0.2.0'))
+- Drop unused BuildRequires: pkgconfig(x11-xcb): no consumer anywhere in
+  the wlroots 0.20.2 tree (zero x11-xcb/Xlib/libX11 references; the x11
+  backend and xwayland need plain xcb-* and pkgconfig(xwayland), both kept)
 * Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-6
 - Restore a single BuildRequires: gcc: -6 keeps RPM320 satisfied (one atom
   only) while restoring the compiler — -5 removed BOTH duplicate gcc lines
