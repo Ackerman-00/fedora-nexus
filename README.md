@@ -32,7 +32,7 @@ sudo dnf install <package-name>
 
 > **Supported releases:** Fedora 43, 44, 45 and Rawhide (x86_64), exactly the
 > four chroots this COPR builds (project API `chroot_repos`, checked
-> 2026-10-10). Fedora 44 is the current stable release, Fedora 45 is not
+> 2026-10-17). Fedora 44 is the current stable release, Fedora 45 is not
 > released yet, and Fedora 43 reaches end-of-life on 2026-12-09, after which
 > its chroot will be disabled. If you are still on F43, upgrade to F44 or
 > newer. The COPR project follows Fedora branching automatically.
@@ -56,8 +56,8 @@ sudo dnf install <package-name>
 
 | Package | Description | Type |
 |---------|-------------|:----:|
-| `appmenu-glib-translator` | GLib menu translator for the AppMenu protocol | Stable |
-| `app2unit` | Launch desktop entries or commands as systemd user units | Stable |
+| `appmenu-glib-translator` | GLib menu translator for the AppMenu protocol | Git |
+| `app2unit` | Launch desktop entries or commands as systemd user units | Git |
 | `astal` | Building blocks for creating custom desktop shells (Git Snapshot) | Git |
 | `astal-gjs` | Astal GJS package (Git Snapshot) | Git |
 | `astal-gtk4` | Astal GTK4 bindings (Git Snapshot) | Git |
@@ -67,8 +67,8 @@ sudo dnf install <package-name>
 | `awww` | Efficient animated wallpaper daemon for Wayland, controlled at runtime | Stable |
 | `aylurs-gtk-shell` | A customizable and extensible shell (AGS) | Stable |
 | `bibata-cursor-theme` | Open source, compact, and material designed cursor set | Stable |
-| `caelestia-cli-mango` | The main control script for the Caelestia dotfiles (MangoWM) | Stable |
-| `caelestia-shell-mango` | Desktop shell for MangoWM | Stable |
+| `caelestia-cli-mango` | The main control script for the Caelestia dotfiles (MangoWM) | Git |
+| `caelestia-shell-mango` | Desktop shell for MangoWM | Git |
 | `cascadia-code-nerd-fonts` | Cascadia Code patched with Nerd Fonts icons | Stable |
 | `cliphist` | Wayland clipboard manager with support for multimedia | Stable |
 | `concat` | Free and open source video editor (CapCut alternative) | Stable |
@@ -88,7 +88,7 @@ sudo dnf install <package-name>
 | `logseq` | Privacy-first, local-first knowledge management and collaboration platform | Stable |
 | `ly` | Lightweight TUI display manager | Stable |
 | `mangowm` | Modern, lightweight, high-performance Wayland compositor built on dwl | Stable |
-| `material-symbols-fonts` | Material Symbols variable icon font by Google | Stable |
+| `material-symbols-fonts` | Material Symbols variable icon font by Google | Git |
 | `mixtapes` | Modern, Linux-first YouTube Music player (Git Snapshot) | Git |
 | `matugen` | Material You color generation tool | Stable |
 | `mpvpaper` | Video wallpaper program for wlroots based Wayland compositors | Stable |
