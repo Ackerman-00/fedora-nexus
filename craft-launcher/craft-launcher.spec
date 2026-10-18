@@ -9,14 +9,14 @@
 %global debug_package %{nil}
 
 Name:           craft-launcher
-Version:        0.4.1
+Version:        0.5.1
 Release:        1%{?dist}
 Summary:        App launcher for the Craft suite
 
 License:        MIT OR Apache-2.0
 URL:            https://github.com/storytold/craft-launcher
-Source0:        https://github.com/storytold/craft-launcher/releases/download/v0.4.1/artcraft-launcher-0.4.1-linux-x86_64.rpm
-# sha256: 2c8d0cbbe0e7613a1f1759ef381513c7c2041642dc1708b07628f7850d6d98e8
+Source0:        https://github.com/storytold/craft-launcher/releases/download/v0.5.1/artcraft-launcher-0.5.1-linux-x86_64.rpm
+# sha256: 07f1fee498e13eb7308a5454887da86eda2e5ecdcd377ec47ef11023b44ca92c
 
 ExclusiveArch:  x86_64
 # Only the x86_64 rpm is repacked here; upstream also ships aarch64/riscv64
@@ -96,5 +96,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
-* Tue Oct 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.4.1-1
-- Auto-update to upstream release v0.4.1
+* Sun Oct 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.1-1
+- Auto-update to upstream release v0.5.1
