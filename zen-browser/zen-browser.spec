@@ -8,8 +8,16 @@
 # on e.g. libnss3.so with the whole browser. The internal-only libraries must
 # likewise not become system Requires; genuine system library dependencies
 # (gtk, X11, wayland, ...) are still auto-generated and kept.
+# NSS/NSPR are bundled too (libnssutil3.so, libnss3.so, libsmime3.so and
+# libnspr4.so ship in /opt/zen, and every ELF in this package lives under
+# /opt/zen), so their versioned symbols must not be demanded from the system
+# either: on Fedora 45 the bundled libnssutil3.so asks for
+# libnssutil3.so(NSSUTIL_3.130) while the distro nss-util is only 3.129.0,
+# which made the whole package uninstallable there (dnf offered the older
+# 1.23.2b build instead). Fedora 44 happened to carry nss-util 3.131.0, so
+# only the newer chroot exposed the bug.
 %global             __provides_exclude_from ^/opt/%{application_name}/.*$
-%global             __requires_exclude ^lib(gkcodecs|lgpllibs|mozavutil|mozgtk|mozsandbox|mozsqlite3|mozwayland)\\.so.*$
+%global             __requires_exclude ^lib(gkcodecs|lgpllibs|mozavutil|mozgtk|mozsandbox|mozsqlite3|mozwayland|nssutil3|nss3|smime3|nspr4)\\.so.*$
 
 Name:               zen-browser
 # Upstream DELETED the 1.21.13b release after we had already shipped
@@ -19,7 +27,7 @@ Name:               zen-browser
 # An Epoch is the only correct way to supersede a higher version.
 Epoch:              1
 Version:        1.23.3b
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPL-2.0
@@ -99,5 +107,14 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
+* Sun Oct 18 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1:1.23.3b-2
+- Exclude the bundled NSS/NSPR sonames from auto-generated Requires. The
+  private /opt/zen/libnssutil3.so demands libnssutil3.so(NSSUTIL_3.130)
+  while Fedora 45 ships nss-util 3.129.0, so zen-browser-1.23.3b-1.fc45
+  could not install there ("nothing provides libnssutil3.so
+  (NSSUTIL_3.130)") and dnf silently offered the older 1.23.2b build.
+  Fedora 44 resolved it by luck with nss-util 3.131.0. Every ELF in this
+  package lives under /opt/zen next to its own NSS/NSPR copies, so the
+  system is never asked for those sonames. Same upstream 1.23.3b.
 * Sat Oct 17 2026 Ackerman-00 <quietcraft@gmail.com> - 1:1.23.3b-1
 - Auto-update to upstream release 1.23.3b
