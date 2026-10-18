@@ -6,7 +6,7 @@
 
 Name:           protonplus
 Version:        %{fileref}
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        A modern compatibility tools manager
 ExclusiveArch:  x86_64
 
@@ -37,6 +37,11 @@ BuildRequires:  pkgconfig(sdl3) >= 3.2.0
 
 Requires:       hicolor-icon-theme
 Requires:       which
+# libGLESv2.so.2 (mesa-libGLES) is dlopened by the GTK/GL stack at startup;
+# without it protonplus aborts RC=134 "Couldn't open libGLESv2.so.2" on a
+# minimal install. Proven in clean fedora:44 live install 2026-10-18 (abort
+# without mesa-libGLES, launch probe rc 124 with it).
+Requires:       mesa-libGLES
 
 %description
 ProtonPlus is a modern compatibility tools manager for Linux.
@@ -68,6 +73,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
 %{_metainfodir}/%{app_id}.metainfo.xml
 
 %changelog
+* Sun Oct 18 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.6.8-5
+- Add Requires: mesa-libGLES (libGLESv2.so.2 is dlopened at startup; the
+  binary aborted RC=134 on a clean live install without it - launch-proven
+  fixed in fedora:44 container). Same upstream v0.6.8.
 * Fri Oct 09 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.6.8-4
 - Drop unused libappstream-glib BuildRequires (no in-spec consumer; upstream
   meson needs only the freedesktop appstream library). Same upstream v0.6.8.
