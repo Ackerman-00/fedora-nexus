@@ -1,5 +1,5 @@
 Name:           mangowm
-Version:        0.18.1
+Version:        0.18.2
 Release:        1%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
@@ -90,5 +90,5 @@ sed -i "s/'-U_FORTIFY_SOURCE',//g" meson.build
 %{_userunitdir}/mango-session.target
 
 %changelog
-* Thu Oct 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.1-1
-- Auto-update to version 0.18.1
+* Sun Oct 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.2-1
+- Auto-update to version 0.18.2

@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          62799bdaa8f310b458010d28b321cd7784d4e726
+%global commit          ece6835e5aab0664246ee6b8d6b051966200e011
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261017204309
+%global gitdate         20261018013751
 
 # Fedora's default LTO flags (-flto=auto -ffat-lto-objects) trip a
 # binutils/GCC linker-plugin bug when linking umbriel's test binaries
@@ -135,5 +135,5 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Sat Oct 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261017204309git62799bd-1
-- Nightly sync with upstream main branch (Commit: 62799bd)
+* Sun Oct 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261018013751gitece6835-1
+- Nightly sync with upstream main branch (Commit: ece6835)
