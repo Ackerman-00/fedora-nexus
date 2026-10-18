@@ -157,6 +157,57 @@ jobs:
           print("scanner-errors: see [ERROR] lines above (0 if none)")
           PYEOF
 
+      - name: Guard against version downgrades
+        run: |
+          # Every updater here compares with `!=`, which treats a TRANSIENT
+          # upstream state as a newer version and "syncs" backwards. Two real
+          # incidents, each costing a wasted COPR rebuild of an OLDER tarball
+          # plus a second rebuild to come back:
+          #   - zen-browser 64da796 (2026-10-16): upstream's release workflow
+          #     deletes assets while re-running, so git ls-remote briefly
+          #     showed 1.23.2b as latest -> spec went 1.23.3b -> 1.23.2b,
+          #     restored by cf40866 the next run once the tag returned.
+          #   - fluxer b0b7392 (2026-10-11): the rolling download URL served a
+          #     stale (10-06) artifact after we shipped the 10-10 build,
+          #     -> 2026.1010.155917 -> 2026.1006.171735, restored by 2c7ea42.
+          # A lower Version under the same NVR would also silently replace
+          # newer bits on users' systems. Downgrades are NEVER auto-valid:
+          # revert the spec and keep watching; upstream recovering next run
+          # (or a human/agent commit with an explicit rationale) is the only
+          # way a version moves backwards.
+          # Single choke point: covers all update.sh scripts AND the scanner
+          # above without touching 56 individual scripts.
+          reverted=0
+          for f in $(git diff --name-only -- '*.spec'); do
+            old_v=$(git show "HEAD:$f" 2>/dev/null | grep -m1 -E '^Version:' | awk '{print $2}')
+            new_v=$(grep -m1 -E '^Version:' "$f" | awk '{print $2}')
+            old_t=$(git show "HEAD:$f" 2>/dev/null | grep -m1 -E '^%global[[:space:]]+tag[[:space:]]+' | awk '{print $3}')
+            new_t=$(grep -m1 -E '^%global[[:space:]]+tag[[:space:]]+' "$f" | awk '{print $3}')
+            why=""
+            if [ -n "$old_v" ] && [ -n "$new_v" ] && [ "$old_v" != "$new_v" ] \
+               && [ "$(printf '%s\n%s\n' "$old_v" "$new_v" | sort -V | tail -1)" = "$old_v" ]; then
+              why="Version $old_v -> $new_v"
+            fi
+            # Tag-driven specs (Version is a macro, e.g. protonplus %{fileref}).
+            # Compare with the v- prefix stripped (v sorts after bare versions),
+            # and ignore macro-computed tags (contain %) - the Version line is
+            # authoritative for those (wlroots computes tag FROM %{version}).
+            if [ -z "$why" ] && [ -n "$old_t" ] && [ -n "$new_t" ] \
+               && [ "$old_t" != "$new_t" ] \
+               && [[ "$old_t" != *%* && "$new_t" != *%* ]] \
+               && [ "${old_t#v}" != "${new_t#v}" ] \
+               && [ "$(printf '%s\n%s\n' "${old_t#v}" "${new_t#v}" | sort -V | tail -1)" = "${old_t#v}" ]; then
+              why="tag $old_t -> $new_t"
+            fi
+            if [ -n "$why" ]; then
+              echo "::warning::blocked downgrade in $f ($why); reverting - transient upstream state, not an update"
+              git checkout HEAD -- "$f"
+              reverted=$((reverted + 1))
+            fi
+          done
+          echo "downgrades-reverted=$reverted"
+          exit 0
+
       - name: Check for Changes
         id: changes
         run: |
