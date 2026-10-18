@@ -2,8 +2,8 @@
 %global crate concord
 
 Name:           concord
-Version:        2.6.2
-Release:        3%{?dist}
+Version:        2.6.3
+Release:        1%{?dist}
 Summary:        Feature-rich TUI client for Discord
 License:        GPL-3.0-only
 URL:            https://github.com/chojs23/concord
@@ -68,10 +68,5 @@ install -Dm755 target/release/concord %{buildroot}%{_bindir}/concord
 %{_bindir}/concord
 
 %changelog
-* Fri Oct 16 2026 Ackerman-00 <quietcraft@gmail.com> - 2.6.2-3
-- Rebuild: clear transient COPR infra failure (copr_base metadata timeout
-  on f43/rawhide in build 11156057; f44/f45 already green, no code change)
-* Fri Oct 16 2026 Ackerman-00 <quietcraft@gmail.com> - 2.6.2-2
-- Patch MSRV 1.99 -> 1.98: Fedora 45 stable ships rustc 1.98.1 (1.99 is updates-testing only)
-* Thu Oct 15 2026 Ackerman-00 <quietcraft@gmail.com> - 2.6.2-1
-- Auto-update to upstream stable release v2.6.2
+* Sun Oct 18 2026 Ackerman-00 <quietcraft@gmail.com> - 2.6.3-1
+- Auto-update to upstream stable release v2.6.3
