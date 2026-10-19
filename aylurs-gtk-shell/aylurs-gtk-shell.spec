@@ -1,6 +1,6 @@
 Name:           aylurs-gtk-shell
 Version:        3.1.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A customizable and extensible shell
 
 License:        GPL-3.0-or-later
@@ -17,8 +17,21 @@ BuildRequires:  tar
 
 Obsoletes:      aylurs-gtk-shell-git < 3.1.2
 
-Requires:       gjs%{?_isa}
+# Runtime import graph of the shipped JS (%{_datadir}/ags/js/lib/):
+# lib/gtk4/index.ts + lib/gtk4/jsx-runtime.ts do
+#   import Astal from "gi://Astal?version=4.0"  -> astal-gtk4 typelib
+# lib/gtk3/index.ts + lib/gtk3/jsx-runtime.ts do
+#   import Astal from "gi://Astal?version=3.0"  -> astal typelib
+# lib/gtk4/app.ts does import Adw from "gi://Adw" -> libadwaita
+# lib/overrides.ts dynamically imports the Astal service typelibs
+# (AstalApps/Notifd/Wp/Tray/Mpris/Network/Battery/Bluetooth/PowerProfiles/
+# Hyprland) inside suppress(), so those stay a weak dependency.
+Requires:       gjs >= 1.79.0
 Requires:       gtk4-layer-shell%{?_isa}
+Requires:       astal%{?_isa}
+Requires:       astal-gtk4%{?_isa}
+Requires:       libadwaita
+Recommends:     astal-libs
 
 Provides:       bundled(npm:gnim) = 1.9.1
 
@@ -47,6 +60,12 @@ tar -xzf %{SOURCE1} -C node_modules/gnim --strip=1
 %{_datadir}/ags/
 
 %changelog
+* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 3.1.2-2
+- Add the runtime Astal/libadwaita Requires the shipped JS imports: the gtk4
+  entry point needs gi://Astal?version=4.0 (astal-gtk4) and gi://Adw
+  (libadwaita), the gtk3 entry point needs gi://Astal?version=3.0 (astal),
+  and the Astal service typelibs are in astal-libs (Recommends, imported
+  inside suppress()). Also floor gjs at upstream's engines value >= 1.79.0.
 * Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 3.1.2-1
 - Rebase to 3.1.2 (Go CLI, gtk4-layer-shell, bundled gnim)
 - Drop gvc subproject and TypeScript build (removed upstream in 3.0)
