@@ -124,9 +124,9 @@ if [[ -f "$RELAY" ]]; then
   else
     slice_pkgs=$(printf '%s' "$slice_line" | sed -E 's/^teardown-slice: *//; s/ *\|.*$//')
     slice_n=$(printf '%s\n' $slice_pkgs | grep -c . || true)
-    min_slice=$(( (expected + 7) / 8 ))
+    min_slice=$(( (expected + 3) / 4 ))
     if [[ "$slice_n" -lt "$min_slice" ]]; then
-      echo "FAIL: NOT COMPLETE -- teardown slice has $slice_n packages, need >= $min_slice (fleet rotates within 8 runs)"
+      echo "FAIL: NOT COMPLETE -- teardown slice has $slice_n packages, need >= $min_slice (fleet rotates within 4 runs)"
       FAIL=1
     else
       echo "PASS: teardown slice size $slice_n >= $min_slice"

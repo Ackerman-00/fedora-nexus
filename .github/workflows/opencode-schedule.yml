@@ -134,13 +134,13 @@ jobs:
               grep -qE "upstream: $pkg .*($today|$yest)" <<< "$content" || return 1
             done
             # The rotating slice must be big enough to clear the fleet within
-            # 8 runs, and every slice-named package needs a dated teardown.
+            # 4 runs, and every slice-named package needs a dated teardown.
             local slice_line slice_pkgs slice_n min_slice
             slice_line=$(grep -m1 -E "^teardown-slice:" <<< "$content" || true)
             [ -n "$slice_line" ] || return 1
             slice_pkgs=$(printf '%s' "$slice_line" | sed -E 's/^teardown-slice: *//; s/ *\|.*$//')
             slice_n=$(printf '%s\n' $slice_pkgs | grep -c . || true)
-            min_slice=$(( (expected + 7) / 8 ))
+            min_slice=$(( (expected + 3) / 4 ))
             [ "$slice_n" -ge "$min_slice" ] || return 1
             for pkg in $slice_pkgs; do
               grep -qiE "docker-teardown: $pkg .*PASS.*($today|$yest)" <<< "$content" || return 1
@@ -1189,7 +1189,7 @@ jobs:
              (packages space-separated before the pipe, exactly one
              next-start package after it). The slice MUST contain at least
              ceil(<spec-count>/8) packages - a smaller slice is rejected by
-             the gate and can never clear the fleet within 8 runs. Fan out with
+             the gate and can never clear the fleet within 4 runs. Fan out with
              parallel subagents (one per batch); serialize only pushes.
              Time-box the SLICE, never the rigor. Every slice package emits one evidence
              line `docker-teardown: <pkg> rpmbuild-bb PASS install PASS smoke
