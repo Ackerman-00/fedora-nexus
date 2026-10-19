@@ -150,6 +150,29 @@ if [[ -f "$RELAY" ]]; then
       FAIL=1
     fi
   done
+  # GAP/HOLD CLASSIFICATION (mirror of gate_passes() in
+  # opencode-schedule.yml - the two must never drift). A blocker the agent
+  # could have fixed is unfinished work, not a gap: only a PROVEN external
+  # blocker may survive into a complete run, and it must say what is
+  # blocking it. Prose mentioning the word gap does not count - only a line
+  # whose FIRST token is GAP: or HOLD:.
+  g_total=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD):" <<< "$scope" || true)
+  g_ext=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD):[[:space:]]*external" <<< "$scope" || true)
+  g_act=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD):[[:space:]]*actionable" <<< "$scope" || true)
+  g_unclass=$(( g_total - g_ext - g_act ))
+  g_noreason=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD):[[:space:]]*external[[:space:]]*$" <<< "$scope" || true)
+  if [[ "$g_act" -gt 0 ]]; then
+    echo "FAIL: NOT COMPLETE -- $g_act actionable gap(s)/HOLD(s) in this run's block; they must be FIXED, not named"
+    FAIL=1
+  fi
+  if [[ "$g_unclass" -gt 0 ]]; then
+    echo "FAIL: NOT COMPLETE -- $g_unclass gap(s)/HOLD(s) with no classification; use 'GAP: external - <reason>' or 'GAP: actionable - <what>'"
+    FAIL=1
+  fi
+  if [[ "$g_noreason" -gt 0 ]]; then
+    echo "FAIL: NOT COMPLETE -- $g_noreason 'external' gap(s)/HOLD(s) with no reason after the marker"
+    FAIL=1
+  fi
   if ! grep -qiE "docker-teardown:.*PASS.*($TODAY|$YEST)" <<< "$scope"; then
     echo "FAIL: NOT COMPLETE -- no docker teardown evidence in THIS run's block"
     FAIL=1

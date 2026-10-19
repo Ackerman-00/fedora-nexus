@@ -151,6 +151,20 @@ jobs:
               grep -qiE "docker-teardown: $mains_pkg .*PASS.*($today|$yest)" <<< "$content" || return 1
               grep -qiE "upstream: $mains_pkg .*($today|$yest)" <<< "$content" || return 1
             done
+            # GAP/HOLD CLASSIFICATION (mirror of tools/verify-fedora.sh - the
+            # two must never drift). A blocker the agent could have fixed is
+            # unfinished work, not a gap: only a PROVEN external blocker may
+            # survive into a complete run.
+            if grep -qiE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD):[[:space:]]*actionable" <<< "$content"; then
+              return 1
+            fi
+            if grep -qiE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD):[[:space:]]*external[[:space:]]*$" <<< "$content"; then
+              return 1
+            fi
+            local g_total g_ext
+            g_total=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD):" <<< "$content" || true)
+            g_ext=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD):[[:space:]]*external" <<< "$content" || true)
+            [ "$g_total" -eq "$g_ext" ] || return 1
             for tool in "rpmspec -P" "dnf builddep" "rpmlint"; do
               grep -qi "$tool.*PASS\|PASS.*$tool" <<< "$content" || return 1
             done
@@ -233,6 +247,7 @@ jobs:
           COPR_TOKEN: ${{ secrets.COPR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_FULL_ACCESS_TOKEN: ${{ secrets.REPO_FULL_ACCESS_TOKEN }}
           RUN_ID: ${{ github.run_id }}
           GIT_AUTHOR_NAME: opencode-agent[bot]
           GIT_AUTHOR_EMAIL: 41898282+opencode-agent[bot]@users.noreply.github.com
@@ -1853,8 +1868,12 @@ jobs:
               5. Every claim in your final summary is backed by command
                  output (commit SHAs, COPR build ids, docker/dnf logs,
                  checksums).
-              6. You have stated what you did NOT verify and why - a named
-                 gap is a stated FAIL, not a silent skip.
+              6. You have stated what you did NOT verify and why, with every
+                 gap/HOLD line classified as `GAP: external - <reason>` or
+                 `GAP: actionable - <what>` (see GAP AND HOLD CLASSIFICATION
+                 above). ZERO `actionable` markers: anything actionable was
+                 FIXED this run, not named. A named gap is a stated FAIL, not
+                 a silent skip.
               7. You updated and pushed `.opencode-relay.md` on main WITHIN
                  this run, and it contains the line `run_id: $RUN_ID`
                  (RUN_ID = the env var value, e.g. "run_id: 1234567890")
@@ -1912,6 +1931,43 @@ jobs:
             time, risk, unfamiliarity - is YOUR work. A dependency that has not
             landed in a given chroot yet is a real external blocker; a version
             regex in an update.sh that cannot match a valid upstream tag is NOT.
+            GAP AND HOLD CLASSIFICATION (MANDATORY - THIS IS WHAT THE GATE
+            CHECKS, AND IT IS WHY YOUR BLOCKERS ARE NOT YOUR EXCUSE).
+            Every gap, HOLD or "not verified" item you record MUST appear on
+            its own line, with the line STARTING with the marker and its
+            classification:
+              - GAP: external - <the exact external thing that must change
+                first, and why you cannot change it yourself>
+              - GAP: actionable - <what you will fix>   <- NOT ALLOWED IN A
+                COMPLETE RUN.
+              - HOLD: external - <same shape as GAP: external>
+            The gate FAILS the run on ANY of: an `actionable` marker; a
+            GAP/HOLD line with no classification; an `external` marker with
+            nothing after it. Prose that merely mentions the word gap does
+            not count - only a line whose FIRST token is GAP: or HOLD:.
+            CLASSIFYING IS NOT ESCAPING. `external` is a CLAIM YOU MUST PROVE
+            with a command you ran THIS run: paste the 403, the 404, the
+            missing asset, the chroot that has not synced, the header that
+            proves the version is not published. If you cannot show the probe
+            that proves it, it is `actionable` and you fix it now.
+            SPECIFICALLY, THESE ARE ACTIONABLE, NOT EXTERNAL:
+              - a version regex, sed or updater in this repo that cannot match
+                a real upstream tag -> fix the pattern
+              - a spec that is missing a dependency, a %license, a %attr, or
+                an arch declaration -> fix the spec
+              - a package that is behind because YOU could not work out the
+                new version -> work it out; use the artifact's INTERNAL
+                version (rpm2tree.py / app.asar / application.ini), never the
+                download filename alone
+              - a dependency floor that is too high for the chroots you build
+                -> test whether the package builds under the floor you have,
+                and lower it if it does, or prove with a build error that it
+                genuinely needs the newer one
+              - a stale receipt, a stale comment, a stale report -> regenerate
+                or correct it
+            HOLDING WITHOUT HAVING ATTEMPTED THE FIX IS `actionable`. A HOLD
+            you attempted and could not complete because the world has not
+            moved yet is `external`, and you must show the probe.
             CROSS-RUN RULE: if the previous relay left an item unresolved and
             this run finds the SAME item unresolved again, this run MUST fix it.
             A recurring unresolved item means your approach was wrong, not that
