@@ -15,10 +15,17 @@
 
 Name:           fluxer
 Version:        2026.1018.223338
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
-License:        AGPL-3.0-or-later AND BSD
+# License set proven from the pinned artifact (sha256 de3c4e3c...): the app
+# itself declares AGPL-3.0-or-later (app.asar package.json), bundled npm deps
+# add MIT/ISC/0BSD/(Apache-2.0 AND BSD-3-Clause), and the bundled Electron +
+# Chromium runtime ships LICENSES.chromium.html, whose Fedora package
+# (chromium.spec) is the reference for the rest of the expression. The previous
+# "AGPL-3.0-or-later AND BSD" was invalid: bare BSD is not an SPDX identifier
+# and is not in Fedora's fedora-spdx-licenses.toml (629 lines, 623 ids).
+License:        AGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND 0BSD AND LGPL-2.1-or-later AND Apache-2.0 AND IJG AND MIT AND GPL-2.0-or-later AND ISC AND OpenSSL AND (MPL-1.1 OR GPL-2.0-only OR LGPL-2.0-only)
 URL:            https://fluxer.app
 Source0:        https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm
 # Rolling "latest" URL: pin the hash of the served artifact so rebuilds and
@@ -130,5 +137,14 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/app.fluxer.FluxerDesk
 %attr(4755, root, root) %{_libdir}/%{name}/chrome-sandbox
 
 %changelog
+* Mon Oct 19 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2026.1018.223338-2
+- Replace the invalid License: "AGPL-3.0-or-later AND BSD" with the real
+  bundled license set. Bare "BSD" is not an SPDX identifier (Fedora's
+  fedora-spdx-licenses.toml lists BSD-2-Clause/BSD-3-Clause/BSD-4-Clause but no
+  bare BSD). Evidence from the pinned artifact (sha256 de3c4e3c...):
+  app.asar's package.json declares AGPL-3.0-or-later, bundled npm deps add
+  MIT/ISC/0BSD/(Apache-2.0 AND BSD-3-Clause), and the bundled Chromium runtime
+  ships LICENSES.chromium.html covering BSD-2/3-Clause, IJG, Openssl, MPL-1.1
+  and the GPL/LGPL family (chromium.spec is the Fedora reference wording).
 * Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1018.223338-1
 - Update to version 2026.1018.223338
