@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          68b4c22106dd04482a0646298d59cfdca5759fff
+%global commit          af1a5b04be327fed1480e80aa9305e22d4a4fb11
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261019121323
+%global gitdate         20261019150402
 
 # Fedora's default LTO flags (-flto=auto -ffat-lto-objects) trip a
 # binutils/GCC linker-plugin bug when linking umbriel's test binaries
@@ -28,6 +28,10 @@ BuildRequires:  git
 BuildRequires:  meson >= 1.3
 BuildRequires:  ninja-build
 BuildRequires:  systemd-rpm-macros
+# meson.build: dependency('libsystemd', version: '>=243',
+# required: get_option('localed')). localed defaults to auto and fails
+# silently, so the BR plus -Dlocaled=enabled pins sd-bus keymap support on.
+BuildRequires:  pkgconfig(libsystemd) >= 243
 BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.1
 # umbrielfx compiles against wlroots private layouts: pinned to 0.20.x
 # upstream (meson.build: >=0.20.1, <0.21.0). Revisit on upstream bump.
@@ -106,7 +110,7 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %build
 # -Dtests=disabled states the release-build intent explicitly (PACKAGING.md;
 # tests=auto already resolves off for release, same as nix/package.nix).
-%meson -Db_lto=true -Dtests=disabled -Dtest_ipc=disabled
+%meson -Db_lto=true -Dtests=disabled -Dtest_ipc=disabled -Dlocaled=enabled
 %meson_build
 
 %install
@@ -135,5 +139,7 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261019121323git68b4c22-1
-- Nightly sync with upstream main branch (Commit: 68b4c22)
+* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261019150402gitaf1a5b0-1
+- Nightly sync with upstream main branch (Commit: af1a5b0)
+- Add BuildRequires pkgconfig(libsystemd) >= 243 and -Dlocaled=enabled so the
+  new sd-bus system keymap support is built instead of silently disabled
