@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          5d16415264fa5ae86a110db5d172ca05edb43cf6
+%global commit          1cc6eb18ba0d6c82dd66999646d7e554f76a85b6
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261015011147
+%global gitdate         20261019133907
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
@@ -62,6 +62,11 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %install
 %meson_install
 
+# Upstream meson_options.txt ships tests=true and meson.build registers
+# test('pipewire-buffer-params'); run it here so the regression is checked.
+%check
+%meson_test
+
 %files
 %license LICENSE
 %doc README.md
@@ -73,5 +78,6 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %config(noreplace) %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
-* Thu Oct 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261015011147git5d16415-1
-- Nightly sync with upstream main branch (Commit: 5d16415)
+* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261019133907git1cc6eb1-1
+- Nightly sync with upstream main branch (Commit: 1cc6eb1)
+- Run upstream's new pipewire-buffer-params regression test in %check
