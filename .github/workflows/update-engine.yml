@@ -230,12 +230,26 @@ jobs:
           git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git add -A
           git commit -m "auto-update: sync spec files to latest upstream versions"
-          git fetch origin main && git rebase origin/main || true
+          git fetch origin main
+          if ! git rebase origin/main; then
+            git rebase --abort || true
+            echo "::error::rebase onto origin/main conflicted - aborting rather than pushing a broken history"
+            exit 1
+          fi
+          pushed=0
           for i in 1 2 3; do
-            git push origin main && break
+            if git push origin main; then
+              pushed=1
+              break
+            fi
+            echo "::warning::push attempt $i/3 failed"
             sleep 15
             git pull --rebase origin main || true
           done
+          if [ "$pushed" -ne 1 ]; then
+            echo "::error::could not push to main after 3 attempts - version bump is NOT published"
+            exit 1
+          fi
 
       - name: Report failed updaters
         if: steps.updater.outputs.failed != '0'
