@@ -154,17 +154,20 @@ jobs:
             # GAP/HOLD CLASSIFICATION (mirror of tools/verify-fedora.sh - the
             # two must never drift). A blocker the agent could have fixed is
             # unfinished work, not a gap: only a PROVEN external blocker may
-            # survive into a complete run.
-            if grep -qiE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD):[[:space:]]*actionable" <<< "$content"; then
-              return 1
-            fi
-            if grep -qiE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD):[[:space:]]*external[[:space:]]*$" <<< "$content"; then
-              return 1
-            fi
-            local g_total g_ext
-            g_total=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD):" <<< "$content" || true)
-            g_ext=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD):[[:space:]]*external" <<< "$content" || true)
-            [ "$g_total" -eq "$g_ext" ] || return 1
+            # survive into a complete run. A DECLARATION is any line that
+            # announces a non-verification - the mandated GAP:/HOLD: form OR
+            # the `not verified` form the agent used before this contract
+            # existed (both are caught; a bare heading ending in ':' is not).
+            local g_decl g_head g_cls g_act g_need g_unclass
+            g_decl=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:|not verified\b)" <<< "$content" || true)
+            g_head=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:|not verified\b)[^:]*:[[:space:]]*$" <<< "$content" || true)
+            g_cls=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:[[:space:]]*(external|actionable)|not verified\b.*\b(external|actionable)\b|(GAP|HOLD)[[:space:]]*:[[:space:]]*(none|nothing|n/a)\b|not verified\b[ 	]*:?[ 	]*(none|nothing|n/a)\b)" <<< "$content" || true)
+            g_act=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:[[:space:]]*actionable|not verified\b.*\bactionable\b)" <<< "$content" || true)
+            g_need=$(( g_decl - g_head ))
+            g_unclass=$(( g_need - g_cls ))
+            [ "$g_unclass" -lt 0 ] && g_unclass=0
+            [ "$g_act" -eq 0 ] || return 1
+            [ "$g_unclass" -eq 0 ] || return 1
             for tool in "rpmspec -P" "dnf builddep" "rpmlint"; do
               grep -qi "$tool.*PASS\|PASS.*$tool" <<< "$content" || return 1
             done

@@ -153,14 +153,19 @@ if [[ -f "$RELAY" ]]; then
   # GAP/HOLD CLASSIFICATION (mirror of gate_passes() in
   # opencode-schedule.yml - the two must never drift). A blocker the agent
   # could have fixed is unfinished work, not a gap: only a PROVEN external
-  # blocker may survive into a complete run, and it must say what is
-  # blocking it. Prose mentioning the word gap does not count - only a line
-  # whose FIRST token is GAP: or HOLD:.
-  g_total=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD):" <<< "$scope" || true)
-  g_ext=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD):[[:space:]]*external" <<< "$scope" || true)
-  g_act=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD):[[:space:]]*actionable" <<< "$scope" || true)
-  g_unclass=$(( g_total - g_ext - g_act ))
-  g_noreason=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD):[[:space:]]*external[[:space:]]*$" <<< "$scope" || true)
+  # blocker may survive into a complete run, and it must say what blocks it.
+  # A DECLARATION is any line that announces a non-verification - the
+  # mandated `GAP:`/`HOLD:` form OR the `not verified` form the agent used
+  # before this contract existed (both are caught; a bare section heading
+  # that ends in ':' is not a declaration).
+  g_decl=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:|not verified\b)" <<< "$scope" || true)
+  g_head=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:|not verified\b)[^:]*:[[:space:]]*$" <<< "$scope" || true)
+  g_cls=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:[[:space:]]*(external|actionable)|not verified\b.*\b(external|actionable)\b|(GAP|HOLD)[[:space:]]*:[[:space:]]*(none|nothing|n/a)\b|not verified\b[ 	]*:?[ 	]*(none|nothing|n/a)\b)" <<< "$scope" || true)
+  g_act=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:[[:space:]]*actionable|not verified\b.*\bactionable\b)" <<< "$scope" || true)
+  g_noreason=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:[[:space:]]*external|not verified\b.*\bexternal\b)[[:space:]]*:?[[:space:]]*$" <<< "$scope" || true)
+  g_need=$(( g_decl - g_head ))
+  g_unclass=$(( g_need - g_cls ))
+  [ "$g_unclass" -lt 0 ] && g_unclass=0
   if [[ "$g_act" -gt 0 ]]; then
     echo "FAIL: NOT COMPLETE -- $g_act actionable gap(s)/HOLD(s) in this run's block; they must be FIXED, not named"
     FAIL=1
