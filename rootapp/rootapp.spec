@@ -5,7 +5,7 @@
 
 Name:           rootapp
 Version:        0.9.148
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Root App is a new Discord alternative, designed for gaming communities and large online groups
 
 License:        LicenseRef-Proprietary
@@ -155,5 +155,10 @@ DESKTOP_EOF
 %{_datadir}/pixmaps/rootapp.png
 
 %changelog
+* Mon Oct 19 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.9.148-2
+- Bump Release so the LicenseRef-Proprietary license correction (commit
+  794ee38) is actually published: "Proprietary" is not a valid SPDX
+  identifier. Without a new NVR COPR rebuilt 0.9.148-1 (build 11171204) and
+  a clean fedora:44 container `dnf upgrade` printed "Nothing to do.".
 * Tue Oct 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.148-1
 - Auto-update to 0.9.148 via update.sh
