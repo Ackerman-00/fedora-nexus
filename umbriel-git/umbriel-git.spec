@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          af1a5b04be327fed1480e80aa9305e22d4a4fb11
+%global commit          7097aeeb80e7b50d22c995b3905ce722e4fdbfaf
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261019150402
+%global gitdate         20261019164659
 
 # Fedora's default LTO flags (-flto=auto -ffat-lto-objects) trip a
 # binutils/GCC linker-plugin bug when linking umbriel's test binaries
@@ -139,7 +139,8 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261019150402gitaf1a5b0-1
-- Nightly sync with upstream main branch (Commit: af1a5b0)
-- Add BuildRequires pkgconfig(libsystemd) >= 243 and -Dlocaled=enabled so the
-  new sd-bus system keymap support is built instead of silently disabled
+* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261019164659git7097aee-1
+- Nightly sync with upstream main branch (Commit: 7097aee)
+- Keep BuildRequires pkgconfig(libsystemd) >= 243 and -Dlocaled=enabled so the
+  sd-bus system keymap support is built instead of silently disabled
+  (upstream dependency('libsystemd', version: '>=243', required: localed))
