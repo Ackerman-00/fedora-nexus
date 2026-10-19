@@ -216,8 +216,14 @@ def repology_newest(project_name):
 
 
 ECOSYSTEM_MAP = {
-    "gentoo": "Gentoo",
-    "fedora": "Fedora",
+    # Only names OSV accepts. Verified live 2026-10-19: "Fedora" and "Gentoo"
+    # return HTTP 400 {"code":3,"message":"invalid ecosystem"} - neither is an
+    # OSV ecosystem. Mapping "fedora" here meant THIS repo's own repo_type sent
+    # an invalid ecosystem, 400'd, and the bare `except` below turned that into
+    # a clean bill of health for every package. None falls through to an
+    # unscoped query, which OSV accepts and answers (verified: HTTP 200).
+    "gentoo": None,
+    "fedora": None,
     "opensuse": "openSUSE",
     "void": None,
     "nix": None,
@@ -235,7 +241,11 @@ def osv_query(pkg, version, ecosystem=None):
         data = post_json("https://api.osv.dev/v1/query", query, timeout=15)
         vulns = data.get("vulns", [])
         return [v.get("id", "?") for v in vulns]
-    except Exception:
+    except Exception as exc:
+        # Never swallow this silently again: an empty list must mean "queried
+        # upstream, clean", not "the query never ran" or "the query 400'd".
+        log("  OSV query failed for %s-%s (eco=%s): %s: %s"
+            % (pkg, version, ecosystem, type(exc).__name__, exc))
         return []
 
 

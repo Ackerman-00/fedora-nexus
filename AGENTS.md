@@ -133,10 +133,19 @@ If the agent skips the dependency table, the job fails and the next run retries 
 
 ### OSV.dev query gotchas (found 2026-10-04, both produce false "clean")
 
-- A query without `ecosystem` or `purl` is rejected outright: HTTP 400
-  `error in query at index 0: invalid query`. `{"package": {"name": ...,
-  "version": ...}}` alone is not a valid query, it is a 400, not an empty
-  result.
+- `version` must be TOP-LEVEL, not inside `package`. `{"package": {"name": ...,
+  "version": ...}}` is HTTP 400 `invalid query`, not an empty result. Correct
+  shape is `{"version": "...", "package": {"name": ...}}`. Both failures below
+  are silent: `osv_query()` catches the exception and returns `[]`, so a broken
+  query reads identically to "no known CVEs". It now logs the exception - if you
+  see `OSV query failed ...` in the sweep output, the scan did NOT run.
+- `ecosystem` must be a REAL OSV ecosystem name or be omitted entirely.
+  Verified live 2026-10-19: `"Fedora"` and `"Gentoo"` are NOT OSV ecosystems and
+  return HTTP 400 `{"code":3,"message":"invalid ecosystem"}`. `ECOSYSTEM_MAP`
+  used to map `"fedora": "Fedora"`, so this repo's own repo_type 400'd on EVERY
+  query and reported every package clean. Fixed 2026-10-19: gentoo/fedora map to
+  `None`. Valid values here: `openSUSE`, `Debian`. Omitting `ecosystem` is legal
+  and returns an unscoped (broader, noisier) answer - verified HTTP 200.
 - `v1/querybatch` does NOT version-filter for every ecosystem. Asking for
   `crates.io starship 1.19.0` and `1.26.0` returns the identical advisory
   list (CVE-2024-41815, fixed in 1.20.0). Re-check every hit against the
