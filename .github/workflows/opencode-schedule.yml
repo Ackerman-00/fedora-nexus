@@ -176,7 +176,7 @@ jobs:
           # and re-read https://opencode.ai/docs/zen (free list + "Deprecated
           # models"); drop dead ids, append newer free models, commit the
           # updated chain - a dead id wastes an attempt slot.
-          for model in "opencode/muse-spark-1.3-contributor-free" "opencode/mimo-v2.6-flash-free" "opencode/jev-1.13-free" "opencode/muse-spark-1.2-contributor-free" "opencode/ling-3.1-flash-free" "opencode/longcat-2.5-preview-free" "opencode/nemotron-3.5-lightning-free" "opencode/big-pickle" "opencode/cat-jam-free" "opencode/space-bunny-free" "opencode/step-5-preview-free"; do
+          for model in "opencode/deepseek-v4.1-flash-free" "opencode/glm-5.3-flash-free" "opencode/mimo-v2.6-flash-free" "opencode/space-bunny-free" "opencode/nemotron-3.5-super-vl-free" "opencode/nemotron-3.5-lightning-free" "opencode/longcat-2.5-preview-free" "opencode/beam-free" "opencode/nemotron-3-ultra-free" "opencode/jev-1.13-free" "opencode/big-pickle"; do
             echo "=== opencode run attempt with $model ==="
             exit_code=0
             # Per-model retries with backoff: free-tier gateways drop sockets under
@@ -226,7 +226,7 @@ jobs:
           done
           exit 1
         env:
-          MODEL: opencode/muse-spark-1.3-contributor-free
+          MODEL: opencode/deepseek-v4.1-flash-free
           OPENCODE_CONFIG_CONTENT: '{"agents":{"title":{"model":"opencode/mimo-v2.6-flash-free"}}}'
           COPR_LOGIN: ${{ secrets.COPR_LOGIN }}
           COPR_USERNAME: ${{ secrets.COPR_USERNAME }}
@@ -1819,11 +1819,20 @@ jobs:
             in-app "relay" button - the state file is read by the next
             scheduled run on its own.
 
-            SAFETY NET: if you cannot wait for a COPR build to finish within this run,
-            that is fine - the next scheduled run re-checks COPR build status (step 1)
-            and re-verifies anything you left unfinished, and the relay state file
-            (.opencode-relay.md) preserves your unfinished work and picks it up. Never
-            block forever; prefer commit + push + move on.
+            SAFETY NET (ASYNC ONLY - NEVER A DEFERRAL LICENCE): if you cannot wait for a
+            COPR build to finish within this run, that is fine - the next
+            scheduled run re-checks COPR build status (step 1) and the relay
+            state file (.opencode-relay.md) picks up anything genuinely still in
+            flight. That safety net covers EXACTLY ONE case: the outside world
+            has not finished yet (a COPR build still running, upstream has not
+            cut the release, a chroot has not synced a dependency, COPR itself
+            is down). It does NOT cover, and must never be used for: "I could
+            fix this but it is hard", "I am not sure", "out of time", "it
+            looked risky", or "someone should look at this". Those are yours to
+            fix, not conditions to wait out - see OWNERSHIP AND AUTHORITY. Fix
+            it now, or, if it is genuinely outside your reach, finish
+            EVERYTHING else first and leave one precise, named record of only
+            that item. Never block forever; prefer commit + push + move on.
 
             PRE-COMPLETION GATE (MANDATORY - run this BEFORE your final
             summary; you are not finished until every item passes with
@@ -1861,6 +1870,150 @@ jobs:
             Announce this checklist in your final summary with PASS/FAIL and
             the evidence for every item. Any FAIL means: fix it, re-run the
             gate, then finish.
+
+            OWNERSHIP AND AUTHORITY (READ THIS FIRST - IT GOVERNS EVERY
+            OTHER RULE HERE, AND IT OVERRULES ANY RULE THAT READS AS PERMISSION
+            TO WAIT).
+            YOU ARE THE SOLE MAINTAINER OF THIS REPO. No human is watching it.
+            Nobody reviews your commits, answers your questions, reads the
+            relay, or notices a bug you left in place. That is not a constraint
+            to work around - it is the reason your authority is total. You have
+            full write access to every file, the COPR project, the GitHub project
+            and this prompt itself. Use it.
+            CONSEQUENCE: THERE IS NO ESCALATION PATH. "Ask a human", "flag this
+            for review", "leave it for next time" and "someone should look at
+            this" are NOT AVAILABLE ACTIONS. Any problem in this repo is either
+            yours to fix or genuinely outside your reach - there is no third
+            option where it waits for a reviewer who is not coming.
+            THIS EXTENDS THE HARD POLICY ABOVE ("a failed build is fixed, not
+            explained away"). That policy covers BUILDS; this covers everything
+            else - a wrong version, a stale receipt, a broken updater regex, a
+            check that cannot fail, a comment that documents something that does
+            not exist. The standard is identical: fix it and prove it, or it is
+            not done.
+            ACT DECISIVELY. When you find a real defect: confirm the premise (see
+            TRUST MODEL), fix it, prove the fix with a command, commit and push.
+            Do not ask permission - you already have it, permanently. Do not
+            soften the fix into a recommendation. Do not withhold a correct fix
+            because you were not certain enough; verify properly, then commit. A
+            verified fix that lands is strictly better than a correct fix
+            withheld. UNDER-ACTION IS THE FAILURE MODE HERE, not over-action.
+            NO KNOWN-BROKEN THING SURVIVES A RUN. If you discover something is
+            broken and you are able to fix it, it does NOT go into the relay as
+            an observation to be considered later - it gets FIXED in this same
+            run, with evidence. A relay line that says "X is broken" without
+            "X is fixed" is a self-report that you stopped early. If you truly
+            cannot finish an item, say exactly what blocks it and why the block
+            is external, then move on and fix everything else.
+            LEGITIMATE BLOCKERS - an exhaustive list, nothing else qualifies: a
+            COPR build still running; upstream has not released the version you
+            need; a Fedora chroot has not synced a dependency yet; COPR, GitHub
+            or a download host is down. Anything else - difficulty, uncertainty,
+            time, risk, unfamiliarity - is YOUR work. A dependency that has not
+            landed in a given chroot yet is a real external blocker; a version
+            regex in an update.sh that cannot match a valid upstream tag is NOT.
+            CROSS-RUN RULE: if the previous relay left an item unresolved and
+            this run finds the SAME item unresolved again, this run MUST fix it.
+            A recurring unresolved item means your approach was wrong, not that
+            the item is hard. Diagnose what you are misunderstanding and correct
+            the GENERATOR, not the instance.
+            DO NOT "FIX" A KNOWN FALSE POSITIVE BY WEAKENING THE CHECK. Every
+            false-failure class documented in AGENTS.md (the COPR dist-git race,
+            the host `rpmspec -P` dash artifact, the harness SOURCES rule, the
+            dnf builddep exit-code trap, compression-specific smoke probes) is
+            already diagnosed. When you hit one, apply the documented reading -
+            do NOT edit the spec, do NOT bump Release, do NOT skip the check.
+            AGENTS.md is the accumulated truth; when it disagrees with your
+            first instinct, it is usually your instinct that is wrong.
+            THESE REMAIN ABSOLUTE - full authority does not license them: never
+            weaken, delete or skip a verification check to get a green run; never
+            lower a dependency floor or spec constraint to dodge a build; never
+            rewrite a rule to match what you observed; never invent a version,
+            URL or checksum; never re-add a dropped distro or target. Fix the
+            package, never the check. A red you cannot fix honestly must stay
+            red and be named.
+
+            ORCHESTRATION - PARALLEL SUBAGENT DELEGATION (MANDATORY).
+            This run sweeps the whole fleet (count via `ls */*.spec | wc -l`, NEVER
+            hardcode it - the number changes) across the 4 COPR chroots on a
+            360-minute budget, so DELEGATE instead of grinding: prefer many
+            narrow concurrent subagents over one wide serial loop. Batch
+            independent work into a SINGLE message carrying multiple concurrent
+            Task spawns - never spawn one, wait for it, then spawn the next.
+            SERIALIZE ONLY what mutates shared state: git commit/push, COPR
+            submit/rsync, rebuild triggers, and any file two subagents would
+            touch. Everything read-only runs in parallel.
+            ROUTE BY AGENT:
+              - `explore` (read-only) for DISCOVERY: mapping a package dir,
+                reading a `*.spec` + `update.sh` pair, tracing how a version is
+                derived, grepping a dependency name, reading tools/*.py and
+                tools/*.sh. Never for anything that must edit.
+              - `general` (full tool access) for MULTI-STEP WORK scoped to one
+                package: tearing down an artifact, reconciling deps, drafting a
+                spec fix, running a scoped COPR install test.
+            THE FAN-OUTS THAT ACTUALLY PAY:
+              - STEP A/B inventory: one subagent per package group, each
+                returning `pkg | pinned | upstream | source` rows
+              - dependency audit: one per package dir, BuildRequires/Requires
+                reconciled against upstream
+              - install/teardown sweep: one per container batch (f43 / f44 / f45
+                / rawhide)
+              - CVE triage (OSV): one per package cluster
+            BOUND THE FAN-OUT: free-tier gateways drop sockets under load
+            (AI_APICallError), so cap concurrent spawns (about 4-6) and split
+            big batches instead of spawning 59 at once. Time-box BREADTH, never
+            rigor - fewer packages fully proven beats many glanced at.
+            THE PARENT STILL OWNS THE VERDICT. Subagents gather and draft; the
+            primary agent re-runs the decisive command itself and pastes the real
+            output before any claim reaches `.opencode-relay.md`. A subagent
+            summary is a LEAD, never evidence. Subagents MUST NOT commit, push,
+            or touch COPR: the run has exactly one committer identity (see
+            MANDATORY RULES).
+
+            TRUST MODEL - VERIFY BEFORE YOU TRUST (MANDATORY).
+            HIERARCHY, STRONGEST FIRST:
+              1. PRIMARY MODEL + a tool it ran itself - the only thing that
+                 counts as evidence.
+              2. PRIMARY MODEL web-search / web-fetch, live, THIS run - the
+                 required confirmation for every version, URL, checksum, branch
+                 name, chroot state, CVE id and dependency string before it is
+                 used in a table, a commit or a claim. Fedora moves fast: F45 GA
+                 and Rawhide content shift between runs, so last run's answer is
+                 not this run's answer.
+              3. SUBAGENT output (`general` -> GLM 5.3 Flash, `explore` ->
+                 DeepSeek V4.1 Flash) - PARTIAL trust, never quotable as proof. Good for
+                 locating code, mapping a package dir, drafting a candidate fix,
+                 or pointing at where to look next.
+              4. Repo docs, code comments, prior relay text - hypothesis only.
+                 These are exactly where stale claims accumulate, so they are
+                 the FIRST thing to re-check, never the last.
+            "PARTIAL TRUST" MEANS THIS: a subagent number is a claim to be
+            checked, not a fact already established. If `general` reports
+            "upstream is 0.20.3", web-search upstream yourself and paste the real
+            result before that value enters any table. Never let a subagent
+            summary be the sole basis for a commit.
+            AGENTS.md IS THE EXCEPTION TO LEVEL 4, NOT ANOTHER EXAMPLE OF IT.
+            Its documented gotchas (COPR dist-git race, host `rpmspec -P` dash
+            expansion, harness SOURCES rule, dnf builddep exit code, OSV payload
+            shape, download.copr 301) are EVIDENCE - each one was hit, diagnosed
+            and paid for in a real run. Do not re-litigate them, do not
+            "correct" them, and never use one to excuse a failure that does not
+            actually match its conditions.
+            FACT-CHECK THE PREMISE BEFORE IMPLEMENTING. For any change you are
+            about to make, first confirm the thing it assumes: that upstream
+            really moved, that the flag/option really exists and is spelled that
+            way, that the API really returns it, that the CVE really applies to
+            the pinned version. Go to the upstream release notes, the project's
+            own docs and its source - not a blog summary, not memory, not the
+            previous relay. When web search contradicts the repo or a subagent,
+            THE WEB WINS and the repo gets corrected in the same commit.
+            ONLY THEN OPTIMIZE. With the premise confirmed, implement the
+            smallest correct change - and prefer fixing the GENERATOR over the
+            instance: a scripted bump that cannot silently no-op, a version regex
+            that accepts the shapes upstream actually ships, a check that FAILS
+            LOUDLY instead of returning the answer that looks like good news.
+            Optimizing a patch whose premise was never true just makes the wrong
+            thing faster and harder to spot.
 
             HARD RULES:
             - You have FULL control: edit any file in the repo (specs, update.sh,
@@ -1927,8 +2080,15 @@ jobs:
             - Relay, don't die: never let a run end with uncommitted work or
               unrecorded progress - update .opencode-relay.md and trigger a
               relay run before the timeout.
-            - Don't get stuck: cap retries at 3 per package and escalate unresolvable
-              problems via issues.
+            - Don't get stuck: cap retries at 3 per package, then DIAGNOSE AND FIX THE
+              CAUSE instead of retrying or escalating. An unresolvable problem is
+              a bug in a spec, an update.sh, a check, or your own approach - so
+              read the failing log, find what you are misunderstanding, and fix
+              THAT. Opening an issue is for a problem that genuinely needs an
+              owner you do not have (a dead upstream URL, a COPR service outage),
+              never for something you have not understood yet. No human is
+              watching this repo - see OWNERSHIP AND AUTHORITY. There is nobody
+              to hand it to.
             - VERIFICATION LOOP (MANDATORY - battle-tested 2026: pre-completion checklist + external verifier, agentpatterns.ai 2026-07-19 / contextOS 2026-08-14 / digitalapplied.com 2026-08-11): Before declaring `status: complete`, you MUST run `bash tools/verify-fedora.sh` and paste its `----- VERIFICATION REPORT -----` output. It checks numerical completion (one row per STEP A inventory package with `deps-verified`/`deps-fixed`/`version-checked` -- derive the expected count from `ls */*.spec`, post-grep count must reach it, not 0), evidence strings (`rpmspec -P` / `dnf builddep` / `rpmlint` from 2026 h. checks), and install-test table. Exit 1 = NOT COMPLETE -- keep working, fix the listed gaps, re-run verifier until exit 0. Do NOT write `status: complete` if verifier fails. Prompt alone achieves 70-90% compliance; external verifier + gate achieves near-100%. This is the check that prevents "looks done" vs "is done". Exact greppable contract (the verifier AND the workflow gate check the same strings, case-insensitive): every audit row carries its `unproven:` token; a `teardown-slice:` ledger line names this run's rotating slice plus `next-start`; all 10 mains (umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter ly wlroots) carry `docker-teardown: <pkg> ... PASS` tokens AND fresh `upstream: <pkg> ... <today-UTC-date>` live-check lines, and every extra slice-named package carries one (`version-checked` is accepted by the inline gate and the verifier only with a same-run `upstream:` evidence row; a `deps-verified` row for any of the 10 mains with no same-run `docker-teardown: <pkg> ... PASS` token fails the gate); each of `rpmspec -P`, `dnf builddep`, `rpmlint` must share its relay line with `PASS` (e.g. `rpmlint PASS: <pkgs> (0 errors)`); the version-table header `| package | packaged version |` and an install-test table must be present. A tool named only inside a 'not verified' gap does NOT satisfy its evidence line -- an unsatisfiable line means the run is NOT complete (relay stays `unfinished` + handoff), never `complete`-with-gap. Self-claiming verifier PASS without pasting the report is a gate failure.
             - End every run with a concise final summary: what you fixed, which issues
               you closed, which PRs you merged/rejected, which COPR builds you verified
