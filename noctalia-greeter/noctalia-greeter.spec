@@ -1,10 +1,10 @@
 # These will be automatically populated by update.sh
-%global commit          434b8095e813a7c04584b2841d03d862c4ff354a
+%global commit          1c35a133958c83b7cd018cced2119c1026504497
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261018151634
+%global gitdate         20261019110246
 
 Name:           noctalia-greeter
-Version:        1.6.0^%{gitdate}git%{shortcommit}
+Version:        1.7.0^%{gitdate}git%{shortcommit}
 Release:        1%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
@@ -120,5 +120,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Sun Oct 18 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.0^20261018151634git434b809-1
-- Nightly sync with upstream main branch (Commit: 434b809)
+* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261019110246git1c35a13-1
+- Nightly sync with upstream main branch (Commit: 1c35a13)
