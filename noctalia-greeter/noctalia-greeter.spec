@@ -5,12 +5,22 @@
 
 Name:           noctalia-greeter
 Version:        1.7.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
-License:        MIT
+# MIT covers the project; the vendored Wuffs decoder is Apache-2.0 OR MIT, so
+# the package as a whole is MIT AND Apache-2.0 (SPDX).
+License:        MIT AND Apache-2.0
 URL:            https://github.com/noctalia-dev/noctalia-greeter
 Source0:        %{url}/archive/%{commit}/%{name}-%{commit}.tar.gz
+# The vendored third_party/wuffs/wuffs-v0.4.c carries only its copyright and
+# SPDX notice; its revision is a14745aa458fd2b2785034efa04eab3c7b5b91e0
+# (WUFFS_VERSION 0.4.0). Upstream PACKAGING.md tells packagers to ship the
+# separate texts, so they are pinned sources.
+# sha256: 0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594
+Source1:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-APACHE
+# sha256: bb811a4b485eac3caeb8bdc58bbafb355fbcb6116010a7ea9179e5c70b0bc878
+Source2:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-MIT
 
 BuildRequires:  meson
 BuildRequires:  gcc-c++
@@ -74,6 +84,9 @@ automated Git snapshot.
 # Delete the unneeded tmpfiles.d fallback configuration
 rm -f %{buildroot}%{_tmpfilesdir}/noctalia-greeter.conf
 install -d %{buildroot}%{_licensedir}/%{name}/third_party
+install -d %{buildroot}%{_licensedir}/%{name}/third_party/wuffs
+install -p -m 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/third_party/wuffs/LICENSE-APACHE
+install -p -m 0644 %{SOURCE2} %{buildroot}%{_licensedir}/%{name}/third_party/wuffs/LICENSE-MIT
 find third_party -type f \( -name "LICENSE*" -o -name "COPYING*" -o -name "NOTICE*" \) | while read -r file; do
     dest_dir="%{buildroot}%{_licensedir}/%{name}/$(dirname "$file")"
     install -d "$dest_dir"
@@ -120,5 +133,8 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261019110246git1c35a13-2
+- Ship the vendored Wuffs Apache-2.0 and MIT texts and set License to MIT AND Apache-2.0
+
 * Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261019110246git1c35a13-1
 - Nightly sync with upstream main branch (Commit: 1c35a13)
