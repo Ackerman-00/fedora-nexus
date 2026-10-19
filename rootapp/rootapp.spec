@@ -8,7 +8,7 @@ Version:        0.9.148
 Release:        1%{?dist}
 Summary:        Root App is a new Discord alternative, designed for gaming communities and large online groups
 
-License:        Proprietary
+License:        LicenseRef-Proprietary
 URL:            https://www.rootapp.com
 ExclusiveArch:  x86_64
 

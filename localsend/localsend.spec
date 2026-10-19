@@ -13,7 +13,7 @@ Version:        1.18.2
 Release:        2%{?dist}
 Summary:        An open source cross-platform alternative to AirDrop
 
-License:        GPL-3.0
+License:        Apache-2.0
 URL:            https://github.com/localsend/localsend
 # Use the upstream DEB as our raw source payload
 Source0:        %{url}/releases/download/v1.18.2/LocalSend-1.18.2-linux-x86-64.deb

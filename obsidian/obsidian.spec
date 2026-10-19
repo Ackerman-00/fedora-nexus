@@ -6,7 +6,7 @@ Version:        1.14.4
 Release:        1%{?dist}
 Summary:        A powerful knowledge base that works on top of a local folder of plain text Markdown files
 
-License:        Commercial
+License:        LicenseRef-Proprietary
 URL:            https://obsidian.md/
 ExclusiveArch:  x86_64
 
