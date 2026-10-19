@@ -10,7 +10,7 @@
 
 Name:           localsend
 Version:        1.18.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        An open source cross-platform alternative to AirDrop
 
 License:        Apache-2.0
@@ -93,6 +93,11 @@ chmod 0755 %{buildroot}%{_bindir}/localsend_app
 %{_libdir}/localsend_app/
 
 %changelog
+* Mon Oct 19 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.18.2-3
+- Bump Release so the Apache-2.0 license correction (commit 794ee38) is
+  actually published: without a new NVR the rebuild reused 1.18.2-2 and
+  `dnf upgrade` reported "Nothing to do." on a clean fedora:44 container,
+  leaving installed users on the stale GPL-3.0 metadata.
 * Fri Oct 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.18.2-2
 - Declare dlopened GL runtime deps (libEGL.so.1, libGLESv2.so.2): the bundled
   libflutter_linux_gtk.so links libepoxy, which opens both at startup. A clean
