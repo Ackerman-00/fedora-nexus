@@ -5,7 +5,7 @@
 
 Name:           wlroots
 Version:        0.20.2
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        A modular Wayland compositor library
 
 # Convert tilde to dash for source tag (e.g. 0.20.0~rc2 -> 0.20.0-rc2)
@@ -56,7 +56,9 @@ BuildRequires:  pkgconfig(libseat) >= 0.2.0
 BuildRequires:  pkgconfig(libudev)
 BuildRequires:  pkgconfig(pixman-1) >= 0.46.0
 BuildRequires:  pkgconfig(vulkan) >= 1.2.182
-BuildRequires:  pkgconfig(wayland-client)
+# meson.build wayland_kwargs: version '>=1.24.0' applies to both
+# wayland-client and wayland-server; the client floor was missing.
+BuildRequires:  pkgconfig(wayland-client) >= 1.24.0
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.47
 BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(wayland-server) >= 1.24.0
@@ -117,6 +119,10 @@ MESON_OPTIONS=(
 %{_libdir}/pkgconfig/wlroots-%{abi_ver}.pc
 
 %changelog
+* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-8
+- Carry upstream's wayland-client >= 1.24.0 floor (meson.build
+  wayland_kwargs, shared with wayland-server which already had it)
+
 * Sat Oct 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-7
 - Pin pkgconfig(libseat) >= 0.2.0 to match upstream floor
   (backend/session/meson.build dependency('libseat', version: '>=0.2.0'))
