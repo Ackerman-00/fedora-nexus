@@ -195,6 +195,42 @@ check the published repodata instead
 (`<repo>/<chroot>/repodata/repomd.xml` -> `primary.xml.gz`, `name` and
 `version` attributes carry the NVR).
 
+### Why the maintainer under-acted despite full access (added 2026-10-19)
+
+Not a permissions problem. The agent had full write access the whole time
+and still left real defects unfixed, because the COMPLETION CONTRACT let it
+stop early. A blocker only had to be NAMED to be credited: the checklist
+asked the agent to "state what you did NOT verify and why", and neither the
+inline gate nor `tools/verify-fedora.sh` ever inspected the content of the
+gaps section - both only grepped for the PRESENCE of evidence strings. An
+agent blocker that was really its own failure (a version regex it could
+have fixed, a spec missing a dependency, a stale receipt, a package behind
+because it could not work out the new version) counted exactly like a
+genuine external blocker. Access answers "can you fix it"; the contract
+answers "must you" - and the contract said no.
+
+RULE, enforced in code since 2026-10-19: every gap and HOLD must be a line
+starting with the marker, classified as either
+`GAP: external - <the external thing that must change first, and why>` or
+`GAP: actionable - <what you will fix>`. An `actionable` marker FAILS the
+run - it means the work was yours and you did not do it. The gate and the
+verifier also fail an unclassified gap line and an `external` marker with
+no reason after it. Both catch the legacy `not verified: ...` form too, so a
+run cannot escape the contract by using the old wording. A bare heading
+ending in `:` and prose that merely mentions the word gap are not
+declarations.
+
+CLASSIFYING IS NOT ESCAPING: `external` is a claim you must PROVE with a
+command run this run - paste the 403, the 404, the missing asset, the
+chroot that has not synced. If you cannot show the probe, it is
+`actionable`. These are ACTIONABLE, never external: a version regex or sed
+in this repo that cannot match a real upstream tag; a spec missing a
+dependency, %license, %attr or arch declaration; a package behind because
+the new version could not be worked out (read the artifact's INTERNAL
+version - rpm2tree.py, app.asar, application.ini - never the download
+filename alone); a dependency floor too high for the chroots you build; a
+stale receipt, comment or report.
+
 ### Why this architecture
 
 - **Deterministic + intelligent**: the sweep is pure Python (no LLM needed,
