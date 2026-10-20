@@ -24,13 +24,14 @@ if [[ -f "$RELAY" ]]; then
     echo "PASS: relay run_id matches this run"
   fi
 
-  # Mirror gate_passes() in opencode-schedule.yml
+  # Mirror of gate_passes() in opencode-schedule.yml - the two must not drift
   expected=$(find . -mindepth 2 -maxdepth 2 -name '*.spec' -type f -print | wc -l)
   if [[ "$expected" -eq 0 ]]; then
     echo "FAIL: NOT COMPLETE -- no package specs found"
     FAIL=1
   fi
 
+  # Scope is this run's block only, so old runs cannot satisfy a check
   scope=$(awk -v id="run_id: $RUN_ID" '$0==id{f=1;next} f&&/^run_id: /{exit} f' "$RELAY")
 
   if ! grep -qix "status: complete" <<< "$scope"; then
@@ -181,7 +182,7 @@ if [[ -f "$RELAY" ]]; then
       FAIL=1
     fi
   done
-  # GAP/HOLD classification
+  # GAP/HOLD classification - mirror of gate_passes()
   g_decl=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:|not verified\b)" <<< "$scope" || true)
   g_head=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:|not verified\b)[^:]*:[[:space:]]*$" <<< "$scope" || true)
   g_cls=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:[[:space:]]*(external|actionable)|not verified\b.*\b(external|actionable)\b|(GAP|HOLD)[[:space:]]*:[[:space:]]*(none|nothing|n/a)\b|not verified\b[ 	]*:?[ 	]*(none|nothing|n/a)\b)" <<< "$scope" || true)

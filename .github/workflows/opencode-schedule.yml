@@ -160,6 +160,7 @@ jobs:
             grep -qi "install-test table" <<< "$content" || return 1
             # Install-test verdicts are TRUTH: a FAIL row is a broken package,
             # and a FAIL row next to a same-run install PASS contradicts itself.
+            # Mirror of tools/verify-fedora.sh - the two must not drift.
             local it_rows it_fail it_pass it_pkg
             it_rows=$(printf '%s' "$content" | awk -F'|' '
               /^\|/ {
@@ -192,6 +193,7 @@ jobs:
               grep -qiE "GAP: external.*$it_pkg" <<< "$content" || return 1
             done
             # Defect accounting: fixed + proven-external must cover what was found.
+            # A hunt category you did not run is a category you did not check.
             local d_found d_fixed hunt_cats
             d_found=$(grep -oE '^[[:space:]]*defects-found:[[:space:]]*[0-9]+' <<< "$content" | tail -1 | grep -oE '[0-9]+' || true)
             d_fixed=$(grep -oE '^[[:space:]]*defects-fixed:[[:space:]]*[0-9]+' <<< "$content" | tail -1 | grep -oE '[0-9]+' || true)
