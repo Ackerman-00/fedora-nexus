@@ -78,31 +78,64 @@ def read(p):
 gate = read(".github/workflows/opencode-schedule.yml")
 ver = read("tools/verify-fedora.sh")
 
-def awk_block(text):
-    m = re.search(r"awk -F'\|' '(.*?)'\s*\|\s*sort -u", text, re.S)
-    return re.sub(r"\s+", " ", m.group(1)).strip() if m else ""
-
 def norm(pattern):
     return re.sub(r"\s+", " ", pattern).strip()
 
+def install_parser(text):
+    """The install-table parser: the awk block that knows EXTERNAL."""
+    blocks = re.findall(r"awk -F'\|' '(.*?)'\s*\|\s*sort -u", text, re.S)
+    for b in blocks:
+        if "EXTERNAL" in b:
+            return norm(b)
+    return ""
+
+def grep_patterns(text):
+    """Every grep pattern, whatever flags or quote style precede it."""
+    out = set()
+    for m in re.finditer(r"grep(?:\s+-[a-zA-Z0-9]+)*\s+(?:'([^']*)'|\"([^\"]*)\")", text):
+        out.add(norm(m.group(1) if m.group(1) is not None else m.group(2)))
+    return out
+
 bad = 0
-if awk_block(gate) != awk_block(ver):
+g_parser, v_parser = install_parser(gate), install_parser(ver)
+if not g_parser or not v_parser:
+    print("FAIL: the install-table parser was not found (gate=%d bytes, verifier=%d bytes)"
+          % (len(g_parser), len(v_parser)))
+    bad = 1
+elif g_parser != v_parser:
     print("FAIL: the gate and the verifier parse the install table differently")
     bad = 1
 else:
-    print("OK   install-table parser identical in gate and verifier")
+    print("OK   install-table parser identical in gate and verifier (%d bytes)" % len(g_parser))
 
+gp, vp = grep_patterns(gate), grep_patterns(ver)
 for pat in (r"^[[:space:]]*defects-found:[[:space:]]*[0-9]+",
             r"^[[:space:]]*defects-fixed:[[:space:]]*[0-9]+",
             r"^[[:space:]]*changed:",
             r"^[[:space:]]*hunt: [a-z0-9-]+"):
-    in_gate = any(norm(p) == norm(pat) for p in re.findall(r"grep -[a-zA-Z]+E?\s+'([^']+)'", gate))
-    in_ver = any(norm(p) == norm(pat) for p in re.findall(r"grep -[a-zA-Z]+E?\s+'([^']+)'", ver))
-    if in_gate != in_ver:
-        print("FAIL: contract pattern %r present in gate=%s verifier=%s" % (pat, in_gate, in_ver))
-        bad = 1
-    else:
+    in_gate = norm(pat) in gp
+    in_ver = norm(pat) in vp
+    if in_gate and in_ver:
         print("OK   contract pattern %r in both" % pat)
+    else:
+        print("FAIL: contract pattern %r present in gate=%s verifier=%s (both required)"
+              % (pat, in_gate, in_ver))
+        bad = 1
+
+# The install-test table may be named in prose or only by its header; both
+# files must accept the same thing, or a run passes one and fails the other.
+g_tbl = set(norm(p) for p in gp if "install-test table" in p or "COPR build" in p)
+v_tbl = set(norm(p) for p in vp if "install-test table" in p or "COPR build" in p)
+if not g_tbl or not v_tbl:
+    print("FAIL: the install-test table rule was not found (gate=%d, verifier=%d)" % (len(g_tbl), len(v_tbl)))
+    bad = 1
+elif g_tbl != v_tbl:
+    print("FAIL: the gate and the verifier disagree on the install-test table rule")
+    print("      gate:     %s" % sorted(g_tbl))
+    print("      verifier: %s" % sorted(v_tbl))
+    bad = 1
+else:
+    print("OK   install-test table rule identical in gate and verifier")
 sys.exit(bad)
 PY
 

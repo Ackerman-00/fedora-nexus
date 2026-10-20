@@ -157,7 +157,7 @@ jobs:
               grep -qi "$tool.*PASS\|PASS.*$tool" <<< "$content" || return 1
             done
             grep -q "| package | packaged version |" <<< "$content" || return 1
-            grep -qi "install-test table" <<< "$content" || return 1
+            grep -qi "install-test table" <<< "$content" || grep -qiE "\| package \| (chroot \| )?COPR build \|" <<< "$content" || return 1
             # Install-test verdicts are TRUTH: a FAIL row is a broken package,
             # and a FAIL row next to a same-run install PASS contradicts itself.
             # Mirror of tools/verify-fedora.sh - the two must not drift.
