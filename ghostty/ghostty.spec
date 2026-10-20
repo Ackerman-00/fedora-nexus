@@ -26,7 +26,7 @@
 
 Name:           ghostty
 Version:        %{ghostty_version}
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A fast, feature-rich, and cross-platform terminal emulator
 
 License:        MIT
@@ -36,6 +36,8 @@ URL:            https://github.com/mkasberg/ghostty-ubuntu
 # has the lowest glibc baseline of all published variants, hence the best
 # compatibility on Fedora.
 Source0:        %{url}/releases/download/%{ppatag}/ghostty_%{debver}_amd64_24.04.deb
+# The PPA deb carries no license text; upstream ghostty does at the same version.
+Source1:        https://raw.githubusercontent.com/ghostty-org/ghostty/v%{ghostty_version}/LICENSE
 
 ExclusiveArch:  x86_64
 
@@ -113,7 +115,11 @@ install -d -m 0755 %{buildroot}%{_datadir}
 cp -a usr/share/* %{buildroot}%{_datadir}/
 rm -rf %{buildroot}%{_datadir}/doc
 
+# 5. Upstream MIT license text (the deb ships none)
+install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
+
 %files
+%license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/ghostty
 %{_libdir}/libgtk4-layer-shell.so
 %{_libdir}/libghostty-vt.so
@@ -140,6 +146,10 @@ rm -rf %{buildroot}%{_datadir}/doc
 %{_datadir}/zsh/vendor-completions/_ghostty
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.3.1-4
+- Ship the upstream MIT LICENSE (Source1, pinned to ghostty v1.3.1); the
+  PPA deb payload carries no license text.
+
 * Sat Sep 05 2026 Ackerman-00 <quietcraft@gmail.com> - 1.3.1-3
 - Fix __provides_exclude for the bundled libgtk4-layer-shell.so: rpm matches
   provides-filters against the decorated `libgtk4-layer-shell.so()(64bit)`
