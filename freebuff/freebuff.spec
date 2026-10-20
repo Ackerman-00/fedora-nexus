@@ -8,14 +8,16 @@
 
 Name:           freebuff
 Version:        0.2.30
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The free coding agent for your desktop
 
-License:        Apache-2.0
+License:        MIT
 URL:            https://freebuff.com/desktop
 # Standalone ELF binary + tree-sitter.wasm (upstream switched from AppImage to
 # tar.gz format starting ~v0.0.80; this tag is the latest with a working release)
 Source0:        https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v%{version}/freebuff-linux-x64.tar.gz
+# The binary tarball carries no license text; the release repo's MIT
+Source1:        https://raw.githubusercontent.com/CodebuffAI/codebuff-community/freebuff-v%{version}/LICENSE
 # sha256: f3f3776bee033ccda17dab54c6d42cb24438b24b4f3139abddd6e5ecc45d6029
 
 ExclusiveArch:  x86_64
@@ -46,6 +48,9 @@ install -m755 freebuff %{buildroot}%{_bindir}/freebuff
 install -dm755 %{buildroot}%{_datadir}/freebuff
 install -m644 tree-sitter.wasm %{buildroot}%{_datadir}/freebuff/tree-sitter.wasm
 
+# License text from the upstream release repo (MIT, same release tag)
+install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
+
 # 3. Install the standard desktop entry (no Icon: upstream ships no icon
 # in the tar.gz and a zero-byte placeholder breaks icon lookup, 2026-09-23)
 install -dm755 %{buildroot}%{_datadir}/applications
@@ -65,11 +70,19 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/freebuff.desktop
 
 %files
 %defattr(-,root,root,-)
+%license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/freebuff
 %{_datadir}/freebuff/tree-sitter.wasm
 %{_datadir}/applications/freebuff.desktop
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.2.30-2
+- Ship the MIT LICENSE text from the release repo (Source1, same
+  freebuff-v0.2.30 tag as Source0, which carries no license text).
+- Correct License: Apache-2.0 -> MIT: the release repository's LICENSE and
+  the GitHub license API both report MIT, and no Apache-2.0 text exists in
+  the artifact or the repository root.
+
 * Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.30-1
 - Auto-updated to 0.2.30 via update.sh
 * Thu Oct 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.29-1
