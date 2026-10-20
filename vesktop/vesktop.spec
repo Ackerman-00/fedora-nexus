@@ -7,13 +7,16 @@
 
 Name:           vesktop
 Version:        1.6.7
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Custom Discord desktop client with Vencord preinstalled (Nexus Optimized)
 
 License:        GPL-3.0-or-later
 URL:            https://github.com/Vencord/Vesktop
 # Use the native upstream RPM as our raw source payload
 Source0:        %{url}/releases/download/v%{version}/%{name}-%{version}.x86_64.rpm
+# The upstream RPM payload carries no license text; take it from the source
+# tree at the same tag.
+Source1:        %{url}/raw/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
 
@@ -81,7 +84,11 @@ exec /opt/Vesktop/vesktop "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/vesktop
 
+# 4. Ship the upstream GPL-3.0 license text
+install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
+
 %files
+%license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/vesktop
 %{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/apps/*.*
@@ -90,6 +97,10 @@ chmod 0755 %{buildroot}%{_bindir}/vesktop
 %attr(4755, root, root) /opt/Vesktop/chrome-sandbox
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.6.7-3
+- Ship the upstream GPL-3.0 license text as Source1 (same v1.6.7 tag as the
+  RPM payload, which contains none).
+
 * Wed Sep 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.7-2
 - Add missing runtime Requires from ldd audit (cups-libs, libdrm, pango,
   libXcomposite, libXdamage, libXrandr)
