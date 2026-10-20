@@ -7,15 +7,15 @@
 
 Name:           openchamber
 Version:        2.5.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        AI coding agent workspace (Electron)
 
 License:        MIT
 URL:            https://github.com/openchamber/openchamber
 Source0:        %{url}/releases/download/v2.5.0/OpenChamber-2.5.0-linux-x86_64.AppImage
+# sha256: f90527c3537d28c3f09c9a7f9affc6fd2ef73731709b9f3c92e325c157ae19cf
 # The AppImage carries no license text; the repo does at the same tag.
 Source1:        %{url}/raw/v%{version}/LICENSE
-# sha256: f90527c3537d28c3f09c9a7f9affc6fd2ef73731709b9f3c92e325c157ae19cf
 
 ExclusiveArch:  x86_64
 # x86_64 only; aarch64 AppImage exists upstream.
@@ -114,6 +114,10 @@ install -Dm644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %attr(4755, root, root) /opt/openchamber/chrome-sandbox
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.5.0-3
+- Pin Source0's sha256 under Source0: the hash was written below Source1,
+  so it read as a pin of the LICENSE text it does not match.
+
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.5.0-2
 - Ship the upstream MIT LICENSE (Source1, same v2.5.0 tag as Source0);
   the AppImage payload carries no license text.

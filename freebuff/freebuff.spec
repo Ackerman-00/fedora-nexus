@@ -5,15 +5,15 @@
 
 Name:           freebuff
 Version:        0.2.30
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The free coding agent for your desktop
 
 License:        MIT
 URL:            https://freebuff.com/desktop
 Source0:        https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v%{version}/freebuff-linux-x64.tar.gz
+# sha256: f3f3776bee033ccda17dab54c6d42cb24438b24b4f3139abddd6e5ecc45d6029
 # The binary tarball carries no license text; the release repo's MIT
 Source1:        https://raw.githubusercontent.com/CodebuffAI/codebuff-community/freebuff-v%{version}/LICENSE
-# sha256: f3f3776bee033ccda17dab54c6d42cb24438b24b4f3139abddd6e5ecc45d6029
 
 ExclusiveArch:  x86_64
 BuildRequires:  desktop-file-utils
@@ -68,6 +68,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/freebuff.desktop
 %{_datadir}/applications/freebuff.desktop
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.2.30-3
+- Pin Source0's sha256 under Source0: the hash was written below Source1,
+  so it read as a pin of the LICENSE text it does not match.
+
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.2.30-2
 - Ship the MIT LICENSE text from the release repo (Source1, same
   freebuff-v0.2.30 tag as Source0, which carries no license text).
