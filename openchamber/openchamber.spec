@@ -9,12 +9,14 @@
 
 Name:           openchamber
 Version:        2.5.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        AI coding agent workspace (Electron)
 
 License:        MIT
 URL:            https://github.com/openchamber/openchamber
 Source0:        %{url}/releases/download/v2.5.0/OpenChamber-2.5.0-linux-x86_64.AppImage
+# The AppImage carries no license text; the repo does at the same tag.
+Source1:        %{url}/raw/v%{version}/LICENSE
 # sha256: f90527c3537d28c3f09c9a7f9affc6fd2ef73731709b9f3c92e325c157ae19cf
 
 ExclusiveArch:  x86_64
@@ -108,7 +110,11 @@ DESKTOP_EOF
 
 desktop-file-validate %{buildroot}%{_datadir}/applications/openchamber.desktop || true
 
+# Upstream MIT license text (the AppImage ships none)
+install -Dm644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
+
 %files
+%license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/openchamber
 /opt/openchamber/
 %{_datadir}/applications/openchamber.desktop
@@ -118,5 +124,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/openchamber.desktop |
 %attr(4755, root, root) /opt/openchamber/chrome-sandbox
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.5.0-2
+- Ship the upstream MIT LICENSE (Source1, same v2.5.0 tag as Source0);
+  the AppImage payload carries no license text.
+
 * Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 2.5.0-1
 - Auto-update to upstream release v2.5.0
