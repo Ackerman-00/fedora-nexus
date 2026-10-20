@@ -5,7 +5,7 @@
 
 Name:           python-yt-dlp-get-pot-rustypipe
 Version:        0.2.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        PO token provider plugin for yt-dlp using rustypipe-botguard
 
 License:        MIT
@@ -13,6 +13,11 @@ URL:            https://pypi.org/project/yt-dlp-get-pot-rustypipe/
 # NOTE: the pypi_source macro emits a dashed tarball name that 404s on
 # files.pythonhosted.org for this project; use the real underscore URL.
 Source0:        https://files.pythonhosted.org/packages/source/y/yt-dlp-get-pot-rustypipe/yt_dlp_get_pot_rustypipe-%{version}.tar.gz
+# The sdist ships no license file and PyPI metadata carries no author or
+# project URL. The plugin itself lives in the rustypipe-botguard repo (tag
+# yt-dlp-get-pot-rustypipe/v0.2.0), whose root LICENSE is this MIT text.
+Source1:        https://codeberg.org/ThetaDev/rustypipe-botguard/raw/tag/yt-dlp-get-pot-rustypipe/v%{version}/LICENSE
+# sha256: fc3908dc021285b75d2fb91464dcb03545d966b9011cc009f8a230f4ce468701
 
 # Aliased name expected by dependent specs (e.g. mixtapes
 # Requires: python3-yt-dlp-get-pot-rustypipe); the binary RPM is named python-yt-dlp-get-pot-rustypipe.
@@ -35,6 +40,7 @@ repository as a dependency of mixtapes.
 # sources (missing %prep fails the build the same way python-pydbus
 # build 10955044 and python-ytmusicapi 10955049 failed).
 %autosetup -p1 -n yt_dlp_get_pot_rustypipe-%{version}
+cp -p %{SOURCE1} LICENSE
 
 %generate_buildrequires
 %pyproject_buildrequires
@@ -47,8 +53,14 @@ repository as a dependency of mixtapes.
 %pyproject_save_files yt_dlp_plugins
 
 %files -f %{pyproject_files}
+%license LICENSE
 
 %changelog
+* Tue Oct 20 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-5
+- Ship the MIT license text: the sdist carries none, but the plugin lives in
+  the rustypipe-botguard repo and its tag yt-dlp-get-pot-rustypipe/v0.2.0
+  ships the LICENSE (Copyright (c) 2025 ThetaDev), so %license now has text
+
 * Fri Oct 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.2.0-4
 - Add Recommends: rustypipe-botguard (plugin shells out to that binary
   via PATH lookup; upstream yt_dlp_get_pot_rustypipe.py _BOTGUARD_BIN).
