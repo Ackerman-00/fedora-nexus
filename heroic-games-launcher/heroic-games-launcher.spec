@@ -9,7 +9,7 @@
 
 Name:           heroic-games-launcher
 Version:        2.22.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open source launcher for GOG, Epic, and Amazon Games (Nexus Optimized)
 
 License:        GPL-3.0-only AND MIT AND BSD-3-Clause
@@ -17,6 +17,8 @@ URL:            https://github.com/Heroic-Games-Launcher/HeroicGamesLauncher
 
 # Use the native upstream RPM
 Source0:        %{url}/releases/download/v%{version}/Heroic-%{version}-linux-x86_64.rpm
+# The upstream RPM payload ships no license text; the repo has COPYING at the tag.
+Source1:        %{url}/raw/v%{version}/COPYING
 
 ExclusiveArch:  x86_64
 
@@ -95,7 +97,11 @@ chmod 0755 %{buildroot}%{_bindir}/heroic
 # 4. Optimization: Strip useless static libraries bundled by upstream
 find %{buildroot}/opt/Heroic -type f -name "*.a" -delete
 
+# 5. Upstream GPL-3.0 license text (the vendored RPM ships none)
+install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/COPYING
+
 %files
+%license %{_licensedir}/%{name}/COPYING
 %{_bindir}/heroic
 %{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/apps/*.*
@@ -107,6 +113,10 @@ find %{buildroot}/opt/Heroic -type f -name "*.a" -delete
 %attr(4755, root, root) /opt/Heroic/chrome-sandbox
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.22.4-2
+- Ship the upstream GPL-3.0 COPYING text (Source1, same v2.22.4 tag as
+  Source0); the vendored upstream RPM carries no license file.
+
 * Thu Oct 15 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.4-1
 - Auto-update to upstream release v2.22.4
 
