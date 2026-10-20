@@ -5,7 +5,7 @@
 
 Name:           noctalia-greeter
 Version:        1.7.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 # SPDX: MIT AND Apache-2.0 (vendored Wuffs).
@@ -38,7 +38,6 @@ BuildRequires:  pkgconfig(freetype2)
 BuildRequires:  pkgconfig(gio-2.0)
 BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(gobject-2.0)
-BuildRequires:  pkgconfig(harfbuzz)
 BuildRequires:  pkgconfig(librsvg-2.0)
 BuildRequires:  pkgconfig(libjxl)
 BuildRequires:  pkgconfig(libjxl_threads)
@@ -125,6 +124,9 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Tue Oct 20 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261019110246git1c35a13-3
+- Drop unused pkgconfig(harfbuzz) BuildRequires
+
 * Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261019110246git1c35a13-2
 - Ship the vendored Wuffs Apache-2.0 and MIT texts and set License to MIT AND Apache-2.0
 
