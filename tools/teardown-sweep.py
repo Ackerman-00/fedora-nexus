@@ -2095,8 +2095,11 @@ def channel_url_for_pkg(pkg):
 
 
 def sweep_package(pkg, pv, srcs, live, repo_type, workdir):
-    dl = workdir / "distfiles"
-    dl.mkdir(exist_ok=True)
+    # Per package: several packages ship a source called LICENSE, and a shared
+    # directory made one package's file look like another's - the hash check
+    # then failed on a file that was never pinned by that package.
+    dl = workdir / "distfiles" / pkg
+    dl.mkdir(parents=True, exist_ok=True)
     if live:
         check_live(pkg, live)
         return
@@ -2208,7 +2211,7 @@ def sweep_package(pkg, pv, srcs, live, repo_type, workdir):
                     base, ext = name.rsplit(".", 1) if "." in name else (name, "")
                     idx = 2
                     while dst.exists():
-                        dst = dl / ("%s_%d.%s" % (base, idx, ext)) if ext else dl / "%s_%d" % (base, idx)
+                        dst = dl / (("%s_%d.%s" % (base, idx, ext)) if ext else ("%s_%d" % (base, idx)))
                         idx += 1
         if not dst.exists():
             try:
