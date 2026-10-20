@@ -8,6 +8,9 @@ fi
 RUN_ID="${RUN_ID:-}"
 RELAY=".opencode-relay.md"
 FAIL=0
+# One source for the mains list: the workflow gate calls --print-mains, so a
+# second literal here could check a different set than the gate.
+MAINS="$(bash "${BASH_SOURCE[0]}" --print-mains)"
 
 echo "----- VERIFICATION REPORT -----"
 if [[ -f "$RELAY" ]]; then
@@ -21,30 +24,15 @@ if [[ -f "$RELAY" ]]; then
     echo "PASS: relay run_id matches this run"
   fi
 
-  # The two checks below mirror gate_passes() in opencode-schedule.yml. Both
-  # files must fail on the same contract: on 2026-10-12 (run 38209609609) this
-  # verifier passed a run block whose dependency table header read
-  # "| package | upstream deps |" while the workflow gate demands
-  # "| package | upstream deps found |", so the run was scored incomplete by
-  # the gate and complete here. Never let the two drift again.
+  # Mirror gate_passes() in opencode-schedule.yml
   expected=$(find . -mindepth 2 -maxdepth 2 -name '*.spec' -type f -print | wc -l)
   if [[ "$expected" -eq 0 ]]; then
     echo "FAIL: NOT COMPLETE -- no package specs found"
     FAIL=1
   fi
 
-  # version-checked is an honest label for freshness checks without a container
-  # teardown (see PROMPT). It counts here only with a same-run same-package
-  # upstream evidence row; the 10 mains additionally need a dated
-  # docker-teardown PASS. EVERY check below is scoped to this run's block
-  # (run_id: to the next run_id:) so accumulated history can satisfy nothing.
   scope=$(awk -v id="run_id: $RUN_ID" '$0==id{f=1;next} f&&/^run_id: /{exit} f' "$RELAY")
 
-  # Mirror gate_passes() in opencode-schedule.yml so the two cannot drift: on
-  # 2026-10-12 (run 38209609609) this verifier passed a block whose dependency
-  # table header read "| package | upstream deps |" while the workflow gate
-  # demands "| package | upstream deps found |", so the gate scored the run
-  # incomplete after the verifier had passed it.
   if ! grep -qix "status: complete" <<< "$scope"; then
     echo "FAIL: NOT COMPLETE -- this run's block does not carry status: complete"
     FAIL=1
@@ -116,6 +104,50 @@ if [[ -f "$RELAY" ]]; then
   else
     echo "PASS: install-test table present"
   fi
+  # Install-test verdicts are TRUTH, not decoration. A FAIL row means the
+  # package is broken right now, and a FAIL row next to a same-run
+  # "install PASS" teardown is self-contradicting. Both fail the run.
+  IT=$(printf '%s' "$scope" | awk -F'|' '
+    /^\|/ {
+      n = split($0, a, "|");
+      if (n != 6 && n != 7) next;
+      pkg = a[2];
+      if (n == 6) { build = "n/a"; v = a[5]; } else { build = a[3]; v = a[6]; }
+      gsub(/^[ \t]+|[ \t]+$/, "", pkg); gsub(/^[ \t]+|[ \t]+$/, "", build); gsub(/^[ \t]+|[ \t]+$/, "", v);
+      if (n == 7 && build !~ /^([0-9]+|n\/a)$/) next;
+      if (toupper(v) == "PASS" || toupper(v) == "FAIL" || toupper(v) == "EXTERNAL") printf "%s %s\n", pkg, toupper(v);
+    }' | sort -u)
+  it_fail=$(grep -c ' FAIL$' <<< "$IT" || true)
+  it_pass=$(grep -c ' PASS$' <<< "$IT" || true)
+  if [[ "$it_fail" -gt 0 ]]; then
+    echo "FAIL: NOT COMPLETE -- install-test table has $it_fail FAIL row(s): $(grep ' FAIL$' <<< "$IT" | awk '{printf "%s ", $1}')"
+    FAIL=1
+  fi
+  if [[ $(( it_fail + it_pass )) -lt 10 ]]; then
+    echo "FAIL: NOT COMPLETE -- install-test table has $(( it_fail + it_pass )) machine-readable rows, need >= 10"
+    FAIL=1
+  fi
+  for pkg in $MAINS; do
+    if ! grep -qx "$pkg PASS" <<< "$IT"; then
+      if grep -qx "$pkg EXTERNAL" <<< "$IT" && grep -qiE "GAP: external.*$pkg" <<< "$scope"; then
+        continue
+      fi
+      echo "FAIL: NOT COMPLETE -- main package '$pkg' has no PASS install-test row"
+      FAIL=1
+    fi
+  done
+  for pkg in $(awk '{print $1}' <<< "$IT"); do
+    if grep -qE "docker-teardown: $pkg .*install PASS" <<< "$scope" && grep -qx "$pkg FAIL" <<< "$IT"; then
+      echo "FAIL: NOT COMPLETE -- $pkg says install FAIL but has a same-run docker-teardown install PASS"
+      FAIL=1
+    fi
+  done
+  for pkg in $(awk '$2=="EXTERNAL"{print $1}' <<< "$IT"); do
+    if ! grep -qiE "GAP: external.*$pkg" <<< "$scope"; then
+      echo "FAIL: NOT COMPLETE -- $pkg install verdict is EXTERNAL without a GAP: external line naming it"
+      FAIL=1
+    fi
+  done
 
   slice_line=$(printf '%s' "$scope" | grep -m1 -E "^teardown-slice:" || true)
   if [[ -z "$slice_line" ]]; then
@@ -139,7 +171,6 @@ if [[ -f "$RELAY" ]]; then
     done
   fi
 
-  MAINS="umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter ly wlroots"
   for pkg in $MAINS; do
     if ! grep -qiE "docker-teardown: $pkg .*PASS.*($TODAY|$YEST)" <<< "$scope"; then
       echo "FAIL: NOT COMPLETE -- main package '$pkg' lacks fresh dated docker-teardown PASS"
@@ -150,14 +181,7 @@ if [[ -f "$RELAY" ]]; then
       FAIL=1
     fi
   done
-  # GAP/HOLD CLASSIFICATION (mirror of gate_passes() in
-  # opencode-schedule.yml - the two must never drift). A blocker the agent
-  # could have fixed is unfinished work, not a gap: only a PROVEN external
-  # blocker may survive into a complete run, and it must say what blocks it.
-  # A DECLARATION is any line that announces a non-verification - the
-  # mandated `GAP:`/`HOLD:` form OR the `not verified` form the agent used
-  # before this contract existed (both are caught; a bare section heading
-  # that ends in ':' is not a declaration).
+  # GAP/HOLD classification
   g_decl=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:|not verified\b)" <<< "$scope" || true)
   g_head=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:|not verified\b)[^:]*:[[:space:]]*$" <<< "$scope" || true)
   g_cls=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:[[:space:]]*(external|actionable)|not verified\b.*\b(external|actionable)\b|(GAP|HOLD)[[:space:]]*:[[:space:]]*(none|nothing|n/a)\b|not verified\b[ 	]*:?[ 	]*(none|nothing|n/a)\b)" <<< "$scope" || true)
@@ -196,6 +220,28 @@ while IFS= read -r spec; do
 done < <(find . -mindepth 2 -maxdepth 2 -name '*.spec' -type f -print)
 if [[ "$bad_specs" -gt 0 ]]; then
   FAIL=1
+fi
+
+# Defect accounting: every defect found this run is either fixed (counted)
+# or proven external (a GAP/HOLD line carrying the probe). Finding none is
+# allowed - leaving one unfixed and uncounted is not.
+d_found=$(grep -oE '^[[:space:]]*defects-found:[[:space:]]*[0-9]+' <<< "$scope" | tail -1 | grep -oE '[0-9]+' || true)
+d_fixed=$(grep -oE '^[[:space:]]*defects-fixed:[[:space:]]*[0-9]+' <<< "$scope" | tail -1 | grep -oE '[0-9]+' || true)
+if [[ -z "$d_found" || -z "$d_fixed" ]]; then
+  echo "FAIL: NOT COMPLETE -- defects-found/defects-fixed accounting missing from THIS run's block"
+  FAIL=1
+elif [[ $(( d_fixed + ${g_decl:-0} )) -lt $d_found ]]; then
+  echo "FAIL: NOT COMPLETE -- defects-found: $d_found but defects-fixed: $d_fixed with ${g_decl:-0} external gap(s)"
+  FAIL=1
+else
+  echo "PASS: defect accounting ($d_found found, $d_fixed fixed, ${g_decl:-0} external)"
+fi
+hunt_cats=$(grep -oE '^[[:space:]]*hunt: [a-z0-9-]+' <<< "$scope" | sort -u | wc -l || true)
+if [[ "$hunt_cats" -lt 5 ]]; then
+  echo "FAIL: NOT COMPLETE -- only $hunt_cats hunt categories recorded, need >= 5"
+  FAIL=1
+else
+  echo "PASS: hunt categories $hunt_cats >= 5"
 fi
 
 if [[ "$FAIL" -ne 0 ]]; then

@@ -63,18 +63,11 @@ jobs:
               ln -sf "$(command -v opencode)" "$HOME/.opencode/bin/opencode"
             fi
           fi
-          # 3) REMOVED: the gh-release fallback pulled opencode-ai/opencode
-          # (last release v0.0.55, 2025-06-27) - not V2. npm @opencode/cli is
-          # the only authenticated V2 source. If both installer and npm fail,
-          # abort: installing a stale binary is worse than no run.
           if ! command -v opencode >/dev/null 2>&1; then
             echo "FATAL: opencode install failed (installer + npm exhausted)" >&2
             exit 1
           fi
-          # Hard gate: every later step assumes `opencode` exists.
           command -v opencode && opencode --version
-          # V1 tripwire (REAL INCIDENT 2026-09-21: the V1 installer ships
-          # opencode 1.x, which reads V1 flags - fail fast, never run V1).
           ver="$(opencode --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n 1)"
           case "$ver" in
             0.*|1.*) echo "FATAL: opencode $ver is not V2 (needs >=2.x) - aborting run" >&2; exit 1 ;;
@@ -111,9 +104,13 @@ jobs:
         shell: bash
         run: |
           export PATH="$HOME/.opencode/bin:$PATH"
-          # MODEL FRESHNESS: verify ids against https://opencode.ai/zen/v1/models
-          # each run; drop dead ids, append newer free models.
-          for model in "opencode/deepseek-v4.1-flash-free" "opencode/glm-5.3-flash-free" "opencode/mimo-v2.6-flash-free" "opencode/space-bunny-free" "opencode/nemotron-3.5-super-vl-free" "opencode/nemotron-3.5-lightning-free" "opencode/longcat-2.5-preview-free" "opencode/beam-free" "opencode/nemotron-3-ultra-free" "opencode/jev-1.13-free" "opencode/big-pickle"; do
+          # Cascade derived from the live catalog; order in tools/model-rank.txt
+          mapfile -t CASCADE < <(bash tools/model-cascade.sh 2>/dev/null)
+          if [ "${#CASCADE[@]}" -eq 0 ]; then
+            CASCADE=(opencode/minimax-m3.1-flash-free opencode/mimo-v2.6-flash-free)
+          fi
+          echo "=== free-model cascade: ${CASCADE[*]} ==="
+          for model in "${CASCADE[@]}"; do
             echo "=== opencode run attempt with $model ==="
             exit_code=0
             for attempt_n in 1 2 3; do

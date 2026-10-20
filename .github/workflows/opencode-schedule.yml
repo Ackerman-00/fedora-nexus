@@ -49,11 +49,6 @@ jobs:
           set -eu
           mkdir -p "$HOME/.opencode/bin"
           export PATH="$HOME/.opencode/bin:$PATH"
-          # 1) Official V2 installer, retried: its internal version fetch can flap
-          #    or hit the shared-runner-IP 60/hr GitHub quota. curl retries +
-          #    4 outer attempts ride out transients. NOTE: the V1 installer at
-          #    https://opencode.ai/install ships opencode 1.x - V2 lives at
-          #    https://opencode.ai/v2/install (verified 2026-09-21).
           for i in 1 2 3 4; do
             if curl -fsSL --retry 3 --retry-delay 10 --retry-all-errors https://opencode.ai/v2/install | bash; then
               break
@@ -61,8 +56,6 @@ jobs:
             echo "opencode install attempt $i/4 failed - sleeping 30s"
             sleep 30
           done
-          # 2) npm fallback (V2 package per https://opencode.ai/v2/docs/cli/commands).
-          #    Link the binary into $HOME/.opencode/bin so later steps need no PATH change.
           if ! command -v opencode >/dev/null 2>&1; then
             echo "official installer failed - trying npm"
             npm install -g @opencode/cli || sudo npm install -g @opencode/cli || true
@@ -70,18 +63,11 @@ jobs:
               ln -sf "$(command -v opencode)" "$HOME/.opencode/bin/opencode"
             fi
           fi
-          # 3) REMOVED: the gh-release fallback pulled opencode-ai/opencode
-          # (last release v0.0.55, 2025-06-27) - not V2. npm @opencode/cli is
-          # the only authenticated V2 source. If both installer and npm fail,
-          # abort: installing a stale binary is worse than no run.
           if ! command -v opencode >/dev/null 2>&1; then
             echo "FATAL: opencode install failed (installer + npm exhausted)" >&2
             exit 1
           fi
-          # Hard gate: every later step assumes `opencode` exists.
           command -v opencode && opencode --version
-          # V1 tripwire (REAL INCIDENT 2026-09-21: the V1 installer ships
-          # opencode 1.x, which reads V1 flags - fail fast, never run V1).
           ver="$(opencode --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n 1)"
           case "$ver" in
             0.*|1.*) echo "FATAL: opencode $ver is not V2 (needs >=2.x) - aborting run" >&2; exit 1 ;;
@@ -94,9 +80,6 @@ jobs:
         timeout-minutes: 300
         run: |
           export PATH="$HOME/.opencode/bin:$PATH"
-          # raw.githubusercontent.com serves CDN-stale content (~5min max-age=300) after a
-          # push, and its CDN ignores cache-busting query params. Read the relay via the
-          # git protocol first, then the GitHub API; never via raw.githubusercontent.com.
           gate_passes() {
             git fetch -q origin +refs/heads/main:refs/remotes/origin/main >/dev/null 2>&1 || true
             local content=""
@@ -104,37 +87,24 @@ jobs:
             if [ -z "$content" ]; then
               content="$(gh api "repos/${GITHUB_REPOSITORY}/contents/.opencode-relay.md?ref=main" --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)"
             fi
-            # Same bar as tools/verify-fedora.sh - keep both in sync. The inline
-            # gate must never be weaker than the external verifier: on 2026-09-18
-            # (run 35338074771) a relay passed this gate with status complete yet
-            # failed verification on a missing rpmlint evidence line, failing the run.
             grep -qx "run_id: $RUN_ID" <<< "$content" || return 1
-            # Scope EVERY evidence check to this run's block: from the
-            # `run_id: $RUN_ID` line to the next `run_id:` line. Accumulated
-            # blocks from earlier runs must satisfy nothing.
             content=$(printf '%s\n' "$content" | awk -v id="run_id: $RUN_ID" '$0==id{f=1;next} f&&/^run_id: /{exit} f')
             grep -qix "status: complete" <<< "$content" || return 1
             grep -q "| package | upstream deps found |" <<< "$content" || return 1
             local expected dep_rows unproven_rows tool today yest pkg
             expected=$(ls */*.spec 2>/dev/null | wc -l)
             [ "$expected" -gt 0 ] || return 1
-            # Count DISTINCT package names, not matching lines: prose
-            # mentioning a status must not satisfy the inventory bar.
             dep_rows=$(printf '%s' "$content" | grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*\| (deps-verified|deps-fixed|version-checked|retired-stub) \|" | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u | wc -l || true)
             [ "$dep_rows" -ge "$expected" ] || return 1
             unproven_rows=$(printf '%s' "$content" | grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*unproven:" | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u | wc -l || true)
             [ "$unproven_rows" -ge "$expected" ] || return 1
             today=$(date -u +%F); yest=$(date -u -d yesterday +%F 2>/dev/null || date -u -v-1d +%F)
-            # Fresh upstream evidence must cover DISTINCT packages, and every
-            # version-checked row must have its own same-run upstream row.
             local upstream_rows
             upstream_rows=$(printf '%s' "$content" | grep -E "upstream: [a-zA-Z0-9._+-]+ .*($today|$yest)" | grep -oE "upstream: [a-zA-Z0-9._+-]+" | awk '{print $2}' | sort -u | wc -l || true)
             [ "$upstream_rows" -ge "$expected" ] || return 1
             for pkg in $(printf '%s' "$content" | grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*\| version-checked \|" | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u); do
               grep -qE "upstream: $pkg .*($today|$yest)" <<< "$content" || return 1
             done
-            # The rotating slice must be big enough to clear the fleet within
-            # 4 runs, and every slice-named package needs a dated teardown.
             local slice_line slice_pkgs slice_n min_slice
             slice_line=$(grep -m1 -E "^teardown-slice:" <<< "$content" || true)
             [ -n "$slice_line" ] || return 1
@@ -151,13 +121,6 @@ jobs:
               grep -qiE "docker-teardown: $mains_pkg .*PASS.*($today|$yest)" <<< "$content" || return 1
               grep -qiE "upstream: $mains_pkg .*($today|$yest)" <<< "$content" || return 1
             done
-            # GAP/HOLD CLASSIFICATION (mirror of tools/verify-fedora.sh - the
-            # two must never drift). A blocker the agent could have fixed is
-            # unfinished work, not a gap: only a PROVEN external blocker may
-            # survive into a complete run. A DECLARATION is any line that
-            # announces a non-verification - the mandated GAP:/HOLD: form OR
-            # the `not verified` form the agent used before this contract
-            # existed (both are caught; a bare heading ending in ':' is not).
             local g_decl g_head g_cls g_act g_need g_unclass
             g_decl=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:|not verified\b)" <<< "$content" || true)
             g_head=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:|not verified\b)[^:]*:[[:space:]]*$" <<< "$content" || true)
@@ -173,33 +136,65 @@ jobs:
             done
             grep -q "| package | packaged version |" <<< "$content" || return 1
             grep -qi "install-test table" <<< "$content" || return 1
+            # Install-test verdicts are TRUTH: a FAIL row is a broken package,
+            # and a FAIL row next to a same-run install PASS contradicts itself.
+            local it_rows it_fail it_pass it_pkg
+            it_rows=$(printf '%s' "$content" | awk -F'|' '
+              /^\|/ {
+                n = split($0, a, "|");
+                if (n != 6 && n != 7) next;
+                pkg = a[2];
+                if (n == 6) { build = "n/a"; v = a[5]; } else { build = a[3]; v = a[6]; }
+                gsub(/^[ \t]+|[ \t]+$/, "", pkg); gsub(/^[ \t]+|[ \t]+$/, "", build); gsub(/^[ \t]+|[ \t]+$/, "", v);
+                if (n == 7 && build !~ /^([0-9]+|n\/a)$/) next;
+                if (toupper(v) == "PASS" || toupper(v) == "FAIL" || toupper(v) == "EXTERNAL") printf "%s %s\n", pkg, toupper(v);
+              }' | sort -u)
+            it_fail=$(grep -c ' FAIL$' <<< "$it_rows" || true)
+            it_pass=$(grep -c ' PASS$' <<< "$it_rows" || true)
+            [ "$it_fail" -eq 0 ] || return 1
+            [ $(( it_fail + it_pass )) -ge 10 ] || return 1
+            for mains_pkg in $mains; do
+              if ! grep -qx "$mains_pkg PASS" <<< "$it_rows"; then
+                if grep -qx "$mains_pkg EXTERNAL" <<< "$it_rows" && grep -qiE "GAP: external.*$mains_pkg" <<< "$content"; then
+                  continue
+                fi
+                return 1
+              fi
+            done
+            for it_pkg in $(awk '{print $1}' <<< "$it_rows"); do
+              if grep -qE "docker-teardown: $it_pkg .*install PASS" <<< "$content" && grep -qx "$it_pkg FAIL" <<< "$it_rows"; then
+                return 1
+              fi
+            done
+            for it_pkg in $(awk '$2=="EXTERNAL"{print $1}' <<< "$it_rows"); do
+              grep -qiE "GAP: external.*$it_pkg" <<< "$content" || return 1
+            done
+            # Defect accounting: fixed + proven-external must cover what was found.
+            local d_found d_fixed hunt_cats
+            d_found=$(grep -oE '^[[:space:]]*defects-found:[[:space:]]*[0-9]+' <<< "$content" | tail -1 | grep -oE '[0-9]+' || true)
+            d_fixed=$(grep -oE '^[[:space:]]*defects-fixed:[[:space:]]*[0-9]+' <<< "$content" | tail -1 | grep -oE '[0-9]+' || true)
+            [ -n "$d_found" ] && [ -n "$d_fixed" ] || return 1
+            [ "$d_fixed" -ge "$d_found" ] || [ $(( d_fixed + g_decl )) -ge "$d_found" ] || return 1
+            hunt_cats=$(grep -oE '^[[:space:]]*hunt: [a-z0-9-]+' <<< "$content" | sort -u | wc -l || true)
+            [ "$hunt_cats" -ge 5 ] || return 1
             return 0
           }
-          # Start jitter: many schedulers fire at :00/:10 sharp - a random 0-3 min
-          # delay desyncs this run from the thundering herd that knocks free-model
-          # gateways over (socket-closed flaps). Cheap insurance inside a 360-min job.
           sleep $((RANDOM % 180))
           # Mechanical wall-clock enforcement: PROMPT claims the agent will
-          # self-stop at 240m, but LLMs miss deadlines (documented in
-          # research-scheduler-timeout.md). `timeout` is the hard stop that
-          # actually fires. Job cap stays 360; run is killed at 250m + 60s
-          # SIGKILL grace, leaving 49m for the relay/cleanup job.
           DEADLINE_EPOCH=$(date -u +%s); DEADLINE_EPOCH=$((DEADLINE_EPOCH + 250*60))
           DEADLINE_UTC=$(date -u -d @$DEADLINE_EPOCH +%Y-%m-%dT%H:%MZ)
           echo "RUN_DEADLINE_UTC=$DEADLINE_UTC" >> $GITHUB_ENV
           echo "DEADLINE_EPOCH=$DEADLINE_EPOCH" >> $GITHUB_ENV
-          # MODEL FRESHNESS (MANDATORY each run): this chain is a cached snapshot.
-          # Verify every id against `curl -s https://opencode.ai/zen/v1/models`
-          # and re-read https://opencode.ai/docs/zen (free list + "Deprecated
-          # models"); drop dead ids, append newer free models, commit the
-          # updated chain - a dead id wastes an attempt slot.
-          for model in "opencode/deepseek-v4.1-flash-free" "opencode/glm-5.3-flash-free" "opencode/mimo-v2.6-flash-free" "opencode/space-bunny-free" "opencode/nemotron-3.5-super-vl-free" "opencode/nemotron-3.5-lightning-free" "opencode/longcat-2.5-preview-free" "opencode/beam-free" "opencode/nemotron-3-ultra-free" "opencode/jev-1.13-free" "opencode/big-pickle"; do
+          # Cascade derived from the live catalog; order in tools/model-rank.txt
+          mapfile -t CASCADE < <(bash tools/model-cascade.sh 2>/dev/null)
+          if [ "${#CASCADE[@]}" -eq 0 ]; then
+            # Break-glass only (deriver missing or broke), never the chain.
+            CASCADE=(opencode/minimax-m3.1-flash-free opencode/mimo-v2.6-flash-free)
+          fi
+          echo "=== free-model cascade: ${CASCADE[*]} ==="
+          for model in "${CASCADE[@]}"; do
             echo "=== opencode run attempt with $model ==="
             exit_code=0
-            # Per-model retries with backoff: free-tier gateways drop sockets under
-            # load (AI_APICallError: socket closed unexpectedly). A flap is NOT a
-            # dead model - retry the SAME model before falling through. Bounded at
-            # 3 tries with full jitter (retry only transient failures, never 4xx).
             for attempt_n in 1 2 3; do
               if timeout --signal=TERM --kill-after=60s 250m opencode run --standalone --model "$model" --agent build "$PROMPT"; then
                 exit_code=0
@@ -213,13 +208,6 @@ jobs:
                 sleep "$delay"
               fi
             done
-            # DONE FIRST = DONE. Once a model run exits 0 AND gate_passes
-            # confirms `.opencode-relay.md` on main carries `run_id: $RUN_ID`,
-            # `status: complete` + the dependency table, we exit 0 immediately.
-            # There is no re-run with the next model - a successful gate means
-            # spec checks, COPR usage, upstream checks, dependency audit, and
-            # the relay verification all passed; re-running would just burn
-            # 6h on the job timeout and open a second COPR rebuild window.
             if [ "$exit_code" -eq 0 ]; then
               ok=0
               for attempt in $(seq 1 10); do
@@ -331,8 +319,10 @@ jobs:
             workflow files. Never add `workflows: write` to a permissions block - that key is
             INVALID for GITHUB_TOKEN and GitHub's validator rejects the ENTIRE
             workflow file, killing every run of it. If a workflow file genuinely needs
-            changing: you MAY edit and push it yourself (see "OWNER TO APPLY
-            IS STALE" below) - but ONLY after `python3 -c "import yaml;
+            changing: you MAY and SHOULD edit and push it yourself - that
+            includes this very workflow, the sibling workflows, and the tools
+            they call. No owner is going to apply it for you, and a rule that
+            waits for one is a rule that never runs. But ONLY after `python3 -c "import yaml;
             [yaml.safe_load(open(f)) for f in .github/workflows/*.yml]"`
             and a permission-key scan pass locally; a rejected workflow file
             kills every run of it. All other pushes (specs, README, relay,
@@ -1920,6 +1910,23 @@ jobs:
             because you were not certain enough; verify properly, then commit. A
             verified fix that lands is strictly better than a correct fix
             withheld. UNDER-ACTION IS THE FAILURE MODE HERE, not over-action.
+            THE ONLY FOUR THINGS YOU MAY NOT FIX YOURSELF - everything else is
+            yours: (1) a secret that does not exist or has expired (COPR token,
+            GITHUB_TOKEN, REPO_FULL_ACCESS_TOKEN); (2) a paid, destructive or
+            otherwise irreversible action; (3) a legal or licensing decision
+            that needs the owner's judgement; (4) a service outage outside this
+            repo (COPR, GitHub, an upstream host being down). For those four:
+            name the exact external thing, prove it with a command you ran this
+            run, and keep working on everything else. "I am not sure", "this
+            looks risky", "this would take a while" and "a human should decide"
+            are NOT on that list - they are your work.
+            COMMENT POLICY (owner rule, every file you touch): comments are
+            short topic labels only - one line, a few words, naming a constraint
+            the code cannot show. No incident narratives, no dated lesson logs,
+            no restated code, no commented-out code, no banners. When you edit
+            a file, cut its prose comments down to labels and keep only what
+            stops a future maintainer from deleting working code (a version
+            floor, the WHY of a pin, a license/SPDX proof).
             NO KNOWN-BROKEN THING SURVIVES A RUN. If you discover something is
             broken and you are able to fix it, it does NOT go into the relay as
             an observation to be considered later - it gets FIXED in this same
@@ -2149,6 +2156,59 @@ jobs:
               watching this repo - see OWNERSHIP AND AUTHORITY. There is nobody
               to hand it to.
             - VERIFICATION LOOP (MANDATORY - battle-tested 2026: pre-completion checklist + external verifier, agentpatterns.ai 2026-07-19 / contextOS 2026-08-14 / digitalapplied.com 2026-08-11): Before declaring `status: complete`, you MUST run `bash tools/verify-fedora.sh` and paste its `----- VERIFICATION REPORT -----` output. It checks numerical completion (one row per STEP A inventory package with `deps-verified`/`deps-fixed`/`version-checked` -- derive the expected count from `ls */*.spec`, post-grep count must reach it, not 0), evidence strings (`rpmspec -P` / `dnf builddep` / `rpmlint` from 2026 h. checks), and install-test table. Exit 1 = NOT COMPLETE -- keep working, fix the listed gaps, re-run verifier until exit 0. Do NOT write `status: complete` if verifier fails. Prompt alone achieves 70-90% compliance; external verifier + gate achieves near-100%. This is the check that prevents "looks done" vs "is done". Exact greppable contract (the verifier AND the workflow gate check the same strings, case-insensitive): every audit row carries its `unproven:` token; a `teardown-slice:` ledger line names this run's rotating slice plus `next-start`; all 10 mains (umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter ly wlroots) carry `docker-teardown: <pkg> ... PASS` tokens AND fresh `upstream: <pkg> ... <today-UTC-date>` live-check lines, and every extra slice-named package carries one (`version-checked` is accepted by the inline gate and the verifier only with a same-run `upstream:` evidence row; a `deps-verified` row for any of the 10 mains with no same-run `docker-teardown: <pkg> ... PASS` token fails the gate); each of `rpmspec -P`, `dnf builddep`, `rpmlint` must share its relay line with `PASS` (e.g. `rpmlint PASS: <pkgs> (0 errors)`); the version-table header `| package | packaged version |` and an install-test table must be present. A tool named only inside a 'not verified' gap does NOT satisfy its evidence line -- an unsatisfiable line means the run is NOT complete (relay stays `unfinished` + handoff), never `complete`-with-gap. Self-claiming verifier PASS without pasting the report is a gate failure.
+            MODEL REFRESH (your job, every run): the CI cascade is derived from
+            the live free-model catalog by tools/model-cascade.sh and the ORDER
+            lives in tools/model-rank.txt. The free catalog churns daily - on
+            2026-10-20 OpenCode added Step 5 Preview Free and retired Fledge
+            Alpha Free, and Space Bunny Free left the catalog within a day of
+            being added. When the cascade prints "NEW FREE MODELS (not ranked
+            yet...)" on stderr you MUST: (1) read the live catalog
+            (https://opencode.ai/inference/v1/models) and the official free list
+            (https://opencode.ai/v2/docs/console/models/) plus published coding
+            scores; (2) rank the newcomer by benchmark, not by hype; (3) rewrite
+            tools/model-rank.txt with the new order, one id per line, each
+            preceded by a `#` line giving the score, the source and the date;
+            (4) commit it. The strongest free model goes FIRST - a cascade that
+            starts a weak model spends the run filling in tables instead of
+            fixing the repo. A model the catalog no longer serves stays out of
+            the file until it comes back. If the ranking did not change, say so
+            in the relay and change nothing.
+            TRUTH CONTRACT (the machine checks these, not your prose):
+            A verdict is a transcript of a command you ran, never a summary of
+            what you believe. On 2026-10-20 a run published an install table
+            whose 34 verdict cells said FAIL while its own prose said "all
+            PASS" - and the same packages carried a same-run
+            "docker-teardown: ... install PASS". The gate only grepped for the
+            word "install-test table", so the run was graded green. The gate
+            now reads the cells. Write what you observed.
+            1. The install-test table's verdict column is the real result of the
+               dnf install you ran. A FAIL row is a broken package: fix it this
+               run and re-test it, or record it as a GAP: external carrying the
+               probe. A table whose prose says "all PASS" while its rows say
+               FAIL fails the gate, and so does any FAIL row left behind. Each
+               of the 10 mains needs a PASS install row in this run's table.
+               A package you cannot install for an external reason (upstream
+               gone, chroot not synced) gets the verdict EXTERNAL plus a
+               GAP: external line naming it - never a silent PASS, never a
+               left-behind FAIL.
+            2. DEFECT ACCOUNTING - two lines, exactly:
+               defects-found: <N>   (every defect you found this run)
+               defects-fixed: <M>  (how many you fixed and pushed)
+               Every defect is fixed (counted in M) or proven external (a
+               GAP: external line carrying the probe). The gate computes
+               M + external_gaps >= N and fails the run otherwise.
+            3. HUNT EVIDENCE - one line per category you hunted, with the command
+               and its result, e.g.
+               hunt: upstream-versions - 56 updaters ran, 0 moved
+               hunt: install-tests - 47 rows, 0 FAIL
+               hunt: cves - osv querybatch, 0 hits
+               hunt: licenses - 64 specs, 0 missing license text
+               hunt: deps - 64 dnf builddep, 0 missing
+               hunt: builds - 64 newest COPR builds, 0 failed
+               hunt: spec-lint - rpmspec/rpmlint, 0 errors
+               hunt: smoke - 24 teardowns, 0 FAIL
+               The gate counts distinct categories and needs at least 5. A
+               category you did not run is a category you did not check.
             - End every run with a concise final summary: what you fixed, which issues
               you closed, which PRs you merged/rejected, which COPR builds you verified
               and their result, and what remains. Include the pre-completion gate
@@ -2161,15 +2221,12 @@ jobs:
           RUN_ID: ${{ github.run_id }}
         run: |
           echo "=== External verifier: tools/verify-fedora.sh ==="
-          # Verify what is ON MAIN, not just the local tree: the agent may
-          # have pushed after this checkout.
           git fetch -q origin main && git reset -q --hard origin/main || true
           bash tools/verify-fedora.sh || {
             echo "::error::Verification FAILED -- see ----- VERIFICATION REPORT ----- above for the exact failed check (often one evidence string, not the tables). Fix the listed gap, not the whole audit. Gate will retry with stronger model."
             exit 1
           }
 
-      # ---- topic: teardown-sweep ----
       - name: Upload opencode logs (on failure)
         if: failure()
         uses: actions/upload-artifact@v7.0.1

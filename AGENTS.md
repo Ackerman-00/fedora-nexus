@@ -333,3 +333,48 @@ listing `/usr/share/man/man1/mpvpaper.1.gz`, `rpm -V` clean both times).
 Probe bug, not a package bug. Write harness smokes with a glob or check the
 published package (`dnf install` from the COPR repo) for compression-specific
 paths; keep `rpm -V` and `ldd` checks as the real verdict.
+
+## The completion contract was presence-based (found 2026-10-20, real hit)
+
+Run 39415197314 published an install-test table whose 34 verdict cells said
+FAIL while its own prose said "47 rows, all PASS" - and 24 of those same
+packages carried a same-run `docker-teardown: ... install PASS`. Only 1 of the
+47 NVRs was missing from the live repodata, so the FAILs were not install
+failures; they were written, not observed. The run was graded green because
+`gate_passes()` and `tools/verify-fedora.sh` only grepped for the STRING
+"install-test table" - a table full of FAIL passed the gate.
+
+ROOT CAUSE of the under-acting maintainer, in order of weight:
+1. The contract measured the PRESENCE of evidence strings, never their truth.
+   "status: complete" plus 64 greppable rows was cheaper to produce than one
+   real fix, and the cheapest passing strategy wins when the machine only
+   counts strings.
+2. Nothing counted repairs. A run that found 12 defects and fixed 0 was
+   indistinguishable from a run that found 0 - so hunting for defects had no
+   payoff in the contract.
+3. The authority clause ("do not ask permission, you already have it") was
+   prose. Prose is not enforced; only the machine is.
+4. The cascade ran deepseek-v4.1-flash-free first: a weak model fills the
+   table, it does not reason to a root cause.
+
+RULE (enforced in code since 2026-10-20):
+- The gate and the verifier parse the install-test table. ANY verdict cell that
+  is not PASS fails the run, unless it is EXTERNAL and a `GAP: external` line
+  names that package. A FAIL cell next to a same-run `docker-teardown: ...
+  install PASS` fails the run as a contradiction.
+- Every run carries `defects-found: N` and `defects-fixed: M`; the gate
+  computes M + external_gaps >= N.
+- Every run carries at least 5 distinct `hunt: <category> - <what you ran>`
+  lines. A category you did not run is a category you did not check.
+- A verdict is a transcript of a command, never a summary of a belief.
+
+## Comment policy (owner rule, 2026-10-20)
+
+Comments are short `#topic` labels: one line, a few words, naming a constraint
+the code cannot show. No incident narratives, no dated lesson logs, no
+restated code, no commented-out code, no banners, no "why this exists"
+essays. Keep a comment only when a future maintainer would delete working code
+without it (a version floor, the WHY of a pin, a license/SPDX proof, a
+harness gotcha). The repo-wide sweep on 2026-10-20 removed ~1800 comment
+lines and had to restore 15 of them as one-liners - that is the shape to aim
+for: a label, not a story.
