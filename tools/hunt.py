@@ -298,17 +298,41 @@ def hunt_licenses():
             note, missing)
 
 
-HUNTS = (hunt_builds, hunt_chroots, hunt_upstream, hunt_cves, hunt_licenses)
+def hunt_release_discipline():
+    """The newest changelog entry must name the spec's own Version and Release."""
+    bad, checked, skipped = [], 0, []
+    for sp in specs():
+        txt = open(sp, encoding="utf-8", errors="replace").read()
+        ver = resolve_version(sp, spec_field(sp, "Version")).strip()
+        rel = resolve_version(sp, spec_field(sp, "Release")).split("%{?dist}")[0].strip()
+        if "%{" in ver:
+            # Macro from outside the spec (redhat-rpm-config, forge-srpm-macros):
+            # only a Fedora buildroot can expand it - not a finding.
+            skipped.append(os.path.basename(sp))
+            continue
+        ch = re.search(r"^%changelog\s*\n(.*)", txt, re.M | re.S)
+        if not ch:
+            bad.append((os.path.basename(sp), "no %changelog"))
+            continue
+        first = ch.group(1).strip().splitlines()[0]
+        checked += 1
+        if ver.split("^")[0] not in first or (rel and rel not in first):
+            bad.append((os.path.basename(sp), "changelog %r vs Version %r Release %r"
+                        % (first[-60:], ver, rel)))
+    note = "skipped (version from an external macro): %s" % (", ".join(skipped) or "none")
+    return ("release-discipline", "%d specs, %d changelog mismatches" % (checked, len(bad)),
+            note, bad)
+
+
+HUNTS = (hunt_builds, hunt_chroots, hunt_upstream, hunt_cves, hunt_licenses,
+         hunt_release_discipline)
 
 
 def main():
-    only = [a for a in sys.argv[1:]] or None
+    only = [a.replace("_", "-") for a in sys.argv[1:]] or None
     for fn in HUNTS:
-        name = fn.__name__.replace("hunt_", "")
-        aliases = {name}
-        if name == "upstream":
-            aliases.add("upstream-versions")
-        if only and not (aliases & set(only)):
+        name = fn.__name__.replace("hunt_", "").replace("_", "-")
+        if only and name not in only:
             continue
         try:
             cat, summary, note, findings = fn()

@@ -2291,9 +2291,10 @@ jobs:
                hunt: spec-lint - rpmspec/rpmlint, 0 errors
                hunt: smoke - 24 teardowns, 0 FAIL
                `python3 tools/hunt.py` runs the machine-checkable categories
-               (builds, chroots, upstream-versions, cves, licenses) against the
-               live sources and prints the relay-ready hunt: lines plus every
-               finding - run it instead of hand-rolling those checks. The
+               (builds, chroots, upstream-versions, cves, licenses,
+               release-discipline) against the live sources and prints the
+               relay-ready hunt: lines plus every finding - run it instead of
+               hand-rolling those checks. The
                container categories (deps, install-tests, spec-lint, smoke) are
                yours. The gate counts distinct categories and needs at least 5.
                A category you did not run is a category you did not check.

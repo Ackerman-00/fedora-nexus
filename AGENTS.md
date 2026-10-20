@@ -405,8 +405,9 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
 - `python3 tools/hunt.py` - machine-checked hunt categories against live
   sources: builds (COPR), chroots, upstream-versions (GitHub, Codeberg,
   GitLab, PyPI), cves (OSV, filtered by the advisory's own ranges), licenses
-  (a LicenseRef package has no text to ship). It prints the relay-ready
-  `hunt:` lines and every finding. The container categories - deps,
+  (a LicenseRef package has no text to ship), release-discipline (the newest
+  changelog entry must name the spec's own Version and Release). It prints
+  the relay-ready `hunt:` lines and every finding. The container categories - deps,
   install-tests, spec-lint, smoke - are still yours.
 - `python3 tools/teardown-sweep.py --type fedora` - the full teardown sweep:
   downloads and tears every artifact apart, reads internal versions,
