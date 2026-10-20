@@ -19,20 +19,15 @@ BuildRequires:  clang-devel
 BuildRequires:  cmake
 BuildRequires:  nasm
 BuildRequires:  pkgconf-pkg-config
-# Voice + stream-broadcast features (upstream README Fedora list — the same
-# set cargo-dist CI uses via apt): alsa (cpal), pipewire (capture),
-# libva (hardware H.264 encode via cros-codecs vaapi).
 BuildRequires:  alsa-lib-devel
 BuildRequires:  pipewire-devel
 BuildRequires:  libva-devel
 
-# Upstream README runtime requirements for Linux release builds.
 Requires:       alsa-lib
 Requires:       libva
 Requires:       mesa-libEGL
 Requires:       pipewire-libs
 Requires:       xdg-desktop-portal
-# External media playback uses mpv and is off by default (Display options).
 # Weak dep: ignored on repos without mpv (RPMFusion-only), suggested where present.
 Recommends:     mpv
 
@@ -43,15 +38,11 @@ previews in the terminal.
 
 %prep
 %setup -q -n %{crate}-%{version}
-# concord 2.6.2 declares rust-version = "1.99" but Fedora 45 stable ships
-# rustc 1.98.1 (1.99.0 sits in updates-testing until F45 GA). The code
-# compiles cleanly with 1.98 (verified in a fedora:45 container).
+# concord pins rust-version 1.99, F45 ships rustc 1.98.1 - compiles clean on 1.98
 sed -i 's/rust-version = "1.99"/rust-version = "1.98"/' Cargo.toml
 
 %build
-# Default cargo features (voice-playback + stream-broadcast) match upstream
-# release builds (dist-workspace.toml). Plain --release keeps Cargo's
-# no-debuginfo default, hence debug_package nil above (matugen pattern).
+# Plain --release keeps Cargo no-debuginfo; debug_package nil.
 export CARGO_NET_OFFLINE=false
 export RUSTFLAGS="%{build_rustflags}"
 cargo build --release --locked

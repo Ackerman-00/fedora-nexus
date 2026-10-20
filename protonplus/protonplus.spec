@@ -19,9 +19,6 @@ BuildRequires:  meson >= 1.0.0
 BuildRequires:  python3
 BuildRequires:  vala
 BuildRequires:  desktop-file-utils
-# libappstream-glib removed 2026-10-09: no in-spec consumer (%check uses
-# desktop-file-validate from desktop-file-utils; upstream meson needs only
-# the freedesktop appstream library below).
 BuildRequires:  pkgconfig(appstream)
 BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(gee-0.8)
@@ -37,10 +34,7 @@ BuildRequires:  pkgconfig(sdl3) >= 3.2.0
 
 Requires:       hicolor-icon-theme
 Requires:       which
-# libGLESv2.so.2 (mesa-libGLES) is dlopened by the GTK/GL stack at startup;
-# without it protonplus aborts RC=134 "Couldn't open libGLESv2.so.2" on a
-# minimal install. Proven in clean fedora:44 live install 2026-10-18 (abort
-# without mesa-libGLES, launch probe rc 124 with it).
+# libGLESv2 is dlopened; missing it aborts startup.
 Requires:       mesa-libGLES
 
 %description

@@ -17,15 +17,7 @@ BuildRequires:  tar
 
 Obsoletes:      aylurs-gtk-shell-git < 3.1.2
 
-# Runtime import graph of the shipped JS (%{_datadir}/ags/js/lib/):
-# lib/gtk4/index.ts + lib/gtk4/jsx-runtime.ts do
-#   import Astal from "gi://Astal?version=4.0"  -> astal-gtk4 typelib
-# lib/gtk3/index.ts + lib/gtk3/jsx-runtime.ts do
-#   import Astal from "gi://Astal?version=3.0"  -> astal typelib
-# lib/gtk4/app.ts does import Adw from "gi://Adw" -> libadwaita
-# lib/overrides.ts dynamically imports the Astal service typelibs
-# (AstalApps/Notifd/Wp/Tray/Mpris/Network/Battery/Bluetooth/PowerProfiles/
-# Hyprland) inside suppress(), so those stay a weak dependency.
+# import graph -> Requires astal, astal-gtk4, libadwaita
 Requires:       gjs >= 1.79.0
 Requires:       gtk4-layer-shell%{?_isa}
 Requires:       astal%{?_isa}

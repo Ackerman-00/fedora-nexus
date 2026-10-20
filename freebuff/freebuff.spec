@@ -1,9 +1,6 @@
 # Disable debuginfo extraction since we are repackaging pre-compiled binaries
 %global debug_package %{nil}
-# Never strip the prebuilt Bun binary: brp-strip -g made `freebuff --version`
-# print the Bun runtime version (1.3.14) instead of the app version (0.2.12),
-# because Bun's arg handling consults ELF symbols (2026-10-02). With stripping
-# disabled the installed binary is byte-identical to upstream Source0.
+# Never strip the prebuilt Bun binary.
 %global __strip /bin/true
 
 Name:           freebuff
@@ -13,8 +10,6 @@ Summary:        The free coding agent for your desktop
 
 License:        MIT
 URL:            https://freebuff.com/desktop
-# Standalone ELF binary + tree-sitter.wasm (upstream switched from AppImage to
-# tar.gz format starting ~v0.0.80; this tag is the latest with a working release)
 Source0:        https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v%{version}/freebuff-linux-x64.tar.gz
 # The binary tarball carries no license text; the release repo's MIT
 Source1:        https://raw.githubusercontent.com/CodebuffAI/codebuff-community/freebuff-v%{version}/LICENSE
@@ -23,8 +18,6 @@ Source1:        https://raw.githubusercontent.com/CodebuffAI/codebuff-community/
 ExclusiveArch:  x86_64
 BuildRequires:  desktop-file-utils
 
-# Freebuff is a standalone ELF binary with minimal system deps (libc, libm,
-# libpthread, libdl — all part of glibc). No Electron/AppImage runtime needed.
 Recommends:     git
 
 %description
@@ -51,8 +44,7 @@ install -m644 tree-sitter.wasm %{buildroot}%{_datadir}/freebuff/tree-sitter.wasm
 # License text from the upstream release repo (MIT, same release tag)
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
-# 3. Install the standard desktop entry (no Icon: upstream ships no icon
-# in the tar.gz and a zero-byte placeholder breaks icon lookup, 2026-09-23)
+# No upstream icon; install the standard desktop entry.
 install -dm755 %{buildroot}%{_datadir}/applications
 cat > %{buildroot}%{_datadir}/applications/freebuff.desktop <<'EOF'
 [Desktop Entry]

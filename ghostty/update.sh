@@ -1,21 +1,11 @@
 #!/bin/bash
 
-# Run this from its own package directory. update-engine.yml does `pushd <pkg>`
-# first; running update.sh from the repo root instead let the changelog append
-# create a stray <pkg>.spec at the repo root, and the Name: check then reported
-# a false corruption (hit twice, 2026-10-07: stray umbriel-git.spec, then 32
-# stray root specs during an agent sweep).
 _update_sh_dir=$(cd "$(dirname "$0")" && pwd) || exit 1
 if [ "$(pwd)" != "$_update_sh_dir" ]; then
     echo "FATAL: run update.sh from its package directory:" >&2
     echo "  cd $_update_sh_dir && bash update.sh" >&2
     exit 1
 fi
-# update.sh for Ghostty (Deb Repackaging Build)
-# Ghostty itself publishes no Linux binaries on GitHub; the official install
-# docs point Linux users to the community-built Ubuntu .deb from
-# mkasberg/ghostty-ubuntu. We repackage that .deb (noble/24.04 variant, the
-# oldest glibc baseline => best Fedora compatibility).
 
 SPEC_FILE="ghostty.spec"
 GITHUB_REPO="mkasberg/ghostty-ubuntu"
@@ -23,8 +13,6 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 
-# Release tags look like "1.3.1-0-ppa2" (Ghostty version + PPA build counter).
-# Sorting with -V orders both version bumps and counter bumps correctly.
 LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+-[0-9]+-ppa[0-9]+$' | sort -V | tail -1)
 
 if [ -z "$LATEST_TAG" ]; then
@@ -32,11 +20,9 @@ if [ -z "$LATEST_TAG" ]; then
     exit 1
 fi
 
-# 1.3.1-0-ppa2 -> Ghostty version "1.3.1" and .deb asset version "1.3.1-0.ppa2"
 GHOSTTY_VERSION=$(echo "$LATEST_TAG" | cut -d- -f1)
 DEB_VER="${GHOSTTY_VERSION}-0.${LATEST_TAG##*-}"
 
-# Grab the current values from the spec file
 CURRENT_TAG=$(grep -E "^%global ppatag" "$SPEC_FILE" | awk '{print $3}')
 CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 
@@ -47,10 +33,6 @@ fi
 
 echo "Update found: $CURRENT_TAG -> $LATEST_TAG"
 
-# A tag is pushed before its release assets are built and uploaded, and the
-# maintainer re-runs releases (e.g. ppa2 follows ppa1 for the same version).
-# Bumping onto a tag whose .deb is missing pins a Source0 that 404s and breaks
-# every COPR rebuild of that NVR, so only bump once the .deb really exists.
 DEB_URL="https://github.com/$GITHUB_REPO/releases/download/$LATEST_TAG/ghostty_${DEB_VER}_amd64_24.04.deb"
 echo "  -> [CHECK] Verifying $DEB_URL"
 if ! curl --output /dev/null --silent --location --head --fail "$DEB_URL"; then
@@ -58,19 +40,15 @@ if ! curl --output /dev/null --silent --location --head --fail "$DEB_URL"; then
     exit 0
 fi
 
-# 1. Update the Ghostty version (and reset Release when it changed)
 if [ "$CURRENT_VERSION" != "$GHOSTTY_VERSION" ]; then
     sed -i -E "s/^Version:.*/Version:        %{ghostty_version}/" "$SPEC_FILE"
     sed -i -E "s/^%global ghostty_version.*/%global ghostty_version $GHOSTTY_VERSION/" "$SPEC_FILE"
 fi
 sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
-# 2. Update the PPA release tag and the .deb asset version; Source0 expands from
-#    these macros so the download URL follows automatically.
 sed -i -E "s/^%global ppatag.*/%global ppatag $LATEST_TAG/" "$SPEC_FILE"
 sed -i -E "s/^%global debver.*/%global debver $DEB_VER/" "$SPEC_FILE"
 
-# 3. Replace changelog with single entry
 DATE=$(LC_ALL=C date +"%a %b %d %Y")
 sed -i '/^%changelog/,$d' "$SPEC_FILE"
 {
@@ -81,10 +59,7 @@ sed -i '/^%changelog/,$d' "$SPEC_FILE"
 
 echo "Successfully patched $SPEC_FILE."
 
-# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).
 
-# Guard: an updater must never leave a spec without its header. If the
-# changelog rewrite or a sed wiped the file, restore from git and fail loudly.
 if ! grep -q "^Name:" "$SPEC_FILE"; then
     echo "FATAL: $SPEC_FILE lost its Name: header during update; restoring" >&2
     git checkout -- "$SPEC_FILE" 2>/dev/null || true

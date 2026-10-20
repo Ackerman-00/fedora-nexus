@@ -18,15 +18,7 @@ Source0:        %{url}/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
 BuildRequires:  meson
 BuildRequires:  pkgconfig(astal-io-0.1)
 BuildRequires:  pkgconfig(astal-3.0)
-# lang/gjs/meson.build probes both backends as optional
-# (`dependency('astal-3.0', required: false)` / `astal-4-4.0`,
-# `required: false`) yet installs BOTH src/gtk3 and src/gtk4 binding trees
-# unconditionally via install_subdir(). Leaving astal-4-4.0 unprobed built
-# the gtk4 half of the shipped data against nothing (meson logged
-# "Run-time dependency astal-4-4.0 found: NO"). Pin it ON so the bindings we
-# actually ship are validated against a real astal-gtk4 at build time; both
-# astal-3.0 and astal-4-4.0 are kept because meson only requires ONE of them.
-# astal-gtk4-devel ships astal-4-4.0.pc and is built in all four COPR chroots.
+# astal-4-4.0 is probed optional upstream but MUST stay pinned - unprobed built the gtk4 bindings against nothing
 BuildRequires:  pkgconfig(astal-4-4.0)
 
 Requires:       gjs%{?_isa}

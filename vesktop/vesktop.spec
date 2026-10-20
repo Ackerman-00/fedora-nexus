@@ -14,8 +14,7 @@ License:        GPL-3.0-or-later
 URL:            https://github.com/Vencord/Vesktop
 # Use the native upstream RPM as our raw source payload
 Source0:        %{url}/releases/download/v%{version}/%{name}-%{version}.x86_64.rpm
-# The upstream RPM payload carries no license text; take it from the source
-# tree at the same tag.
+# Upstream payload lacks license text; fetch from tag.
 Source1:        %{url}/raw/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
@@ -23,8 +22,7 @@ ExclusiveArch:  x86_64
 # Required to unpack the upstream RPM natively
 BuildRequires:  cpio
 
-# Explicit dependencies mapped from your Void template to Fedora,
-# plus direct NEEDED entries from ldd (auto-deps are excluded for /opt):
+# Deps mapped from Void template plus ldd NEEDED.
 Requires:           hicolor-icon-theme
 Requires:       gtk3
 Requires:       pango
@@ -76,7 +74,6 @@ cp -a usr/share/icons %{buildroot}%{_datadir}/
 install -d -m 0755 %{buildroot}%{_bindir}
 cat <<-'EOF' > %{buildroot}%{_bindir}/vesktop
 #!/bin/sh
-# Automatically force native Wayland rendering if detected
 if [ "$XDG_SESSION_TYPE" = "wayland" ] || [ -n "$WAYLAND_DISPLAY" ]; then
     export ELECTRON_OZONE_PLATFORM_HINT="auto"
 fi
@@ -116,4 +113,3 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 * Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.6.5-1
 - Initial Repackaged Wayland-Optimized Build via Upstream RPM
-# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).

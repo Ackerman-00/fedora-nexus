@@ -86,7 +86,6 @@ cp -a usr/share/icons %{buildroot}%{_datadir}/
 install -d -m 0755 %{buildroot}%{_bindir}
 cat <<-'EOF' > %{buildroot}%{_bindir}/heroic
 #!/bin/sh
-# Automatically force native Wayland rendering if detected
 if [ "$XDG_SESSION_TYPE" = "wayland" ] || [ -n "$WAYLAND_DISPLAY" ]; then
     export ELECTRON_OZONE_PLATFORM_HINT="auto"
 fi
@@ -106,10 +105,7 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/COPYING
 %{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/apps/*.*
 /opt/Heroic/
-# Electron aborts at startup ("SUID sandbox helper binary was found, but is
-# not configured correctly", setuid_sandbox_host.cc:166) unless chrome-sandbox
-# is SUID root 4755 - proven FATAL rc=133 as non-root under xvfb 2026-10-02;
-# same fix vesktop/stoat-desktop already ship, matches Google Chrome's rpm.
+# Electron aborts unless chrome-sandbox is SUID root 4755.
 %attr(4755, root, root) /opt/Heroic/chrome-sandbox
 
 %changelog

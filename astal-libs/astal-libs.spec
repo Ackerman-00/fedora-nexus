@@ -15,8 +15,7 @@ URL:            https://github.com/Aylur/astal
 Source0:        %{url}/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
 Source1:        https://github.com/LukashonakV/cava/archive/1.0.0.tar.gz#/cava-1.0.0.tar.gz
 Source2:        https://github.com/kotontrion/wl-vapi-gen/archive/refs/tags/1.0.0.tar.gz#/wl-vapi-gen-1.0.0.tar.gz
-# lib/workspace (new upstream dir, commit 3a73801) vendors wl-vapi-gen 1.1.0
-# per lib/workspace/subprojects/wl-vapi-gen.wrap (directory = wl-vapi-gen-1.1.0)
+# Source3 must match lib/workspace/subprojects/wl-vapi-gen.wrap
 Source3:        https://github.com/kotontrion/wl-vapi-gen/archive/refs/tags/1.1.0.tar.gz#/wl-vapi-gen-1.1.0.tar.gz
 
 BuildRequires:  gcc
@@ -63,11 +62,7 @@ Requires:       libcava%{?_isa} = 1.0.0
 %prep
 %autosetup -n astal-%{commit} -p1
 tar -xf %{SOURCE1} -C lib/cava/subprojects
-# Vendor wl-vapi-gen into every lib subproject dir that wraps it, matching
-# the version each wrap file pins. Upstream keeps adding new dirs that need
-# it (lib/wl/wl, lib/river on 1.0.0; lib/workspace, lib/idle-notify on 1.1.0
-# as of commit 7c3371c which split lib/wl into lib/wl/wl + lib/wl/wl4),
-# so hardcoding dir names breaks on every new dir.
+# never hardcode subproject dirs - upstream adds wrap dirs
 for d in lib/*/subprojects lib/*/*/subprojects; do
   if [ -f "$d/wl-vapi-gen.wrap" ]; then
     if grep -q 'directory = wl-vapi-gen-1.1.0' "$d/wl-vapi-gen.wrap"; then
@@ -80,16 +75,9 @@ done
 
 %build
 cd lib
-# Build and stage the libraries that other tools link against into a
-# private prefix. COPR builds run unprivileged, so meson install into
-# /usr during %build is not possible; stage instead and point the
-# dependent tools at the staged artifacts via the environment.
+# Stage libs into a prefix; COPR runs unprivileged.
 mkdir -p %{_builddir}/astal-stage
-# Upstream commit 7c3371c split lib/wl into lib/wl/wl (astal-wl) and
-# lib/wl/wl4 (astal-wl4, needs gtk4-wayland); there is no build file at
-# lib/wl itself anymore, so stage both subprojects explicitly.
-# wl/wl4 configures against the staged astal-wl-0.1.pc, so it must be
-# built AFTER the stage prefix is exported (dependency ordering).
+# Dependents build after the stage prefix is exported.
 for lib in quarrel wayland-glib wl/wl; do
   pushd $lib
   meson setup --prefix=%{_builddir}/astal-stage --libdir=lib64 redhat-linux-build . --auto-features=auto
@@ -121,8 +109,6 @@ for lib in $(find -maxdepth 1 -mindepth 1 -type d -not -path ./astal -not -path 
   %meson_install
   popd
 done
-# Copy the staged quarrel/wl artifacts into the buildroot (the remaining
-# libs were installed above by the meson install loop with the default /usr prefix).
 cp -a %{_builddir}/astal-stage/lib64/* %{buildroot}%{_libdir}/
 cp -a %{_builddir}/astal-stage/share/* %{buildroot}%{_datadir}/
 cp -a %{_builddir}/astal-stage/include/* %{buildroot}%{_includedir}/
@@ -130,8 +116,7 @@ sed -i 's/ cava,//' %{buildroot}%{_libdir}/pkgconfig/astal-cava-0.1.pc
 rm -rf %{buildroot}%{_includedir}/cava
 rm -rf %{buildroot}%{_datadir}/consolefonts/cava.psf
 rm -rf %{buildroot}%{_libdir}/pkgconfig/libcava.pc
-# libcava is provided by the standalone libcava package; drop the copy built
-# as part of lib/cava so the two packages do not conflict on the same file.
+# Drop bundled libcava; the standalone package owns it.
 rm -rf %{buildroot}%{_libdir}/libcava.so*
 
 %files

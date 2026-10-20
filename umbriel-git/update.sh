@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# Run this from its own package directory. update-engine.yml does `pushd <pkg>`
-# first; running update.sh from the repo root instead let the changelog append
-# create a stray <pkg>.spec at the repo root, and the Name: check then reported
-# a false corruption (hit twice, 2026-10-07: stray umbriel-git.spec, then 32
-# stray root specs during an agent sweep).
 _update_sh_dir=$(cd "$(dirname "$0")" && pwd) || exit 1
 if [ "$(pwd)" != "$_update_sh_dir" ]; then
     echo "FATAL: run update.sh from its package directory:" >&2
@@ -18,7 +13,6 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 
-# Get HEAD commit via git ls-remote (no rate limit)
 LATEST_COMMIT=$(git ls-remote https://github.com/$GITHUB_REPO.git HEAD 2>/dev/null | awk '{print $1}')
 
 if [ -z "$LATEST_COMMIT" ]; then
@@ -28,11 +22,7 @@ fi
 
 SHORT_COMMIT=${LATEST_COMMIT:0:7}
 
-# Base version: latest tag if any, else the meson project() version at HEAD
-# NOTE: upstream tags may mix v-prefixed and bare schemes (e.g. v1.0.7 vs 1.0.8);
-# plain `sort -V` orders "v…" after bare versions and picks the WRONG latest
-# (hellwal 1.0.8 downgrade, 2026-09-15). Sort by the v-stripped version key
-# but keep the exact tag (download URLs need it verbatim).
+# upstream mixes v-prefixed and bare tags - plain sort -V picks the wrong latest
 LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | grep -vEi '(alpha|beta|rc[0-9]*|[-.]pre|[-.]dev|nightly|canary)' | sed -E 's/^v?([0-9].*)/\1 &/' | sort -V -k1,1 | tail -1 | awk '{print $2}')
 
 if [ -n "$LATEST_TAG" ]; then
@@ -42,8 +32,6 @@ else
     BASE_VER=$(curl -fsSL "https://raw.githubusercontent.com/$GITHUB_REPO/$LATEST_COMMIT/meson.build" \
         | grep -oP "^\s*version:\s*'\K[^']+" | head -1)
     if [ -z "$BASE_VER" ]; then
-        # Upstream moved the version to a VERSION file
-        # (meson.build: version: files('VERSION')); read it at HEAD.
         BASE_VER=$(curl -fsSL "https://raw.githubusercontent.com/$GITHUB_REPO/$LATEST_COMMIT/VERSION" \
             2>/dev/null | tr -d '[:space:]' | grep -E '^[0-9]+\.[0-9]+')
     fi
@@ -55,10 +43,6 @@ if [ -z "$BASE_VER" ]; then
     exit 1
 fi
 
-# SceneFX submodule pin — only when upstream still uses the subproject.
-# As of 2026-09-01 commit 729e7eb upstream vendored the renderer as
-# umbrielfx/ and removed subprojects/scenefx; archives no longer contain
-# subprojects/. Detect the upstream build system before trying to pin.
 USES_SCENEFX="no"
 if curl -fsSL "https://raw.githubusercontent.com/$GITHUB_REPO/$LATEST_COMMIT/meson.build" 2>/dev/null | grep -q "scenefx"; then
     USES_SCENEFX="yes"
@@ -91,19 +75,16 @@ else
     SCENEFX_COMMIT=""
 fi
 
-# Get current values from spec
 CURRENT_COMMIT=$(grep -E "^%global commit" "$SPEC_FILE" | awk '{print $3}')
 CURRENT_BASE_VER=$(grep "^Version:" "$SPEC_FILE" | awk '{print $2}' | sed 's/\^.*//')
 CURRENT_SCENEFX=$(grep -E "^%global scenefx_commit" "$SPEC_FILE" 2>/dev/null | awk '{print $3}' || echo "")
 HAS_SCENEFX_SPEC=$([ -n "$CURRENT_SCENEFX" ] && echo yes || echo no)
 
-# Check if update needed (scenefx only matters when upstream uses it)
 COMMIT_CHANGED=$([ "$CURRENT_COMMIT" != "$LATEST_COMMIT" ] && echo true || echo false)
 BASE_VER_CHANGED=$([ "$CURRENT_BASE_VER" != "$BASE_VER" ] && echo true || echo false)
 if [ "$USES_SCENEFX" == "yes" ]; then
     SCENEFX_CHANGED=$([ -n "$SCENEFX_COMMIT" ] && [ "$CURRENT_SCENEFX" != "$SCENEFX_COMMIT" ] && echo true || echo false)
 else
-    # Upstream dropped scenefx — need update if spec still carries the old pin
     SCENEFX_CHANGED=$([ "$HAS_SCENEFX_SPEC" == "yes" ] && echo true || echo false)
 fi
 
@@ -120,7 +101,6 @@ else
     [ "$SCENEFX_CHANGED" == "true" ] && echo "SceneFX removed upstream (umbrielfx vendored) — dropping spec pin"
 fi
 
-# Fetch commit date via API (needs token for rate limits)
 if [ -n "$GITHUB_TOKEN" ]; then
     COMMIT_DATE_RAW=$(curl -sL -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPO/commits/$LATEST_COMMIT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('commit',{}).get('committer',{}).get('date',''))" 2>/dev/null)
 else
@@ -134,24 +114,19 @@ else
     GIT_DATE=$(echo "$COMMIT_DATE_RAW" | tr -d '\-TZ:')
 fi
 
-# Update spec — handle both scenefx-present and scenefx-removed upstream
 sed -i -E "s/^%global commit.*/%global commit          $LATEST_COMMIT/" "$SPEC_FILE"
 sed -i -E "s/^%global gitdate.*/%global gitdate         $GIT_DATE/" "$SPEC_FILE"
 if [ "$USES_SCENEFX" == "yes" ]; then
     if grep -q "^%global scenefx_commit" "$SPEC_FILE"; then
         sed -i -E "s/^%global scenefx_commit.*/%global scenefx_commit      $SCENEFX_COMMIT/" "$SPEC_FILE"
     else
-        # Upstream re-added scenefx — re-insert pin (rare)
         sed -i "/^%global gitdate/a %global scenefx_commit      $SCENEFX_COMMIT\n%global scenefx_shortcommit %(c=%{scenefx_commit}; echo \${c:0:7})" "$SPEC_FILE"
     fi
 else
-    # Upstream vendored umbrielfx — remove obsolete scenefx pins if present
     sed -i -E "/^%global scenefx_commit/d" "$SPEC_FILE"
     sed -i -E "/^%global scenefx_shortcommit/d" "$SPEC_FILE"
-    # Remove Source1 and %prep scenefx handling if still present (idempotent)
     sed -i -E "/^Source1:.*scenefx/d" "$SPEC_FILE"
     sed -i -E "s/^%autosetup -n umbriel-%\{commit\} -a1/%autosetup -n umbriel-%{commit}/" "$SPEC_FILE"
-    # Remove old rm/mv lines and stale comment
     sed -i -E "/^rm -rf subprojects\/scenefx/d" "$SPEC_FILE"
     sed -i -E "/^mv scenefx-/d" "$SPEC_FILE"
     sed -i -E "/^# GitHub archives exclude git submodules.*scenefx/d" "$SPEC_FILE"
@@ -160,7 +135,6 @@ fi
 sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 sed -i -E "s/^Version:.*/Version:        ${BASE_VER}^%{gitdate}git%{shortcommit}/" "$SPEC_FILE"
 
-# Update changelog
 DATE_STRING=$(LC_ALL=C date +"%a %b %d %Y")
 CHANGELOG_VER="${BASE_VER}^${GIT_DATE}git${SHORT_COMMIT}-1"
 sed -i '/^%changelog/,$d' "$SPEC_FILE"
@@ -171,8 +145,6 @@ sed -i '/^%changelog/,$d' "$SPEC_FILE"
 } >> "$SPEC_FILE"
 
 echo "Successfully patched $SPEC_FILE."
-# Guard: an updater must never leave a spec without its header. If the
-# changelog rewrite or a sed wiped the file, restore from git and fail loudly.
 if ! grep -q "^Name:" "$SPEC_FILE"; then
     echo "FATAL: $SPEC_FILE lost its Name: header during update; restoring" >&2
     git checkout -- "$SPEC_FILE" 2>/dev/null || true

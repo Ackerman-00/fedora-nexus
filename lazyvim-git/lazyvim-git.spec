@@ -13,9 +13,7 @@ URL:            https://github.com/LazyVim/LazyVim
 Source0:        %{url}/archive/%{commit}/lazyvim-%{shortcommit}.tar.gz
 Packager:       Ackerman-00 <quietcraft@gmail.com>
 
-# Upstream requirements (lazyvim.org): Neovim >= 0.11.2 + Git are mandatory
-# (lazy.nvim clones plugins on first run); ripgrep/fd/gcc are needed for
-# live-grep, file finding and treesitter parsers.
+# Neovim, git mandatory; ripgrep/fd/gcc for search and parsers.
 Requires:       neovim >= 0.11.2
 Requires:       git
 Recommends:     ripgrep

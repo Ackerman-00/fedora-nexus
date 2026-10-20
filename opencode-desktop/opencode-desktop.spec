@@ -1,15 +1,8 @@
-# Debuginfo disabled: every binary here is prebuilt upstream, so there are
-# no build sources to extract debug symbols from (Fedora requires stating why).
+# Debuginfo disabled: all binaries are prebuilt upstream.
 %global debug_package %{nil}
-# No strip protection needed: the only strip-fragile file upstream ships
-# (the Bun-compiled sidecar) is replaced by a shell wrapper below, and plain
-# strip is a no-op on the remaining prebuilt ELFs. Never write RPM macro
-# syntax inside comments: conditionals and directives get expanded even
-# there and break parsing (COPR build 11085303 failed exactly this way).
+# Never put RPM directives in comments.
 
-# Electron app repacked from upstream's own .deb. Everything travels under
-# /opt/OpenCode, so bundled Chromium libraries must not leak into system
-# Provides/Requires; genuine system deps are declared explicitly below.
+# Bundled /opt Chromium libs must not become Provides.
 %global __provides_exclude_from ^/opt/OpenCode/.*$
 %global __requires_exclude_from ^/opt/OpenCode/.*$
 
@@ -20,8 +13,6 @@ Summary:        AI coding agent desktop app
 
 License:        MIT
 URL:            https://opencode.ai
-# Upstream rpm carries a strip-damaged opencode-cli (answers 1.4.2, serve dies
-# Script not found); the same-release deb verified good (v2.0.24, serve OK).
 # fpm-built debs have no rpmbuild brp-strip phase, so repack from the deb.
 Source0:        https://opencode.ai/files/bin/%{version}/opencode-desktop-linux-amd64.deb
 # sha256: 39aa9548bc3a3d4fc73a0f6a2f7aa470fbd60235043a1ba6bf46e8b1fe818357
@@ -29,18 +20,12 @@ Source0:        https://opencode.ai/files/bin/%{version}/opencode-desktop-linux-
 ExclusiveArch:  x86_64
 
 # The install section validates the desktop entry; minimal buildroots lack it.
-# Unpack the upstream deb natively (same idiom as ghostty).
 BuildRequires:  binutils
 BuildRequires:  tar
 BuildRequires:  xz
 BuildRequires:  zstd
 BuildRequires:  desktop-file-utils
 
-# Runtime deps: upstream deb's own Depends (control file: libgtk-3-0,
-# libnotify4, libnss3, libxss1, libxtst6, xdg-utils, libatspi2.0-0, libuuid1,
-# libsecret-1-0), mapped to Fedora names, plus the Electron floor this repo's
-# vesktop spec proves out (audio, printing, GBM/DRI for the GPU process).
-# pango and libXcomposite/libXdamage/libXrandr are hard gtk3 deps already.
 Requires:       gtk3
 Requires:       nss
 Requires:       libXScrnSaver
@@ -72,34 +57,23 @@ for data_archive in data.tar.zst data.tar.xz data.tar.gz; do
     fi
 done
 
+# upstream rpm is strip-damaged - repack from the deb
 %install
 install -dm755 %{buildroot}/opt/OpenCode
 cp -a opt/OpenCode/* %{buildroot}/opt/OpenCode/
-# No bundled self-updater on a distro package: electron-updater reads
-# resources/app-update.yml, and Electron's own docs say Linux updates belong
-# to the package manager. Deleting it is the documented kill-switch
-# (electron-builder#8838). dnf/COPR owns updates from here.
+# Delete bundled app-update.yml; dnf owns updates.
 rm -f %{buildroot}/opt/OpenCode/resources/app-update.yml
 # Prune musl native modules: dead weight on glibc Fedora (same prune as AUR).
 find %{buildroot}/opt/OpenCode -name '*.musl.node' -delete
 find %{buildroot}/opt/OpenCode -depth -type d -name '*-musl' -exec rm -rf {} + 2>/dev/null || true
-# Warn if upstream's bundle is strip-damaged again (answers 1.x, not opencode
-# v2*). Non-fatal: the wrapper below resolves a working CLI regardless, but
-# the log should say when the bundle regresses.
+# Warn if the bundled CLI is strip-damaged again.
 if ! opt/OpenCode/resources/opencode-cli --version 2>/dev/null | grep -q '^opencode v2'; then
   echo "WARNING: bundled opencode-cli does not answer as v2 (strip damage?)" >&2
 fi
-# Upstream's bundled opencode-cli is a Bun --compile binary that rpm
-# stripping truncates into bare bun: it answers 1.4.2 while its stamp says
-# 2.x, and `serve` dies with Script not found. The desktop stages and spawns
-# exactly this path with no fallback and no checksum, so every fresh install
-# is broken. Replace it with a resolver wrapper (survives the desktop's
-# copy+chmod staging); the original stays as last resort.
+# Replace the Bun CLI with a resolver wrapper.
 mv %{buildroot}/opt/OpenCode/resources/opencode-cli %{buildroot}/opt/OpenCode/resources/opencode-cli.bundled
 cat > %{buildroot}/opt/OpenCode/resources/opencode-cli <<'CLI_EOF'
 #!/bin/sh
-# Resolve a working v2 CLI: user install first, then system paths, then the
-# upstream bundle as last resort. Each candidate must answer `opencode v2*`.
 for c in "$HOME/.opencode/bin/opencode" /usr/local/bin/opencode /usr/bin/opencode; do
     if [ -x "$c" ]; then
         case $("$c" --version 2>/dev/null) in
@@ -117,9 +91,6 @@ chmod 0755 %{buildroot}/opt/OpenCode/resources/opencode-cli
 install -dm755 %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/opencode-desktop <<'WRAPPER_EOF'
 #!/bin/sh
-# The sidecar CLI self-updates out from under the desktop version
-# (packages/cli updater.ts, default policy "notify", "auto" installs).
-# A distro package owns its versions, so updates stay off here.
 export OPENCODE_DISABLE_AUTOUPDATE=1
 exec /opt/OpenCode/ai.opencode.desktop "$@"
 WRAPPER_EOF
@@ -133,8 +104,7 @@ install -Dm0644 usr/share/icons/hicolor/64x64/apps/ai.opencode.desktop.png \
 install -Dm0644 usr/share/icons/hicolor/128x128/apps/ai.opencode.desktop.png \
     %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/opencode-desktop.png
 
-# Upstream desktop entries point straight at /opt and carry NoDisplay on the
-# clean one; ours goes through the PATH wrapper with the SUID sandbox intact.
+# Our desktop entry uses the PATH wrapper.
 install -dm755 %{buildroot}%{_datadir}/applications/
 cat > %{buildroot}%{_datadir}/applications/opencode-desktop.desktop <<DESKTOP_EOF
 [Desktop Entry]
@@ -166,8 +136,7 @@ sed -i -e 's|<launchable type="desktop-id">ai.opencode.desktop.desktop</launchab
 %{_datadir}/applications/opencode-desktop.desktop
 %{_datadir}/metainfo/ai.opencode.desktop.metainfo.xml
 %{_datadir}/icons/hicolor/*/apps/opencode-desktop.png
-# Chromium SUID sandbox MUST stay setuid root (AGENTS.md Electron rule, Oct 2026:
-# 0755 fatally aborts launch for every non-root user, proven rc=133 under xvfb).
+# Chromium SUID sandbox must stay setuid root.
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog

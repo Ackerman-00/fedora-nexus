@@ -1,7 +1,4 @@
-# No debuginfo: prebuilt upstream binary is already stripped, so
-# find-debuginfo would emit an empty debugsource list which rpm >= 6
-# rejects as a hard error (same failure as mixtapes build 10955014;
-# same convention as heroic/vesktop/fluxer prebuilt specs).
+# No debuginfo: prebuilt binary is already stripped.
 %global debug_package %{nil}
 
 Name:           rustypipe-botguard
@@ -13,8 +10,6 @@ License:        MIT
 URL:            https://codeberg.org/ThetaDev/rustypipe-botguard
 
 # sha256: 4f2ec561e8f9fadece7deadc6ce0624fbdedd852222c3eb194c22153b1323129
-# Upstream prebuilt gnu tarball (single binary; also publishes aarch64,
-# this repo only ships x86_64 chroots)
 Source0:        https://codeberg.org/ThetaDev/rustypipe-botguard/releases/download/v%{version}/rustypipe-botguard-v%{version}-x86_64-unknown-linux-gnu.tar.xz
 # The release tarball carries no license text; the repo does at the tag.
 Source1:        %{url}/raw/tag/v%{version}/LICENSE

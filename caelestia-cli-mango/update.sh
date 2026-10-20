@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# Run this from its own package directory. update-engine.yml does `pushd <pkg>`
-# first; running update.sh from the repo root instead let the changelog append
-# create a stray <pkg>.spec at the repo root, and the Name: check then reported
-# a false corruption (hit twice, 2026-10-07: stray umbriel-git.spec, then 32
-# stray root specs during an agent sweep).
 _update_sh_dir=$(cd "$(dirname "$0")" && pwd) || exit 1
 if [ "$(pwd)" != "$_update_sh_dir" ]; then
     echo "FATAL: run update.sh from its package directory:" >&2
@@ -18,8 +13,6 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 
-# Upstream has no releases/tags, so the workflow's release scanner 404s on it.
-# Track the default branch HEAD by commit instead (ls-remote: no rate limit).
 LATEST_COMMIT=$(git ls-remote https://github.com/$GITHUB_REPO.git HEAD 2>/dev/null | awk '{print $1}')
 
 if [ -z "$LATEST_COMMIT" ]; then
@@ -38,8 +31,6 @@ fi
 
 echo "Update found: ${CURRENT_COMMIT:0:7} -> $SHORT_COMMIT"
 
-# Commit date -> gitdate (needs a token for API rate limits; fall back to the
-# value already in the spec so we never write an empty macro).
 if [ -n "$GITHUB_TOKEN" ]; then
     GIT_DATE=$(curl -sL -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPO/commits/$LATEST_COMMIT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('commit',{}).get('committer',{}).get('date',''))" 2>/dev/null | sed 's/[^0-9]//g' | cut -c1-14)
 else
@@ -50,8 +41,6 @@ if [ -z "$GIT_DATE" ]; then
     GIT_DATE=$(grep "^%global gitdate" "$SPEC_FILE" | awk '{print $3}')
 fi
 
-# The python project version (pyproject.toml) is independent of the rpm
-# Version and drives the .dist-info path; keep %{pyver} as the base.
 PY_VER=$(grep -E "^%global pyver" "$SPEC_FILE" | awk '{print $3}')
 [ -z "$PY_VER" ] && PY_VER=2.0.0
 
@@ -70,9 +59,6 @@ sed -i '/^%changelog/,$d' "$SPEC_FILE"
 } >> "$SPEC_FILE"
 
 echo "Successfully patched $SPEC_FILE."
-# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).
-# Guard: an updater must never leave a spec without its header. If the
-# changelog rewrite or a sed wiped the file, restore from git and fail loudly.
 if ! grep -q "^Name:" "$SPEC_FILE"; then
     echo "FATAL: $SPEC_FILE lost its Name: header during update; restoring" >&2
     git checkout -- "$SPEC_FILE" 2>/dev/null || true

@@ -1,11 +1,7 @@
 # Keep upstream appid: renames break StartupWMClass/AppStream matching.
 %global appid ai.storyteller.artcraft-launcher
 
-# NOTE: upstream repo is storytold/craft-launcher but every artifact
-# (rpm/deb/AppImage name, binary, desktop file, Cargo crates) is called
-# artcraft-launcher - only the RPM package name follows this repo's
-# short name; all payload paths keep the upstream artcraft-launcher name.
-# Native binary: no bundled runtime, so no Provides pruning, no setuid sandbox.
+# Payload keeps upstream artcraft-launcher paths; native binary.
 %global debug_package %{nil}
 
 Name:           craft-launcher
@@ -19,17 +15,11 @@ Source0:        https://github.com/storytold/craft-launcher/releases/download/v0
 # sha256: 07f1fee498e13eb7308a5454887da86eda2e5ecdcd377ec47ef11023b44ca92c
 
 ExclusiveArch:  x86_64
-# Only the x86_64 rpm is repacked here; upstream also ships aarch64/riscv64
-# assets. This repo only enables x86_64 COPR chroots.
 
 BuildRequires:  cpio
 BuildRequires:  desktop-file-utils
 BuildRequires:  hicolor-icon-theme
-# Runtime mapping: upstream's RPM Requires are ALREADY correct soname form
-# (packaging/linux/nfpm.yaml rpm.depends, verified against the obs-nexus
-# artcraft-launcher packaging). Kept verbatim; only the icon theme is added.
-# libgcc_s (NEEDED) stays an auto-dep - the SUSE-only libgcc_s1 name must NOT
-# be used here. Payload has no bundled .so needing excludes.
+# Upstream deps are correct; no SUSE libgcc_s1 name.
 Requires:       hicolor-icon-theme
 Requires:       libX11-xcb.so.1()(64bit)
 Requires:       libX11.so.6()(64bit)

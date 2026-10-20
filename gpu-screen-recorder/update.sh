@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# Run this from its own package directory. update-engine.yml does `pushd <pkg>`
-# first; running update.sh from the repo root instead let the changelog append
-# create a stray <pkg>.spec at the repo root, and the Name: check then reported
-# a false corruption (hit twice, 2026-10-07: stray umbriel-git.spec, then 32
-# stray root specs during an agent sweep).
 _update_sh_dir=$(cd "$(dirname "$0")" && pwd) || exit 1
 if [ "$(pwd)" != "$_update_sh_dir" ]; then
     echo "FATAL: run update.sh from its package directory:" >&2
@@ -18,11 +13,6 @@ GIT_URL="https://git.dec05eba.com/gpu-screen-recorder/"
 
 echo "Checking for upstream updates..."
 
-# The upstream is a self-hosted cgit behind an Anubis anti-bot challenge on
-# the refs/tags pages, but the project summary page lists every release tag
-# (e.g. "<a href='/gpu-screen-recorder/tag/?h=5.15.3'>5.15.3</a>"). Parse the
-# highest numeric version from there instead of the atom feed (commit titles
-# are no longer version-numbered).
 LATEST_VERSION=$(curl -sL "$GIT_URL" | grep -oE 'tag/\?h=[0-9]+\.[0-9]+\.[0-9]+' | sed 's|tag/?h=||' | sort -V | tail -1)
 
 if [ -z "$LATEST_VERSION" ]; then
@@ -37,7 +27,6 @@ CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     echo "Update available: $CURRENT_VERSION -> $LATEST_VERSION"
 
-    # Verify the snapshot tarball actually exists for that version
     if ! curl -s -o /dev/null --fail "https://dec05eba.com/snapshot/gpu-screen-recorder.git.${LATEST_VERSION}.tar.gz"; then
         echo "Error: Snapshot tarball for $LATEST_VERSION is not available. Aborting."
         exit 1
@@ -58,9 +47,6 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
 else
     echo "Package is already at $LATEST_VERSION. No update needed."
 fi
-# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).
-# Guard: an updater must never leave a spec without its header. If the
-# changelog rewrite or a sed wiped the file, restore from git and fail loudly.
 if ! grep -q "^Name:" "$SPEC_FILE"; then
     echo "FATAL: $SPEC_FILE lost its Name: header during update; restoring" >&2
     git checkout -- "$SPEC_FILE" 2>/dev/null || true

@@ -12,13 +12,9 @@ Summary:        Lightweight TUI display manager
 
 License:        WTFPL AND MIT
 URL:            https://codeberg.org/fairyglade/ly
-# Codeberg /archive/ endpoints are failing (503, proven 2026-10-03 across
-# multiple projects); fetch the identical tag archive from the official
-# GitHub mirror instead. Codeberg remains the canonical upstream for
-# version checks and for Source1 (release assets still serve 200).
+# Codeberg archive 503s; fetch the GitHub mirror instead.
 Source0:        https://github.com/fairyglade/ly/archive/v%{version}.tar.gz#/ly-%{version}.tar.gz
-# Zig dependencies are bundled by upstream in a release asset (see
-# create_vendor_tarball.sh); there is no systemwide Zig package management.
+# Zig deps are bundled; no systemwide Zig packaging.
 Source1:        %{url}/releases/download/v%{version}/vendor.tar.zst#/ly-%{version}-vendor.tar.zst
 Patch0:         0001-build-enable-pie.patch
 
@@ -67,9 +63,7 @@ designed with portability in mind and doesn't require systemd to run.
     installexe \
     -Ddest_directory=%{buildroot}
 
-# setup.sh and startup.sh are setup hooks. Keep them under /etc as
-# configuration, but invoke them through /bin/sh so they do not need
-# to be executable config files.
+# Hooks are config; invoke via /bin/sh, mode 644.
 sed -i '1{/^#!/d}' %{buildroot}%{_sysconfdir}/ly/setup.sh
 sed -i 's|%{_sysconfdir}/ly/setup.sh|/bin/sh %{_sysconfdir}/ly/setup.sh|' \
     %{buildroot}%{_sysconfdir}/ly/config.ini

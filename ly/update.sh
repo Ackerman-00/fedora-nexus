@@ -1,17 +1,11 @@
 #!/bin/bash
 
-# Run this from its own package directory. update-engine.yml does `pushd <pkg>`
-# first; running update.sh from the repo root instead let the changelog append
-# create a stray <pkg>.spec at the repo root, and the Name: check then reported
-# a false corruption (hit twice, 2026-10-07: stray umbriel-git.spec, then 32
-# stray root specs during an agent sweep).
 _update_sh_dir=$(cd "$(dirname "$0")" && pwd) || exit 1
 if [ "$(pwd)" != "$_update_sh_dir" ]; then
     echo "FATAL: run update.sh from its package directory:" >&2
     echo "  cd $_update_sh_dir && bash update.sh" >&2
     exit 1
 fi
-# update.sh for ly (TUI display manager)
 
 SPEC_FILE="ly.spec"
 CODEBERG_REPO="fairyglade/ly"
@@ -19,13 +13,6 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on codeberg.org/$CODEBERG_REPO..."
 
-# Get latest tag via git ls-remote (no rate limit).
-# Development happens on Codeberg (GitHub is only a mirror), so the
-# authoritative source is codeberg - but codeberg's git service is flaky,
-# so retry a few times and fall back to the GitHub mirror for tag detection.
-# Source0 is the GitHub mirror archive (codeberg /archive/ went 503 on
-# 2026-10-03); only the vendor tarball Source1 stays on codeberg release
-# assets, and the availability check below keeps it a hard gate.
 get_latest_tag() {
     local remote="$1"
     git ls-remote --tags "$remote" 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1
@@ -47,16 +34,11 @@ fi
 
 LATEST_VERSION=$(echo "$LATEST_TAG" | sed 's/^v//')
 
-# Read current version from the spec file
 CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 
-# Compare and update
 if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     echo "  -> [UPDATE] New version detected: $LATEST_VERSION (Current: $CURRENT_VERSION)"
 
-    # A tag can exist before its release assets do. Bumping on a tag whose
-    # sources are missing produces a spec whose Source0/Source1 404s, so every
-    # COPR rebuild of that NVR fails. Only bump once everything really exists.
     ARCHIVE_URL="https://github.com/$CODEBERG_REPO/archive/$LATEST_TAG.tar.gz"
     echo "  -> [CHECK] Verifying $ARCHIVE_URL"
     if ! curl --output /dev/null --silent --location --head --retry 3 --max-time 120 --fail "$ARCHIVE_URL"; then
@@ -71,10 +53,6 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
         exit 0
     fi
 
-    # The spec pins the vendored Zig dependency hashes via %zig_fetch. If the
-    # new release bumped any dependency, its hash lands in the vendor tarball
-    # under a new directory while the spec still references the old one, and
-    # the COPR build fails at the fetch step. Verify every pinned hash exists.
     echo "  -> [CHECK] Verifying vendored Zig dependency hashes..."
     TMP_DIR=$(mktemp -d)
     trap 'rm -rf "$TMP_DIR"' EXIT
@@ -91,13 +69,6 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
         fi
     done < <(grep -oE '^%global\s+[a-z0-9_]+_hash\s+\S+' "$SPEC_FILE" | awk '{print $2, $3}')
     if [ "$MISSING" -eq 1 ]; then
-        # A blocked bump is a HOLD, not a script failure. Exiting 1 here made
-        # every single auto-updater run red for as long as the upstream floor
-        # stayed ahead of the distro (proved 2026-10-04: ly v1.5.0 requires zig
-        # >= 0.17.0, F44/F45/rawhide all ship zig 0.16.0), which is noise, not
-        # signal. Report the blocker precisely and leave the spec untouched; a
-        # real bump happens only once the dependency hashes AND the zig floor
-        # can be satisfied.
         ZIG_FLOOR=$(curl --silent --location --retry 2 --max-time 60 \
             "https://raw.githubusercontent.com/fairyglade/ly/$LATEST_TAG/build.zig.zon" \
             | sed -n 's/.*minimum_zig_version[^0-9]*\([0-9.]*\).*/\1/p' | head -1)
@@ -110,11 +81,9 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     fi
     echo "    -> [OK] All pinned dependency hashes present in the vendor tarball"
 
-    # 1. Update the Version and Release fields
     sed -i "s/^Version:\s*.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i "s/^Release:\s*.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
-    # 2. Replace changelog with single entry
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
     sed -i '/^%changelog/,$d' "$SPEC_FILE"
     {
@@ -128,9 +97,6 @@ else
     echo "  -> [OK] ly is already on latest ($CURRENT_VERSION)."
 fi
 
-# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).
-# Guard: an updater must never leave a spec without its header. If the
-# changelog rewrite or a sed wiped the file, restore from git and fail loudly.
 if ! grep -q "^Name:" "$SPEC_FILE"; then
     echo "FATAL: $SPEC_FILE lost its Name: header during update; restoring" >&2
     git checkout -- "$SPEC_FILE" 2>/dev/null || true

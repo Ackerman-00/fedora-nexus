@@ -1,19 +1,9 @@
 # MAINTENANCE: ackerman/nexus COPR only — auto-update DISABLED (2026-09-17).
-# Helium re-releases often (Chromium rebuilds, sometimes tag-before-assets)
-# and each bump re-downloads ~130MB; updates are done deliberately by the
-# maintainer, not by update-engine.yml. update.sh is an intentional no-op
-# (kept so the generic scanner keeps skipping this spec). To update: bump
-# Version, verify tarball + tag assets exist, push (COPR auto-builds),
-# confirm the new build is green.
 %global             debug_package %{nil}
+# COPR release runs unreliable - manual bump only
 %global             helium_base /opt/helium
 
-# Helium ships private Chromium/Electron libraries (libEGL, libGLESv2,
-# libvulkan.so.1, swiftshader, qt shims) under %{helium_base}. They live
-# outside the loader path and must never be advertised as system-wide
-# Provides: dnf once picked helium-browser as the provider of
-# libvulkan.so.1()(64bit) for wlroots, leaving umbriel unstartable
-# (libvulkan.so.1 => not found). Proven by combined install test 2026-09-05.
+# Bundled Chromium libs must not become Provides.
 %global __provides_exclude_from ^%{helium_base}/.*$
 
 Name:               helium-browser
@@ -25,11 +15,8 @@ License:            GPL-3.0-only AND BSD-3-Clause
 URL:                https://github.com/imputnet/helium-linux
 Source0:            https://github.com/imputnet/helium-linux/releases/download/%{version}/helium-%{version}-x86_64_linux.tar.xz
 # sha256: 6ca6e4a00fef5916821fb1af8a9607cc6b386f678a7eb422e55f19116ba30469
-# The official binary tarball does not ship the metainfo file, so pull it
-# from the repo at the matching release tag (all release tags carry it).
 Source1:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/package/net.imput.helium.metainfo.xml
-# The binary tarball carries no license texts either (s6muel fetches
-# LICENSE.ungoogled_chromium from the tag too); stage both for %license.
+# Tarball lacks license texts; stage from the tag.
 Source2:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/LICENSE
 Source3:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/LICENSE.ungoogled_chromium
 
@@ -39,11 +26,9 @@ ExclusiveArch:      x86_64
 Provides:           www-browser = %{version}-%{release}
 
 Requires:           hicolor-icon-theme
-# Chromium calls xdg-mime/xdg-settings/xdg-open at runtime (not ELF-linked,
-# so auto-deps miss it). Same as Fedora's chromium package.
+# xdg-* helpers are runtime-called, not ELF-linked.
 Requires:           xdg-utils
-# Chromium dlopens dbus at runtime (invisible to ELF auto-deps); s6muel's dep
-# review and CachyOS both list dbus explicitly.
+# Chromium dlopens dbus; auto-deps miss it.
 Requires:           dbus-daemon
 Requires(post):     desktop-file-utils
 Requires(post):     gtk-update-icon-cache

@@ -5,8 +5,7 @@
 %global __requires_exclude_from ^/opt/Stoat/.*$
 %global __provides_exclude_from ^/opt/Stoat/.*$
 
-# Bundled prebuilt native modules carry build-machine RUNPATHs (Nix store paths)
-# that trip check-rpaths error 0002; all NEEDED libs resolve from the system.
+# Strip Nix-store RUNPATHs from bundled native modules.
 %global __brp_check_rpaths %{nil}
 
 Name:           stoat-desktop
@@ -77,7 +76,6 @@ install -Dpm 0644 %{SOURCE3} %{buildroot}%{_datadir}/metainfo/chat.stoat.StoatDe
 install -d -m 0755 %{buildroot}%{_bindir}
 cat <<-'EOF' > %{buildroot}%{_bindir}/stoat-desktop
 #!/bin/sh
-# Automatically force native Wayland rendering if detected
 if [ "$XDG_SESSION_TYPE" = "wayland" ] || [ -n "$WAYLAND_DISPLAY" ]; then
     export ELECTRON_OZONE_PLATFORM_HINT="auto"
 fi

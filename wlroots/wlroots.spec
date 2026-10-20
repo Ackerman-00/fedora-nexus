@@ -11,34 +11,16 @@ Summary:        A modular Wayland compositor library
 # Convert tilde to dash for source tag (e.g. 0.20.0~rc2 -> 0.20.0-rc2)
 %global tag     %(v='%{version}'; echo "${v//'~'/-}")
 
-# Source files/overall project licensed as MIT, but
-# - HPND-sell-variant
-#   * protocol/drm.xml
-#   * protocol/wlr-data-control-unstable-v1.xml
-#   * protocol/wlr-foreign-toplevel-management-unstable-v1.xml
-#   * protocol/wlr-gamma-control-unstable-v1.xml
-#   * protocol/wlr-input-inhibitor-unstable-v1.xml
-#   * protocol/wlr-layer-shell-unstable-v1.xml
-#   * protocol/wlr-output-management-unstable-v1.xml
-# - LGPL-2.1-or-later
-#   * protocol/server-decoration.xml
-# Those files are processed to C-compilable files by the
-# `wayland-scanner` binary during build and don't alter
-# the main license of the binaries linking with them by
-# the underlying licenses.
+# protocol/*.xml are HPND-sell-variant and LGPL-2.1-or-later, not MIT
 License:        MIT
 URL:            https://gitlab.freedesktop.org/wlroots/wlroots
-# Use the git archive endpoint: the /-/releases/<tag>/downloads/ endpoint
-# 504s under load at the COPR SRPM stage (observed on builds 10867975/10868146).
+# Use the git archive endpoint; releases endpoint 504s.
 Source0:        %{url}/-/archive/%{tag}/%{name}-%{tag}.tar.gz
 
-# Fedora patches
-# Following patch is required for phoc.
+# Fedora patch required for phoc.
 Patch:          Revert-layer-shell-error-on-0-dimension-without-anch.patch
 
-# Single gcc atom (RPM320-safe): mock/COPR minimal buildroots ship no
-# compiler — 0.20.2-5 removed both former duplicate lines and failed all
-# 4 chroots with "Unknown compiler(s): [['gcc']]" (build 11027369).
+# Single gcc build dep; minimal buildroots ship none.
 BuildRequires:  gcc
 BuildRequires:  glslang
 BuildRequires:  meson >= 1.3
@@ -56,8 +38,7 @@ BuildRequires:  pkgconfig(libseat) >= 0.2.0
 BuildRequires:  pkgconfig(libudev)
 BuildRequires:  pkgconfig(pixman-1) >= 0.46.0
 BuildRequires:  pkgconfig(vulkan) >= 1.2.182
-# meson.build wayland_kwargs: version '>=1.24.0' applies to both
-# wayland-client and wayland-server; the client floor was missing.
+# wayland floor applies to client and server.
 BuildRequires:  pkgconfig(wayland-client) >= 1.24.0
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.47
 BuildRequires:  pkgconfig(wayland-scanner)
@@ -85,7 +66,7 @@ Requires:       libliftoff%{?_isa} >= %{liftoff_ver}
 %package        devel
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} == %{version}-%{release}
-# not required per se, so not picked up automatically by RPM
+# Not required per se, so not picked up automatically by RPM
 Recommends:     pkgconfig(xcb-icccm)
 
 %description    devel

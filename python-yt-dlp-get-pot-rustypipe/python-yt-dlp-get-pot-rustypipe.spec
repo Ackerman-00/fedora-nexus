@@ -1,6 +1,4 @@
-# No debuginfo: pure-Python wheel, zero ELF binaries, so find-debuginfo
-# would emit an empty debugsource list which rpm >= 6 rejects as a hard
-# error (same failure as mixtapes build 10955014).
+# No debuginfo: pure-Python wheel, no ELF binaries.
 %global debug_package %{nil}
 
 Name:           python-yt-dlp-get-pot-rustypipe
@@ -10,8 +8,7 @@ Summary:        PO token provider plugin for yt-dlp using rustypipe-botguard
 
 License:        MIT
 URL:            https://pypi.org/project/yt-dlp-get-pot-rustypipe/
-# NOTE: the pypi_source macro emits a dashed tarball name that 404s on
-# files.pythonhosted.org for this project; use the real underscore URL.
+# pypi_source name 404s; use the underscore URL.
 Source0:        https://files.pythonhosted.org/packages/source/y/yt-dlp-get-pot-rustypipe/yt_dlp_get_pot_rustypipe-%{version}.tar.gz
 # The sdist ships no license file and PyPI metadata carries no author or
 # project URL. The plugin itself lives in the rustypipe-botguard repo (tag
@@ -19,15 +16,12 @@ Source0:        https://files.pythonhosted.org/packages/source/y/yt-dlp-get-pot-
 Source1:        https://codeberg.org/ThetaDev/rustypipe-botguard/raw/tag/yt-dlp-get-pot-rustypipe/v%{version}/LICENSE
 # sha256: fc3908dc021285b75d2fb91464dcb03545d966b9011cc009f8a230f4ce468701
 
-# Aliased name expected by dependent specs (e.g. mixtapes
-# Requires: python3-yt-dlp-get-pot-rustypipe); the binary RPM is named python-yt-dlp-get-pot-rustypipe.
+# Aliased name expected by dependent specs.
 Provides:       python3-yt-dlp-get-pot-rustypipe
 
 BuildRequires:  python3-devel
 
-# Weak runtime dep: the plugin shells out to the rustypipe-botguard binary
-# (PATH lookup, configurable) to fetch PO tokens. Recommends, not Requires,
-# since the path is user-overridable and mixtapes pulls both explicitly.
+# Plugin shells out to rustypipe-botguard; Recommends only.
 Recommends:     rustypipe-botguard
 
 %description
@@ -36,9 +30,7 @@ via the rustypipe-botguard helper binary. Packaged for the Nexus
 repository as a dependency of mixtapes.
 
 %prep
-# Unpack the PyPI sdist so %generate_buildrequires can find the
-# sources (missing %prep fails the build the same way python-pydbus
-# build 10955044 and python-ytmusicapi 10955049 failed).
+# Unpack sdist so build-requires generation finds setup.py.
 %autosetup -p1 -n yt_dlp_get_pot_rustypipe-%{version}
 cp -p %{SOURCE1} LICENSE
 

@@ -27,17 +27,10 @@ BuildRequires:  binutils
 BuildRequires:  tar
 
 # Explicit dependencies mapped from the upstream DEB to Fedora
-# (libappindicator3-1 | libayatana-appindicator3-1, gir1.2-appindicator3-0.1 |
-#  gir1.2-ayatanaappindicator3-0.1 -> libayatana-appindicator-gtk3,
-#  libayatana-ido3-0.4-0 -> libayatana-ido-gtk3, xdg-user-dirs, libc6 -> glibc)
 Requires:           hicolor-icon-theme
 Requires:       libayatana-appindicator-gtk3
 Requires:       libayatana-ido-gtk3
-# libflutter_linux_gtk.so (bundled) links libepoxy, which dlopens
-# libEGL.so.1 and libGLESv2.so.2 at startup - invisible to ldd and to RPM
-# auto-deps (excluded above). Clean fedora:44 repro: stock install aborts
-# rc134 "Couldn't open libEGL.so.1", then "Couldn't open libGLESv2.so.2";
-# launches once libglvnd-egl + libglvnd-gles are present.
+# bundled libflutter dlopens libEGL/libGLESv2 - invisible to ldd
 Requires:       libEGL.so.1()(64bit)
 Requires:       libGLESv2.so.2()(64bit)
 Requires:       xdg-user-dirs
@@ -55,8 +48,7 @@ extracts the upstream DEB payload.
 %setup -c -T
 # Rip open the upstream DEB natively
 ar x %{SOURCE0}
-# Upstream switched from data.tar.xz (<=1.17.0) to data.tar.zst (>=1.18.0);
-# detect whichever data archive the .deb actually contains and extract it.
+# Detect whichever data archive the .deb actually contains and extract it.
 for data_archive in data.tar.zst data.tar.xz data.tar.gz; do
     if [ -f "$data_archive" ]; then
         tar xf "$data_archive"
@@ -73,10 +65,7 @@ done
 install -d -m 0755 %{buildroot}%{_datadir}
 cp -a usr/share/* %{buildroot}%{_datadir}/
 
-# 2. Install the application tree (binary + bundled lib/ + data/).
-#    Upstream moved the app from usr/share/localsend_app (pre-1.18) to
-#    opt/localsend_app in v1.18.0. The binary uses $ORIGIN/lib RUNPATH, so
-#    the binary and its lib/ directory MUST stay adjacent.
+# Binary and lib/ must stay adjacent; RUNPATH relative.
 install -d -m 0755 %{buildroot}%{_libdir}
 cp -a opt/localsend_app %{buildroot}%{_libdir}/localsend_app
 

@@ -52,9 +52,7 @@ def detect_type(root):
     return None
 
 
-# ---------------------------------------------------------------------------
-# Per-repo: extract package metadata
-# ---------------------------------------------------------------------------
+# Per-repo package metadata
 
 def get_gentoo_packages(root):
     pkgs = []
@@ -109,12 +107,9 @@ def get_void_packages(root):
     return pkgs
 
 
-# ---------------------------------------------------------------------------
 # Docker test runners
-# ---------------------------------------------------------------------------
 
-# Pinned Fedora container (AGENTS.md toolchain baseline). Never :latest: the
-# tag rolls to the next release on GA day and silently changes the buildroot.
+# Pinned image; never :latest (rolls on GA day)
 FEDORA_IMAGE = "fedora:44"
 
 
@@ -225,9 +220,7 @@ def test_void_package(name, template_path, workdir, timeout=300):
     return result
 
 
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
+# Reporting and main
 
 def trivy_scan_image(image_tag):
     """Scan a built Docker image with Trivy for known CVEs.

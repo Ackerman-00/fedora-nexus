@@ -66,9 +66,7 @@ def test_redirect_version_parsing():
         if m != want:
             failures += 1
         print(f"{status}: version_from_url({url!r}) -> {m!r} (want {want!r})")
-    # And the live channel reader itself, when reachable.  The expectation is
-    # read from the spec (not hardcoded) so the test tracks the packaged
-    # version instead of rotting every time upstream ships a new release.
+    # Read expectation from spec, never hardcode
     spec_ver = None
     spec = os.path.join(os.path.dirname(ts.__file__ if hasattr(ts, "__file__")
                                        else "."),
@@ -82,9 +80,7 @@ def test_redirect_version_parsing():
     except OSError:
         spec_ver = None
     if spec_ver is None:
-        # The package was dropped from the repo (owner removed photon-studio on
-        # 2026-10-06); the parsing cases above still cover the helper, and a
-        # live channel read would have nothing to compare against.
+        # Package removed; parsing cases still cover the helper
         print("SKIP: photon-studio no longer packaged - live channel check skipped")
         return failures
     ver, src = ts.redirect_channel_version("photon-studio", [], None)
@@ -131,7 +127,6 @@ def test_detect_type():
         print(f"{'PASS' if ok else 'FAIL'}: detect_type() -> {got!r} "
               f"(want {want!r}) for "
               f"{(content or chr(60)+'no spec files'+chr(62)).splitlines()[0][:48]!r}")
-    # And this overlay itself must still read as fedora.
     root = pathlib.Path(os.path.dirname(os.path.abspath(__file__))) / ".."
     got = ts.detect_type(root.resolve())
     ok = got == "fedora"
@@ -155,14 +150,13 @@ def test_strings_version():
         # (distname, file body, want_version)
         ("OpenCADStudio-v2026.40.1-linux-x86_64.AppImage",
          b"\x7fELF noise OpenCADStudio/2026.40.1 more noise", "2026.40.1"),
-        # stale artifact: body says 2026.39.0 -> report that, not the pin
+        # stale artifact: report body, not the pin
         ("OpenCADStudio-v2026.40.1-linux-x86_64.AppImage",
          b"OpenCADStudio/2026.39.0", "2026.39.0"),
-        # no name-prefixed token at all -> give up rather than guess
+        # no anchored token: give up, do not guess
         ("OpenCADStudio-v2026.40.1-linux-x86_64.AppImage",
          b"unrelated version 1.2.3 of some embedded lib", None),
-        # filename carries no separable app name (starts at the version),
-        # so no anchored token can match -> give up rather than guess
+        # version-only filename: no token can match
         ("v2026.40.1-linux-x86_64.AppImage", b"v2026.40.1", None),
     ]
     for distname, body, want in cases:

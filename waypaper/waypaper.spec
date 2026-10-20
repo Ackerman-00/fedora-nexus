@@ -29,8 +29,7 @@ Requires:       python3-imageio
 Requires:       (ffmpeg or ffmpeg-free)
 Requires:       gobject-introspection
 Requires:       gtk3
-# waypaper shells out to pgrep/pkill (procps-ng) and killall (psmisc) to
-# detect and stop running wallpaper backends (changer.py, options.py, app.py)
+# Shells out to pgrep/pkill and killall for backends.
 Requires:       procps-ng
 Requires:       psmisc
 
@@ -52,8 +51,7 @@ tar -xzf %{SOURCE2} --strip-components=1 imageio_ffmpeg-0.6.0/imageio_ffmpeg
 
 %install
 %pyproject_install
-# Strip vendored deps from wheel metadata so RPM doesn't auto-generate
-# unresolvable python3.Xdist(screeninfo)/imageio-ffmpeg requires
+# Strip vendored deps from wheel metadata.
 for f in %{buildroot}%{python3_sitelib}/waypaper-*.dist-info/METADATA; do
   [ -f "$f" ] && sed -i '/^Requires-Dist: screeninfo$/d' "$f" && sed -i '/^Requires-Dist: imageio-ffmpeg$/d' "$f" || true
 done
@@ -125,4 +123,3 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 
 * Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-1
 - Initial package
-# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).

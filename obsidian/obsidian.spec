@@ -81,16 +81,10 @@ ln -sf /opt/Obsidian/obsidian %{buildroot}%{_bindir}/obsidian
 %defattr(-,root,root,-)
 %{_bindir}/obsidian
 /opt/Obsidian/
-# Electron aborts at startup ("SUID sandbox helper binary was found, but is
-# not configured correctly", setuid_sandbox_host.cc:166) unless chrome-sandbox
-# is SUID root 4755 - proven FATAL rc=133 as non-root under xvfb 2026-10-02;
-# same fix vesktop/stoat-desktop already ship, matches Google Chrome's rpm.
+# Electron aborts unless chrome-sandbox is SUID root 4755.
 %attr(4755, root, root) /opt/Obsidian/chrome-sandbox
 %{_datadir}/applications/%{app_id}.desktop
-# 1.14 added a MIME database entry (x-obsidian-canvas/base + obsidian: URL
-# handler) that the 1.14 desktop file's MimeType= line now depends on.
-# shared-mime-info ships the file trigger for /usr/share/mime, so no
-# update-mime-database scriptlet is needed here.
+# shared-mime-info trigger covers mime; no scriptlet.
 %{_datadir}/mime/packages/obsidian.xml
 %{_datadir}/icons/hicolor/*/apps/obsidian.png
 # Include doc directory if upstream continues to package it

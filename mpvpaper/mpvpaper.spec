@@ -16,9 +16,7 @@ BuildRequires:  pkgconfig(wayland-egl)
 BuildRequires:  pkgconfig(egl)
 BuildRequires:  pkgconfig(mpv)
 
-# mpvpaper shells out to `pidof` (src/main.c check_watch_list and
-# check_paper_processes) to detect programs on the pause/stop watch lists and
-# other running wallpaper daemons
+# Shells out to pidof for watch-list detection.
 Requires:       procps-ng
 
 %description

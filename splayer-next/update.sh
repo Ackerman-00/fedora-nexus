@@ -1,23 +1,11 @@
 #!/bin/bash
 
-# Run this from its own package directory. update-engine.yml does `pushd <pkg>`
-# first; running update.sh from the repo root instead let the changelog append
-# create a stray <pkg>.spec at the repo root, and the Name: check then reported
-# a false corruption (hit twice, 2026-10-07: stray umbriel-git.spec, then 32
-# stray root specs during an agent sweep).
 _update_sh_dir=$(cd "$(dirname "$0")" && pwd) || exit 1
 if [ "$(pwd)" != "$_update_sh_dir" ]; then
     echo "FATAL: run update.sh from its package directory:" >&2
     echo "  cd $_update_sh_dir && bash update.sh" >&2
     exit 1
 fi
-# update.sh for SPlayer-Next (repackages the upstream RPM)
-#
-# This package MUST have its own updater. The generic release scanner in
-# .github/workflows/update-engine.yml only rewrites "Version:" - it does not
-# reset Release, does not add a %changelog entry, and does not check that the
-# release asset exists. Packages with an update.sh are skipped by that
-# scanner, so this script is also the fix for that class of bug here.
 
 SPEC_FILE="splayer-next.spec"
 GITHUB_REPO="SPlayer-Dev/SPlayer-Next"
@@ -25,9 +13,6 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 
-# Get latest stable tag via git ls-remote (no rate limit).
-# Deliberately numeric X.Y.Z only: dev-branch prereleases such as
-# 1.2.0-alpha.1 never match and are never picked up.
 LATEST_TAG=$(git ls-remote --tags "https://github.com/$GITHUB_REPO.git" 2>/dev/null \
     | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' \
     | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | sed -E 's/^v?([0-9].*)/\1 &/' | sort -V -k1,1 | tail -1 | awk '{print $2}')
@@ -47,10 +32,6 @@ fi
 
 echo "  -> [UPDATE] $CURRENT_VERSION -> $LATEST_VERSION"
 
-# Upstream publishes several Linux artifacts per release (.rpm/.deb/
-# .AppImage/.tar.gz/.pacman for x86_64+aarch64). This spec repackages the
-# x86_64 RPM, so confirm that exact asset exists before bumping - otherwise
-# the new Source0 404s and fails every COPR build of that NVR.
 RPM_URL="https://github.com/$GITHUB_REPO/releases/download/v${LATEST_VERSION}/splayer-next-${LATEST_VERSION}-x86_64.rpm"
 echo "  -> [CHECK] Verifying $RPM_URL"
 if ! curl --output /dev/null --silent --location --head --fail "$RPM_URL"; then
@@ -58,14 +39,9 @@ if ! curl --output /dev/null --silent --location --head --fail "$RPM_URL"; then
     exit 0
 fi
 
-# New upstream version -> Release restarts at 1 (rpm-version(7)).
 sed -i -E "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
 sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
-# The bundled() Provides and the sha256 comment describe binaries shipped
-# INSIDE the upstream RPM, so they cannot be guessed - they are only correct
-# after someone tears the new artifact apart. Flag that instead of silently
-# keeping stale values.
 echo "  -> [NOTE] Re-verify the bundled electron/better-sqlite3 versions,"
 echo "            the sha256 comment, and the readelf NEEDED set in"
 echo "            $SPEC_FILE against the new artifact:"
@@ -80,8 +56,6 @@ else
 fi
 
 echo "  -> [DONE] Successfully patched $SPEC_FILE."
-# Guard: an updater must never leave a spec without its header. If the
-# changelog rewrite or a sed wiped the file, restore from git and fail loudly.
 if ! grep -q "^Name:" "$SPEC_FILE"; then
     echo "FATAL: $SPEC_FILE lost its Name: header during update; restoring" >&2
     git checkout -- "$SPEC_FILE" 2>/dev/null || true

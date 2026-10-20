@@ -1,24 +1,11 @@
 #!/bin/bash
 
-# Run this from its own package directory. update-engine.yml does `pushd <pkg>`
-# first; running update.sh from the repo root instead let the changelog append
-# create a stray <pkg>.spec at the repo root, and the Name: check then reported
-# a false corruption (hit twice, 2026-10-07: stray umbriel-git.spec, then 32
-# stray root specs during an agent sweep).
 _update_sh_dir=$(cd "$(dirname "$0")" && pwd) || exit 1
 if [ "$(pwd)" != "$_update_sh_dir" ]; then
     echo "FATAL: run update.sh from its package directory:" >&2
     echo "  cd $_update_sh_dir && bash update.sh" >&2
     exit 1
 fi
-# update.sh for wlroots (GitLab-hosted)
-#
-# Uses `git ls-remote --tags` (no HTTP API) for robustness: the GitLab REST
-# API intermittently returns 504 Gateway Time-outs under load, which previously
-# made this script exit 1 and silently skip version checks on every run of the
-# auto-updater (the package could have gone stale unnoticed). ls-remote works
-# over the git protocol and is the same mechanism used by every other update.sh
-# in this repo.
 
 SPEC_FILE="wlroots.spec"
 GIT_URL="https://gitlab.freedesktop.org/wlroots/wlroots.git"
@@ -26,8 +13,6 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on wlroots..."
 
-# Latest stable tag. wlroots tags are bare versions (0.20.2, 0.20.0-rc5).
-# Pre-release tags (rc, beta, alpha, ~) are excluded so we only track stable.
 LATEST_TAG=$(git ls-remote --tags "$GIT_URL" 2>/dev/null \
   | awk '{print $2}' \
   | sed 's|refs/tags/||; s/\^{}//' \
@@ -41,20 +26,16 @@ if [ -z "$LATEST_TAG" ]; then
     exit 1
 fi
 
-# wlroots tags have no 'v' prefix, but strip one defensively.
 LATEST_VERSION="${LATEST_TAG#v}"
 
-# Read the current version from the spec (the %global tag macro derives from it).
 CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 
 if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     echo "Update found: $CURRENT_VERSION -> $LATEST_VERSION"
 
-    # 1. Update Version and reset Release to 1 (new upstream version)
     sed -i "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
-    # 2. Replace changelog with a single entry
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
     sed -i '/^%changelog/,$d' "$SPEC_FILE"
     {
@@ -67,9 +48,6 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
 else
     echo "Package is already at the latest version ($CURRENT_VERSION). No update needed."
 fi
-# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).
-# Guard: an updater must never leave a spec without its header. If the
-# changelog rewrite or a sed wiped the file, restore from git and fail loudly.
 if ! grep -q "^Name:" "$SPEC_FILE"; then
     echo "FATAL: $SPEC_FILE lost its Name: header during update; restoring" >&2
     git checkout -- "$SPEC_FILE" 2>/dev/null || true

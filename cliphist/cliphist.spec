@@ -33,22 +33,7 @@ install -d %{buildroot}%{_bindir}
 install -m 0755 cliphist %{buildroot}%{_bindir}/cliphist
 
 %check
-# Upstream ships cliphist_test.go plus testdata/; wire the suite in so a
-# regression fails the build instead of reaching users.
-#
-# The suite must NOT run as root. testdata/no-permission.txtar does
-# "chmod 111 $HOME" and then asserts that cliphist store fails with
-# "permission denied" - which can never happen for uid 0.
-#
-# How to get off uid 0 depends on who owns the build:
-#  - A plain "rpmbuild -bb" runs as root, so we must drop privileges. The
-#    Go module cache then lives under /root, which the unprivileged user
-#    cannot traverse, so run the suite from a copy under /tmp.
-#  - mock - which is what COPR and koji use - already runs the whole build
-#    as the unprivileged "mockbuild" user, so useradd is impossible there
-#    and pointless: the suite is run in place. Getting this wrong made the
-#    COPR build 11065113 fail with "su: user cliphist-check does not exist
-#    or the user entry does not contain all the required fields".
+# Do not run tests as root (uid 0).
 export GO111MODULE=on
 if [ "$(id -u)" -eq 0 ]; then
   useradd -r -m -d /tmp/cliphist-check cliphist-check

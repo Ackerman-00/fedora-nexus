@@ -1,9 +1,7 @@
 %global debug_package %{nil}
 %global __os_install_post %{nil}
 
-# Electron app extracted from the upstream AppImage. Everything the app needs
-# travels under /opt/openchamber, so bundled libraries must not leak into
-# system Provides/Requires; genuine system deps are declared explicitly below.
+# Bundled /opt libs must not leak into Provides.
 %global __provides_exclude_from ^/opt/openchamber/.*$
 %global __requires_exclude_from ^/opt/openchamber/.*$
 
@@ -20,8 +18,7 @@ Source1:        %{url}/raw/v%{version}/LICENSE
 # sha256: f90527c3537d28c3f09c9a7f9affc6fd2ef73731709b9f3c92e325c157ae19cf
 
 ExclusiveArch:  x86_64
-# aarch64 AppImage exists upstream (OpenChamber-2.1.0-linux-arm64.AppImage) but
-# this repo only enables x86_64 COPR chroots; extend if that changes.
+# x86_64 only; aarch64 AppImage exists upstream.
 
 BuildRequires:  binutils
 BuildRequires:  squashfs-tools
@@ -73,8 +70,7 @@ chmod go-w squashfs-root
 install -dm755 %{buildroot}/opt/openchamber
 cp -ar squashfs-root/* %{buildroot}/opt/openchamber/
 
-# Bundled sherpa-onnx node carries a builder-machine RUNPATH that trips
-# brp check-rpaths; $ORIGIN resolution is preserved without it.
+# Strip builder-machine RUNPATH from sherpa-onnx node.
 find %{buildroot}/opt/openchamber/resources -name '*.node' -print0 | \
     xargs -0 -r patchelf --remove-rpath 2>/dev/null || true
 
@@ -86,15 +82,10 @@ exec /opt/openchamber/AppRun "$@"
 WRAPPER_EOF
 chmod 755 %{buildroot}%{_bindir}/openchamber
 
-# Upstream 2.3.1 replaced the scalable SVG with a 512x512 PNG (torn apart
-# 2026-10-13: only usr/share/icons/hicolor/512x512/apps/openchamber.png
-# plus a root openchamber.png symlink to it). Installed to the standard
-# apps/ location.
 install -Dm644 squashfs-root/usr/share/icons/hicolor/512x512/apps/openchamber.png \
     %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/openchamber.png
 
-# Upstream desktop entry runs AppRun --no-sandbox; ours goes through the
-# wrapper with the SUID sandbox intact (see %files %attr below).
+# Desktop entry uses the wrapper with SUID sandbox.
 install -dm755 %{buildroot}%{_datadir}/applications/
 cat > %{buildroot}%{_datadir}/applications/openchamber.desktop <<DESKTOP_EOF
 [Desktop Entry]
@@ -119,8 +110,7 @@ install -Dm644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 /opt/openchamber/
 %{_datadir}/applications/openchamber.desktop
 %{_datadir}/icons/hicolor/512x512/apps/openchamber.png
-# Chromium SUID sandbox MUST stay setuid root (AGENTS.md Electron rule, Oct 2026:
-# 0755 fatally aborts launch for every non-root user, proven rc=133 under xvfb).
+# Chromium SUID sandbox must stay setuid root.
 %attr(4755, root, root) /opt/openchamber/chrome-sandbox
 
 %changelog

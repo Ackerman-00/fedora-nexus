@@ -3,8 +3,7 @@
 
 # Prebuilt binary: no debuginfo to extract.
 %global debug_package %{nil}
-# The AppImage tree ships private copies of system libraries; they must never
-# be advertised as system-wide Provides (same hijack class as fluxer/helium).
+# AppImage private libs must not become system Provides.
 %global __provides_exclude_from ^/opt/opencad-studio/.*$
 %global __requires_exclude_from ^/opt/opencad-studio/.*$
 
@@ -27,9 +26,7 @@ BuildRequires:  squashfs-tools
 BuildRequires:  coreutils
 BuildRequires:  desktop-file-utils
 
-# Runtime deps: iced/wgpu stack dlopened at runtime (winit wayland+x11
-# backends, wgpu Vulkan with GL fallback), so loaders are hard Requires.
-# Matches the snap stage-packages mapped to Fedora names.
+# iced/wgpu loaders are dlopened; hard deps.
 Requires:       dbus
 Requires:       fontconfig
 Requires:       freetype
@@ -65,8 +62,7 @@ unsquashfs -q -d squashfs-root -o "$OFFSET" %{SOURCE0}
 chmod go-w squashfs-root
 
 %install
-# The AppImage tree is FHS usr/-rooted; flatten one level so the tree lands
-# as /opt/opencad-studio/{bin,lib,share} and the wrapper path below holds.
+# Flatten usr/-rooted tree to /opt/opencad-studio.
 mkdir -p %{buildroot}/opt/opencad-studio
 cp -a squashfs-root/usr/* %{buildroot}/opt/opencad-studio/
 
@@ -77,8 +73,7 @@ exec /opt/opencad-studio/bin/OpenCADStudio "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/opencad-studio
 
-# Ship the upstream desktop entry (Icon/StartupWMClass already match the
-# appid); only Exec is repointed at the PATH wrapper.
+# Ship upstream desktop entry; repoint Exec only.
 install -Dm0644 squashfs-root/usr/share/applications/%{appid}.desktop \
     %{buildroot}%{_datadir}/applications/%{appid}.desktop
 sed -i 's|^Exec=.*|Exec=opencad-studio %F|' \

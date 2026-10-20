@@ -21,9 +21,7 @@ BuildRequires:  gcc
 
 %install
 %make_install
-# Upstream completion ships a #!/usr/bin/env bash shebang but the file is
-# sourced by bash-completion, never executed (rpmlint non-executable-script)
-# — drop the shebang, keep mode 644.
+# Completion is sourced, not executed; drop the shebang.
 sed -i '1{/^#!/d}' assets/hellwal-completion.bash
 install -Dpm0644 assets/hellwal-completion.bash %{buildroot}%{bash_completions_dir}/%{name}
 

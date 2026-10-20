@@ -9,9 +9,8 @@
 
 Name:           concat
 Version:        0.2.8
-# 2 = %license/%doc path fix (COPR 11066628); 3 = restore libxkbcommon-x11
-# Requires dropped by a concurrent edit + desktop-file-utils BuildRequires.
-# COPR already published 0.2.5-2, so a same-version fix must exceed it.
+# Release history: 2 = %license/%doc path fix, 3 = restore libxkbcommon-x11 Requires + desktop-file-utils BuildRequires
+# COPR published 0.2.5-2 - a same-version fix must exceed it
 Release:        1%{?dist}
 Summary:        Free and open source video editor (CapCut alternative)
 

@@ -3,13 +3,10 @@
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20260811125152
 
-# Upstream has no releases/tags; it is tracked by commit. The python project
-# version (pyproject.toml) stays 2.0.0, so the .dist-info directory is named
-# after %%{pyver}, NOT the rpm %%{version} (which carries the ^gitdate suffix).
+# Dist-info is named after %{pyver}, not the rpm %{version}
 %global pyver           2.0.0
 
-# NOTE: This package is for MangoWM only. It will NOT work with
-# Hyprland setups (no Hyprland IPC coupling; uses mmsg).
+# MangoWM only; does not work with Hyprland.
 
 Name:           caelestia-cli-mango
 Version:        %{pyver}^%{gitdate}git%{shortcommit}
@@ -27,7 +24,6 @@ BuildRequires:  pyproject-rpm-macros
 BuildRequires:  python3-hatchling
 BuildRequires:  python3-pip
 
-# === RUNTIME DEPENDENCIES ===
 # Compositor (MangoWM only!)
 Requires:       mangowm
 # Shell (caelestia-shell IPC for picker/shell/emojis)
@@ -43,8 +39,6 @@ Requires:       grim
 Requires:       slurp
 # Clipboard
 Requires:       wl-clipboard
-# cliphist is missing from Fedora 43, but this repo now ships it for every
-# supported release, so it can be required unconditionally again.
 Requires:       cliphist
 Requires:       fuzzel
 # Launcher

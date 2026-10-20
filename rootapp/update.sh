@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# Run this from its own package directory. update-engine.yml does `pushd <pkg>`
-# first; running update.sh from the repo root instead let the changelog append
-# create a stray <pkg>.spec at the repo root, and the Name: check then reported
-# a false corruption (hit twice, 2026-10-07: stray umbriel-git.spec, then 32
-# stray root specs during an agent sweep).
 _update_sh_dir=$(cd "$(dirname "$0")" && pwd) || exit 1
 if [ "$(pwd)" != "$_update_sh_dir" ]; then
     echo "FATAL: run update.sh from its package directory:" >&2
@@ -38,11 +33,9 @@ if [ -n "$CURRENT_SHA" ]; then
 fi
 echo "Update detected."
 
-# Try to extract version from the AppImage
 VERSION=""
 EXTRACTED=0
 
-# Method 1: extract with unsquashfs
 if command -v unsquashfs &>/dev/null; then
     OFFSET=$(od -An -N8 -t u8 -j 40 "$TMPDIR/Root.AppImage" | tr -d ' ')
     MAGIC=$(dd if="$TMPDIR/Root.AppImage" bs=1 skip=$OFFSET count=4 2>/dev/null)
@@ -62,7 +55,6 @@ with open('$TMPDIR/Root.AppImage', 'rb') as f:
     if [ -d "$TMPDIR/squashfs-root" ]; then
         EXTRACTED=1
     fi
-# Method 2: Python-based extract (fallback when unsquashfs not available)
 elif command -v python3 &>/dev/null; then
     chmod +x "$TMPDIR/Root.AppImage"
     cd "$TMPDIR"
@@ -76,7 +68,6 @@ fi
 if [ "$EXTRACTED" = "1" ]; then
     ROOT="$TMPDIR/squashfs-root"
 
-    # .NET/Avalonia apps: version in sq.version (NuSpec XML)
     if [ -z "$VERSION" ] && [ -f "$ROOT/usr/bin/sq.version" ]; then
         VERSION=$(python3 -c "
 import xml.etree.ElementTree as ET
@@ -95,7 +86,6 @@ except:
 ")
     fi
 
-    # Electron apps: version in package.json
     if [ -z "$VERSION" ] && [ -f "$ROOT/resources/app/package.json" ]; then
         VERSION=$(python3 -c "
 import json
@@ -107,13 +97,10 @@ except:
 ")
     fi
 
-    # No wildcard recursive grep — it picks up dependency versions (e.g. Stripe billing SDK "19.2.5")
-    # sq.version is the ONLY authoritative source for .NET/Avalonia app versions.
 
     rm -rf "$TMPDIR/squashfs-root" "$TMPDIR/squashfs.img"
 fi
 
-# Validate extracted version (reject implausible values like dependency versions)
 if [ -n "$VERSION" ]; then
     MAJOR="${VERSION%%.*}"
     if [ "$MAJOR" -gt 5 ] 2>/dev/null; then
@@ -122,7 +109,6 @@ if [ -n "$VERSION" ]; then
     fi
 fi
 
-# Update spec
 if [ -n "$VERSION" ] && [ "$VERSION" != "$CURRENT_VERSION" ]; then
     echo "Detected version: $VERSION ($CURRENT_VERSION -> $VERSION)"
     sed -i "s/^Version:.*/Version:        $VERSION/" "$SPEC_FILE"
@@ -132,14 +118,12 @@ else
     echo "Version unchanged: $VERSION"
 fi
 
-# Update sha256 comment
 if grep -q "^# sha256:" "$SPEC_FILE"; then
     sed -i "s/^# sha256:.*/# sha256: $NEW_SHA/" "$SPEC_FILE"
 else
     sed -i "/^Source0:/a # sha256:  $NEW_SHA" "$SPEC_FILE"
 fi
 
-# Only update changelog if version or sha actually changed
 if [ "$VERSION" != "$CURRENT_VERSION" ] || [ "$NEW_SHA" != "$CURRENT_SHA" ]; then
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
     sed -i '/^%changelog/,$d' "$SPEC_FILE"
@@ -151,9 +135,6 @@ if [ "$VERSION" != "$CURRENT_VERSION" ] || [ "$NEW_SHA" != "$CURRENT_SHA" ]; the
 fi
 
 echo "Spec file updated to version $VERSION."
-# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).
-# Guard: an updater must never leave a spec without its header. If the
-# changelog rewrite or a sed wiped the file, restore from git and fail loudly.
 if ! grep -q "^Name:" "$SPEC_FILE"; then
     echo "FATAL: $SPEC_FILE lost its Name: header during update; restoring" >&2
     git checkout -- "$SPEC_FILE" 2>/dev/null || true

@@ -2,14 +2,10 @@
 %global commit          cae55ed689bec8445d187f8057527a5dd515dab8
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20260811081721
-# Single source of truth for the upstream release base version. Used both in
-# the Version tag and passed to CMake as -DVERSION (rpmbuild tarballs carry no
-# .git, so upstream's `git describe` fallback cannot run). update.sh keeps this
-# in sync with the upstream tag that points at %{commit}.
+# basever tracks the upstream tag for %{commit}
 %global basever         2.1.0
 
-# NOTE: This package is for MangoWM only. It will NOT work with
-# other Wayland compositors (Hyprland, Sway, Niri, etc.).
+# MangoWM only; not other Wayland compositors.
 
 Name:           caelestia-shell-mango
 Version:        %{basever}^%{gitdate}git%{shortcommit}
@@ -38,11 +34,8 @@ BuildRequires:  aubio-devel
 BuildRequires:  libcava-devel
 BuildRequires:  fftw-devel
 
-# === RUNTIME DEPENDENCIES ===
 # Compositor (MangoWM only!)
 Requires:       mangowm
-# Quickshell shell runner (official Fedora package; the quickshell-git
-# transitional stub is retired and disappears from the COPR)
 Requires:       quickshell
 # Launcher
 Requires:       app2unit
@@ -54,18 +47,12 @@ Requires:       libcava
 # Monitor brightness (DDC) for displays without a backlight interface
 Requires:       ddcutil
 # Backlight brightness for displays WITH a backlight interface
-# (Brightness.qml: brightnessctl s, brightnessctl g/m)
 Requires:       brightnessctl
-# Colour scheme/wallpaper/record via the CLI (services/Colours.qml, Wallpapers.qml,
-# modules/controlcenter/appearance, launcher Schemes.qml, utils/SysInfo.qml)
 Recommends:     caelestia-cli-mango >= 2.0.0
 # Network
 Requires:       NetworkManager
 # Hardware monitoring
 Requires:       lm_sensors
-# Clipboard manager (modules/launcher/services/Clipboard.qml)
-# cliphist is missing from Fedora 43, but this repo now ships it for every
-# supported release, so it can be required unconditionally again.
 Requires:       cliphist
 # Screen recording (modules/utilities/Content.qml record card)
 Requires:       gpu-screen-recorder

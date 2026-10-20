@@ -1,6 +1,4 @@
-# No debuginfo: pure-Python wheel, zero ELF binaries, so find-debuginfo
-# would emit an empty debugsource list which rpm >= 6 rejects as a hard
-# error (same failure as mixtapes build 10955014).
+# No debuginfo: pure-Python wheel, no ELF binaries.
 %global debug_package %{nil}
 
 Name:           python-yt-dlp-get-pot
@@ -10,22 +8,15 @@ Summary:        PO token provider plugin for yt-dlp
 
 License:        Unlicense
 URL:            https://pypi.org/project/yt-dlp-get-pot/
-# NOTE: the pypi_source macro emits a dashed tarball name that 404s on
-# files.pythonhosted.org for this project; use the real underscore URL.
+# pypi_source name 404s; use the underscore URL.
 Source0:        https://files.pythonhosted.org/packages/source/y/yt-dlp-get-pot/yt_dlp_get_pot-%{version}.tar.gz
 
-# Aliased name expected by dependent specs (e.g. mixtapes
-# Requires: python3-yt-dlp-get-pot); the binary RPM is named python-yt-dlp-get-pot.
+# Aliased name expected by dependent specs.
 Provides:       python3-yt-dlp-get-pot
 
 BuildRequires:  python3-devel
 
-# The shipped extractor imports yt_dlp at module import time and is
-# only ever loaded by yt-dlp's plugin loader, so the package is inert
-# without it. Proven 2026-10-04 in a fresh fedora:44 container:
-# `python3 -c "import yt_dlp_plugins.extractor.getpot"` failed with
-# "ModuleNotFoundError: No module named 'yt_dlp'" while yt-dlp was
-# absent (evidence recorded in .opencode-relay.md run 37154151210).
+# plugin needs yt-dlp at runtime - proven in fedora:44
 Requires:       yt-dlp
 
 %description
@@ -34,9 +25,7 @@ PO-token-gated formats (e.g. seekable Opus) keep working. Packaged
 for the Nexus repository as a dependency of mixtapes.
 
 %prep
-# Unpack the PyPI sdist so %generate_buildrequires can find the
-# sources (missing %prep fails the build the same way python-pydbus
-# build 10955044 and python-ytmusicapi 10955049 failed).
+# Unpack sdist so build-requires generation finds setup.py.
 %autosetup -p1 -n yt_dlp_get_pot-%{version}
 
 %generate_buildrequires

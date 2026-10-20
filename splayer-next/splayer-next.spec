@@ -2,11 +2,7 @@
 %global __requires_exclude_from ^/opt/SPlayer-Next/.*$
 %global __provides_exclude_from ^/opt/SPlayer-Next/.*$
 
-# Read out of the 1.1.0 artifact (/tmp teardown 2026-09-06):
-# - better-sqlite3 version from
-#   resources/app.asar.unpacked/node_modules/better-sqlite3/package.json
-# - electron version from package.json devDependencies (~43.2.0),
-#   confirmed by the bundled Chromium 150.0.7871.129 runtime probe
+# versions read from the 1.1.0 app.asar, not the filename
 %global electron_version 43.2.0
 %global better_sqlite3_version 13.0.3
 
@@ -19,8 +15,6 @@ License:        AGPL-3.0-only
 URL:            https://github.com/SPlayer-Dev/SPlayer-Next
 
 # sha256: 7fe7ec69ba6353c0230d4a65dbea7d014fb40310f90745c0babfeda235224e1a
-# Use the native upstream RPM (upstream also publishes an aarch64 RPM;
-# this repo only ships x86_64 chroots, same as heroic/vesktop/fluxer)
 Source0:        %{url}/releases/download/v%{version}/splayer-next-%{version}-x86_64.rpm
 # The rpm payload carries no license text; the repo does at the same tag.
 Source1:        %{url}/raw/v%{version}/LICENSE
@@ -31,12 +25,7 @@ ExclusiveArch:  x86_64
 BuildRequires:  cpio
 BuildRequires:  desktop-file-utils
 
-# Explicit runtime dependencies: the union of the ELF NEEDED set
-# (readelf -d on the main binary, chrome_crashpad_handler, the bundled
-# .so files and all 5 native .node modules incl. the better-sqlite3
-# prebuild) and the upstream RPM's own Requires (libXtst, libuuid,
-# libXScrnSaver, libnotify, xdg-utils are dlopen/helper deps that do
-# not show up as NEEDED but are required at runtime)
+# Runtime deps are NEEDED plus dlopen/helper deps.
 Requires:       alsa-lib
 Requires:       atk
 Requires:       at-spi2-atk
@@ -99,15 +88,12 @@ cp -a opt/SPlayer-Next/* %{buildroot}/opt/SPlayer-Next/
 install -d -m 0755 %{buildroot}%{_datadir}
 cp -a usr/share/applications %{buildroot}%{_datadir}/
 cp -a usr/share/icons %{buildroot}%{_datadir}/
-# NOTE: the upstream RPM also ships /usr/lib/.build-id symlinks
-# (openSUSE-style debuginfo links into /opt); they are deliberately
-# NOT installed - they dangle and would collide with our debuginfo.
+# Skip upstream .build-id symlinks; they dangle.
 
 # 3. Create the Native Wayland Wrapper Script
 install -d -m 0755 %{buildroot}%{_bindir}
 cat <<-'EOF' > %{buildroot}%{_bindir}/splayer-next
 #!/bin/sh
-# Automatically force native Wayland rendering if detected
 if [ "$XDG_SESSION_TYPE" = "wayland" ] || [ -n "$WAYLAND_DISPLAY" ]; then
     export ELECTRON_OZONE_PLATFORM_HINT="auto"
 fi
@@ -124,10 +110,7 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/applications/top.imsyy.splayer_next.desktop
 %{_datadir}/icons/hicolor/512x512/apps/SPlayer-Next.png
 /opt/SPlayer-Next/
-# Electron aborts at startup ("SUID sandbox helper binary was found, but is
-# not configured correctly", setuid_sandbox_host.cc:166) unless chrome-sandbox
-# is SUID root 4755 - proven FATAL rc=133 as non-root under xvfb 2026-10-02;
-# same fix vesktop/stoat-desktop already ship, matches Google Chrome's rpm.
+# Electron aborts unless chrome-sandbox is SUID root 4755.
 %attr(4755, root, root) /opt/SPlayer-Next/chrome-sandbox
 
 %changelog

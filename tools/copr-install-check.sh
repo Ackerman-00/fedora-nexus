@@ -1,16 +1,10 @@
 #!/bin/bash
-# copr-install-check.sh - install the COPR-published RPM (what users get) in a
-# fresh container + smoke test. For prebuilt-browser packages that cannot run
-# plain `--version` headless/as-root, use these proven smoke commands:
-#   helium-browser:       /opt/helium/helium --no-sandbox --headless --disable-gpu --version
-#   zen-browser:          MOZ_HEADLESS=1 /opt/zen/zen --version
-#   heroic-games-launcher: ls /opt/Heroic/resources/app.asar   (note capital H)
-#
-# usage: copr-install-check.sh <pkg> <rpm-name> <smoke-cmd> [chroot-number]
-# The chroot argument rotates the install test onto a secondary Fedora release
-# (e.g. 45, 43, or "rawhide"); it defaults to 44. Hardcoding one release hid
-# secondary-chroot regressions, so the release is a parameter now.
 set -u
+# usage: copr-install-check.sh <pkg> <rpm-name> <smoke-cmd> [chroot-number]
+# Chroot defaults to 44; rotate for secondary coverage
+# helium-browser: /opt/helium/helium --no-sandbox --headless --disable-gpu --version
+# zen-browser: MOZ_HEADLESS=1 /opt/zen/zen --version
+# heroic-games-launcher: ls /opt/Heroic/resources/app.asar
 PKG=$1; PAT=$2; SMOKE=$3; CHROOT=${4:-44}
 docker run --rm registry.fedoraproject.org/fedora:$CHROOT bash -lc "
 dnf -y -q --setopt=gpgcheck=0 install dnf-plugins-core >/dev/null 2>&1

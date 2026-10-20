@@ -6,9 +6,7 @@ Name:           sonora
 Version:        0.43.0
 Release:        2%{?dist}
 Summary:        Native music streaming client
-# Workspace is GPL-3.0-or-later; the binary embeds the Inter typeface
-# (OFL-1.1) and four icon packs (Lucide ISC, Iconoir MIT, Remix Apache-2.0,
-# Solar CC-BY-4.0) via include_bytes — see README "License" + THIRD-PARTY.md.
+# SPDX: GPL-3.0-or-later AND embedded OFL/ISC/MIT/Apache/CC-BY.
 License:        GPL-3.0-or-later AND OFL-1.1 AND ISC AND MIT AND Apache-2.0 AND CC-BY-4.0
 URL:            https://github.com/sonorahq/sonora
 Source0:        https://github.com/sonorahq/sonora/archive/refs/tags/v%{version}.tar.gz
@@ -21,17 +19,11 @@ BuildRequires:  gcc
 BuildRequires:  gcc-c++
 # .cargo/config.toml passes -fuse-ld=mold on x86_64 (see CLAUDE.md "Building").
 BuildRequires:  mold
-# Git deps (sonorahq/gpui fork, ytmusic-rs, librespot/rodio patches) are
-# locked in Cargo.lock but fetched at build time — cargo needs git.
+# Git deps are fetched at build; need git.
 BuildRequires:  git
 BuildRequires:  pkgconf-pkg-config
-# opusic-sys (Opus codec, audio stack) configures its bundled build with the
-# cmake binary — proven by COPR F45 build 10999320 ("is `cmake` not installed?").
-# Upstream docs omit it (their CI/dev boxes already carry it); not optional here.
+# opusic-sys needs cmake at build; upstream omits it.
 BuildRequires:  cmake
-# Native deps from upstream CLAUDE.md "Building" (Fedora set) + flatpak
-# manifest: GPUI links x11/xcb/xkb/wayland/vulkan/fontconfig/freetype,
-# cpal/rodio need alsa, rusqlite links system sqlite (non-Windows),
 # widevine shim.cc compiles via the cc crate (needs gcc-c++ above).
 BuildRequires:  alsa-lib-devel
 BuildRequires:  fontconfig-devel
@@ -51,8 +43,7 @@ Requires:       hicolor-icon-theme
 Requires(post): desktop-file-utils
 Requires(post): gtk-update-icon-cache
 Requires(postun): gtk-update-icon-cache
-# GPUI is Vulkan-based: the ICD is a runtime requirement, loaded (not linked).
-# Weak dep: default dnf installs it, NVIDIA-only boxes may drop it.
+# GPUI needs a Vulkan ICD at runtime.
 Recommends:     mesa-vulkan-drivers
 # ALSA bridge for the sound server (AUR sonora note).
 Recommends:     pipewire-alsa
@@ -66,8 +57,7 @@ and play local files — all in one app.
 %setup -q -n %{crate}-%{version}
 
 %build
-# Plain --release keeps Cargo's no-debuginfo default, hence debug_package
-# nil above (matugen pattern). --locked pins the git deps (gpui fork etc.).
+# Plain --release keeps no-debuginfo; --locked pins git deps.
 export CARGO_NET_OFFLINE=false
 export RUSTFLAGS="%{build_rustflags}"
 cargo build --release --locked --package sonora
@@ -87,9 +77,7 @@ sed -e "s/@VERSION@/%{version}/" -e "s/@DATE@/$(date -u +%F)/" \
     flatpak/io.github.nolight132.sonora.metainfo.xml > %{appid}.metainfo.xml
 install -Dm644 %{appid}.metainfo.xml %{buildroot}%{_metainfodir}/%{appid}.metainfo.xml
 
-# The six embedded icon-pack license files all share the basename LICENSE;
-# the rpmbuilt-in license copier keeps one and silently drops the rest.
-# Install them under distinct names so every bundled license actually ships.
+# Rename shared license files; the copier drops duplicates.
 mkdir -p %{buildroot}%{_licensedir}/%{name}
 install -Dm644 assets/icons/LICENSE %{buildroot}%{_licensedir}/%{name}/icons-LICENSE
 install -Dm644 assets/icons/common/LICENSE %{buildroot}%{_licensedir}/%{name}/icons-common-LICENSE

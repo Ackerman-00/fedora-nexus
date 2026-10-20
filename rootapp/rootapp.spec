@@ -127,8 +127,7 @@ chmod 755 %{buildroot}%{_bindir}/rootapp
 install -Dm644 squashfs-root/Root.png %{buildroot}%{_datadir}/pixmaps/rootapp.png
 install -Dm644 squashfs-root/Root.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/rootapp.png
 
-# Remove chrome-sandbox SUID bit — DotNetBrowser bundles its own Chromium sandbox.
-# Setting SUID root on chrome-sandbox is a known CVE vector (CVE-2021-38003 etc).
+# Drop chrome-sandbox SUID; bundled Chromium sandbox handles it.
 if [ -f %{buildroot}/opt/rootapp/chrome-sandbox ]; then
     rm -f %{buildroot}/opt/rootapp/chrome-sandbox
 fi

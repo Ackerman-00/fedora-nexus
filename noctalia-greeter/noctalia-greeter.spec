@@ -8,15 +8,10 @@ Version:        1.7.0^%{gitdate}git%{shortcommit}
 Release:        2%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
-# MIT covers the project; the vendored Wuffs decoder is Apache-2.0 OR MIT, so
-# the package as a whole is MIT AND Apache-2.0 (SPDX).
+# SPDX: MIT AND Apache-2.0 (vendored Wuffs).
 License:        MIT AND Apache-2.0
 URL:            https://github.com/noctalia-dev/noctalia-greeter
 Source0:        %{url}/archive/%{commit}/%{name}-%{commit}.tar.gz
-# The vendored third_party/wuffs/wuffs-v0.4.c carries only its copyright and
-# SPDX notice; its revision is a14745aa458fd2b2785034efa04eab3c7b5b91e0
-# (WUFFS_VERSION 0.4.0). Upstream PACKAGING.md tells packagers to ship the
-# separate texts, so they are pinned sources.
 # sha256: 0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594
 Source1:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-APACHE
 # sha256: bb811a4b485eac3caeb8bdc58bbafb355fbcb6116010a7ea9179e5c70b0bc878
@@ -29,14 +24,11 @@ BuildRequires:  dbus
 BuildRequires:  polkit
 BuildRequires:  stb_image_resize2-devel
 BuildRequires:  libinput-devel
-# Precise wlroots series pin: upstream declares no floor, but Fedora ships
-# multiple wlroots series and the 0.20 layout is ABI-critical (distro reality).
+# wlroots 0.20 layout is ABI-critical; pin the series.
 BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20
-# Protocol codegen uses meson find_program('wayland-scanner'), not
-# dependency() - still needs an explicit BR, it never self-declares.
+# Codegen uses find_program; needs explicit wayland-scanner BR.
 BuildRequires:  pkgconfig(wayland-scanner)
-# libEGL-devel removed 2026-10-09: duplicate twin of pkgconfig(egl) below
-# (both resolve to mesa-libEGL-devel); keep the pkgconfig() form.
+# Use pkgconfig(egl); libEGL-devel was a duplicate.
 BuildRequires:  mesa-libGLES-devel
 BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(cairo-ft)

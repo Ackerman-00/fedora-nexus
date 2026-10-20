@@ -1,6 +1,4 @@
-# No debuginfo: pure-Python wheel, zero ELF binaries, so find-debuginfo
-# would emit an empty debugsource list which rpm >= 6 rejects as a hard
-# error (same failure as mixtapes build 10955014).
+# No debuginfo: pure-Python wheel, no ELF binaries.
 %global debug_package %{nil}
 
 Name:           python-pydbus
@@ -12,17 +10,12 @@ License:        LGPL-2.0-or-later
 URL:            https://pypi.org/project/pydbus/
 Source0:        %{pypi_source pydbus}
 
-# Aliased name expected by dependent specs (e.g. mixtapes
-# Requires: python3-pydbus); the binary RPM is named python-pydbus.
+# Aliased name expected by dependent specs.
 Provides:       python3-pydbus
 
 BuildRequires:  python3-devel
 
-# Runtime: pydbus/__init__.py does `from gi.repository.GLib import Variant`
-# (PyGObject), but upstream setup.py declares no install_requires and PyPI
-# requires_dist is empty, so %pyproject_* generates no dep for it. Without
-# this, `import pydbus` fails with ModuleNotFoundError: No module named 'gi'
-# on minimal installs (proven in f44 container teardown).
+# pydbus needs PyGObject; upstream declares no dep.
 Requires:       python3-gobject
 
 %description
@@ -30,9 +23,7 @@ pydbus provides Pythonic bindings for D-Bus. Packaged for the Nexus
 repository as a dependency of mixtapes (MPRIS/tray integration).
 
 %prep
-# Unpack the PyPI sdist so %generate_buildrequires can find setup.py
-# (missing %prep failed COPR build 10955044: "Neither pyproject.toml
-# nor setup.py found").
+# Unpack sdist so build-requires generation finds setup.py.
 %autosetup -p1 -n pydbus-%{version}
 
 %generate_buildrequires

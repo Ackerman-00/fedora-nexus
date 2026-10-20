@@ -1,67 +1,15 @@
 #!/bin/bash
-# container-teardown.sh - fresh-container rpmbuild + install + smoke harness
-# (repo-persistent version of the autonomous-run teardown; see .opencode-relay.md
-# run 36984729835 for the three harness bugs this fixes).
-#
-# Lessons encoded here (do NOT regress):
-#  1. Copy ALL repo-local files into SOURCES (Patch/Source1+ desktop files,
-#     icons, metainfo - e.g. stoat .desktop/.png, ly/wlroots .patch). COPR
-#     builds from a full SCM checkout; spectool -g alone only fetches URLs.
-#  2. Glob built RPMs across RPMS/* (noarch packages like waypaper land in
-#     RPMS/noarch, not RPMS/x86_64).
-#  3. Never `set -e` around, never edit this file while jobs run (bash reads
-#     the script incrementally; a mid-run edit corrupts running jobs).
-#  4. Print INSTALL_EXIT explicitly. `tail -1` of dnf hides the result when the
-#     RPM is already installed (it prints "Nothing to do." instead of
-#     "Complete!"), which made an install step look like it produced no output.
-#     With INSTALL_EXIT there is no ambiguity; session 5 of run 37006623550 hit
-#     exactly this on astal-gjs.
-#  5. Retry rpmbuild after "Failed build dependencies" (added 2026-10-04, hit on
-#     all five python-* packages in run 37154151210): %generate_buildrequires
-#     specs stop the FIRST rpmbuild pass with the dynamic deps it just
-#     discovered (e.g. python3dist(setuptools) >= 40.8). mock/COPR install those
-#     and retry automatically, so a one-shot local rpmbuild reports a false
-#     failure. The loop below runs `dnf builddep` on the generated
-#     *.buildreqs.nosrc.rpm (holds the exact dynamic dep set, including
-#     versioned and boolean forms a naive parse mangles) and retries, up to
-#     3 passes, exactly like mock does.
-#
-#  7. GTK4 GUI smokes under xvfb (added 2026-10-12, hit on protonplus):
-#     a minimal fedora:44 container lacks libGLESv2.so.2 and /etc/machine-id,
-#     so a GTK4 app SIGABRTs ("Couldn't open libGLESv2.so.2") and a bare
-#     `app --help` exits 1 with "Unknown command" - both read like package
-#     bugs but are container artifacts. Install mesa-dri-drivers mesa-libGLES
-#     mesa-libEGL dbus-daemon, generate /etc/machine-id, then
-#     `timeout 20 xvfb-run -a <app>` and check the process is still alive
-#     (GUI_ALIVE=yes). Electron apps still need --security-opt
-#     seccomp=unconfined on the docker run plus the chrome-sandbox %attr rule.
-#
-#  8. Fedora container images ship dnf tsflags=nodocs (hit on cliphist
-#     2026-10-14): after a dnf install, the /usr/share/doc/<pkg>/ files that
-#     `rpm -ql` lists are NOT on disk and rpm -V stays clean, so a smoke
-#     probing a %doc path fails (ls exit 2) and reads like a packaging bug.
-#     The payload is fine - a direct `rpm -ivh` does install the doc files.
-#     Never probe %doc paths in smokes: probe the binary (e.g. `cliphist
-#     version`) or a non-doc file instead.
-#
-#  9. One-shot spectool is a false-failure generator (hit on cliphist
-#     2026-10-14, run 38558721815): the first harness attempt got a failed
-#     Source0 download, so rpmbuild died with "Bad source" (RPMBUILD_EXIT=1,
-#     BUILT= empty) and the outer grep swallowed the lowercase "error:" line -
-#     a network hiccup wearing a broken-spec costume. The prompt's own repro
-#     snippet retries spectool three times; this harness now does too, prints
-#     SPECTOOL_FILES, and prints BUILD_ERROR: lines on any rpmbuild failure.
-#     Same package rebuilt green manually and on harness retry that session.
-#
-# 10. Smoke probes must survive a TTY-less container (hit on concord
-#     2026-10-14): a TUI that gets an unknown flag starts its alternate
-#     screen, finds no terminal, and exits 101 (rc=133 for Electron apps) -
-#     package fine, probe wrong. Probe with `--version`, `-h`, a file
-#     presence test, or an ldd check; only use xvfb for GUI apps. If a smoke
-#     fails, re-probe with another working flag before calling the package
-#     broken (concord -h and --version both exited 0 in a fresh container).
-#
-# usage: container-teardown.sh <pkgdir> <spec> <smoke-cmd> [rpmV-name]
+# container-teardown.sh <pkgdir> <spec> <smoke-cmd> [rpmV-name]
+# Copy repo-local files into SOURCES - spectool only fetches URLs
+# Glob RPMS/* - noarch lands in RPMS/noarch
+# Never edit while jobs run - bash reads the script incrementally
+# Unescaped quote in the payload truncates it
+# Print INSTALL_EXIT - dnf prints "Nothing to do." when already installed
+# %generate_buildrequires specs fail pass 1 - retry
+# Retry spectool - a one-shot download failure is a false failure
+# Container lacks libGLESv2 - install mesa-libGLES for GTK4 smokes
+# nodocs tsflag - never probe %doc paths
+# Smoke must not need a TTY - probe --version, -h or a file
 set -u
 PKGDIR=$1; SPEC=$2; SMOKE=$3; RPMVNAME=${4:-}
 R=${R:-$PWD}
@@ -70,12 +18,10 @@ dnf -y -q --setopt=gpgcheck=0 install dnf-plugins-core rpm-build rpmdevtools >/d
 dnf -y -q --setopt=gpgcheck=0 copr enable ackerman/nexus >/dev/null 2>&1
 cd /tmp && rm -rf w && cp -r /srv/$PKGDIR ./w && cd w
 echo '--- builddep ---'
-# A failed builddep used to be invisible: the harness only echoed the last line
-# of dnf, so a transient metadata/download error left the BuildRequires
-# uninstalled and rpmbuild then failed with \"patchelf is needed by ...\",
-# which reads exactly like a broken spec (hit on zen-browser 2026-10-04).
-# Print the exit code and retry once, so that class of failure is provably a
-# harness/network artifact instead of a packaging bug.
+# A failed builddep is invisible - print the exit code and retry
+# Never edit while jobs run
+# Glob RPMS/* - noarch lands in RPMS/noarch
+# Unescaped quote in payload truncates it
 for bpass in 1 2; do
   dnf -y --setopt=gpgcheck=0 builddep $SPEC > /tmp/bd.log 2>&1
   brc=\$?

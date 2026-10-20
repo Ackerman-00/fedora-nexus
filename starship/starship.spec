@@ -8,8 +8,7 @@ Summary:        Minimal, blazing-fast, and customizable prompt for any shell (Ne
 License:        ISC
 URL:            https://github.com/starship/starship
 Source0:        %{url}/releases/download/v%{version}/starship-x86_64-unknown-linux-gnu.tar.gz
-# The binary release tarball carries no license text; the LICENSE lives in
-# the source tree at the same tag.
+# Tarball lacks license text; fetch from the tag.
 Source1:        %{url}/raw/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64

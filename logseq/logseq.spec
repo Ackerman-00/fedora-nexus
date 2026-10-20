@@ -9,7 +9,6 @@ License:        AGPL-3.0-only
 URL:            https://logseq.com/
 ExclusiveArch:  x86_64
 
-# Official Linux x86_64 payload (same files the AppImage wraps)
 # sha256: 289eadd4dfcbdd2ab71aeb6cf02a53d0b5d7340865c528b1434bef8001900a9a
 Source0:        https://github.com/logseq/logseq/releases/download/%{version}/Logseq-linux-x86_64-%{version}.zip
 # Official icon from the matching release tag
@@ -37,9 +36,7 @@ Requires:       libXScrnSaver
 Requires:       libXtst
 Requires:       mesa-libgbm
 Requires:       xdg-utils
-# @zvec/bindings-linux-x64 (the bundled DiskANN vector-search engine used by
-# Logseq 2.x search) is dlopen'd at runtime and links against libaio.so.1.
-# AutoReqProv is off for this package, so it must be listed explicitly.
+# Bundled DiskANN addon dlopens libaio; list it explicitly.
 Requires:       libaio
 
 %description
@@ -67,9 +64,7 @@ cp -a logseq chrome-sandbox chrome_crashpad_handler libEGL.so libGLESv2.so \
     vk_swiftshader_icd.json icudtl.dat LICENSE.electron.txt LICENSES.chromium.html \
     %{buildroot}/opt/logseq/
 
-# 2. Strip build-machine RUNPATHs baked into bundled native addons (they point at
-#    the upstream CI path and trip check-rpaths error 0002). All NEEDED libs of
-#    these addons resolve from the system, so removing the RUNPATH is safe.
+# Strip build-machine RUNPATHs from bundled addons.
 find %{buildroot}/opt/logseq/resources/app.asar.unpacked -type f \( -name '*.node' -o -name '*.so' \) -print0 |
 while IFS= read -r -d '' f; do
     if readelf -d "$f" 2>/dev/null | grep -q 'RUNPATH'; then
@@ -101,8 +96,7 @@ EOF
 install -dm755 %{buildroot}%{_datadir}/icons/hicolor/512x512/apps
 install -m644 %{SOURCE1} %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/logseq.png
 
-# 5. Upstream AGPL-3.0 license text (the release zip only carries the
-#    Electron/Chromium third-party notices, not the app's own license)
+# Zip lacks app license; stage upstream AGPL-3.0 text.
 install -Dpm 0644 %{SOURCE2} %{buildroot}%{_licensedir}/%{name}/LICENSE.md
 
 %files
@@ -110,10 +104,7 @@ install -Dpm 0644 %{SOURCE2} %{buildroot}%{_licensedir}/%{name}/LICENSE.md
 %license %{_licensedir}/%{name}/LICENSE.md
 %{_bindir}/logseq
 /opt/logseq/
-# Electron aborts at startup ("SUID sandbox helper binary was found, but is
-# not configured correctly", setuid_sandbox_host.cc:166) unless chrome-sandbox
-# is SUID root 4755 - proven FATAL rc=133 as non-root under xvfb 2026-10-02;
-# same fix vesktop/stoat-desktop already ship, matches Google Chrome's rpm.
+# Electron aborts unless chrome-sandbox is SUID root 4755.
 %attr(4755, root, root) /opt/logseq/chrome-sandbox
 %{_datadir}/applications/logseq.desktop
 %{_datadir}/icons/hicolor/512x512/apps/logseq.png

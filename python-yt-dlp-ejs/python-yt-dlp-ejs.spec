@@ -1,6 +1,4 @@
-# No debuginfo: pure-Python wheel, zero ELF binaries, so find-debuginfo
-# would emit an empty debugsource list which rpm >= 6 rejects as a hard
-# error (same failure as mixtapes build 10955014).
+# No debuginfo: pure-Python wheel, no ELF binaries.
 %global debug_package %{nil}
 
 Name:           python-yt-dlp-ejs
@@ -10,24 +8,17 @@ Summary:        External JavaScript runtimes for yt-dlp
 
 License:        Unlicense AND MIT AND ISC
 URL:            https://pypi.org/project/yt-dlp-ejs/
-# NOTE: the pypi_source macro emits a dashed tarball name that 404s on
-# files.pythonhosted.org for this project; use the real underscore URL.
+# pypi_source name 404s; use the underscore URL.
 Source0:        https://files.pythonhosted.org/packages/source/y/yt-dlp-ejs/yt_dlp_ejs-%{version}.tar.gz
 
-# Aliased name expected by dependent specs (e.g. mixtapes
-# Requires: python3-yt-dlp-ejs); the binary RPM is named python-yt-dlp-ejs.
+# Aliased name expected by dependent specs.
 Provides:       python3-yt-dlp-ejs
 
 BuildRequires:  python3-devel
-# Upstream hatch build hook bundles the JS solvers at build time and
-# requires one of pnpm/deno/bun/npm (proven: build fails without it).
+# Build hook needs a JS runtime (pnpm/deno/bun/npm).
 BuildRequires:  nodejs-npm
 
-# The solvers only serve yt-dlp (yt_dlp/extractor/youtube/jsc/_builtin/
-# ejs.py imports yt_dlp_ejs behind its optional _has_ejs guard), so pull
-# yt-dlp in by default. Soft dep, not Requires: both sides are optional
-# and verified 2026-10-04 -- `import yt_dlp_ejs` works with yt-dlp
-# absent, and yt-dlp runs with this package removed.
+# Solvers serve yt-dlp only; soft dep.
 Recommends:     yt-dlp
 
 %description
@@ -36,9 +27,7 @@ for yt-dlp YouTube challenge solving. Packaged for the Nexus
 repository as a dependency of mixtapes.
 
 %prep
-# Unpack the PyPI sdist so %generate_buildrequires can find
-# pyproject.toml/setup.py (missing %prep fails the build the same way
-# python-pydbus build 10955044 and python-ytmusicapi 10955049 failed).
+# Unpack sdist so build-requires generation finds setup.py.
 %autosetup -p1 -n yt_dlp_ejs-%{version}
 
 %generate_buildrequires

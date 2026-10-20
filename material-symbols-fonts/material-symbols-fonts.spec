@@ -11,8 +11,7 @@ URL:            https://github.com/google/material-design-icons
 Source0:        %{url}/raw/%{commit}/variablefont/MaterialSymbolsOutlined%%5BFILL%%2CGRAD%%2Copsz%%2Cwght%%5D.ttf#/MaterialSymbolsOutlined.ttf
 Source1:        %{url}/raw/%{commit}/variablefont/MaterialSymbolsRounded%%5BFILL%%2CGRAD%%2Copsz%%2Cwght%%5D.ttf#/MaterialSymbolsRounded.ttf
 Source2:        %{url}/raw/%{commit}/variablefont/MaterialSymbolsSharp%%5BFILL%%2CGRAD%%2Copsz%%2Cwght%%5D.ttf#/MaterialSymbolsSharp.ttf
-# The font files carry no embedded license text; the repository LICENSE at
-# the same commit is the Apache-2.0 text that covers them.
+# Fonts lack license text; repo text is Apache-2.0.
 Source3:        %{url}/raw/%{commit}/LICENSE
 
 BuildArch:      noarch

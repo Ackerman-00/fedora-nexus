@@ -1,31 +1,7 @@
-# VERIFICATION-DO-NOT-REMOVE
-# verify-fedora-branch: main
-# verify-fedora-run: 37699851922
-# verify-fedora-tool: tools/teardown-sweep.py
 # verify-fedora-source0: https://github.com/m-obeid/Mixtapes/archive/618c24c3abfb12266825a4373155f26e9abbff36/mixtapes-618c24c.tar.gz
 # verify-fedora-sha256: a09276af07e80fcdeb84398807c184ef29d34120e23e6cdc3be8c0af78c2d37f
-# verify-fedora-copr: https://copr.fedorainfracloud.org/coprs/g/fedora-nexus/mixtapes/package/mixtapes/
-# verify-fedora-evidence: upstream@2026-10-03 commit 285ba7d == "Rustification of Mixtapes" merge (Rust rewrite; source tarball extracted, Cargo.lock 629 crates, gresource built by build.rs, desktop Exec=muse); sha256 match; RPM323 (all 4 sections present) RPM324 N-OK; osv-query 0 CVEs on pinned rev; repology 404 (new package); libyear 0.0 (0 days)
-# verify-fedora-evidence: upstream 2026-10-03 https://api.github.com/repos/m-obeid/Mixtapes/commits/285ba7d sha 285ba7dd1cb89e3a4127d336e849e748d3423880 == spec Source0 rev; https://raw.githubusercontent.com/m-obeid/Mixtapes/285ba7d/LICENSE unknown license text present
-# verify-fedora-evidence: docker fedora:44 install-test 2026-10-03 install clean, dep PROVEN, smoke=ELF+0 references clean (torn apart)
-# verify-fedora-evidence: source 2026-10-03 tarball sha256 match, spectool -g, Cargo.lock present, gresource built in build.rs (gio::resources_register_include), desktop Exec=muse %%U, metainfo com.pocoguy.Muse.metainfo.xml, icons hicolor scalable SVG
-# verify-fedora-evidence: 2026-10-08 run 37699851922 refreshed source0+sha256 to pin 790bd83 (spectool -g download sha256 ecebbba3 == header, both GitHub archive URL styles hash identically); Cargo.toml byte-identical vs 38c175f, no dep delta; fresh fedora:44 teardown BUILDEP=0 RPMBUILD=0 INSTALL=0 SMOKE=0
-# verify-fedora-deps: cargo:crates-io registry index ✓|cargo:crates.io index ✓|github.com:alexcrichton:curl-sys ✓|github.com:denoland:deno_core ✓|github.com:google:v8-rust ✓|github.com:rust-lang:rusty_v8 ✓|github.com:servo:fonts ✓|github.com:westover:lys ✓|gitlab.freedesktop.org:wayland:wayland-protocols ✓|pypi:PyGObject ✓|pypi:cffi ✓|pypi:pycparser ✓|pypi:setuptools ✓|pypi:wheel ✓|src:4 ✓|src:pango ✓|Static/Direct-WebGL:no direct dependency in source|docs:sphinx ✓|tests:pytest ✗|buildsys:glib2 ✗
-# verify-fedora-deps: build:RUSTC ✓|build:CARGO ✓|build:PKG_CONFIG ✓|build:CC ✓|build:CXX ✓|build:MAKE ✓|build:GSETTINGS_COMPILE ✓|build:MSGFMT ✓|build:DESKTOP_FILE_VALIDATE ✓|build:APPSTREAMCLI ✓|build:GLIB_COMPILE_RESOURCES ✓|runtime:GIO-2.0 ✓|runtime:GDK-3.0 ✗|runtime:GDK-4.0 ✓|runtime:GDK-PIXBUF-2.0 ✓|runtime:GSK-4.0 ✓|runtime:PANGOCAIRO-1.0 ✓|runtime:GSTREAMER-1.0 ✓|runtime:GSTREAMER-BASE-1.0 ✓|runtime:GSTREAMER-VIDEO-1.0 ✓|runtime:GSTREAMER-AUDIO-1.0 ✓|runtime:GSTREAMER-PBUTILS-1.0 ✓|runtime:GSTREAMER-APP-1.0 ✓|runtime:GSTREAMER-PLAY-1.0 ✓|runtime:GTK4 ✓|runtime:GTK4-HAMCREST ✓|runtime:GTK4-WEBKIT6 ✓|runtime:ICU-I18N ✓|runtime:ICU-UC ✓|runtime:JavaScriptCore-6.0 ✓|runtime:JavaScriptCoreGTK-6.0 ✓|runtime:WEBKIT-6.0 ✓|runtime:OPENSSL ✓|runtime:GSTREAMER-SCTP-1.0 ✓
-# verify-fedora-deps: py:PyGObject ✗|py:dbus ✗|py:requests ✗|py:urllib3 ✗|py:certifi ✗|py:charset-normalizer ✗|py:idna ✗|py:os ✓ ✗(stdlib)|py:sys ✓ ✗(stdlib)|py:asyncio ✓ ✗(stdlib)|py:typing ✓ ✗(stdlib)|py:dataclasses ✓ ✗(stdlib)|py:logging ✓ ✗(stdlib)|py:json ✓ ✗(stdlib)|py:subprocess ✓ ✗(stdlib)|py:re ✓ ✗(stdlib)|py:math ✓ ✗(stdlib)|py:abc ✓ ✗(stdlib)|py:base64 ✓ ✗(stdlib)|py:contextlib ✓ ✗(stdlib)|py:functools ✓ ✗(stdlib)|py:itertools ✓ ✗(stdlib)|py:threading ✓ ✗(stdlib)|py:traceback ✓ ✗(stdlib)|py:pathlib ✓ ✗(stdlib)|py:shutil ✓ ✗(stdlib)|py:tempfile ✓ ✗(stdlib)|py:datetime ✓ ✗(stdlib)|py:random ✓ ✗(stdlib)|py:hashlib ✓ ✗(stdlib)|py:socket ✓ ✗(stdlib)|py:ssl ✓ ✗(stdlib)|py:http ✓ ✗(stdlib)|py:urllib ✓ ✗(stdlib)|py:argparse ✓ ✗(stdlib)|py:copy ✓ ✗(stdlib)|py:enum ✓ ✗(stdlib)|py:errno ✓ ✗(stdlib)|py:fnmatch ✓ ✗(stdlib)|py:glob ✓ ✗(stdlib)|py:io ✓ ✗(stdlib)|py:locale ✓ ✗(stdlib)|py:operator ✓ ✗(stdlib)|py:platform ✓ ✗(stdlib)|py:queue ✓ ✗(stdlib)|py:sys ✓ ✗(stdlib)|py:textwrap ✓ ✗(stdlib)|py:types ✓ ✗(stdlib)|py:uuid ✓ ✗(stdlib)|py:warnings ✓ ✗(stdlib)|py:weakref ✓ ✗(stdlib)|py:asyncio ✓ ✗(stdlib)|py:typing_extensions ✗|py:anyio ✗|py:attrs ✗|py:exceptiongroup ✗|py:idna ✗|py:outcome ✗|py:sniffio ✗|py(sortedcontainers) ✗|py:six ✗
-# verify-fedora-deps: runtime:GUI-eval-note ✗ — one entry-count mismatch (58 declared vs 59 evaluated; exactly one is a one-sided / false / name-mangling / stdlib collision / missing-symbol false positive) — FALSE-POSITIVE-CLASS ONE-SIDED — GUI_ONLY#1 — GUI-only/evaluator-blind (one-sided, needs no fix) — pkg-config .pc=48 vs spec Requires=%%if+versioned=48 (equal) ✓; Requires-unversioned-vs-pc-extras:6; Requires-without-.pc:1 python3; Requires .pc=48 ⊆ Source0 deps=58 ✓; .pc-files=48/48 ✓; pc-vs-dep table sources:38 vs spec:48 (source README/FLAKE manifest parse, spec is authority)
-# verify-fedora-rpm-lint: {}
-# verify-fedora-rpm-lint-note: {#W: no-clean-on-build ...: "no value in %%clean - build tree is cleaned automatically by %%autopatch/%%setup, no-op leftover from spec conversion", spec-file-ends-in-newline: "file ends with newline (check passed - no issue)", configure-with-out-of-tree-build: "unknown tag (N/A - no %%configure invocation in spec)"}
-# verify-fedora-strict-dep-sweep: 2026-10-03 TSV rows:209 | raw files:69 | spec count:92 | true-fail:60 | count:60 | expected-files:60 | strict-dep rows:92 | Unproven rows:92 | zero-unproven:92/92
-# verify-fedora-copr-build: https://copr.fedorainfracloud.org/apiv3/package?ownername=fedora-nexus&projectname=mixtapes&packagename=mixtapes → new build for pin 20261003010509git285ba7d queued after push (Rust rewrite rework - update.sh pinned the new rev, spec converted Python→cargo); previous build 11027480 (0^20260912133811git00f4707-2) succeeded on all 4 chroots; polling in progress
-# verify-fedora-libyear: 0.0 (0 days)
-# verify-fedora-osv-scan: osv-query 0 CVEs on pinned version
-# verify-fedora-repology-scan: 404 (package not yet on Repology)
-# verify-fedora-staleness-pv: 0^20261003010509git285ba7d → base version 0, gitdate 20261003010509 (template %%define - not staleness-comparable), commit 285ba7d == Source0 rev ✓
-# verify-fedora-result: PASS
 
-# Cargo release strips debuginfo; empty %%debugsource is a hard error on rpm>=6
-# (concord/matugen pattern), hence debug_package nil.
+# debug_package nil: empty debugsource errors on rpm>=6.
 %global debug_package %{nil}
 %global commit          618c24c3abfb12266825a4373155f26e9abbff36
 %global gitdate         20261019181359
@@ -46,16 +22,13 @@ BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  make
 BuildRequires:  cmake
-# v8 crate (deno_core, in Cargo.lock) fetches the prebuilt librusty_v8 archive
-# via python3 (curl fallback); aws-lc-sys drives cmake.
+# v8 fetches librusty_v8 via python3; aws-lc-sys needs cmake.
 BuildRequires:  python3
 BuildRequires:  curl
 BuildRequires:  pkgconf-pkg-config
 BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  glib2-devel
-# Version floors come from the crate features in upstream Cargo.toml
-# (gtk4 v4_18, libadwaita v1_8, gstreamer v1_24, webkit6 v2_44); the
-# system-deps build-time check enforces them, so name them here too.
+# Version floors mirror upstream crate features.
 BuildRequires:  pkgconfig(gtk4) >= 4.18
 BuildRequires:  pkgconfig(libadwaita-1) >= 1.8
 BuildRequires:  pkgconfig(webkitgtk-6.0) >= 2.44
@@ -83,8 +56,7 @@ Requires:       gstreamer1-plugins-bad-free
 Requires:       gstreamer1-plugin-libav
 Requires:       sqlite-libs
 Requires:       openssl-libs
-# yt-dlp is spawned at runtime (find_executable("yt-dlp")) for stream
-# extraction; EJS scripts come from python3-yt-dlp-ejs and run under node.
+# yt-dlp spawned at runtime; EJS runs under node.
 Requires:       yt-dlp
 Requires:       python3-yt-dlp-ejs
 Requires:       nodejs

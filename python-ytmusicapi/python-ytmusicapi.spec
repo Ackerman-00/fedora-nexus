@@ -1,6 +1,4 @@
-# No debuginfo: pure-Python wheel, zero ELF binaries, so find-debuginfo
-# would emit an empty debugsource list which rpm >= 6 rejects as a hard
-# error (same failure as mixtapes build 10955014).
+# No debuginfo: pure-Python wheel, no ELF binaries.
 %global debug_package %{nil}
 
 Name:           python-ytmusicapi
@@ -12,8 +10,7 @@ License:        MIT
 URL:            https://pypi.org/project/ytmusicapi/
 Source0:        %{pypi_source ytmusicapi}
 
-# Aliased name expected by dependent specs (e.g. mixtapes
-# Requires: python3-ytmusicapi); the binary RPM is named python-ytmusicapi.
+# Aliased name expected by dependent specs.
 Provides:       python3-ytmusicapi
 
 BuildRequires:  python3-devel
@@ -24,9 +21,7 @@ playlists, uploads, radio). Packaged for the Nexus repository as a
 dependency of mixtapes.
 
 %prep
-# Unpack the PyPI sdist so %generate_buildrequires can find
-# pyproject.toml (missing %prep failed COPR build 10955049: "Neither
-# pyproject.toml nor setup.py found").
+# Unpack sdist so build-requires generation finds setup.py.
 %autosetup -p1 -n ytmusicapi-%{version}
 
 %generate_buildrequires

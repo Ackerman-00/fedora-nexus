@@ -45,14 +45,8 @@ Requires:       libxcb
 Requires:       pulseaudio-libs
 Requires:       libwayland-client
 Requires:       vulkan-loader
-# dlopen()ed at runtime by src/image_writer.c for JPEG screenshots; the code
-# falls back to the bundled stb encoder if absent, so this is optional.
+# Optional JPEG dep; falls back to stb encoder.
 Recommends:     turbojpeg
-# Used only by the optional helper scripts shipped in
-# %{_datadir}/gpu-screen-recorder/scripts: xdotool (window selection, 5
-# scripts), pactl (list-sinks.sh), ffmpeg (twitch-stream-local-copy.sh),
-# psmisc/killall (start/stop/toggle/save scripts) and libnotify/notify-send
-# (status notifications in the save/toggle scripts).
 Recommends:     xdotool
 Recommends:     /usr/bin/pactl
 Recommends:     (ffmpeg or ffmpeg-free)
@@ -83,10 +77,7 @@ on both X11 and Wayland.
 %doc README.md
 %{_bindir}/gpu-screen-recorder
 %{_bindir}/gsr-cli
-# gsr-kms-server needs CAP_SYS_ADMIN so monitor capture works without a
-# password prompt (KMS backend, no desktop portal). Declaring it via %%caps
-# keeps the capability in rpm's own file metadata, so "rpm -V" stays clean;
-# a %%post setcap would set it behind rpm's back and always report "P".
+# Declare CAP_SYS_ADMIN via caps, not a setcap scriptlet.
 %caps(cap_sys_admin=ep) %{_bindir}/gsr-kms-server
 %{_includedir}/gsr/plugin.h
 %{_datadir}/gpu-screen-recorder

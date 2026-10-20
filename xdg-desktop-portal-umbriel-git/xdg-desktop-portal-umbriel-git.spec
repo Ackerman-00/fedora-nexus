@@ -22,8 +22,7 @@ BuildRequires:  pkgconfig(sdbus-c++) >= 2.0.0
 BuildRequires:  pkgconfig(libpipewire-0.3)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.39
-# Protocol codegen uses meson find_program('wayland-scanner'), not
-# dependency() - still needs an explicit BR, it never self-declares.
+# Codegen uses find_program; needs explicit wayland-scanner BR.
 BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  pkgconfig(gbm)
@@ -33,8 +32,7 @@ BuildRequires:  pkgconfig(nlohmann_json)
 BuildRequires:  pkgconfig(gtk4) >= 4.12
 
 Requires:       xdg-desktop-portal
-# Upstream README [screenshot] color_pick_cmd: external color picker
-# (AUR optdepends slurp). Weak dep: portal works without it.
+# Color picker is a weak dep (slurp); optional.
 Recommends:     slurp
 
 Provides:       xdg-desktop-portal-umbriel = %{version}-%{release}
@@ -49,21 +47,17 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %prep
 %autosetup -n xdg-desktop-portal-umbriel-%{commit}
 
-# NOTE (2026-09-14): upstream dropped the vendored split-style json.hpp and
-# uses the system <nlohmann/json.hpp> in all sources since d7a1bc3, so no
-# header rewrite is needed. If upstream ever re-vendors, re-add the rewrite.
+# Upstream uses system nlohmann/json; no header rewrite.
 
 %build
-# -Dpicker=enabled states the release intent explicitly (meson_options.txt;
-# picker=auto already resolves on while the gtk4 BR is present, same as AUR).
+# -Dpicker=enabled states release intent explicitly.
 %meson -Db_lto=true -Dpicker=enabled
 %meson_build
 
 %install
 %meson_install
 
-# Upstream meson_options.txt ships tests=true and meson.build registers
-# test('pipewire-buffer-params'); run it here so the regression is checked.
+# Upstream ships tests=true; run the registered test.
 %check
 %meson_test
 

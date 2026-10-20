@@ -1,25 +1,11 @@
 #!/bin/bash
 
-# Run this from its own package directory. update-engine.yml does `pushd <pkg>`
-# first; running update.sh from the repo root instead let the changelog append
-# create a stray <pkg>.spec at the repo root, and the Name: check then reported
-# a false corruption (hit twice, 2026-10-07: stray umbriel-git.spec, then 32
-# stray root specs during an agent sweep).
 _update_sh_dir=$(cd "$(dirname "$0")" && pwd) || exit 1
 if [ "$(pwd)" != "$_update_sh_dir" ]; then
     echo "FATAL: run update.sh from its package directory:" >&2
     echo "  cd $_update_sh_dir && bash update.sh" >&2
     exit 1
 fi
-# update.sh for Heroic Games Launcher (repackages the upstream RPM)
-#
-# This package MUST have its own updater. The generic release scanner in
-# .github/workflows/update-engine.yml only rewrites "Version:" - it does not
-# reset Release, does not add a %changelog entry, and does not check that the
-# release asset exists. That is exactly how commit ac57abe produced a spec at
-# "2.22.1" with a stale "Release: 3" and a changelog whose newest entry still
-# said 2.22.0-3. Packages with an update.sh are skipped by that scanner, so
-# this script is also the fix for that class of bug here.
 
 SPEC_FILE="heroic-games-launcher.spec"
 GITHUB_REPO="Heroic-Games-Launcher/HeroicGamesLauncher"
@@ -27,7 +13,6 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 
-# Get latest tag via git ls-remote (no rate limit)
 LATEST_TAG=$(git ls-remote --tags "https://github.com/$GITHUB_REPO.git" 2>/dev/null \
     | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' \
     | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | sed -E 's/^v?([0-9].*)/\1 &/' | sort -V -k1,1 | tail -1 | awk '{print $2}')
@@ -47,9 +32,6 @@ fi
 
 echo "  -> [UPDATE] $CURRENT_VERSION -> $LATEST_VERSION"
 
-# Upstream tags the repo before the release RPM is uploaded (and 2.22.1 was
-# tagged days before its asset appeared). Bumping onto a tag whose RPM is
-# missing pins a Source0 that 404s, which fails every COPR build of that NVR.
 RPM_URL="https://github.com/$GITHUB_REPO/releases/download/v${LATEST_VERSION}/Heroic-${LATEST_VERSION}-linux-x86_64.rpm"
 echo "  -> [CHECK] Verifying $RPM_URL"
 if ! curl --output /dev/null --silent --location --head --fail "$RPM_URL"; then
@@ -57,13 +39,9 @@ if ! curl --output /dev/null --silent --location --head --fail "$RPM_URL"; then
     exit 0
 fi
 
-# New upstream version -> Release restarts at 1 (rpm-version(7)).
 sed -i -E "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
 sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
-# The bundled() Provides describe binaries shipped INSIDE the upstream RPM, so
-# they cannot be guessed - they are only correct after someone reads them out
-# of the new artifact. Flag that instead of silently keeping stale values.
 echo "  -> [NOTE] Re-check the bundled legendary/gogdl/nile/comet versions in"
 echo "            $SPEC_FILE against the new artifact:"
 echo "            rpm2cpio Heroic-${LATEST_VERSION}-linux-x86_64.rpm | cpio -idm"
@@ -78,9 +56,6 @@ else
 fi
 
 echo "  -> [DONE] Successfully patched $SPEC_FILE."
-# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).
-# Guard: an updater must never leave a spec without its header. If the
-# changelog rewrite or a sed wiped the file, restore from git and fail loudly.
 if ! grep -q "^Name:" "$SPEC_FILE"; then
     echo "FATAL: $SPEC_FILE lost its Name: header during update; restoring" >&2
     git checkout -- "$SPEC_FILE" 2>/dev/null || true

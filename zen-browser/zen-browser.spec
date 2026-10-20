@@ -2,29 +2,13 @@
 %global             application_name zen
 %global             debug_package %{nil}
 
-# Zen ships a private copy of the Gecko runtime (libxul, NSS/NSPR, ffmpeg
-# codecs, ...) under /opt/zen. Those bundled libraries must not be advertised
-# as system-wide Provides - otherwise dnf can satisfy an unrelated dependency
-# on e.g. libnss3.so with the whole browser. The internal-only libraries must
-# likewise not become system Requires; genuine system library dependencies
-# (gtk, X11, wayland, ...) are still auto-generated and kept.
-# NSS/NSPR are bundled too (libnssutil3.so, libnss3.so, libsmime3.so and
-# libnspr4.so ship in /opt/zen, and every ELF in this package lives under
-# /opt/zen), so their versioned symbols must not be demanded from the system
-# either: on Fedora 45 the bundled libnssutil3.so asks for
-# libnssutil3.so(NSSUTIL_3.130) while the distro nss-util is only 3.129.0,
-# which made the whole package uninstallable there (dnf offered the older
-# 1.23.2b build instead). Fedora 44 happened to carry nss-util 3.131.0, so
-# only the newer chroot exposed the bug.
+# Bundled /opt Gecko libs must not become Provides.
 %global             __provides_exclude_from ^/opt/%{application_name}/.*$
+# bundled libnssutil3.so needs NSSUTIL_3.130, F45 nss-util is 3.129.0
 %global             __requires_exclude ^lib(gkcodecs|lgpllibs|mozavutil|mozgtk|mozsandbox|mozsqlite3|mozwayland|nssutil3|nss3|smime3|nspr4)\\.so.*$
 
 Name:               zen-browser
-# Upstream DELETED the 1.21.13b release after we had already shipped
-# zen-browser-1.21.13b-1 to COPR. Reverting the spec to the real current
-# release (1.21.12b) is not enough: 1.21.12b-3 sorts BELOW the withdrawn
-# 1.21.13b-1, so dnf would keep offering users the withdrawn build forever.
-# An Epoch is the only correct way to supersede a higher version.
+# Epoch required to supersede the withdrawn higher version.
 Epoch:              1
 Version:        1.23.3b
 Release:        3%{?dist}
@@ -37,8 +21,7 @@ Source0:            https://github.com/zen-browser/desktop/releases/download/1.2
 Source1:            %{full_name}.desktop
 Source2:            policies.json
 Source3:            %{full_name}
-# The upstream tarball ships no MPL text; it lives in the source tree at the
-# same release tag.
+# Tarball lacks MPL text; fetch from the tag.
 Source4:            https://github.com/zen-browser/desktop/raw/%{version}/LICENSE
 
 ExclusiveArch:      x86_64
