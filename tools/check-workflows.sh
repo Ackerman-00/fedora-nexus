@@ -24,11 +24,13 @@ for f in sorted(glob.glob(".github/workflows/*.yml")):
 PY
 
 echo "== actionlint =="
+# -shellcheck= disables shellcheck integration: its style infos are not
+# workflow validity and would otherwise fail a valid file.
 if command -v actionlint >/dev/null 2>&1; then
-  actionlint -no-color .github/workflows/*.yml && echo "OK   actionlint clean" || FAIL=1
+  actionlint -shellcheck= -no-color .github/workflows/*.yml && echo "OK   actionlint clean" || FAIL=1
 else
   if [ -x /tmp/opencode/actionlint ]; then
-    /tmp/opencode/actionlint -no-color .github/workflows/*.yml && echo "OK   actionlint clean" || FAIL=1
+    /tmp/opencode/actionlint -shellcheck= -no-color .github/workflows/*.yml && echo "OK   actionlint clean" || FAIL=1
   else
     echo "SKIP actionlint not installed - install it with:"
     echo "  bash <(curl -sL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)"
