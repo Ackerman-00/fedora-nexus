@@ -248,7 +248,7 @@ def hunt_upstream():
 def hunt_cves():
     """OSV hits, filtered by the advisory's own version ranges."""
     ts = sweep_module()
-    hits, checked = [], 0
+    hits, checked, skipped = [], 0, []
     for sp in specs():
         name = spec_field(sp, "Name")
         ver = spec_field(sp, "Version")
@@ -259,6 +259,8 @@ def hunt_cves():
             if m:
                 ver = m.group(1)
             else:
+                # a template or git-snapshot version: nothing to ask OSV about
+                skipped.append(os.path.basename(sp))
                 continue
         checked += 1
         try:
@@ -273,8 +275,9 @@ def hunt_cves():
                 hits.append((name, ver, vid, "unverified"))
     aff = [h for h in hits if h[3] == "affected"]
     unv = [h for h in hits if h[3] == "unverified"]
+    note = "unverified = advisory ranges do not cover the version; skipped (template version): %d" % len(skipped)
     return ("cves", "%d packages, %d affected, %d unverified" % (checked, len(aff), len(unv)),
-            "unverified = advisory ranges do not cover the version", hits)
+            note, hits)
 
 
 def hunt_licenses():
