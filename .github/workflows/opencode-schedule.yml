@@ -2364,6 +2364,8 @@ jobs:
       statuses: write
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
 
       - name: Open failure issue
         if: needs.opencode.result != 'success'
@@ -2374,7 +2376,12 @@ jobs:
           title="autonomous run failed: $(date -u +%Y-%m-%d)"
           exists=$(gh api "repos/${GITHUB_REPOSITORY}/issues?state=open&per_page=100" --jq "[.[] | select(.title == \"$title\")] | length")
           if [ "$exists" -eq 0 ]; then
-            gh api repos/${GITHUB_REPOSITORY}/issues -f title="$title" -f body="The scheduled autonomous maintenance run failed at $(date -u '+%Y-%m-%d %H:%M UTC'). cc @Ackerman-00. See: https://github.com/${GITHUB_REPOSITORY}/actions/runs/$GITHUB_RUN_ID (check the opencode-logs artifact and the relay state file)."
+            # The next scheduled run owns this: give it the exact failing checks
+            # instead of a link it has to reconstruct. No human is watching.
+            gaps=$(RUN_ID=$GITHUB_RUN_ID bash tools/verify-fedora.sh 2>&1 | grep -E '^FAIL' | head -20 || true)
+            [ -n "$gaps" ] || gaps="(the verifier produced no FAIL lines - the run died before the relay block was written)"
+            body=$(printf 'The scheduled autonomous maintenance run failed at %s.\n\nRun: https://github.com/%s/actions/runs/%s\n\nThe next scheduled run owns this issue: read the failing checks below, fix the cause in the repo, push the fix, and close this issue with the evidence.\n\n```\n%s\n```\n' "$(date -u '+%Y-%m-%d %H:%M UTC')" "${GITHUB_REPOSITORY}" "$GITHUB_RUN_ID" "$gaps")
+            gh api repos/${GITHUB_REPOSITORY}/issues -f title="$title" -f body="$body"
           else
             echo "failure issue for today already open - skipping"
           fi
