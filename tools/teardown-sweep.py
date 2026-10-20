@@ -591,22 +591,33 @@ def expand(text, vars_):
 
 
 def parse_spec_sources(content, vars_):
-    """Extract (url, distname, sha256_or_None) for each SourceN: line."""
+    """Extract (url, distname, sha256_or_None) for each SourceN: line.
+
+    A `# sha256:` comment belongs to the Source line ABOVE it - that is the
+    Fedora convention. Matching by position instead mis-attributed the pin in
+    specs that pin only their second source, and the sweep then reported a
+    sha256 mismatch on a file that was never pinned (2026-10-20:
+    python-yt-dlp-get-pot-rustypipe, whose pin is on the LICENSE Source1).
+    """
     srcs = []
-    sha256s = [m.group(1).strip().lower() for m in re.finditer(r"#\s*sha256:\s*([0-9a-fA-F]{64})", content)]
-    for m in re.finditer(r"^Source\d*:\s*(.+?)\s*$", content, re.M):
-        raw = m.group(1).strip()
-        # Drop trailing comment only; macros contain spaces
-        raw = re.split(r"\s+#\s", raw, 1)[0].strip()
-        if not raw:
+    for line in content.splitlines():
+        m = re.match(r"^Source\d*:\s*(.+?)\s*$", line)
+        if m:
+            raw = m.group(1).strip()
+            # Drop trailing comment only; macros contain spaces
+            raw = re.split(r"\s+#\s", raw, 1)[0].strip()
+            if not raw:
+                continue
+            url = expand(eval_shell_exprs(raw, vars_), vars_)
+            name = url.rsplit("/", 1)[-1]
+            if not name:
+                name = raw
+            srcs.append([url, name, None])
             continue
-        url = expand(eval_shell_exprs(raw, vars_), vars_)
-        name = url.rsplit("/", 1)[-1]
-        if not name:
-            name = raw
-        sha = sha256s[len(srcs)] if len(sha256s) > len(srcs) else None
-        srcs.append((url, name, sha))
-    return srcs
+        p = re.match(r"^\s*#\s*sha256:\s*([0-9a-fA-F]{64})\s*$", line)
+        if p and srcs and srcs[-1][2] is None:
+            srcs[-1][2] = p.group(1).strip().lower()
+    return [tuple(s) for s in srcs]
 
 
 def eval_shell_exprs(s, vars_):
