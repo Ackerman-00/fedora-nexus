@@ -493,3 +493,25 @@ label means the label never has to be updated again.
 If a future image breaks something, pin that one workflow to an explicit
 label (ubuntu-26.04, ubuntu-24.04) - and add the label to actionlint.yaml,
 because actionlint 1.7.12 does not know ubuntu-26.04 and calls it unknown.
+
+## Everything tracks latest (2026-10-20)
+
+The runner stack is deliberately unpinned so it never has to be updated by
+hand:
+
+- `runs-on: ubuntu-latest` - the rolling label always points at the newest
+  GA image, and GitHub keeps two GA images per OS family, so it never lands
+  on a deprecated one.
+- `python-version: '3.x'` - always the newest Python 3. The tools in tools/
+  are stdlib-only and use nothing removed in 3.13+.
+- The first-party actions are on their major tag (`actions/checkout@v7`,
+  `actions/setup-python@v7`, `actions/upload-artifact@v7`), so they take
+  patch updates without a commit. Their inputs are unchanged in v7
+  (python-version, cache, path, if-no-files-found, persist-credentials,
+  fetch-depth) - verified against the v7 action.yml on 2026-10-20.
+- Node and npm come from the image, so they are the newest too.
+
+Pin something explicitly only when a new image actually breaks this CI, and
+then pin that one workflow, not the repo. When you pin an image label, add
+it to actionlint.yaml: actionlint 1.7.12 does not know ubuntu-26.04 and
+reports it as an unknown label.

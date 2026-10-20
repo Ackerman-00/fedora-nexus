@@ -41,7 +41,7 @@ jobs:
       statuses: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6.1.0
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
           token: ${{ secrets.REPO_FULL_ACCESS_TOKEN || github.token }}
