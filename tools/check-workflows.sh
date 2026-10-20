@@ -122,6 +122,18 @@ for pat in (r"^[[:space:]]*defects-found:[[:space:]]*[0-9]+",
               % (pat, in_gate, in_ver))
         bad = 1
 
+# The EXTERNAL rule names a shell variable, and the two files name it
+# differently ($pkg vs $it_pkg), so compare the shape of the rule.
+gap_rule = re.compile(r"GAP: external\.\*\$")
+in_gate = any(gap_rule.search(p) for p in gp)
+in_ver = any(gap_rule.search(p) for p in vp)
+if in_gate and in_ver:
+    print("OK   the EXTERNAL verdict needs a GAP: external line, in both")
+else:
+    print("FAIL: the EXTERNAL/GAP rule present in gate=%s verifier=%s (both required)"
+          % (in_gate, in_ver))
+    bad = 1
+
 # The install-test table may be named in prose or only by its header; both
 # files must accept the same thing, or a run passes one and fails the other.
 g_tbl = set(norm(p) for p in gp if "install-test table" in p or "COPR build" in p)
