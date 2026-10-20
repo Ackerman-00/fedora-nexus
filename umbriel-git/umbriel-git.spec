@@ -8,7 +8,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -31,7 +31,7 @@ BuildRequires:  pkgconfig(wayland-server) >= 1.24
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.47
 BuildRequires:  pkgconfig(xkbcommon)
-BuildRequires:  pkgconfig(libinput) >= 1.23
+BuildRequires:  pkgconfig(libinput) >= 1.27
 BuildRequires:  pkgconfig(pixman-1) >= 0.43.0
 # libdisplay-info: upstream floor, F43 needs relaxation.
 %if 0%{?fedora} >= 44
@@ -120,5 +120,7 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Tue Oct 20 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261020204208gitb93ed3d-2
+- Raise the libinput floor to 1.27, the version meson.build requires
 * Tue Oct 20 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261020204208gitb93ed3d-1
 - Nightly sync with upstream main branch (Commit: b93ed3d)
