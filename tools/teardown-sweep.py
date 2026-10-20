@@ -238,6 +238,79 @@ def osv_query(pkg, version, ecosystem=None):
         return []
 
 
+def get_json(url, timeout=20):
+    """GET a JSON document, or None when it cannot be read."""
+    try:
+        req = urllib.request.Request(url, headers=UA)
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return json.loads(r.read().decode())
+    except Exception:
+        return None
+
+
+def _vkey(v):
+    """Comparable key for a version string (1.0 == 1.0.0)."""
+    parts = [p for p in re.split(r"[.\-_+~]", (v or "").strip().lstrip("vV")) if p]
+    out = []
+    for p in parts:
+        m = re.match(r"^(\d+)(.*)$", p)
+        if m:
+            out.append((0, int(m.group(1)), m.group(2)))
+        else:
+            out.append((-1, 0, p))
+    return out
+
+
+def _vge(a, b):
+    """True when version a >= version b."""
+    try:
+        ka, kb = _vkey(a), _vkey(b)
+    except Exception:
+        return False
+    while len(ka) < len(kb):
+        ka.append((0, 0, ""))
+    while len(kb) < len(ka):
+        kb.append((0, 0, ""))
+    return ka >= kb
+
+
+def osv_version_affected(vuln_id, version):
+    """Is `version` actually affected by this advisory? True / False / None.
+
+    /v1/query does not version-filter for every ecosystem, so a hit is a
+    CLAIM; the advisory's own ranges are the proof. Real hit on
+    2026-10-20: ghostty 1.3.1 was flagged by two Ubuntu advisories whose
+    affected versions are all 1.3.0~us1-* builds, and one of them says
+    "Fixed in Ghostty v1.0.1" in its own text.
+    """
+    data = get_json("https://api.osv.dev/v1/vulns/%s" % vuln_id)
+    if not data:
+        return None
+    affected_versions = []
+    fixed = []
+    for a in data.get("affected", []) or []:
+        for v in a.get("versions", []) or []:
+            affected_versions.append(v)
+        for r in a.get("ranges", []) or []:
+            for e in r.get("events", []) or []:
+                if e.get("fixed"):
+                    fixed.append(e["fixed"])
+                if e.get("last_affected"):
+                    fixed.append(e["last_affected"])
+    if version in affected_versions:
+        return True
+    for f in fixed:
+        if _vge(version, f):
+            return False
+    details = data.get("details", "") or ""
+    for m in re.finditer(r"[Ff]ixed in [^.]*?v?(\d+(?:\.\d+)+)", details):
+        if _vge(version, m.group(1)):
+            return False
+    if affected_versions:
+        return False
+    return None
+
+
 def repology_is_newer(pinned, upstream):
     """True only when Repology's reported version is genuinely NEWER than our
     pin. Used to stop tracker-lag / foreign-project false positives (a
@@ -2830,10 +2903,27 @@ def check_vulns_and_deps(pkgs, repo_type):
 
         vulns = osv_query(pkg, clean_pv, eco)
         if vulns:
-            total_vulns += 1
-            log("[VULN] %s@%s: %s" % (pkg, clean_pv, ", ".join(vulns)))
-            rows.append((pkg, pkg, clean_pv, "", "VULN",
-                         "known vulnerabilities: %s" % ", ".join(vulns)))
+            affected, unknown = [], []
+            for vid in vulns:
+                state = osv_version_affected(vid, clean_pv)
+                if state is True:
+                    affected.append(vid)
+                elif state is None:
+                    unknown.append(vid)
+            if affected:
+                total_vulns += 1
+                log("[VULN] %s@%s: %s" % (pkg, clean_pv, ", ".join(affected)))
+                rows.append((pkg, pkg, clean_pv, "", "VULN",
+                             "known vulnerabilities: %s" % ", ".join(affected)))
+            elif unknown:
+                log("[UNVERIFIED-VULN] %s@%s: %s (advisory ranges do not cover "
+                    "this version - check by hand)" % (pkg, clean_pv, ", ".join(unknown)))
+                rows.append((pkg, pkg, clean_pv, "", "VULN-UNVERIFIED",
+                             "advisory ranges do not cover %s: %s"
+                             % (clean_pv, ", ".join(unknown))))
+            else:
+                log("[CLEAN] %s@%s (advisories do not cover this version)"
+                    % (pkg, clean_pv))
         else:
             log("[CLEAN] %s@%s" % (pkg, clean_pv))
 
