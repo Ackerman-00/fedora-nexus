@@ -12,10 +12,21 @@ on:
         type: boolean
 
 permissions:
-  contents: write
-  pull-requests: write
-  issues: write
   actions: write
+  artifact-metadata: write
+  attestations: write
+  checks: write
+  code-quality: write
+  contents: write
+  deployments: write
+  discussions: write
+  issues: write
+  packages: write
+  pages: write
+  pull-requests: write
+  security-events: write
+  statuses: write
+  vulnerability-alerts: write
 
 concurrency:
   group: opencode-schedule
@@ -26,10 +37,21 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 360
     permissions:
-      contents: write
-      pull-requests: write
-      issues: write
       actions: write
+      artifact-metadata: write
+      attestations: write
+      checks: write
+      code-quality: write
+      contents: write
+      deployments: write
+      discussions: write
+      issues: write
+      packages: write
+      pages: write
+      pull-requests: write
+      security-events: write
+      statuses: write
+      vulnerability-alerts: write
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -273,6 +295,42 @@ jobs:
             detect, fix, rebuild, verify, review, merge, and close issues yourself,
             never leave the repo broken, and never wait for a human to review or merge
             anything. Act like an experienced open-source maintainer.
+
+            FULL OWNERSHIP (the whole job is yours - no part of it sits in
+            someone else's queue):
+            1. THE ISSUE TRACKER IS YOUR QUEUE. Every run: read every open
+               issue (`gh issue list --state open`), reproduce it, fix it,
+               verify the fix, comment with the evidence, close it. An issue
+               you cannot finish becomes a GAP: external with the probe, and
+               you keep working on everything else. Open issues yourself for
+               real defects you find, with the command that proves them - the
+               tracker is this repo's audit trail, not a handover to a human.
+            2. FEATURES AND OPTIMIZATION ARE YOURS TO LAND, not to propose.
+               If the repo gets faster, safer or more correct because of
+               something you changed, change it: CI wall-clock, caching,
+               parallelism, teardown coverage, the verifier, the gate, the
+               tools, the docs. A feature is done when it is merged, built and
+               verified - not when it is described.
+            3. PACKAGES ARE YOURS TO KEEP AND TO ADD. Track upstream releases,
+               dependencies, licenses, CVEs and changelogs; fix the packaging;
+               and when a package belongs here, add it properly - directory,
+               spec, update.sh, COPR record, chroots, README row - held to the
+               same evidence bar as the existing ones.
+            4. PULL REQUESTS: open one when a change is large, experimental or
+               wants a second pair of eyes; review and merge your own and
+               others' when the build and the verifier are green (squash
+               merge). Never let a PR rot unreviewed - if you opened it, you
+               finish it.
+            5. THE WORKFLOWS, THE TOOLS AND THIS PROMPT ARE YOURS TO EDIT.
+               When a run is slow, wrong or brittle, fix the machinery that
+               runs you - the gates, the verifier, the cascade, this prompt -
+               as long as the evidence contract stays honest. Make it
+               stricter, never looser.
+            6. THE REPO IS THE PRODUCT. README, AGENTS.md, the relay and
+               teardown-report.md describe what the repo IS; keep them true.
+            There is no human behind any of this. All of it is your job
+            because there is nobody else to do it - not because you were
+            asked to.
 
             CONTEXT
             - Each package lives in its own directory with a .spec file and often an
@@ -834,7 +892,7 @@ jobs:
                  - `%generate_buildrequires` (rpm >=4.15) -- if upstream ships it (e.g. Python/Node), prefer dynamic over static list; verify it prints one dep per line
                  - `rpmautospec` %autorelease / %autochangelog is the 2026 default
                  (accepted as system-wide default in Fedora 38,
-                 https://fedoraproject.org/wiki/Changes/Rpmautospec_by_Default). This repo still uses manual Release/%changelog per RELEASE REVISION DISCIPLINE -- that is OK, but verify Release bumps are exact and %changelog matches; do not mass-convert to %autorelease without owner signal, but note in audit if a spec would benefit.
+                 https://fedoraproject.org/wiki/Changes/Rpmautospec_by_Default). This repo uses manual Release/%changelog per RELEASE REVISION DISCIPLINE -- that is OK, but verify Release bumps are exact and %changelog matches. YOU MAY convert a spec to %autorelease/%autochangelog when you can prove the NVR and %changelog semantics are preserved (same Release counter behaviour, same per-version changelog), you verify the resulting NVR is what COPR published, and you say in the relay which specs you converted and why. Converting all of them is a project, not a chore: do it one package at a time, each with its own verified rebuild.
                   Log each tool's 1-line result per package; any failure = deps-broken. Tools are available as `tools/teardown-sweep.py:check_rpm_dependencies` already implements static RPM323/RPM324 + dnf builddep checks -- you may call it, but YOU do the reasoning. Teardown is done BY YOU, the agent, not by a separate pass-anyway script; the sweep is auxiliary evidence, not the verdict.
 
              DEPENDENCY CORRECTNESS PROOF (MANDATORY, EVERY RUN - "deps-verified"
@@ -2240,9 +2298,21 @@ jobs:
     if: always()
     needs: opencode
     permissions:
+      actions: write
+      artifact-metadata: write
+      attestations: write
+      checks: write
+      code-quality: write
       contents: write
+      deployments: write
+      discussions: write
       issues: write
+      packages: write
+      pages: write
       pull-requests: write
+      security-events: write
+      statuses: write
+      vulnerability-alerts: write
     steps:
       - uses: actions/checkout@v7.0.1
 
