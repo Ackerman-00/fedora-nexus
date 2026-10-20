@@ -190,6 +190,18 @@ jobs:
                 return 1
               fi
             done
+            local changed_line changed_pkgs
+            changed_line=$(grep -m1 -E "^[[:space:]]*changed:" <<< "$content" || true)
+            [ -n "$changed_line" ] || return 1
+            changed_pkgs=$(printf '%s' "$changed_line" | sed -E 's/^[[:space:]]*changed:[[:space:]]*//')
+            for it_pkg in $changed_pkgs; do
+              if ! grep -qx "$it_pkg PASS" <<< "$it_rows"; then
+                if grep -qx "$it_pkg EXTERNAL" <<< "$it_rows" && grep -qiE "GAP: external.*$it_pkg" <<< "$content"; then
+                  continue
+                fi
+                return 1
+              fi
+            done
             for it_pkg in $(awk '$2=="EXTERNAL"{print $1}' <<< "$it_rows"); do
               grep -qiE "GAP: external.*$it_pkg" <<< "$content" || return 1
             done
@@ -2274,13 +2286,19 @@ jobs:
                gone, chroot not synced) gets the verdict EXTERNAL plus a
                GAP: external line naming it - never a silent PASS, never a
                left-behind FAIL.
-            2. DEFECT ACCOUNTING - two lines, exactly:
+            2. CHANGED PACKAGES - one line, exactly:
+               changed: <pkg> <pkg> ...
+               every package you changed this run. Each one needs a PASS row
+               in this run's install-test table (or EXTERNAL plus a GAP:
+               external line naming it). A fix you did not install-test is a
+               fix you did not prove, and the gate fails the run on it.
+            3. DEFECT ACCOUNTING - two lines, exactly:
                defects-found: <N>   (every defect you found this run)
                defects-fixed: <M>  (how many you fixed and pushed)
                Every defect is fixed (counted in M) or proven external (a
                GAP: external line carrying the probe). The gate computes
                M + external_gaps >= N and fails the run otherwise.
-            3. HUNT EVIDENCE - one line per category you hunted, with the command
+            4. HUNT EVIDENCE - one line per category you hunted, with the command
                and its result, e.g.
                hunt: upstream-versions - 56 updaters ran, 0 moved
                hunt: install-tests - 47 rows, 0 FAIL

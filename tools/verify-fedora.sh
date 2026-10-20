@@ -144,6 +144,23 @@ if [[ -f "$RELAY" ]]; then
       FAIL=1
     fi
   done
+  changed_line=$(grep -m1 -E "^[[:space:]]*changed:" <<< "$scope" || true)
+  if [[ -z "$changed_line" ]]; then
+    echo "FAIL: NOT COMPLETE -- no 'changed:' line naming the packages this run touched"
+    FAIL=1
+  else
+    changed_pkgs=$(printf '%s' "$changed_line" | sed -E 's/^[[:space:]]*changed:[[:space:]]*//')
+    for pkg in $changed_pkgs; do
+      if ! grep -qx "$pkg PASS" <<< "$IT"; then
+        if grep -qx "$pkg EXTERNAL" <<< "$IT" && grep -qiE "GAP: external.*$pkg" <<< "$scope"; then
+          continue
+        fi
+        echo "FAIL: NOT COMPLETE -- changed package '$pkg' has no PASS install-test row"
+        FAIL=1
+      fi
+    done
+    echo "PASS: changed packages carry install evidence"
+  fi
   for pkg in $(awk '$2=="EXTERNAL"{print $1}' <<< "$IT"); do
     if ! grep -qiE "GAP: external.*$pkg" <<< "$scope"; then
       echo "FAIL: NOT COMPLETE -- $pkg install verdict is EXTERNAL without a GAP: external line naming it"

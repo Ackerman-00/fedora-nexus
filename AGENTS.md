@@ -364,6 +364,9 @@ RULE (enforced in code since 2026-10-20):
   install PASS` fails the run as a contradiction.
 - Every run carries `defects-found: N` and `defects-fixed: M`; the gate
   computes M + external_gaps >= N.
+- Every run carries `changed: <pkg> ...`; each package it touched needs a
+  PASS row in the install-test table. A fix you did not install-test is a
+  fix you did not prove.
 - Every run carries at least 5 distinct `hunt: <category> - <what you ran>`
   lines. A category you did not run is a category you did not check.
 - A verdict is a transcript of a command, never a summary of a belief.
