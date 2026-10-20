@@ -5,13 +5,14 @@
 
 Name:           python-mprisify
 Version:        1.0.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        MPRIS D-Bus interface library for Python
 
 License:        LGPL-3.0-only
 URL:            https://gitlab.com/zehkira/mprisify
 # GitLab tag archive (no PyPI release published upstream)
 Source0:        https://gitlab.com/zehkira/mprisify/-/archive/v%{version}/mprisify-v%{version}.tar.gz
+Source1:        %{url}/-/raw/v%{version}/LICENSE
 
 # Aliased name expected by dependent specs (e.g. mixtapes
 # Requires: python3-mprisify); the binary RPM is named python-mprisify.
@@ -54,9 +55,17 @@ class LowercaseStrEnum(StrEnum):\
 %pyproject_install
 %pyproject_save_files mprisify
 
+# Upstream LGPL-3.0 license text (the sdist ships none)
+install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
+
 %files -f %{pyproject_files}
+%license %{_licensedir}/%{name}/LICENSE
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.0.1-4
+- Ship the upstream LGPL-3.0 LICENSE (Source1, same v1.0.1 tag); the GitLab
+  sdist carries no license text.
+
 * Sun Sep 06 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.0.1-3
 - Provide python3-mprisify (name expected by mixtapes Requires;
   COPR mixtapes install failed on unresolvable python3-* names).
