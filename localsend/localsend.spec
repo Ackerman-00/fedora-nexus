@@ -10,13 +10,15 @@
 
 Name:           localsend
 Version:        1.18.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        An open source cross-platform alternative to AirDrop
 
 License:        Apache-2.0
 URL:            https://github.com/localsend/localsend
 # Use the upstream DEB as our raw source payload
 Source0:        %{url}/releases/download/v1.18.2/LocalSend-1.18.2-linux-x86-64.deb
+# The deb payload carries no license text; the repo does at the same tag.
+Source1:        %{url}/raw/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
 
@@ -86,13 +88,20 @@ exec %{_libdir}/localsend_app/localsend_app "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/localsend_app
 
+# 4. Ship the upstream Apache-2.0 license text
+install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
+
 %files
+%license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/localsend_app
 %{_datadir}/applications/localsend_app.desktop
 %{_datadir}/icons/hicolor/*/apps/localsend_app.png
 %{_libdir}/localsend_app/
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.18.2-4
+- Ship the upstream Apache-2.0 LICENSE (Source1, same v1.18.2 tag as the deb
+  payload, which contains no license text).
 * Mon Oct 19 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.18.2-3
 - Bump Release so the Apache-2.0 license correction (commit 794ee38) is
   actually published: without a new NVR the rebuild reused 1.18.2-2 and
