@@ -16,7 +16,20 @@ echo "Checking for rootapp updates..."
 TMPDIR=$(mktemp -d)
 trap "rm -rf $TMPDIR" EXIT
 
-curl -sL -o "$TMPDIR/Root.AppImage" "$APPIMAGE_URL"
+# Cheap pre-check: the AppImage is ~450 MB, so a HEAD request decides whether
+# anything moved before the download starts. Length + mtime unchanged means the
+# file is the same one the recorded sha256 was taken from.
+HEADERS=$(curl -sIL --max-time 60 "$APPIMAGE_URL")
+NEW_LEN=$(printf '%s' "$HEADERS" | grep -i '^content-length:' | tail -1 | tr -d '\r' | awk '{print $2}')
+NEW_MOD=$(printf '%s' "$HEADERS" | grep -i '^last-modified:' | tail -1 | tr -d '\r' | cut -d' ' -f2-)
+CURRENT_LEN=$(grep -E "^# content-length:" "$SPEC_FILE" | awk '{print $3}')
+CURRENT_MOD=$(grep -E "^# last-modified:" "$SPEC_FILE" | awk '{print $3}')
+if [ -n "$CURRENT_LEN" ] && [ -n "$CURRENT_MOD" ] && [ "$NEW_LEN" = "$CURRENT_LEN" ] && [ "$NEW_MOD" = "$CURRENT_MOD" ]; then
+    echo "Package is up to date (content-length $NEW_LEN and last-modified unchanged)."
+    exit 0
+fi
+
+curl -sL --max-time 900 --retry 2 --retry-delay 5 -o "$TMPDIR/Root.AppImage" "$APPIMAGE_URL"
 NEW_SHA=$(sha256sum "$TMPDIR/Root.AppImage" | awk '{print $1}')
 
 CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
@@ -122,6 +135,16 @@ if grep -q "^# sha256:" "$SPEC_FILE"; then
     sed -i "s/^# sha256:.*/# sha256: $NEW_SHA/" "$SPEC_FILE"
 else
     sed -i "/^Source0:/a # sha256:  $NEW_SHA" "$SPEC_FILE"
+fi
+if grep -q "^# content-length:" "$SPEC_FILE"; then
+    sed -i "s/^# content-length:.*/# content-length: $NEW_LEN/" "$SPEC_FILE"
+else
+    sed -i "/^# sha256:/a # content-length:  $NEW_LEN" "$SPEC_FILE"
+fi
+if grep -q "^# last-modified:" "$SPEC_FILE"; then
+    sed -i "s/^# last-modified:.*/# last-modified: $NEW_MOD/" "$SPEC_FILE"
+else
+    sed -i "/^# content-length:/a # last-modified:  $NEW_MOD" "$SPEC_FILE"
 fi
 
 if [ "$VERSION" != "$CURRENT_VERSION" ] || [ "$NEW_SHA" != "$CURRENT_SHA" ]; then

@@ -328,6 +328,9 @@ jobs:
                stricter, never looser.
             6. THE REPO IS THE PRODUCT. README, AGENTS.md, the relay and
                teardown-report.md describe what the repo IS; keep them true.
+               When you run the sweep, write its report to teardown-report.md
+               and commit it - a receipt that is never refreshed is a fossil,
+               not evidence.
             There is no human behind any of this. All of it is your job
             because there is nobody else to do it - not because you were
             asked to.
@@ -2269,8 +2272,13 @@ jobs:
                hunt: builds - 64 newest COPR builds, 0 failed
                hunt: spec-lint - rpmspec/rpmlint, 0 errors
                hunt: smoke - 24 teardowns, 0 FAIL
-               The gate counts distinct categories and needs at least 5. A
-               category you did not run is a category you did not check.
+               `python3 tools/hunt.py` runs the machine-checkable categories
+               (builds, chroots, upstream-versions, cves, licenses) against the
+               live sources and prints the relay-ready hunt: lines plus every
+               finding - run it instead of hand-rolling those checks. The
+               container categories (deps, install-tests, spec-lint, smoke) are
+               yours. The gate counts distinct categories and needs at least 5.
+               A category you did not run is a category you did not check.
             - End every run with a concise final summary: what you fixed, which issues
               you closed, which PRs you merged/rejected, which COPR builds you verified
               and their result, and what remains. Include the pre-completion gate
