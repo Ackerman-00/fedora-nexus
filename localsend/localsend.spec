@@ -1,16 +1,13 @@
 # Disable debuginfo extraction since we are repackaging pre-compiled binaries
 %global debug_package %{nil}
 
-# Upstream Flutter build embeds build-machine RPATHs in bundled plugins
-%global __brp_check_rpaths %{nil}
-
 # Prevent RPM from trying to auto-generate dependencies from the bundled Flutter libraries
 %global __requires_exclude_from ^%{_libdir}/localsend_app/.*$
 %global __provides_exclude_from ^%{_libdir}/localsend_app/.*$
 
 Name:           localsend
 Version:        1.18.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        An open source cross-platform alternative to AirDrop
 
 License:        Apache-2.0
@@ -24,6 +21,7 @@ ExclusiveArch:  x86_64
 
 # Required to unpack the upstream DEB natively
 BuildRequires:  binutils
+BuildRequires:  patchelf
 BuildRequires:  tar
 
 # Explicit dependencies mapped from the upstream DEB to Fedora
@@ -77,6 +75,10 @@ exec %{_libdir}/localsend_app/localsend_app "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/localsend_app
 
+# Plugins carry the Flutter build machine's RPATH; rewrite to the sibling dir
+find %{buildroot}%{_libdir}/localsend_app/lib -type f -name '*.so*' \
+    -exec patchelf --set-rpath '$ORIGIN' {} +
+
 # 4. Ship the upstream Apache-2.0 license text
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
@@ -88,6 +90,12 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_libdir}/localsend_app/
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.18.2-5
+- Rewrite the bundled plugins' RPATH to $ORIGIN. Upstream's Flutter build
+  embeds /home/runner/work/localsend/.../ephemeral and the Debian multiarch
+  dir in 13 .so files; rpm's check-rpaths rejected them, and the spec was
+  silencing that check instead of fixing the rpaths. The check is armed again.
+
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.18.2-4
 - Ship the upstream Apache-2.0 LICENSE (Source1, same v1.18.2 tag as the deb
   payload, which contains no license text).
