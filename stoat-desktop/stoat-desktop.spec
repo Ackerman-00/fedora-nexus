@@ -11,7 +11,7 @@
 
 Name:           stoat-desktop
 Version:        1.5.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open source, user-first chat platform desktop client
 
 License:        AGPL-3.0-only AND MIT AND BSD-2-Clause
@@ -20,6 +20,8 @@ Source0:        %{url}/releases/download/v%{version}/Stoat-linux-x64-%{version}.
 Source1:        stoat-desktop.desktop
 Source2:        stoat.png
 Source3:        chat.stoat.StoatDesktop.metainfo.xml
+# The zip payload carries no license text; the repo does at the same tag.
+Source4:        %{url}/raw/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
 
@@ -83,7 +85,11 @@ exec /opt/Stoat/stoat-desktop "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/stoat-desktop
 
+# 4. Ship the upstream AGPL-3.0 license text
+install -Dpm 0644 %{SOURCE4} %{buildroot}%{_licensedir}/%{name}/LICENSE
+
 %files
+%license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/stoat-desktop
 %{_datadir}/applications/chat.stoat.StoatDesktop.desktop
 %{_datadir}/icons/hicolor/256x256/apps/chat.stoat.StoatDesktop.png
@@ -93,6 +99,9 @@ chmod 0755 %{buildroot}%{_bindir}/stoat-desktop
 %attr(4755, root, root) /opt/Stoat/chrome-sandbox
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.5.4-2
+- Ship the upstream AGPL-3.0 LICENSE (Source4, same v1.5.4 tag as the zip
+  payload, which contains no license text).
 * Fri Sep 18 2026 Nexus Auto-Updater <bot@github.com> - 1.5.4-1
 - Update to version 1.5.4
 
