@@ -7,15 +7,15 @@
 %global __requires_exclude_from ^/opt/OpenCode/.*$
 
 Name:           opencode-desktop
-Version:        2.1.0
-Release:        2%{?dist}
+Version:        2.1.1
+Release:        1%{?dist}
 Summary:        AI coding agent desktop app
 
 License:        MIT
 URL:            https://opencode.ai
 # fpm-built debs have no rpmbuild brp-strip phase, so repack from the deb.
 Source0:        https://opencode.ai/files/bin/%{version}/opencode-desktop-linux-amd64.deb
-# sha256: 39aa9548bc3a3d4fc73a0f6a2f7aa470fbd60235043a1ba6bf46e8b1fe818357
+# sha256: 7e0e3b9af1fb1ed445a0b7666e52de3a573820edc865d3afa9e47294b51aa4a3
 
 ExclusiveArch:  x86_64
 
@@ -140,10 +140,5 @@ sed -i -e 's|<launchable type="desktop-id">ai.opencode.desktop.desktop</launchab
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
-* Tue Oct 20 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.0-2
-- Ship the upstream AppStream metainfo file (id and launchable adapted to
-  the desktop entry this package installs); it was absent from the RPM, so
-  app centers had no component to show for the desktop app
-
-* Tue Oct 20 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.0-1
-- Auto-update to upstream release 2.1.0
+* Tue Oct 20 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.1-1
+- Auto-update to upstream release 2.1.1
