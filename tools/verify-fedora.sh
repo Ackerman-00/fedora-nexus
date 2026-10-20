@@ -169,9 +169,9 @@ if [[ -f "$RELAY" ]]; then
     done
     echo "PASS: changed packages carry install evidence"
   fi
-  for pkg in $(awk '$2=="EXTERNAL"{print $1}' <<< "$IT"); do
-    if ! grep -qiE "GAP: external.*$pkg" <<< "$scope"; then
-      echo "FAIL: NOT COMPLETE -- $pkg install verdict is EXTERNAL without a GAP: external line naming it"
+  for ext_pkg in $(awk '$2=="EXTERNAL"{print $1}' <<< "$IT"); do
+    if ! grep -qiE "GAP: external.*$ext_pkg" <<< "$scope"; then
+      echo "FAIL: NOT COMPLETE -- $ext_pkg install verdict is EXTERNAL without a GAP: external line naming it"
       FAIL=1
     fi
   done

@@ -210,8 +210,8 @@ jobs:
                 return 1
               fi
             done
-            for it_pkg in $(awk '$2=="EXTERNAL"{print $1}' <<< "$it_rows"); do
-              grep -qiE "GAP: external.*$it_pkg" <<< "$content" || return 1
+            for ext_pkg in $(awk '$2=="EXTERNAL"{print $1}' <<< "$it_rows"); do
+              grep -qiE "GAP: external.*$ext_pkg" <<< "$content" || return 1
             done
             # Defect accounting: fixed + proven-external must cover what was found.
             # A hunt category you did not run is a category you did not check.

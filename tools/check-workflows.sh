@@ -122,11 +122,11 @@ for pat in (r"^[[:space:]]*defects-found:[[:space:]]*[0-9]+",
               % (pat, in_gate, in_ver))
         bad = 1
 
-# The EXTERNAL rule names a shell variable, and the two files name it
-# differently ($pkg vs $it_pkg), so compare the shape of the rule.
-gap_rule = re.compile(r"GAP: external\.\*\$")
-in_gate = any(gap_rule.search(p) for p in gp)
-in_ver = any(gap_rule.search(p) for p in vp)
+# The EXTERNAL rule is compared textually: both files name the variable
+# $ext_pkg, so a one-sided edit shows up as a difference.
+gap_pat = r"GAP: external.*$ext_pkg"
+in_gate = norm(gap_pat) in gp
+in_ver = norm(gap_pat) in vp
 if in_gate and in_ver:
     print("OK   the EXTERNAL verdict needs a GAP: external line, in both")
 else:
