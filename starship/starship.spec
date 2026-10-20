@@ -2,12 +2,15 @@
 
 Name:           starship
 Version:        1.27.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Minimal, blazing-fast, and customizable prompt for any shell (Nexus Optimized)
 
 License:        ISC
 URL:            https://github.com/starship/starship
 Source0:        %{url}/releases/download/v%{version}/starship-x86_64-unknown-linux-gnu.tar.gz
+# The binary release tarball carries no license text; the LICENSE lives in
+# the source tree at the same tag.
+Source1:        %{url}/raw/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
 
@@ -36,13 +39,21 @@ install -d -m 0755 %{buildroot}%{fish_completions_dir}
 %{buildroot}%{_bindir}/starship completions zsh > %{buildroot}%{zsh_completions_dir}/_starship
 %{buildroot}%{_bindir}/starship completions fish > %{buildroot}%{fish_completions_dir}/starship.fish
 
+# License text from the upstream source tree (ISC, same tag as Source0)
+install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
+
 %files
+%license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/starship
 %{bash_completions_dir}/starship
 %{zsh_completions_dir}/_starship
 %{fish_completions_dir}/starship.fish
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.27.0-2
+- Ship the upstream ISC LICENSE as a license file (Source1, pinned to the same
+  v1.27.0 tag as the binary release, which ships no license text).
+
 * Sat Oct 17 2026 Nexus Auto-Updater <bot@github.com> - 1.27.0-1
 - Update to version 1.27.0
 
