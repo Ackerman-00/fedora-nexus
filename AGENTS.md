@@ -429,7 +429,9 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
 - `bash tools/copr-install-check.sh <pkg> <rpm-name> <smoke-cmd> [chroot]` -
   install-test one published package from the live COPR repo.
 - `bash tools/check-workflows.sh` - YAML parse + actionlint + permission-scope
-  scan for .github/workflows/*.yml. Run it before pushing any workflow change.
+  scan for .github/workflows/*.yml, plus a drift check that the gate and the
+  verifier parse the contract the same way. Run it before pushing any workflow
+  change.
 - `bash tools/model-cascade.sh` - the free-model chain for this run, derived
   from the live catalog; `tools/model-rank.txt` holds the strength order.
 - `bash tools/verify-fedora.sh` - the external completion verifier. Exit 1

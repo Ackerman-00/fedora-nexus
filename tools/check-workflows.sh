@@ -68,6 +68,44 @@ for f in sorted(glob.glob(".github/workflows/*.yml")):
 sys.exit(bad)
 PY
 
+echo "== gate and verifier agree on the contract =="
+python3 - <<'PY' || FAIL=1
+import re, sys
+
+def read(p):
+    return open(p, encoding="utf-8", errors="replace").read()
+
+gate = read(".github/workflows/opencode-schedule.yml")
+ver = read("tools/verify-fedora.sh")
+
+def awk_block(text):
+    m = re.search(r"awk -F'\|' '(.*?)'\s*\|\s*sort -u", text, re.S)
+    return re.sub(r"\s+", " ", m.group(1)).strip() if m else ""
+
+def norm(pattern):
+    return re.sub(r"\s+", " ", pattern).strip()
+
+bad = 0
+if awk_block(gate) != awk_block(ver):
+    print("FAIL: the gate and the verifier parse the install table differently")
+    bad = 1
+else:
+    print("OK   install-table parser identical in gate and verifier")
+
+for pat in (r"^[[:space:]]*defects-found:[[:space:]]*[0-9]+",
+            r"^[[:space:]]*defects-fixed:[[:space:]]*[0-9]+",
+            r"^[[:space:]]*changed:",
+            r"^[[:space:]]*hunt: [a-z0-9-]+"):
+    in_gate = any(norm(p) == norm(pat) for p in re.findall(r"grep -[a-zA-Z]+E?\s+'([^']+)'", gate))
+    in_ver = any(norm(p) == norm(pat) for p in re.findall(r"grep -[a-zA-Z]+E?\s+'([^']+)'", ver))
+    if in_gate != in_ver:
+        print("FAIL: contract pattern %r present in gate=%s verifier=%s" % (pat, in_gate, in_ver))
+        bad = 1
+    else:
+        print("OK   contract pattern %r in both" % pat)
+sys.exit(bad)
+PY
+
 if [ "$FAIL" -ne 0 ]; then
   echo "WORKFLOW VALIDATION FAILED - do not push"
   exit 1
