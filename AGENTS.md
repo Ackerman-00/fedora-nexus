@@ -399,3 +399,29 @@ RULE: actionlint is the authority, not the docs prose. Before pushing any
 workflow change run `bash tools/check-workflows.sh` - it parses the YAML,
 runs actionlint and scans the scopes. The same list lives in the scheduler
 prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
+
+## Tools in this repo (what to run instead of hand-rolling it)
+
+- `python3 tools/hunt.py` - machine-checked hunt categories against live
+  sources: builds (COPR), chroots, upstream-versions (GitHub, Codeberg,
+  GitLab, PyPI), cves (OSV, filtered by the advisory's own ranges), licenses
+  (a LicenseRef package has no text to ship). It prints the relay-ready
+  `hunt:` lines and every finding. The container categories - deps,
+  install-tests, spec-lint, smoke - are still yours.
+- `python3 tools/teardown-sweep.py --type fedora` - the full teardown sweep:
+  downloads and tears every artifact apart, reads internal versions,
+  compares them with upstream, and writes the receipt. Its OSV hits are
+  range-filtered now, so a hit means affected, not "the catalog mentioned it".
+- `bash tools/container-teardown.sh <pkgdir> <spec> <smoke-cmd> [rpmV]` -
+  fresh-container rpmbuild + install + rpm -V + smoke for one package.
+- `bash tools/teardown-fresh.sh <pkgdir> [chroot] [smoke-cmd] [rpm-name]` -
+  the same, with the build in one container and the install + smoke in a
+  second fresh one, so the install test cannot see the build deps.
+- `bash tools/copr-install-check.sh <pkg> <rpm-name> <smoke-cmd> [chroot]` -
+  install-test one published package from the live COPR repo.
+- `bash tools/check-workflows.sh` - YAML parse + actionlint + permission-scope
+  scan for .github/workflows/*.yml. Run it before pushing any workflow change.
+- `bash tools/model-cascade.sh` - the free-model chain for this run, derived
+  from the live catalog; `tools/model-rank.txt` holds the strength order.
+- `bash tools/verify-fedora.sh` - the external completion verifier. Exit 1
+  means the run is not done; fix what it names and re-run it.

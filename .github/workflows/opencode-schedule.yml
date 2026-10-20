@@ -1854,6 +1854,21 @@ jobs:
                after any changes. Web-search to verify every fact before editing docs,
                and keep your edits accurate and minimal.
 
+            6b. IMPROVE THE REPO (what you do with the time left over).
+               Maintenance is the floor, not the ceiling: this repo is yours to
+               make better. With priorities 0-6 green and time left, land the
+               highest-value improvement you can actually verify - CI
+               wall-clock (caching, parallelism, fewer container rebuilds),
+               the verifier and the gate (make them stricter, never looser),
+               the hunt and sweep tooling, the docs, or a package that belongs
+               here (directory, spec, update.sh, COPR record, chroots, README
+               row, the same evidence bar as the others). Land it, build it,
+               verify it, and say in the relay what changed and what it bought.
+               One improvement per run is the right pace. A run that ends with
+               maintenance only is a missed run; a run that leaves the repo
+               half-finished is a broken repo. Never trade correctness for an
+               improvement: priorities 0-6 come first.
+
             7. VALIDATE BEFORE COMMITTING.
                Run `bash -n` on ALL update.sh in the repo every run (cheap - catches syntax rot before the auto-updater trips on it, see priority 3), plus full validation for every update.sh you touch. Validate spec syntax where
                possible (e.g. `rpmspec -P <file>` if rpm tools are available; otherwise
