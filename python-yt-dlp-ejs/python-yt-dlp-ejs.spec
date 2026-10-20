@@ -5,7 +5,7 @@
 
 Name:           python-yt-dlp-ejs
 Version:        0.8.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        External JavaScript runtimes for yt-dlp
 
 License:        Unlicense AND MIT AND ISC
@@ -51,9 +51,17 @@ repository as a dependency of mixtapes.
 %pyproject_install
 %pyproject_save_files yt_dlp_ejs
 
+# Upstream license text shipped inside the sdist
+install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
+
 %files -f %{pyproject_files}
+%license %{_licensedir}/%{name}/LICENSE
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.8.0-5
+- Install the LICENSE that the 0.8.0 sdist already ships as a %license file
+  (it was extracted but never installed).
+
 * Sun Oct 04 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.8.0-4
 - Add Recommends: yt-dlp (JS solvers only serve yt-dlp's YouTube
   challenge provider; both directions verified optional, so Recommends
