@@ -378,3 +378,24 @@ without it (a version floor, the WHY of a pin, a license/SPDX proof, a
 harness gotcha). The repo-wide sweep on 2026-10-20 removed ~1800 comment
 lines and had to restore 15 of them as one-liners - that is the shape to aim
 for: a label, not a story.
+
+## The permission-scope list is actionlint's, not the docs' (found 2026-10-20)
+
+The GitHub docs table for `permissions` lists `code-quality` and
+`vulnerability-alerts` among the available scopes. GitHub's workflow
+validator does NOT accept them: a workflow that carries either key is
+rejected at parse time, and the push shows up as a failed run with NO jobs
+and the workflow file path as the run name. That killed both workflows in
+this repo on 2026-10-20 (and it is the same shape as the 2026-09-09
+incident with `workflows: write`).
+
+The scopes GitHub accepts in a `permissions:` block are exactly actionlint's
+list: actions, artifact-metadata, attestations, checks, contents,
+deployments, discussions, id-token, issues, models, packages, pages,
+pull-requests, repository-projects, security-events, statuses. `models`
+takes only read|none.
+
+RULE: actionlint is the authority, not the docs prose. Before pushing any
+workflow change run `bash tools/check-workflows.sh` - it parses the YAML,
+runs actionlint and scans the scopes. The same list lives in the scheduler
+prompt; if the two ever disagree, actionlint wins and the prompt is wrong.

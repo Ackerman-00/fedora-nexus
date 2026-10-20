@@ -2228,7 +2228,9 @@ jobs:
             scores; (2) rank the newcomer by benchmark, not by hype; (3) rewrite
             tools/model-rank.txt with the new order, one id per line, each
             preceded by a `#` line giving the score, the source and the date;
-            (4) commit it. The strongest free model goes FIRST - a cascade that
+            (4) commit it, and add the new id to the provider map in
+            opencode.json so the CLI can resolve it. The strongest free model
+            goes FIRST - a cascade that
             starts a weak model spends the run filling in tables instead of
             fixing the repo. A model the catalog no longer serves stays out of
             the file until it comes back. If the ranking did not change, say so
