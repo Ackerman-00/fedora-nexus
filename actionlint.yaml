@@ -9,7 +9,8 @@
 #   ubuntu-26.04-arm, ubuntu-22.04, ubuntu-22.04-arm, ubuntu-slim
 #
 # ubuntu-latest is migrating from 24.04 to 26.04 between 2026-10-19 and
-# 2026-11-19, so pin an explicit version rather than the rolling label.
+# 2026-11-19. The workflows use the rolling label on purpose, so this list
+# only matters if one of them ever has to be pinned to an explicit image.
 #
 # When a new image ships, add its label here - and check
 # https://github.com/actions/runner-images for the current list.
