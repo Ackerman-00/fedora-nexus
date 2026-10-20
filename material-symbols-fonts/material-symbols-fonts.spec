@@ -4,13 +4,16 @@
 
 Name:           material-symbols-fonts
 Version:        4.0.0^%{snapdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Material Symbols variable icon font by Google
 License:        Apache-2.0
 URL:            https://github.com/google/material-design-icons
 Source0:        %{url}/raw/%{commit}/variablefont/MaterialSymbolsOutlined%%5BFILL%%2CGRAD%%2Copsz%%2Cwght%%5D.ttf#/MaterialSymbolsOutlined.ttf
 Source1:        %{url}/raw/%{commit}/variablefont/MaterialSymbolsRounded%%5BFILL%%2CGRAD%%2Copsz%%2Cwght%%5D.ttf#/MaterialSymbolsRounded.ttf
 Source2:        %{url}/raw/%{commit}/variablefont/MaterialSymbolsSharp%%5BFILL%%2CGRAD%%2Copsz%%2Cwght%%5D.ttf#/MaterialSymbolsSharp.ttf
+# The font files carry no embedded license text; the repository LICENSE at
+# the same commit is the Apache-2.0 text that covers them.
+Source3:        %{url}/raw/%{commit}/LICENSE
 
 BuildArch:      noarch
 
@@ -30,10 +33,16 @@ install -m 0755 -d %{buildroot}%{_datadir}/fonts/%{name}
 install -m 0644 -p "%{SOURCE0}" %{buildroot}%{_datadir}/fonts/%{name}/MaterialSymbolsOutlined.ttf
 install -m 0644 -p "%{SOURCE1}" %{buildroot}%{_datadir}/fonts/%{name}/MaterialSymbolsRounded.ttf
 install -m 0644 -p "%{SOURCE2}" %{buildroot}%{_datadir}/fonts/%{name}/MaterialSymbolsSharp.ttf
+install -Dpm 0644 %{SOURCE3} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %files
+%license %{_licensedir}/%{name}/LICENSE
 %{_datadir}/fonts/%{name}
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 4.0.0^20261009022539git49d4db3-2
+- Ship the Apache-2.0 LICENSE from google/material-design-icons at the
+  pinned commit. The package declared Apache-2.0 but shipped no license text.
+
 * Fri Oct 09 2026 Ackerman-00 <quietcraft@gmail.com> - 4.0.0^20261009022539git49d4db3-1
 - Nightly sync with upstream master branch (Commit: 49d4db3)
