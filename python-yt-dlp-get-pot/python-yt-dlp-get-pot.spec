@@ -5,7 +5,7 @@
 
 Name:           python-yt-dlp-get-pot
 Version:        0.3.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        PO token provider plugin for yt-dlp
 
 License:        Unlicense
@@ -49,9 +49,17 @@ for the Nexus repository as a dependency of mixtapes.
 %pyproject_install
 %pyproject_save_files yt_dlp_plugins
 
+# Upstream license text shipped inside the sdist
+install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
+
 %files -f %{pyproject_files}
+%license %{_licensedir}/%{name}/LICENSE
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.3.0-5
+- Install the LICENSE that the 0.3.0 sdist already ships as a %license file
+  (it was extracted but never installed).
+
 * Sun Oct 04 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.3.0-4
 - Declare Requires: yt-dlp (plugin ships yt_dlp_plugins extractor code
   that only loads inside yt-dlp; fresh-container smoke import failed
