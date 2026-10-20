@@ -34,7 +34,7 @@ concurrency:
 
 jobs:
   opencode:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     timeout-minutes: 360
     permissions:
       actions: write
@@ -432,7 +432,7 @@ jobs:
                  block plus its expiration date). Tokens are personal to the
                  owner, must not be shared, and EXPIRE 180 days after generation.
               2. SETUP (every run, before priority 1, even when no COPR write
-                 is planned): `pip install copr-cli`
+                 is planned): `python3 -m pip install copr-cli`
                  (PyPI `copr-cli`, authentic upstream: Pierre-Yves Chibon /
                  fedora-copr, GPLv2+), write ~/.config/copr from the secrets
                  with printf (NEVER echo secrets to stdout). The file MUST
@@ -2381,7 +2381,7 @@ jobs:
           if-no-files-found: ignore
 
   cleanup:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     if: always()
     needs: opencode
     permissions:

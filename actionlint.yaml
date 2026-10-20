@@ -1,0 +1,25 @@
+# actionlint config
+#
+# actionlint 1.7.12 ships a built-in runner-label list that predates Ubuntu
+# 26.04, so it calls the current image label "unknown" and fails a perfectly
+# valid workflow. GitHub's own list (actions/runner-images README, read
+# 2026-10-20) is:
+#
+#   ubuntu-latest, ubuntu-24.04, ubuntu-24.04-arm, ubuntu-26.04,
+#   ubuntu-26.04-arm, ubuntu-22.04, ubuntu-22.04-arm, ubuntu-slim
+#
+# ubuntu-latest is migrating from 24.04 to 26.04 between 2026-10-19 and
+# 2026-11-19, so pin an explicit version rather than the rolling label.
+#
+# When a new image ships, add its label here - and check
+# https://github.com/actions/runner-images for the current list.
+self-hosted-runner:
+  labels:
+    - ubuntu-26.04
+    - ubuntu-26.04-arm
+    - ubuntu-latest
+    - ubuntu-24.04
+    - ubuntu-24.04-arm
+    - ubuntu-22.04
+    - ubuntu-22.04-arm
+    - ubuntu-slim

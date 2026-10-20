@@ -466,3 +466,30 @@ it cannot run either: `update-engine.yml` restores the last valid version of
 a broken workflow file and pushes it. Verified in a sandbox clone on
 2026-10-20: a file broken with `code-quality: write` was detected, the last
 valid version restored, and the fix committed and pushed.
+
+## The runner image label: ubuntu-latest, on purpose (2026-10-20)
+
+The three workflows run on `ubuntu-latest`, not on a pinned `ubuntu-24.04`.
+The facts, from GitHub's own sources on 2026-10-20:
+
+- `ubuntu-latest` is "the latest OS image version that is GA"
+  (actions/runner-images README). It always points at a SUPPORTED image:
+  GitHub keeps at most two GA images per OS family and deprecates the
+  oldest, so the rolling label never lands on a deprecated one.
+- The label is migrating from 24.04 to 26.04 between 2026-10-19 and
+  2026-11-19 (GitHub changelog 2026-09-17, runner-images issue #14748).
+  During that window the same label can resolve to either image.
+- GitHub's own wording for the alternative: "If you are not ready to move,
+  pin your workflows to ubuntu-24.04". Pinning is the escape hatch FROM a
+  migration, not a duty: the migration reaches you either way, and a pinned
+  label becomes a recurring chore once that image is deprecated.
+
+This repo's CI does not depend on the image's tool versions: the opencode
+installer detects the platform with uname and a musl check (no distro
+logic), python is pinned by actions/setup-python, and everything else is
+apt, docker, gh, curl, git. So the flip is benign here, and the rolling
+label means the label never has to be updated again.
+
+If a future image breaks something, pin that one workflow to an explicit
+label (ubuntu-26.04, ubuntu-24.04) - and add the label to actionlint.yaml,
+because actionlint 1.7.12 does not know ubuntu-26.04 and calls it unknown.
