@@ -5,7 +5,7 @@
 
 Name:           python-pydbus
 Version:        0.6.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Pythonic D-Bus library
 
 License:        LGPL-2.0-or-later
@@ -45,9 +45,17 @@ repository as a dependency of mixtapes (MPRIS/tray integration).
 %pyproject_install
 %pyproject_save_files pydbus
 
+# Upstream LGPL-2.0-or-later license text shipped inside the sdist
+install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
+
 %files -f %{pyproject_files}
+%license %{_licensedir}/%{name}/LICENSE
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.6.0-5
+- Install the LGPL-2.0-or-later LICENSE that the 0.6.0 sdist already ships
+  as a %license file (it was extracted but never installed).
+
 * Tue Sep 22 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.6.0-4
 - Add missing Requires: python3-gobject (pydbus/__init__.py imports
   gi.repository.GLib, but upstream declares no install_requires so the
