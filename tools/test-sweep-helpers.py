@@ -95,6 +95,34 @@ def test_redirect_version_parsing():
     return failures
 
 
+def test_namespaced_tags():
+    """A monorepo tag series ('plugin/v1.2.3') is a version line of its own.
+
+    Regression guard for the python-yt-dlp-get-pot-rustypipe false SKIP: the
+    plugin releases are tagged 'yt-dlp-get-pot-rustypipe/v0.2.0' in a repo
+    whose other component tags v0.1.x, so dropping namespaced tags compared
+    the plugin release against the wrong series."""
+    import subprocess
+    import tempfile
+    failures = 0
+    with tempfile.TemporaryDirectory() as d:
+        run = lambda *a: subprocess.run(["git", "-C", d] + list(a),
+                                        capture_output=True, text=True)
+        run("init", "-q")
+        run("-c", "user.email=a@b", "-c", "user.name=a", "commit", "-q",
+            "--allow-empty", "-m", "x")
+        for tag in ("v0.1.2", "v0.1.1", "plugin/v0.2.0"):
+            run("tag", tag)
+        plain = ts._lsremote_version_tags(d)
+        wide = ts._lsremote_version_tags(d, include_namespaced=True)
+    ok = ("plugin/v0.2.0" not in plain and "plugin/v0.2.0" in wide
+          and "v0.1.2" in wide)
+    print(("PASS" if ok else "FAIL")
+          + f": namespaced tag kept only on request (plain={plain}, wide={wide})")
+    failures += 0 if ok else 1
+    return failures
+
+
 def test_detect_type():
     """detect_type must not classify a Fedora repo as opensuse just because a
     spec comment *mentions* openSUSE. Regression guard: on 2026-10-05 the
@@ -181,6 +209,7 @@ def main():
         print(f"{status}: pinned {pinned} vs repology {upstream} -> "
               f"newer={got} (want {want})  # {why}")
     failures += test_redirect_version_parsing()
+    failures += test_namespaced_tags()
     failures += test_detect_type()
     failures += test_strings_version()
     print(f"\n{'ALL PASS' if not failures else str(failures) + ' FAILURE(S)'}"

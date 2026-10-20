@@ -1260,8 +1260,14 @@ def host_machine():
     return {"amd64": "x86_64", "arm64": "aarch64"}.get(m, m)
 
 
-def _lsremote_version_tags(clone_url):
-    """All version-like tags via `git ls-remote --tags` - no API rate limits."""
+def _lsremote_version_tags(clone_url, include_namespaced=False):
+    """All version-like tags via `git ls-remote --tags` - no API rate limits.
+
+    include_namespaced also keeps monorepo tags whose last path segment is a
+    version ('plugin/v1.2.3'), because that series is a version line of its
+    own: comparing a component release against another component's tags in
+    the same repo reports a false mismatch.
+    """
     try:
         out = subprocess.run(["git", "ls-remote", "--tags", clone_url],
                              capture_output=True, text=True, timeout=180).stdout
@@ -1273,6 +1279,9 @@ def _lsremote_version_tags(clone_url):
             continue
         ref = line.split("\t", 1)[1].split("refs/tags/", 1)[-1].replace("^{}", "")
         if re.match(r"^v?\d", ref) and "/" not in ref:
+            tags.append(ref)
+        elif include_namespaced and "/" in ref \
+                and re.match(r"^v?\d", ref.rsplit("/", 1)[-1]):
             tags.append(ref)
     return tags
 
@@ -2470,8 +2479,11 @@ def check_upstream_latest(pkgs):
                 pass
 
         all_tags = None
+        ns_tags = []
         if not latest:
             all_tags = _lsremote_version_tags(clone)
+            ns_tags = [t for t in _lsremote_version_tags(clone, include_namespaced=True)
+                       if "/" in t]
             if all_tags:
                 latest, source = max(all_tags, key=_tagkey), "ls-remote"
 
@@ -2544,6 +2556,23 @@ def check_upstream_latest(pkgs):
             UPSTREAM_VERDICT[pkg] = ("stale", source, latest)
             log("[%s] %s : %s" % (STATUS_STALE, pkg, note))
             continue
+        # Monorepo tag namespace: 'component/v1.2.3' is a version line of its
+        # own, so a package pinned there is compared inside that namespace.
+        ns_match = next((t for t in ns_tags
+                         if same(pv, t.rsplit("/", 1)[-1])), None)
+        if ns_match:
+            ns = ns_match.rsplit("/", 1)[0]
+            series = [t for t in ns_tags if t.rsplit("/", 1)[0] == ns]
+            key = lambda t: _tagkey(t.rsplit("/", 1)[-1])
+            ns_latest = max(series, key=key)
+            if not any(key(t) > key(ns_match) for t in series):
+                note = ("at upstream latest %s in tag namespace '%s' [pinned %s]"
+                        % (ns_latest, ns, ns_match))
+                rows.append((pkg, "upstream %s" % slug, pv, ns_latest,
+                             STATUS_OK, note))
+                UPSTREAM_VERDICT[pkg] = ("fresh", "ls-remote-namespace", ns_latest)
+                log("[%s] %s : %s" % (STATUS_OK, pkg, note))
+                continue
         # ls-remote only: guard against branded-suffix misordering
         if all_tags and any(same(pv, t) for t in all_tags):
             note = ("pinned %s matches an existing tag but lexical-max is %s "
