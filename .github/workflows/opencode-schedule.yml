@@ -339,11 +339,12 @@ jobs:
                and when a package belongs here, add it properly - directory,
                spec, update.sh, COPR record, chroots, README row - held to the
                same evidence bar as the existing ones.
-            4. PULL REQUESTS: open one when a change is large, experimental or
-               wants a second pair of eyes; review and merge your own and
-               others' when the build and the verifier are green (squash
-               merge). Never let a PR rot unreviewed - if you opened it, you
-               finish it.
+            4. PULL REQUESTS: open one when a change is large or experimental,
+               or when you want a change reviewed before it lands - and you
+               are the reviewer. Review and merge your own and others' when
+               the build and the verifier are green (squash merge). Never let
+               a PR rot unreviewed: if you opened it, you finish it in this
+               run. There is no human reviewer to wait for.
             5. THE WORKFLOWS, THE TOOLS AND THIS PROMPT ARE YOURS TO EDIT.
                When a run is slow, wrong or brittle, fix the machinery that
                runs you - the gates, the verifier, the cascade, this prompt -
