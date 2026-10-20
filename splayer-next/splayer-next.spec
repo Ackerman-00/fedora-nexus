@@ -12,7 +12,7 @@
 
 Name:           splayer-next
 Version:        1.1.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Cross-platform desktop music player with rich lyric support (Nexus Optimized)
 
 License:        AGPL-3.0-only
@@ -22,6 +22,8 @@ URL:            https://github.com/SPlayer-Dev/SPlayer-Next
 # Use the native upstream RPM (upstream also publishes an aarch64 RPM;
 # this repo only ships x86_64 chroots, same as heroic/vesktop/fluxer)
 Source0:        %{url}/releases/download/v%{version}/splayer-next-%{version}-x86_64.rpm
+# The rpm payload carries no license text; the repo does at the same tag.
+Source1:        %{url}/raw/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
 
@@ -113,7 +115,11 @@ exec /opt/SPlayer-Next/SPlayer-Next "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/splayer-next
 
+# 4. Ship the upstream AGPL-3.0 license text
+install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
+
 %files
+%license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/splayer-next
 %{_datadir}/applications/top.imsyy.splayer_next.desktop
 %{_datadir}/icons/hicolor/512x512/apps/SPlayer-Next.png
@@ -125,6 +131,9 @@ chmod 0755 %{buildroot}%{_bindir}/splayer-next
 %attr(4755, root, root) /opt/SPlayer-Next/chrome-sandbox
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.1.0-3
+- Ship the upstream AGPL-3.0 LICENSE (Source1, same v1.1.0 tag as the rpm
+  payload, which contains no license text).
 * Fri Oct 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.1.0-2
 - Fix startup crash: ship chrome-sandbox as %attr(4755, root, root) so the
   Electron SUID sandbox helper is configured correctly (was 0755 ->
