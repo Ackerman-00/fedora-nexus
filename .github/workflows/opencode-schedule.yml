@@ -2211,9 +2211,13 @@ jobs:
               NEWER succeeded build created by this run, ANY open issue or PR,
               or ANY package whose inventory is unverified, your run is not
               done - keep working regardless of how complete things look.
-            - Commit fixes to main directly. NEVER open pull requests yourself, and
-              ALWAYS leave the working tree clean (the action may otherwise auto-create
-              a PR from leftover changes).
+            - Commit small fixes to main directly. Open a pull request when a
+              change is large, experimental or wants a second pair of eyes - and
+              then own it: the PR must be reviewed, built, install-tested and
+              merged (squash) by you before the run ends, because an open PR of
+              yours is unfinished work. ALWAYS leave the working tree clean
+              (the action may otherwise auto-create a PR from leftover
+              changes).
             - CLEAN-TREE DISCIPLINE (MANDATORY): at the end of the run `git status
               --porcelain` MUST be empty. Download/extract test artifacts (source
               tarballs, RPMs) into /tmp or $RUNNER_TEMP, NEVER into the repo working
@@ -2274,19 +2278,28 @@ jobs:
             2026-10-20 OpenCode added Step 5 Preview Free and retired Fledge
             Alpha Free, and Space Bunny Free left the catalog within a day of
             being added. When the cascade prints "NEW FREE MODELS (not ranked
-            yet...)" on stderr you MUST: (1) read the live catalog
-            (https://opencode.ai/inference/v1/models) and the official free list
-            (https://opencode.ai/v2/docs/console/models/) plus published coding
-            scores; (2) rank the newcomer by benchmark, not by hype; (3) rewrite
-            tools/model-rank.txt with the new order, one id per line, each
-            preceded by a `#` line giving the score, the source and the date;
-            (4) commit it, and add the new id to the provider map in
-            opencode.json so the CLI can resolve it. The strongest free model
-            goes FIRST - a cascade that
-            starts a weak model spends the run filling in tables instead of
-            fixing the repo. A model the catalog no longer serves stays out of
-            the file until it comes back. If the ranking did not change, say so
-            in the relay and change nothing.
+            yet...)" on stderr, or the catalog and the rank file disagree, you
+            MUST re-rank it yourself, from these sources in this order:
+              1. OpenCode's own curated list - the model/provider combinations
+                 they benchmarked for coding agents:
+                 https://opencode.ai/v2/docs/console/models/
+              2. The live catalog - what can be called right now:
+                 https://opencode.ai/inference/v1/models
+              3. The changelog - what was added and what was retired:
+                 https://opencode.ai/changelog
+              4. For the ORDER inside that set, the published coding score of
+                 the model or of its paid twin
+                 (https://howmanytoken.com/plans/opencode-zen/).
+            Then rewrite tools/model-rank.txt: the ids in strength order, grouped
+            into tiers, one id per line, each preceded by a `#` line giving the
+            score, the source and the date you checked. A model the catalog no
+            longer serves leaves the file; a model that enters gets a tier and a
+            citation. Add the new id to the provider map in opencode.json so the
+            CLI can resolve it, and commit both. The strongest free model goes
+            FIRST - a cascade that starts a weak model spends the run filling
+            in tables instead of fixing the repo. If the ranking did not change,
+            say so in the relay and change nothing. The next run reads the file
+            you wrote, so the ranking you commit is the ranking that runs.
             TRUTH CONTRACT (the machine checks these, not your prose):
             A verdict is a transcript of a command you ran, never a summary of
             what you believe. On 2026-10-20 a run published an install table

@@ -1,29 +1,40 @@
-# Free-model ranking for the CI cascade - STRONGEST FIRST.
+# Free-model ranking for the CI cascade - STRONGEST FIRST, in tiers.
 #
-# Data:
-#   live catalog  https://opencode.ai/inference/v1/models  (2026-10-20)
-#   coding score  https://howmanytoken.com/plans/opencode-zen/  (2026-10-20)
-# A free model's published coding score is often the score of its paid twin
-# (e.g. "Scores from Nemotron 3 Ultra 550B A55B"). Where a model has no
-# published score it is ordered by family and by the owner's field reports.
+# Authority order for this file (the scheduled agent refreshes it; this file
+# is the artifact it writes):
+#   1. OpenCode's own curated list - the model/provider combinations they
+#      benchmarked for coding agents:
+#      https://opencode.ai/v2/docs/console/models/
+#   2. The live catalog - what can actually be called right now:
+#      https://opencode.ai/inference/v1/models
+#   3. The changelog - what was added, what was retired:
+#      https://opencode.ai/changelog
+#   4. For the ORDER inside that set, the published coding score of the model
+#      or of its paid twin (https://howmanytoken.com/plans/opencode-zen/).
 #
-# The cascade tries these in order and falls through on failure, so position 1
-# is the model that does the repo's real work. Refresh this file whenever the
-# catalog changes - see MODEL REFRESH in .github/workflows/opencode-schedule.yml.
+# A model that leaves the catalog leaves this file. A model that enters gets a
+# tier and a citation. The cascade reads this file in order, so position 1 is
+# the model that does the repo's real work. The owner's veto (a model that
+# must never be used) belongs in tools/model-cascade.sh, not here.
 #
-# deepseek-v4.1-flash-free - base DeepSeek V4 Pro coding 68.8
+# tier 1 - benchmark leaders
+# deepseek-v4.1-flash-free - base DeepSeek V4 Pro coding 68.8 | checked 2026-10-20
 deepseek-v4.1-flash-free
-# minimax-m3.1-flash-free - base MiniMax M3 coding 58.6
+# minimax-m3.1-flash-free - base MiniMax M3 coding 58.6 | checked 2026-10-20
 minimax-m3.1-flash-free
-# mimo-v2.6-flash-free - base MiMo-V2.5 coding 56.8
+# mimo-v2.6-flash-free - base MiMo-V2.5 coding 56.8 | checked 2026-10-20
 mimo-v2.6-flash-free
-# big-pickle - stealth model, no published score
+#
+# tier 2 - curated by OpenCode, no published score
+# big-pickle - stealth model | checked 2026-10-20
 big-pickle
-# nemotron-3.5-super-vl-free - no published score
+# nemotron-3.5-super-vl-free - checked 2026-10-20
 nemotron-3.5-super-vl-free
-# longcat-2.5-preview-free - no published score
+# longcat-2.5-preview-free - checked 2026-10-20
 longcat-2.5-preview-free
-# beam-free - no published score, unavailable in some regions
+# beam-free - unavailable in some regions | checked 2026-10-20
 beam-free
-# nemotron-3.5-lightning-free - coding 26.8
+#
+# tier 3 - last resort
+# nemotron-3.5-lightning-free - coding 26.8 | checked 2026-10-20
 nemotron-3.5-lightning-free
