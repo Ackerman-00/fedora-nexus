@@ -116,7 +116,8 @@ if [[ -f "$RELAY" ]]; then
       if (n == 6) { build = "n/a"; v = a[5]; } else { build = a[3]; v = a[6]; }
       gsub(/^[ \t]+|[ \t]+$/, "", pkg); gsub(/^[ \t]+|[ \t]+$/, "", build); gsub(/^[ \t]+|[ \t]+$/, "", v);
       if (n == 7 && build !~ /^([0-9]+|n\/a)$/) next;
-      if (toupper(v) == "PASS" || toupper(v) == "FAIL" || toupper(v) == "EXTERNAL") printf "%s %s\n", pkg, toupper(v);
+      u = toupper(v); if (u == "OK") u = "PASS";
+      if (u == "PASS" || u == "FAIL" || u == "EXTERNAL") printf "%s %s\n", pkg, u;
     }' | sort -u)
   it_fail=$(grep -c ' FAIL$' <<< "$IT" || true)
   it_pass=$(grep -c ' PASS$' <<< "$IT" || true)
