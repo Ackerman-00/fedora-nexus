@@ -478,17 +478,21 @@ jobs:
               and GitHub rejected BOTH files at parse time ("Unexpected value
               'workflows'"), killing every run until a human reverted it. So:
               1. The permissions: mapping accepts ONLY this closed set, and
-                 actionlint is the authority on it - the docs table also lists
-                 scopes GitHub REJECTS (code-quality, vulnerability-alerts),
-                 and that killed two workflows here on 2026-09-09 and again on
-                 2026-10-20: actions, artifact-metadata, attestations, checks,
-                 contents, deployments, discussions, id-token, issues, models,
-                 packages, pages, pull-requests, repository-projects,
-                 security-events, statuses. Anything else = the ENTIRE file is
-                 rejected at parse time and every run of it dies. models
-                 accepts only read|none. When in doubt run
-                 `bash tools/check-workflows.sh` - it parses the YAML, runs
-                 actionlint and scans the scopes.
+                 actionlint is the authority on the KEYS - the docs table and
+                 the JSON schema both list scopes GitHub REJECTS
+                 (code-quality, vulnerability-alerts), and that killed two
+                 workflows here on 2026-09-09 and again on 2026-10-20: actions,
+                 artifact-metadata, attestations, checks, contents, deployments,
+                 discussions, id-token, issues, models, packages, pages,
+                 pull-requests, repository-projects, security-events, statuses.
+                 The VALUES per key come from the machine-readable schema
+                 (vendored in tools/permissions-schema.json): vulnerability-alerts
+                 and models take read|none, id-token takes write|none,
+                 copilot-requests takes write. Anything else = the ENTIRE file
+                 is rejected at parse time and every run of it dies.
+                 `python3 tools/workflow-valid.py <file>` is that rule in one
+                 place; `bash tools/check-workflows.sh` runs it, parses the
+                 YAML and runs actionlint. Run it before EVERY workflow push.
               2. After ANY edit to .github/workflows/* (and when asked to
                  verify them), run `bash tools/check-workflows.sh` - it does
                  the YAML parse, the actionlint pass and the permission-key
