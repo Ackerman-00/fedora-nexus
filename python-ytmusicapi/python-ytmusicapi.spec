@@ -5,7 +5,7 @@
 
 Name:           python-ytmusicapi
 Version:        1.12.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Unofficial API for YouTube Music
 
 License:        MIT
@@ -38,12 +38,16 @@ dependency of mixtapes.
 %install
 %pyproject_install
 %pyproject_save_files ytmusicapi
+install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %files -f %{pyproject_files}
+%license %{_licensedir}/%{name}/LICENSE
 # Upstream ships a console-script entry point (oauth CLI).
 %{_bindir}/ytmusicapi
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.12.3-2
+- Ship the MIT LICENSE from the sdist as a proper license file.
 * Wed Sep 16 2026 Ackerman-00 <quietcraft@gmail.com> - 1.12.3-1
 - Auto-update to upstream PyPI release 1.12.3
 
