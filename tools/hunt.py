@@ -374,8 +374,28 @@ def head_probe(url):
         return 0, "", 0
 
 
+def hunt_readme():
+    """Every package directory needs a row in the README's package table."""
+    try:
+        readme = open(os.path.join(ROOT, "README.md"), encoding="utf-8", errors="replace").read()
+    except OSError:
+        return ("readme", "README.md missing", "", [])
+    rows = set(re.findall(r"^\| `([a-z0-9-]+)` \|", readme, re.M))
+    dirs = set()
+    for d in os.listdir(ROOT):
+        pdir = os.path.join(ROOT, d)
+        if os.path.isdir(pdir) and any(f.endswith(".spec") for f in os.listdir(pdir)):
+            dirs.add(d)
+    missing = sorted(dirs - rows)
+    extra = sorted(rows - dirs)
+    findings = [("README.md", "no row for package %s" % m) for m in missing]
+    findings += [("README.md", "row for %s has no package dir" % e) for e in extra]
+    return ("readme", "%d packages, %d without a README row" % (len(dirs), len(missing)),
+            "", findings)
+
+
 HUNTS = (hunt_builds, hunt_chroots, hunt_upstream, hunt_cves, hunt_licenses,
-         hunt_release_discipline, hunt_version_probe)
+         hunt_release_discipline, hunt_version_probe, hunt_readme)
 
 
 def main():
