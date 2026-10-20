@@ -1,6 +1,6 @@
 Name:           mpvpaper
 Version:        1.9
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A video wallpaper program for wlroots based Wayland compositors
 
 License:        GPL-3.0-only AND MIT
@@ -36,13 +36,20 @@ with minimal CPU usage.
 %install
 %meson_install
 install -Dpm 0644 mpvpaper.man %{buildroot}%{_mandir}/man1/mpvpaper.1
+install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %files
+%license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/mpvpaper
 %{_bindir}/mpvpaper-holder
 %{_mandir}/man1/mpvpaper.1*
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.9-3
+- Ship the upstream GPL-3.0 LICENSE as a license file. The package declared
+  GPL-3.0-only AND MIT but installed no license text; the MIT half is the
+  bundled inc/KHR/khrplatform.h (Khronos), whose notice stays in that header.
+
 * Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 1.9-2
 - Add Requires: procps-ng. mpvpaper calls `pidof` via system() in
   check_watch_list (src/main.c:317) and check_paper_processes
