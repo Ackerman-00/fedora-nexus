@@ -354,8 +354,10 @@ ROOT CAUSE of the under-acting maintainer, in order of weight:
    payoff in the contract.
 3. The authority clause ("do not ask permission, you already have it") was
    prose. Prose is not enforced; only the machine is.
-4. The cascade ran deepseek-v4.1-flash-free first: a weak model fills the
-   table, it does not reason to a root cause.
+4. The cascade order was a hand-written list, so the first model was
+   whatever the list said - not the strongest free one. It is data now
+   (tools/model-rank.txt, benchmark-scored), and a new free model is
+   announced on stderr so the next run ranks it.
 
 RULE (enforced in code since 2026-10-20):
 - The gate and the verifier parse the install-test table. ANY verdict cell that
@@ -378,7 +380,7 @@ the code cannot show. No incident narratives, no dated lesson logs, no
 restated code, no commented-out code, no banners, no "why this exists"
 essays. Keep a comment only when a future maintainer would delete working code
 without it (a version floor, the WHY of a pin, a license/SPDX proof, a
-harness gotcha). The repo-wide sweep on 2026-10-20 removed ~1800 comment
+harness gotcha). The repo-wide sweep on 2026-10-20 removed ~1900 comment
 lines and had to restore 15 of them as one-liners - that is the shape to aim
 for: a label, not a story.
 
@@ -411,8 +413,8 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
   (a LicenseRef package has no text to ship), release-discipline (the newest
   changelog entry must name the spec's own Version and Release), version-probe
   (a Source0 that embeds %{version} - is a newer version published?). It
-  prints the relay-ready `hunt:` lines and every finding. The container categories - deps,
-  install-tests, spec-lint, smoke - are still yours.
+  prints the relay-ready `hunt:` lines and every finding. The container
+  categories - deps, install-tests, spec-lint, smoke - are still yours.
 - `python3 tools/teardown-sweep.py --type fedora` - the full teardown sweep:
   downloads and tears every artifact apart, reads internal versions,
   compares them with upstream, and writes the receipt. Its OSV hits are
