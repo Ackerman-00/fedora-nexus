@@ -1881,6 +1881,13 @@ jobs:
                after any changes. Web-search to verify every fact before editing docs,
                and keep your edits accurate and minimal.
 
+            6a. ONE BUILD PER PACKAGE PER RUN. A package you already bumped
+               this run stays bumped: if upstream moves again while the run
+               is still going, note the newer commit in the relay and let the
+               next run take it. Re-bumping queues a second COPR build for
+               the same package, and COPR serves that queue one build at a
+               time - so a second bump makes the whole run wait longer for
+               its own verification. Push, then wait for the build.
             6b. IMPROVE THE REPO (what you do with the time left over).
                Maintenance is the floor, not the ceiling: this repo is yours to
                make better. With priorities 0-6 green and time left, land the
