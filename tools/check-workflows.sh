@@ -38,35 +38,11 @@ else
 fi
 
 echo "== permission scopes =="
-python3 - <<'PY' || FAIL=1
-import glob, sys, yaml
-# The scopes GitHub accepts in a permissions block (actionlint's list).
-VALID = {"actions","artifact-metadata","attestations","checks","contents",
-         "deployments","discussions","id-token","issues","models","packages",
-         "pages","pull-requests","repository-projects","security-events",
-         "statuses"}
-VALUES = {"read","write","none"}
-bad = 0
-for f in sorted(glob.glob(".github/workflows/*.yml")):
-    d = yaml.safe_load(open(f)) or {}
-    blocks = []
-    if isinstance(d.get("permissions"), dict):
-        blocks.append(("top", d["permissions"]))
-    for jn, j in (d.get("jobs") or {}).items():
-        if isinstance(j.get("permissions"), dict):
-            blocks.append((jn, j["permissions"]))
-    for where, perm in blocks:
-        for k, v in perm.items():
-            if k not in VALID:
-                print(f"FAIL {f} [{where}]: unknown scope {k}")
-                bad = 1
-            elif v not in VALUES:
-                print(f"FAIL {f} [{where}]: {k}={v} not in read/write/none")
-                bad = 1
-        if perm:
-            print(f"OK   {f} [{where}]: {len(perm)} scope(s)")
-sys.exit(bad)
-PY
+if python3 tools/workflow-valid.py .github/workflows/*.yml; then
+  :
+else
+  FAIL=1
+fi
 
 echo "== gate and verifier agree on the contract =="
 python3 - <<'PY' || FAIL=1

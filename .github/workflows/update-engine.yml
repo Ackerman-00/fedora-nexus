@@ -31,6 +31,38 @@ jobs:
 
       - run: pip install requests
 
+      - name: Restore a workflow file that main cannot run
+        shell: bash
+        run: |
+          # A workflow file GitHub rejects kills every run of it, and the agent
+          # that would fix it cannot run either. This step is the backstop: it
+          # lives in a file that stays valid, and it restores the last version
+          # of a broken workflow file that was valid.
+          set -u
+          git config user.name "opencode-agent[bot]"
+          git config user.email "41898282+opencode-agent[bot]@users.noreply.github.com"
+          restored=0
+          for f in .github/workflows/opencode-schedule.yml .github/workflows/opencode.yml; do
+            [ -f "$f" ] || continue
+            if python3 tools/workflow-valid.py "$f" 2>/dev/null; then
+              continue
+            fi
+            echo "::warning::$f is not a valid workflow - restoring the last valid version"
+            for sha in $(git log --format=%H -- "$f" | head -40); do
+              if git show "$sha:$f" > /tmp/wf-candidate 2>/dev/null && python3 tools/workflow-valid.py /tmp/wf-candidate 2>/dev/null; then
+                git show "$sha:$f" > "$f"
+                echo "restored $f from $sha"
+                restored=1
+                break
+              fi
+            done
+          done
+          if [ "$restored" -eq 1 ]; then
+            git add .github/workflows/
+            git commit -q -m "ci: restore a workflow file that GitHub cannot run" || true
+            git push origin HEAD:main || true
+          fi
+
       - name: Run Custom Modules (update.sh)
         id: updater
         env:

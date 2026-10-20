@@ -85,6 +85,16 @@ if [[ -f "$RELAY" ]]; then
     fi
   done
 
+  # The workflow files on main must be valid: a file GitHub rejects kills every
+  # run of it, and the agent that would fix it cannot run either.
+  if bash tools/check-workflows.sh >/tmp/check-workflows.log 2>&1; then
+    echo "PASS: workflow files on main are valid"
+  else
+    echo "FAIL: NOT COMPLETE -- the workflow files on main are not valid:"
+    grep -E '^FAIL' /tmp/check-workflows.log | head -5
+    FAIL=1
+  fi
+
   if ! grep -q "| package | packaged version |" <<< "$scope"; then
     echo "FAIL: NOT COMPLETE -- version accuracy table missing from THIS run's block"
     FAIL=1

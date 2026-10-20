@@ -436,3 +436,33 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
   from the live catalog; `tools/model-rank.txt` holds the strength order.
 - `bash tools/verify-fedora.sh` - the external completion verifier. Exit 1
   means the run is not done; fix what it names and re-run it.
+
+## The permission scopes come from actionlint and the schema, not the docs (2026-10-20)
+
+The GitHub docs table for `permissions` lists `code-quality` and
+`vulnerability-alerts`, and so does the JSON schema. GitHub's workflow
+validator rejects both - a file carrying either is refused at parse time, the
+push shows up as a failed run with no jobs, and every run of that workflow is
+dead. That killed both workflows in this repo on 2026-10-20, and the same
+shape of mistake killed them on 2026-09-09 with `workflows: write`.
+
+Two rules, from two sources, because neither is the whole truth:
+- the KEY set is actionlint's list: actions, artifact-metadata, attestations,
+  checks, contents, deployments, discussions, id-token, issues, models,
+  packages, pages, pull-requests, repository-projects, security-events,
+  statuses.
+- the VALUES per key are the schema's
+  (https://json.schemastore.org/github-workflow.json, definitions.permissions-event):
+  vulnerability-alerts and models take read|none, id-token write|none,
+  copilot-requests write.
+
+`tools/workflow-valid.py` is that rule in one place and
+`tools/check-workflows.sh` runs it, parses the YAML and runs actionlint.
+`tools/permissions-schema.json` is the vendored schema fragment, with its
+source and the date it was taken.
+
+The backstop, because a broken workflow file means the agent that would fix
+it cannot run either: `update-engine.yml` restores the last valid version of
+a broken workflow file and pushes it. Verified in a sandbox clone on
+2026-10-20: a file broken with `code-quality: write` was detected, the last
+valid version restored, and the fix committed and pushed.
