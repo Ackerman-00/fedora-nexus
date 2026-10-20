@@ -324,8 +324,58 @@ def hunt_release_discipline():
             note, bad)
 
 
+def hunt_version_probe():
+    """Specs whose Source0 embeds the version: is a newer one published?
+
+    The release feeds do not cover a vendor that just puts the version in the
+    download path (opencode.ai/files/bin/<version>/...), so those packages
+    would otherwise never be checked.
+    """
+    findings, checked = [], 0
+    for sp in specs():
+        txt = open(sp, encoding="utf-8", errors="replace").read()
+        ver = resolve_version(sp, spec_field(sp, "Version")).strip()
+        if not re.search(r"^\d+(\.\d+)*", ver):
+            continue
+        for src in re.findall(r"^Source\d*:\s*(\S+)", txt, re.M):
+            if "%{version}" not in src:
+                continue
+            checked += 1
+            base = re.match(r"^(\d+)\.(\d+)(?:\.(\d+))?", ver)
+            if not base:
+                continue
+            major, minor, patch = base.group(1), base.group(2), base.group(3) or "0"
+            cands = ["%s.%s.%d" % (major, minor, int(patch) + 1),
+                     "%s.%d.0" % (major, int(minor) + 1),
+                     "%s.%s.%d" % (int(major) + 1, minor, 0)]
+            for cand in cands:
+                url = src.replace("%{version}", cand)
+                code, ctype, clen = head_probe(url)
+                if code in (200, 206) and "text/html" not in (ctype or "") and (clen or 0) > 1000:
+                    findings.append((os.path.basename(sp),
+                                     "%s is published upstream (%s, %s) - the spec pins %s"
+                                     % (cand, url.split("/")[-1], (ctype or "").split(";")[0], ver)))
+                    break
+            break
+    return ("version-probe", "%d versioned sources checked, %d newer upstream"
+            % (checked, len(findings)), "", findings)
+
+
+def head_probe(url):
+    """HEAD (or 1-byte GET) -> (status, content-type, content-length)."""
+    try:
+        req = urllib.request.Request(url, headers={**UA, "Range": "bytes=0-1023"}, method="GET")
+        with urllib.request.urlopen(req, timeout=45) as r:
+            clen = r.headers.get("content-length") or 0
+            return r.status, r.headers.get("content-type", ""), int(clen) if str(clen).isdigit() else 0
+    except urllib.error.HTTPError as exc:
+        return exc.code, "", 0
+    except Exception:
+        return 0, "", 0
+
+
 HUNTS = (hunt_builds, hunt_chroots, hunt_upstream, hunt_cves, hunt_licenses,
-         hunt_release_discipline)
+         hunt_release_discipline, hunt_version_probe)
 
 
 def main():
