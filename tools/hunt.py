@@ -394,8 +394,35 @@ def hunt_readme():
             "", findings)
 
 
+def hunt_fedora_releases():
+    """Which Fedora is stable, and which is next - re-read, never remembered."""
+    releases = re.findall(r'href="(\d+)/"', get_text("https://mirrors.kernel.org/fedora/releases/"))
+    development = re.findall(r'href="(\d+)/"', get_text("https://mirrors.kernel.org/fedora/development/"))
+    rel = sorted(int(x) for x in releases)
+    dev = sorted(int(x) for x in development)
+    if not rel:
+        return ("fedora-releases", "unavailable (mirror unreachable)", "", [])
+    stable = rel[-1]
+    beta = dev[-1] if dev else None
+    findings = []
+    if beta and beta <= stable:
+        findings.append(("fedora", "development lists %d, not newer than stable %d" % (beta, stable)))
+    return ("fedora-releases", "stable F%d, next F%s" % (stable, beta if beta else "?"),
+            "mirrors.kernel.org/fedora", findings)
+
+
+def get_text(url):
+    try:
+        req = urllib.request.Request(url, headers=UA)
+        with urllib.request.urlopen(req, timeout=45) as r:
+            return r.read().decode("utf-8", "replace")
+    except Exception:
+        return ""
+
+
 HUNTS = (hunt_builds, hunt_chroots, hunt_upstream, hunt_cves, hunt_licenses,
-         hunt_release_discipline, hunt_version_probe, hunt_readme)
+         hunt_release_discipline, hunt_version_probe, hunt_readme,
+         hunt_fedora_releases)
 
 
 def main():

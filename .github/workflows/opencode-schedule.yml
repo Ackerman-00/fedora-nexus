@@ -2310,9 +2310,10 @@ jobs:
                hunt: smoke - 24 teardowns, 0 FAIL
                `python3 tools/hunt.py` runs the machine-checkable categories
                (builds, chroots, upstream-versions, cves, licenses,
-               release-discipline, version-probe) against the live sources and
-               prints the relay-ready hunt: lines plus every finding - run it
-               instead of hand-rolling those checks. The
+               release-discipline, version-probe, readme, fedora-releases)
+               against the live sources and prints the relay-ready hunt: lines
+               plus every finding - run it instead of hand-rolling those
+               checks. The
                container categories (deps, install-tests, spec-lint, smoke) are
                yours. The gate counts distinct categories and needs at least 5.
                A category you did not run is a category you did not check.

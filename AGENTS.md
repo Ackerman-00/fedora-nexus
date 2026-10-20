@@ -412,8 +412,10 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
   GitLab, PyPI), cves (OSV, filtered by the advisory's own ranges), licenses
   (a LicenseRef package has no text to ship), release-discipline (the newest
   changelog entry must name the spec's own Version and Release), version-probe
-  (a Source0 that embeds %{version} - is a newer version published?). It
-  prints the relay-ready `hunt:` lines and every finding. The container
+  (a Source0 that embeds %{version} - is a newer version published?), readme
+  (every package has a row in the README table), fedora-releases (which
+  Fedora is stable, re-read from the mirror). It prints the relay-ready
+  `hunt:` lines and every finding. The container
   categories - deps, install-tests, spec-lint, smoke - are still yours.
 - `python3 tools/teardown-sweep.py --type fedora` - the full teardown sweep:
   downloads and tears every artifact apart, reads internal versions,
