@@ -165,13 +165,21 @@ jobs:
             it_rows=$(printf '%s' "$content" | awk -F'|' '
               /^\|/ {
                 n = split($0, a, "|");
-                if (n != 6 && n != 7) next;
+                if (n < 3) next;
+                verdict = "";
+                for (i = 2; i <= n; i++) {
+                  c = a[i];
+                  gsub(/^[ \t]+|[ \t]+$/, "", c);
+                  lc = tolower(c);
+                  if (lc == "pass" || lc == "ok" || lc == "installable" || lc == "fixed") { verdict = "PASS"; continue }
+                  if (lc == "fail" || lc == "broken" || lc ~ /^broken[-_(]/) { verdict = "FAIL"; continue }
+                  if (lc == "external" || lc == "blocked" || lc ~ /^blocked[-_(]/) { verdict = "EXTERNAL"; continue }
+                }
+                if (verdict == "") next;
                 pkg = a[2];
-                if (n == 6) { build = "n/a"; v = a[5]; } else { build = a[3]; v = a[6]; }
-                gsub(/^[ \t]+|[ \t]+$/, "", pkg); gsub(/^[ \t]+|[ \t]+$/, "", build); gsub(/^[ \t]+|[ \t]+$/, "", v);
-                if (n == 7 && build !~ /^([0-9]+|n\/a)$/) next;
-                u = toupper(v); if (u == "OK") u = "PASS";
-                if (u == "PASS" || u == "FAIL" || u == "EXTERNAL") printf "%s %s\n", pkg, u;
+                gsub(/^[ \t]+|[ \t]+$/, "", pkg);
+                if (pkg == "" || pkg == "package") next;
+                printf "%s %s\n", pkg, verdict;
               }' | sort -u)
             it_fail=$(grep -c ' FAIL$' <<< "$it_rows" || true)
             it_pass=$(grep -c ' PASS$' <<< "$it_rows" || true)
@@ -1137,11 +1145,15 @@ jobs:
                   with the reason recorded.
               f. MANDATORY DELIVERABLE - install-test table in your final
                  summary, one row per package tested:
-                  | package | chroot | COPR build | dnf install test | smoke test |
-                  status |
-                   status in: installable / fixed / broken-(dep) /
-                   blocked-(reason). Any package you changed but did not
-                   install-test is an unfinished package.
+                  | package | COPR build | chroot | installed NVR | verdict |
+                 The gate reads the verdict cell of every row. PASS means the
+                 package installed and its smoke passed; FAIL means it did
+                 not, and a FAIL row fails the run - fix it this run and
+                 re-test it, or make it EXTERNAL with a GAP: external line
+                 naming the package. The older wording still maps:
+                 installable / fixed count as PASS, broken-(dep) as FAIL,
+                 blocked-(reason) as EXTERNAL. Any package you changed but did
+                 not install-test is an unfinished package.
 
             OPTIMIZATION DISCIPLINE (MANDATORY for every source-built
             package you touch; skip only for prebuilt/repackaged binaries,

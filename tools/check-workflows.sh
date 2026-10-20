@@ -136,6 +136,33 @@ elif g_tbl != v_tbl:
     bad = 1
 else:
     print("OK   install-test table rule identical in gate and verifier")
+
+# The prompt and the machine must speak the same verdict vocabulary: the gate
+# accepts a row when a cell reads PASS/FAIL/EXTERNAL (or the older
+# installable/fixed/broken-*/blocked-*), so the prompt has to name those words
+# or a run writes a table the gate cannot read.
+import yaml as _yaml
+try:
+    _wf = _yaml.safe_load(open(".github/workflows/opencode-schedule.yml", encoding="utf-8"))
+    _prompt = ""
+    for _job in (_wf.get("jobs") or {}).values():
+        for _st in _job.get("steps", []):
+            _env = _st.get("env") or {}
+            if "PROMPT" in _env:
+                _prompt = _env["PROMPT"]
+    if not _prompt:
+        print("FAIL: the scheduler PROMPT was not found in the workflow")
+        bad = 1
+    else:
+        for word in ("PASS", "FAIL", "EXTERNAL"):
+            if word not in _prompt:
+                print("FAIL: the PROMPT never mentions the verdict word %r" % word)
+                bad = 1
+            else:
+                print("OK   the PROMPT names the verdict word %r" % word)
+except Exception as exc:
+    print("FAIL: could not read the scheduler PROMPT: %s" % exc)
+    bad = 1
 sys.exit(bad)
 PY
 

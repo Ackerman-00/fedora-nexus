@@ -109,16 +109,24 @@ if [[ -f "$RELAY" ]]; then
   # package is broken right now, and a FAIL row next to a same-run
   # "install PASS" teardown is self-contradicting. Both fail the run.
   IT=$(printf '%s' "$scope" | awk -F'|' '
-    /^\|/ {
-      n = split($0, a, "|");
-      if (n != 6 && n != 7) next;
-      pkg = a[2];
-      if (n == 6) { build = "n/a"; v = a[5]; } else { build = a[3]; v = a[6]; }
-      gsub(/^[ \t]+|[ \t]+$/, "", pkg); gsub(/^[ \t]+|[ \t]+$/, "", build); gsub(/^[ \t]+|[ \t]+$/, "", v);
-      if (n == 7 && build !~ /^([0-9]+|n\/a)$/) next;
-      u = toupper(v); if (u == "OK") u = "PASS";
-      if (u == "PASS" || u == "FAIL" || u == "EXTERNAL") printf "%s %s\n", pkg, u;
-    }' | sort -u)
+              /^\|/ {
+                n = split($0, a, "|");
+                if (n < 3) next;
+                verdict = "";
+                for (i = 2; i <= n; i++) {
+                  c = a[i];
+                  gsub(/^[ \t]+|[ \t]+$/, "", c);
+                  lc = tolower(c);
+                  if (lc == "pass" || lc == "ok" || lc == "installable" || lc == "fixed") { verdict = "PASS"; continue }
+                  if (lc == "fail" || lc == "broken" || lc ~ /^broken[-_(]/) { verdict = "FAIL"; continue }
+                  if (lc == "external" || lc == "blocked" || lc ~ /^blocked[-_(]/) { verdict = "EXTERNAL"; continue }
+                }
+                if (verdict == "") next;
+                pkg = a[2];
+                gsub(/^[ \t]+|[ \t]+$/, "", pkg);
+                if (pkg == "" || pkg == "package") next;
+                printf "%s %s\n", pkg, verdict;
+              }' | sort -u)
   it_fail=$(grep -c ' FAIL$' <<< "$IT" || true)
   it_pass=$(grep -c ' PASS$' <<< "$IT" || true)
   if [[ "$it_fail" -gt 0 ]]; then
