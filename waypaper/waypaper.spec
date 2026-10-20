@@ -1,6 +1,6 @@
 Name:           waypaper
 Version:        2.9
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        GUI wallpaper manager for Wayland and Xorg Linux systems
 
 License:        GPL-3.0-only AND MIT AND BSD-2-Clause
@@ -60,10 +60,12 @@ done
 install -Dpm 0644 data/waypaper.desktop %{buildroot}%{_datadir}/applications/waypaper.desktop
 install -Dpm 0644 data/waypaper.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/waypaper.svg
 install -Dpm 0644 data/waypaper.1.gz %{buildroot}%{_mandir}/man1/waypaper.1.gz
+install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 cp -a screeninfo %{buildroot}%{python3_sitelib}/
 cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 
 %files
+%license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/waypaper
 %{_bindir}/waypaperd
 %{python3_sitelib}/waypaper/
@@ -76,6 +78,11 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 %{_datadir}/systemd/user/waypaperd.service
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.9-2
+- Ship the upstream LICENSE as %license: the package declared GPL-3.0-only
+  AND MIT AND BSD-2-Clause but installed no license text at all. The file
+  comes from the Source0 sdist tarball (LICENSE at the 2.9 tag).
+
 * Sun Aug 30 2026 Ackerman-00 <quietcraft@gmail.com> - 2.9-1
 - Update to 2.9
 
