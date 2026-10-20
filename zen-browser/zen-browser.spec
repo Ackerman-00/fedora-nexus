@@ -27,7 +27,7 @@ Name:               zen-browser
 # An Epoch is the only correct way to supersede a higher version.
 Epoch:              1
 Version:        1.23.3b
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPL-2.0
@@ -37,6 +37,9 @@ Source0:            https://github.com/zen-browser/desktop/releases/download/1.2
 Source1:            %{full_name}.desktop
 Source2:            policies.json
 Source3:            %{full_name}
+# The upstream tarball ships no MPL text; it lives in the source tree at the
+# same release tag.
+Source4:            https://github.com/zen-browser/desktop/raw/%{version}/LICENSE
 
 ExclusiveArch:      x86_64
 BuildRequires:      patchelf
@@ -72,6 +75,9 @@ install -D -m 0755 %{SOURCE3} -t %{buildroot}%{_bindir}
 # Convenience symlink
 ln -sf %{full_name} %{buildroot}%{_bindir}/zen
 
+# Ship the MPL-2.0 text the binary tarball does not carry
+install -Dpm 0644 %{SOURCE4} %{buildroot}%{_licensedir}/%{name}/LICENSE
+
 # Safeguard: Only run patchelf if upstream actually shipped libonnxruntime.so in the root
 if [ -f "%{buildroot}/opt/%{application_name}/libonnxruntime.so" ]; then
     patchelf --set-rpath '$ORIGIN' %{buildroot}/opt/%{application_name}/libonnxruntime.so
@@ -95,6 +101,7 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %files
+%license %{_licensedir}/%{name}/LICENSE
 %{_datadir}/applications/%{full_name}.desktop
 %{_datadir}/icons/hicolor/128x128/apps/%{full_name}.png
 %{_datadir}/icons/hicolor/64x64/apps/%{full_name}.png
@@ -107,6 +114,10 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1:1.23.3b-3
+- Ship the upstream MPL-2.0 LICENSE as Source4 (same 1.23.3b tag). The
+  package declared MPL-2.0 but the binary tarball carries no license text.
+
 * Sun Oct 18 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1:1.23.3b-2
 - Exclude the bundled NSS/NSPR sonames from auto-generated Requires. The
   private /opt/zen/libnssutil3.so demands libnssutil3.so(NSSUTIL_3.130)
