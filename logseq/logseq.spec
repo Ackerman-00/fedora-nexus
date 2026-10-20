@@ -2,7 +2,7 @@
 
 Name:           logseq
 Version:        2.0.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A privacy-first, local-first platform for knowledge management and collaboration
 
 License:        AGPL-3.0-only
@@ -14,6 +14,7 @@ ExclusiveArch:  x86_64
 Source0:        https://github.com/logseq/logseq/releases/download/%{version}/Logseq-linux-x86_64-%{version}.zip
 # Official icon from the matching release tag
 Source1:        https://raw.githubusercontent.com/logseq/logseq/%{version}/resources/icons/logseq.png
+Source2:        https://raw.githubusercontent.com/logseq/logseq/%{version}/LICENSE.md
 
 # Disable automatic dependency generation to prevent RPM from tracking bundled Electron .so files
 AutoReqProv:    no
@@ -100,8 +101,13 @@ EOF
 install -dm755 %{buildroot}%{_datadir}/icons/hicolor/512x512/apps
 install -m644 %{SOURCE1} %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/logseq.png
 
+# 5. Upstream AGPL-3.0 license text (the release zip only carries the
+#    Electron/Chromium third-party notices, not the app's own license)
+install -Dpm 0644 %{SOURCE2} %{buildroot}%{_licensedir}/%{name}/LICENSE.md
+
 %files
 %defattr(-,root,root,-)
+%license %{_licensedir}/%{name}/LICENSE.md
 %{_bindir}/logseq
 /opt/logseq/
 # Electron aborts at startup ("SUID sandbox helper binary was found, but is
@@ -113,5 +119,9 @@ install -m644 %{SOURCE1} %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/logs
 %{_datadir}/icons/hicolor/512x512/apps/logseq.png
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.0.2-2
+- Ship the upstream AGPL-3.0 LICENSE.md (Source2, same 2.0.2 tag); the
+  release zip only bundles Electron/Chromium third-party notices.
+
 * Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.2-1
 - Auto-updated to 2.0.2 via update.sh
