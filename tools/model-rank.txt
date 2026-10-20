@@ -1,0 +1,29 @@
+# Free-model ranking for the CI cascade - STRONGEST FIRST.
+#
+# Data:
+#   live catalog  https://opencode.ai/inference/v1/models  (2026-10-20)
+#   coding score  https://howmanytoken.com/plans/opencode-zen/  (2026-10-20)
+# A free model's published coding score is often the score of its paid twin
+# (e.g. "Scores from Nemotron 3 Ultra 550B A55B"). Where a model has no
+# published score it is ordered by family and by the owner's field reports.
+#
+# The cascade tries these in order and falls through on failure, so position 1
+# is the model that does the repo's real work. Refresh this file whenever the
+# catalog changes - see MODEL REFRESH in .github/workflows/opencode-schedule.yml.
+#
+# deepseek-v4.1-flash-free - base DeepSeek V4 Pro coding 68.8
+deepseek-v4.1-flash-free
+# minimax-m3.1-flash-free - base MiniMax M3 coding 58.6
+minimax-m3.1-flash-free
+# mimo-v2.6-flash-free - base MiMo-V2.5 coding 56.8
+mimo-v2.6-flash-free
+# big-pickle - stealth model, no published score
+big-pickle
+# nemotron-3.5-super-vl-free - no published score
+nemotron-3.5-super-vl-free
+# longcat-2.5-preview-free - no published score
+longcat-2.5-preview-free
+# beam-free - no published score, unavailable in some regions
+beam-free
+# nemotron-3.5-lightning-free - coding 26.8
+nemotron-3.5-lightning-free
