@@ -10,13 +10,15 @@
 
 Name:           opencad-studio
 Version:        2026.42
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source 2D/3D CAD with native DWG/DXF support
 
 License:        GPL-3.0-only
 URL:            https://www.opencadstudio.com
 ExclusiveArch:  x86_64
 Source0:        https://github.com/HakanSeven12/OpenCADStudio/releases/download/v2026.42/OpenCADStudio-v2026.42-linux-x86_64.AppImage
+# The AppImage carries no license text; the repo has the GPL-3.0 at the tag.
+Source1:        https://raw.githubusercontent.com/HakanSeven12/OpenCADStudio/v%{version}/LICENSE
 # sha256: 3c0cc42bb7266ed67a1a5be7548ed954d3951a4c8867bed2840e9a9c685b337a
 
 # AppImage teardown needs readelf (ELF offset) + unsquashfs.
@@ -91,7 +93,11 @@ install -Dm0644 squashfs-root/usr/share/metainfo/%{appid}.metainfo.xml \
 
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop
 
+# Upstream GPL-3.0 license text (the AppImage ships none)
+install -Dm0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
+
 %files
+%license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/opencad-studio
 /opt/opencad-studio/
 %{_datadir}/applications/%{appid}.desktop
@@ -106,5 +112,9 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
+* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2026.42-2
+- Ship the upstream GPL-3.0 LICENSE (Source1, same v2026.42 tag as
+  Source0); the AppImage payload carries no license text.
+
 * Sun Oct 18 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.42-1
 - Auto-update to upstream release v2026.42
