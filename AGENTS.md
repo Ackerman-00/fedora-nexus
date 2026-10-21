@@ -413,7 +413,9 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
   (a LicenseRef package has no text to ship), release-discipline (the newest
   changelog entry must name the spec's own Version and Release), version-probe
   (a Source0 that embeds %{version} - is a newer version published?), readme
-  (every package has a row in the README table), fedora-releases (which
+  (every package has a row in the README table), published-nvr (the newest
+  changelog NVR is what COPR built and what every chroot's repodata serves -
+  catches a spec change that never reached users), fedora-releases (which
   Fedora is stable, re-read from the mirror). It prints the relay-ready
   `hunt:` lines and every finding. The container
   categories - deps, install-tests, spec-lint, smoke - are still yours.

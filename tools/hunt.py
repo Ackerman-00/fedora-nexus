@@ -11,6 +11,7 @@ Output: one relay-ready line per category
 
 followed by the detail rows for anything that needs fixing.
 """
+import gzip
 import importlib.util
 import json
 import os
@@ -399,6 +400,110 @@ def hunt_readme():
             "", findings)
 
 
+def nvr_norm(s):
+    """Name-version-release without dist, epoch or .src.rpm wrapper."""
+    s = (s or "").strip()
+    s = re.sub(r"\.src\.rpm$", "", s)
+    s = re.sub(r"\.fc\d+$", "", s)
+    s = re.sub(r"^\d+:", "", s)
+    return s
+
+
+def newest_builds():
+    """Newest COPR build per package, and the NVR of the SRPM it built."""
+    newest, off = {}, 0
+    while True:
+        d = get_json("%s/build/list?ownername=ackerman&projectname=nexus&limit=200&offset=%d"
+                     % (COPR, off))
+        rows = d.get("items", [])
+        if not rows:
+            break
+        for b in rows:
+            sp = b.get("source_package")
+            name = sp.get("name") if isinstance(sp, dict) else None
+            if not name:
+                continue
+            if name not in newest or b.get("id", 0) > newest[name].get("id", 0):
+                newest[name] = b
+        off += 200
+        if off > 3000:
+            break
+    out = {}
+    for name, b in newest.items():
+        url = ((b.get("source_package") or {}).get("url") or "").split("?")[0]
+        base = os.path.basename(url)
+        prefix = name + "-"
+        nvr = base[len(prefix):] if base.startswith(prefix) else base
+        out[name] = (nvr_norm(nvr), b.get("id"), b.get("state"))
+    return out
+
+
+def repodata_nvr(chroot):
+    """Published name -> NVR for one chroot, read from its own primary.xml.gz."""
+    base = "https://download.copr.fedorainfracloud.org/results/ackerman/nexus/%s" % chroot
+    md = get_text(base + "/repodata/repomd.xml")
+    m = re.search(r"([a-f0-9]+-primary\.xml\.gz)", md)
+    if not m:
+        return {}
+    try:
+        raw = urllib.request.urlopen(
+            urllib.request.Request(base + "/repodata/" + m.group(1), headers=UA), timeout=120).read()
+        prim = gzip.decompress(raw).decode("utf-8", "replace")
+    except Exception:
+        return {}
+    out = {}
+    for p in re.finditer(r'<package type="rpm">.*?<name>([^<]+)</name>'
+                         r'.*?<version epoch="([^"]*)" ver="([^"]+)" rel="([^"]+)"/>', prim, re.S):
+        name, epoch, ver, rel = p.groups()
+        out[name] = nvr_norm("%s:%s-%s" % (epoch, ver, rel) if epoch not in ("0", "") else "%s-%s" % (ver, rel))
+    return out
+
+
+def hunt_published_nvr():
+    """The NVR in git must be the NVR the repo actually serves.
+
+    Compares the newest %changelog NVR (the NVR this repo authored) with the
+    SRPM COPR built and with every chroot's published repodata, so a fix that
+    never got a new NVR - the failure users would never receive - is a finding.
+    """
+    builds = newest_builds()
+    chroots = sorted((get_json("%s/project?ownername=ackerman&projectname=nexus" % COPR)
+                      .get("chroot_repos") or {}).keys())
+    pub = {c: repodata_nvr(c) for c in chroots}
+    findings, checked = [], 0
+    for sp in specs():
+        name = resolve_version(sp, spec_field(sp, "Name"))
+        if "%{" in name:
+            continue
+        txt = open(sp, encoding="utf-8", errors="replace").read()
+        ch = re.search(r"^%changelog\s*\n(.*)", txt, re.M | re.S)
+        if not ch:
+            findings.append((name, "no %changelog, NVR unknown"))
+            continue
+        m = re.match(r"^\*\s+\w+\s+\w+\s+\d+\s+\d{4}\s+.+?\s+-\s+(\S+)\s*$",
+                     ch.group(1).strip().splitlines()[0])
+        if not m:
+            findings.append((name, "unparseable changelog line, NVR unknown"))
+            continue
+        want = nvr_norm(m.group(1))
+        checked += 1
+        built, bid, state = builds.get(name, ("", None, None))
+        if not built:
+            findings.append((name, "no COPR build row for this package"))
+        elif built != want:
+            findings.append((name, "git NVR %s is not the built NVR %s (build %s, %s)"
+                             % (want, built, bid, state)))
+        for c in chroots:
+            room = pub[c]
+            got = room.get(name)
+            if got is None:
+                findings.append((name, "%s missing from %s repodata" % (want, c)))
+            elif got != want:
+                findings.append((name, "%s repodata serves %s, git says %s" % (c, got, want)))
+    note = "%d chroots read: %s" % (len(chroots), ", ".join(chroots))
+    return ("published-nvr", "%d packages, %d findings" % (checked, len(findings)), note, findings)
+
+
 def hunt_fedora_releases():
     """Which Fedora is stable, and which is next - re-read, never remembered."""
     releases = re.findall(r'href="(\d+)/"', get_text("https://mirrors.kernel.org/fedora/releases/"))
@@ -427,7 +532,7 @@ def get_text(url):
 
 HUNTS = (hunt_builds, hunt_chroots, hunt_upstream, hunt_cves, hunt_licenses,
          hunt_release_discipline, hunt_version_probe, hunt_readme,
-         hunt_fedora_releases)
+         hunt_published_nvr, hunt_fedora_releases)
 
 
 def main():
