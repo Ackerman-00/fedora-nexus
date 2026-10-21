@@ -3,6 +3,7 @@
 %global gitdate         20260908200953
 
 Name:           lazyvim-git
+# Shipped since the first build; removing it breaks upgrades.
 Epoch:          1
 Version:        0.1^%{gitdate}git%{shortcommit}
 Release:        1%{?dist}
