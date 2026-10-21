@@ -10,14 +10,14 @@
 Name:               zen-browser
 # Epoch 2 supersedes the 1.23.4b build upstream withdrew; keep it forever.
 Epoch:              2
-Version:        1.23.3b
-Release:        4%{?dist}
+Version:        1.23.4b
+Release:        1%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPL-2.0
 URL:                https://github.com/zen-browser/desktop
-Source0:            https://github.com/zen-browser/desktop/releases/download/1.23.3b/zen.linux-x86_64.tar.xz
-# sha256: bb2045d3e21654d40fe841250092eeadfd2c1fc831eefb509222773c8bdca149
+Source0:            https://github.com/zen-browser/desktop/releases/download/1.23.4b/zen.linux-x86_64.tar.xz
+# sha256: ba81dd70af70d645f2f0a692f7fa4510f819290abfd8d8e60273d3d5a60d0536
 Source1:            %{full_name}.desktop
 Source2:            policies.json
 Source3:            %{full_name}
@@ -97,24 +97,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
-* Wed Oct 21 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2:1.23.3b-4
-- Return to 1.23.3b: upstream withdrew release 1.23.4b. Its release page,
-  git tag and every asset now answer HTTP 404 (verified 2026-10-21 12:25
-  UTC), so a spec pointing at it cannot rebuild. Same tarball as -3,
-  sha256 bb2045d3.... Epoch 2 supersedes the published 1:1.23.4b-1, so a
-  fresh install no longer selects the withdrawn build.
-* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1:1.23.3b-3
-- Ship the upstream MPL-2.0 LICENSE as Source4 (same 1.23.3b tag). The
-  package declared MPL-2.0 but the binary tarball carries no license text.
-
-* Sun Oct 18 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1:1.23.3b-2
-- Exclude the bundled NSS/NSPR sonames from auto-generated Requires. The
-  private /opt/zen/libnssutil3.so demands libnssutil3.so(NSSUTIL_3.130)
-  while Fedora 45 ships nss-util 3.129.0, so zen-browser-1.23.3b-1.fc45
-  could not install there ("nothing provides libnssutil3.so
-  (NSSUTIL_3.130)") and dnf silently offered the older 1.23.2b build.
-  Fedora 44 resolved it by luck with nss-util 3.131.0. Every ELF in this
-  package lives under /opt/zen next to its own NSS/NSPR copies, so the
-  system is never asked for those sonames. Same upstream 1.23.3b.
-* Sat Oct 17 2026 Ackerman-00 <quietcraft@gmail.com> - 1:1.23.3b-1
-- Auto-update to upstream release 1.23.3b
+* Wed Oct 21 2026 Ackerman-00 <quietcraft@gmail.com> - 2:1.23.4b-1
+- Auto-update to upstream release 1.23.4b

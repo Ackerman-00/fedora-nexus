@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          9c8b22ebd41a2a97c7b6d424bedbe60f6eaa89e5
+%global commit          3e95f6d6442eb71e76c73ac650a887f983d1c671
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261021092446
+%global gitdate         20261021160431
 
 # Fedora LTO flags break linking; keep escape hatch.
 %global _lto_cflags %{nil}
@@ -120,5 +120,5 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Wed Oct 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261021092446git9c8b22e-1
-- Nightly sync with upstream main branch (Commit: 9c8b22e)
+* Wed Oct 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261021160431git3e95f6d-1
+- Nightly sync with upstream main branch (Commit: 3e95f6d)
