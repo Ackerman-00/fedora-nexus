@@ -10,14 +10,14 @@
 Name:               zen-browser
 # Epoch required to supersede the withdrawn higher version.
 Epoch:              1
-Version:        1.23.3b
-Release:        3%{?dist}
+Version:        1.23.4b
+Release:        1%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPL-2.0
 URL:                https://github.com/zen-browser/desktop
-Source0:            https://github.com/zen-browser/desktop/releases/download/1.23.3b/zen.linux-x86_64.tar.xz
-# sha256: bb2045d3e21654d40fe841250092eeadfd2c1fc831eefb509222773c8bdca149
+Source0:            https://github.com/zen-browser/desktop/releases/download/1.23.4b/zen.linux-x86_64.tar.xz
+# sha256: ba81dd70af70d645f2f0a692f7fa4510f819290abfd8d8e60273d3d5a60d0536
 Source1:            %{full_name}.desktop
 Source2:            policies.json
 Source3:            %{full_name}
@@ -97,6 +97,9 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
+* Wed Oct 21 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1:1.23.4b-1
+- Auto-update to upstream release 1.23.4b (Firefox 158.0.1 base,
+  mfsa2026-111 plus the eMudhra OneCRL blocks).
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1:1.23.3b-3
 - Ship the upstream MPL-2.0 LICENSE as Source4 (same 1.23.3b tag). The
   package declared MPL-2.0 but the binary tarball carries no license text.
