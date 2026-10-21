@@ -54,7 +54,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 64 packages</summary>
+<summary>Click to expand — 65 packages</summary>
 
 <br />
 
@@ -124,6 +124,7 @@ sudo dnf install <package-name>
 | `xcur2png` | Convert X cursor files into PNG images (hyprcursor-util extract helper) | Stable |
 | `xdg-desktop-portal-umbriel-git` | XDG Desktop Portal backend for Umbriel (Git Snapshot) | Git |
 | `zen-browser` | Privacy-focused Firefox fork | Stable |
+| `zig0.17` | Zig 0.17 toolchain, installable side by side with the distro zig as `zig0.17` (build dependency of `ly`) | Stable |
 
 > `Git` packages track upstream HEAD and rebuild on every new commit.
 
