@@ -4,8 +4,8 @@
 %global __provides_exclude_from ^/opt/rootapp/.*$
 
 Name:           rootapp
-Version:        0.9.148
-Release:        2%{?dist}
+Version:        0.9.150
+Release:        1%{?dist}
 Summary:        Root App is a new Discord alternative, designed for gaming communities and large online groups
 
 License:        LicenseRef-Proprietary
@@ -13,7 +13,9 @@ URL:            https://www.rootapp.com
 ExclusiveArch:  x86_64
 
 Source0:        https://installer.rootapp.com/installer/Linux/X64/Root.AppImage
-# sha256: 801fcbdb9ec4756accbe7555aafe042f3de48c34f5e7177dd2e079ed38578480
+# sha256: cc85c6a5027bf1735dbd07d5c769747dd8533fbb092e7a670737f2c64c33c11a
+# content-length:  496577016
+# last-modified:  Wed, 21 Oct 2026 00:13:15 GMT
 
 BuildRequires:  binutils
 BuildRequires:  squashfs-tools
@@ -154,10 +156,5 @@ DESKTOP_EOF
 %{_datadir}/pixmaps/rootapp.png
 
 %changelog
-* Mon Oct 19 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.9.148-2
-- Bump Release so the LicenseRef-Proprietary license correction (commit
-  794ee38) is actually published: "Proprietary" is not a valid SPDX
-  identifier. Without a new NVR COPR rebuilt 0.9.148-1 (build 11171204) and
-  a clean fedora:44 container `dnf upgrade` printed "Nothing to do.".
-* Tue Oct 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.148-1
-- Auto-update to 0.9.148 via update.sh
+* Wed Oct 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.150-1
+- Auto-update to 0.9.150 via update.sh
