@@ -490,7 +490,7 @@ def hunt_readme():
         readme = open(os.path.join(ROOT, "README.md"), encoding="utf-8", errors="replace").read()
     except OSError:
         return ("readme", "README.md missing", "", [])
-    rows = set(re.findall(r"^\| `([a-z0-9-]+)` \|", readme, re.M))
+    rows = set(re.findall(r"^\| `([a-z0-9.+-]+)` \|", readme, re.M))
     dirs = set()
     for d in os.listdir(ROOT):
         pdir = os.path.join(ROOT, d)
