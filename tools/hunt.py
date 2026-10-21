@@ -224,10 +224,12 @@ def hunt_upstream():
         ver = strip_packaging(resolve_version(sp, spec_field(sp, "Version")).lstrip("v"))
         checked += 1
         try:
-            if commit and forge == "github":
-                out = subprocess.run(["git", "ls-remote", "https://github.com/%s.git" % repo, "HEAD"],
+            if commit and forge in ("github", "codeberg"):
+                host = "github.com" if forge == "github" else "codeberg.org"
+                out = subprocess.run(["git", "ls-remote", "https://%s/%s/%s.git" % (host, owner, repo), "HEAD"],
                                      capture_output=True, text=True, timeout=60).stdout.split()
                 if not out:
+                    findings.append((os.path.basename(sp), "git pin unprobed: %s/%s HEAD unreadable" % (owner, repo)))
                     continue
                 head = out[0]
                 if head != commit:
