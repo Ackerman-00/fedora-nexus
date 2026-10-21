@@ -262,6 +262,10 @@ def vendor_version(pkg, txt):
     if pkg == "protonplus":
         d = get_json("https://api.github.com/repos/Vysp3r/ProtonPlus/releases/latest", 30) or {}
         return (d.get("tag_name") or "").lstrip("v") or None, "github Vysp3r/ProtonPlus releases/latest"
+    if pkg == "zig0.17":
+        d = get_json("https://ziglang.org/download/index.json", 60) or {}
+        keys = [k for k in d if re.match(r"^\d+(\.\d+)+$", k)]
+        return (max(keys, key=vkey) if keys else None), "ziglang.org/download/index.json stable keys"
     if pkg == "rootapp":
         with tempfile.TemporaryDirectory() as tmp:
             path = os.path.join(tmp, "Root.AppImage")
