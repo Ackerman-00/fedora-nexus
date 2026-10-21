@@ -39,15 +39,21 @@ sudo dnf install <package-name>
 > chroot will be disabled. If you are still on F43, upgrade to F44 or newer.
 > The COPR project follows Fedora branching automatically.
 
-> **When Fedora ships a newer build of a package than this repo does:** dnf
-> prefers the higher version, so a plain `dnf install <pkg>` can pull Fedora's
-> package instead of ours. No package is shadowed today: `ly` used to be the
-> one case (Fedora 45 and Rawhide carry the `1.5.0~rc1` prerelease) and this
-> repo now builds the 1.5.0 final, which rpm sorts above `~rc1`
-> (`rpmdev-vercmp 1.5.0~rc1 1.5.0` → `-1`, checked 2026-10-21). If a shadowed
-> package ever appears, ask for the exact build, for example
-> `sudo dnf install 'ly-1.5.0-*'`. `dnf list --showduplicates <pkg>` shows
-> every version on offer.
+> **When Fedora's build of a package outranks this repo's:** dnf prefers the
+> higher EVR, so a plain `dnf install <pkg>` can pull Fedora's package instead
+> of ours. Two shapes exist, both checked on 2026-10-21:
+> - a newer version of the same name. `ly` used to be the only case (Fedora 45
+>   and Rawhide carry the `1.5.0~rc1` prerelease); this repo now builds the
+>   1.5.0 final, which rpm sorts above `~rc1` (`rpmdev-vercmp 1.5.0~rc1 1.5.0`
+>   → `-1`), so no package is behind today.
+> - a Fedora package that *Provides* our name. Fedora's `python3-pydbus`
+>   carries `Provides: python-pydbus = 0.6.0-34.fc44`, so `dnf install
+>   python-pydbus` resolves to Fedora's build, not the one here (which adds
+>   the LGPL license text). Install ours by version: `sudo dnf install
+>   'python-pydbus-0.6.0-5.*'`.
+>
+> Ask for the exact build whenever this happens; `dnf list --showduplicates
+> <pkg>` shows every version on offer.
 
 ---
 
@@ -105,7 +111,7 @@ sudo dnf install <package-name>
 | `protonplus` | Modern compatibility tools manager | Stable |
 | `materialyoucolor` | Material You color generation algorithms (pure Python + C++ quantizer); install as `python3-materialyoucolor` | Stable |
 | `python-mprisify` | MPRIS D-Bus interface library for Python | Stable |
-| `python-pydbus` | Pythonic D-Bus library | Stable |
+| `python-pydbus` | Pythonic D-Bus library (Fedora's `python3-pydbus` provides this name too — install by version, see the note above) | Stable |
 | `python-yt-dlp-ejs` | External JavaScript runtimes for yt-dlp | Stable |
 | `python-yt-dlp-get-pot` | PO token provider plugin for yt-dlp | Stable |
 | `python-yt-dlp-get-pot-rustypipe` | PO token provider plugin for yt-dlp using rustypipe-botguard | Stable |
