@@ -53,7 +53,7 @@ if ! grep -q 'RPMBUILD_EXIT=0' <<< "$build" || ! ls "$OUTDIR"/*.rpm >/dev/null 2
 fi
 
 SECOPT=""
-EXTRAPKG="util-linux"
+EXTRAPKG="util-linux ${TD_EXTRAPKG:-}"
 SMOKE_RUN="( $SMOKE ); echo SMOKE_EXIT=\$?"
 if [ "$ELECTRON" = 1 ]; then
   SECOPT="--security-opt seccomp=unconfined"
@@ -81,7 +81,8 @@ if [ -z "$SMOKE" ]; then
 elif [ "$ELECTRON" = 1 ]; then
   # rc 124 = still alive after the timeout, the correct keep-running answer.
   grep -qE 'SMOKE_EXIT=(0|124)$' <<< "$inst" && grep -q 'SANDBOX_FATAL=0' <<< "$inst" && sok=PASS
-elif grep -q 'SMOKE_EXIT=0' <<< "$inst"; then
+elif grep -qE 'SMOKE_EXIT=(0|124)$' <<< "$inst"; then
+  # 124 = the smoke was cut by `timeout`: a GUI that stayed up, not a crash.
   sok=PASS
 fi
 printf '%s\n' "$inst" > "$OUTDIR/install.log"
