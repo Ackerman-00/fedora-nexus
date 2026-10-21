@@ -12,12 +12,15 @@ Output: one relay-ready line per category
 followed by the detail rows for anything that needs fixing.
 """
 import gzip
+import hashlib
 import importlib.util
 import json
 import os
 import re
 import subprocess
 import sys
+import tempfile
+import time
 import urllib.request
 from urllib.parse import quote
 
@@ -227,47 +230,122 @@ def latest_release(forge, owner, repo):
         for rel in d:
             if not rel.get("upcoming_release"):
                 return rel.get("tag_name")
+        tags = get_json("https://%s/api/v4/projects/%s/repository/tags" % (host, quote(owner + "/" + repo, "")), 30) or []
+        for t in tags:
+            if re.match(r"^v?\d+(\.\d+)+$", t.get("name", "")):
+                return t["name"]
     if forge == "pypi":
         d = get_json("https://pypi.org/pypi/%s/json" % owner, 30) or {}
         return (d.get("info") or {}).get("version")
     return None
 
 
+def vendor_version(pkg, txt):
+    """Version from a vendor feed that exposes no git tag or release API."""
+    if pkg == "opencode-desktop":
+        d = get_json("https://opencode.ai/update/api/latest/desktop/opencode/", 45) or {}
+        return d.get("version"), "update feed /update/api/latest/desktop/opencode/"
+    if pkg == "fluxer":
+        url = (re.search(r"^Source0:\s*(\S+)", txt, re.M) or [None, ""])[1]
+        if not url:
+            return None, ""
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "fluxer.rpm")
+            subprocess.run(["curl", "-fsSL", "-A", UA["User-Agent"], "-o", path, url], timeout=600)
+            out = subprocess.run(["rpm", "-qp", "--qf", "%{VERSION}", path],
+                                 capture_output=True, text=True, timeout=60)
+            return (out.stdout.strip() or None), "api.fluxer.app latest rpm -> rpm -qp"
+    if pkg == "gpu-screen-recorder":
+        html = get_text("https://git.dec05eba.com/gpu-screen-recorder/") or ""
+        tags = re.findall(r"tag/\?h=(\d+(?:\.\d+)+)", html)
+        return (max(tags, key=vkey) if tags else None), "git.dec05eba.com cgit tag list"
+    if pkg == "protonplus":
+        d = get_json("https://api.github.com/repos/Vysp3r/ProtonPlus/releases/latest", 30) or {}
+        return (d.get("tag_name") or "").lstrip("v") or None, "github Vysp3r/ProtonPlus releases/latest"
+    if pkg == "rootapp":
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "Root.AppImage")
+            subprocess.run(["curl", "-fsSL", "-A", UA["User-Agent"], "-o", path,
+                            "https://installer.rootapp.com/installer/Linux/X64/Root.AppImage"], timeout=1800)
+            digest = hashlib.sha256(open(path, "rb").read()).hexdigest()
+            out = subprocess.run(
+                ["bash", "-c",
+                 "readelf -h \"$1\" | awk 'NR==13{s=$5} NR==18{t=$5} NR==19{n=$5} END{print s+t*n}'",
+                 "_", path], capture_output=True, text=True, timeout=120).stdout.strip()
+            subprocess.run(["unsquashfs", "-q", "-d", os.path.join(tmp, "root"), "-o", out, path],
+                           capture_output=True, text=True, timeout=600)
+            ver = None
+            for root, _, files in os.walk(os.path.join(tmp, "root")):
+                for f in files:
+                    if f.endswith(".desktop"):
+                        with open(os.path.join(root, f), encoding="utf-8", errors="replace") as fh:
+                            m = re.search(r"X-AppImage-Version=(\S+)", fh.read())
+                            if m:
+                                ver = m.group(1)
+            return ver, "AppImage sha256 %s..., X-AppImage-Version" % digest[:8]
+    return None, ""
+
+
+def probe_upstream(sp):
+    """One spec's pin vs the live upstream: (pkg, ref, ok, command, err)."""
+    pkg = os.path.basename(os.path.dirname(sp))
+    txt = open(sp, encoding="utf-8", errors="replace").read()
+    ver = strip_packaging(resolve_version(sp, spec_field(sp, "Version")).lstrip("v"))
+    refs = list(upstream_refs(txt))
+    if not refs:
+        ref, cmd = vendor_version(pkg, txt)
+        if not ref:
+            return pkg, "", None, "", "no upstream URL and no vendor feed"
+        ok = not (re.search(r"\d", ver) and re.search(r"\d", ref) and not vge(ver, ref))
+        return pkg, ref, ok, cmd, ""
+    forge, owner, repo = refs[0]
+    commit = spec_macro(sp, "commit")
+    if commit and forge in ("github", "codeberg"):
+        host = "github.com" if forge == "github" else "codeberg.org"
+        out = subprocess.run(["git", "ls-remote", "https://%s/%s/%s.git" % (host, owner, repo), "HEAD"],
+                             capture_output=True, text=True, timeout=60).stdout.split()
+        if not out:
+            return pkg, "", None, "git ls-remote %s/%s HEAD" % (owner, repo), "HEAD unreadable"
+        return (pkg, out[0][:7], out[0] == commit,
+                "git ls-remote %s/%s HEAD" % (owner, repo), "")
+    tag = latest_release(forge, owner, repo)
+    if not tag:
+        return pkg, "", None, "latest_release %s/%s" % (owner, repo), "no release seen"
+    tag = strip_packaging(str(tag).lstrip("v"))
+    ok = not (re.search(r"\d", ver) and re.search(r"\d", tag) and not vge(ver, tag))
+    return pkg, tag, ok, "%s %s/%s releases/latest" % (forge, owner, repo), ""
+
+
 def hunt_upstream():
     """Spec pin vs upstream HEAD (git pins) or latest release (tag pins)."""
     findings, checked, skipped = [], 0, []
     for sp in specs():
-        txt = open(sp, encoding="utf-8", errors="replace").read()
-        refs = list(upstream_refs(txt))
-        if not refs:
+        pkg, ref, ok, cmd, err = probe_upstream(sp)
+        if ok is None:
             skipped.append(os.path.basename(sp))
+            if err and err != "no upstream URL and no vendor feed":
+                findings.append((pkg, "unprobed: " + err))
             continue
-        forge, owner, repo = refs[0]
-        commit = spec_macro(sp, "commit")
-        ver = strip_packaging(resolve_version(sp, spec_field(sp, "Version")).lstrip("v"))
         checked += 1
-        try:
-            if commit and forge in ("github", "codeberg"):
-                host = "github.com" if forge == "github" else "codeberg.org"
-                out = subprocess.run(["git", "ls-remote", "https://%s/%s/%s.git" % (host, owner, repo), "HEAD"],
-                                     capture_output=True, text=True, timeout=60).stdout.split()
-                if not out:
-                    findings.append((os.path.basename(sp), "git pin unprobed: %s/%s HEAD unreadable" % (owner, repo)))
-                    continue
-                head = out[0]
-                if head != commit:
-                    findings.append((os.path.basename(sp), "commit %s -> %s" % (commit[:7], head[:7])))
-                continue
-            tag = latest_release(forge, owner, repo)
-            if not tag:
-                continue
-            tag = strip_packaging(str(tag).lstrip("v"))
-            if re.search(r"\d", ver) and re.search(r"\d", tag) and not vge(ver, tag):
-                findings.append((os.path.basename(sp), "version %s -> %s" % (ver, tag)))
-        except Exception as exc:
-            findings.append((os.path.basename(sp), "probe failed: %s" % type(exc).__name__))
+        if not ok:
+            findings.append((pkg, "behind upstream %s" % ref))
     return ("upstream-versions", "%d packages checked, %d behind" % (checked, len(findings)),
             "skipped (no upstream URL found): %s" % (", ".join(skipped) or "none"), findings)
+
+
+def upstream_rows():
+    """Per-package relay lines: the pin, the live ref, and the command behind it."""
+    date = time.strftime("%Y-%m-%d", time.gmtime())
+    rows = []
+    for sp in specs():
+        pkg, ref, ok, cmd, err = probe_upstream(sp)
+        ver = strip_packaging(resolve_version(sp, spec_field(sp, "Version")).lstrip("v"))
+        if ok is None:
+            rows.append("upstream: %s UNPROBED-%s | %s | %s" % (pkg, err.replace(" ", "-"), cmd or "-", date))
+        else:
+            rows.append("upstream: %s %s %s spec | %s | %s"
+                        % (pkg, ref, "==" if ok else "!= (pinned %s)" % ver, cmd, date))
+    return rows
 
 
 def hunt_cves():
@@ -529,6 +607,10 @@ HUNTS = (hunt_builds, hunt_chroots, hunt_upstream, hunt_cves, hunt_licenses,
 
 
 def main():
+    if "--upstream-rows" in sys.argv:
+        for row in upstream_rows():
+            print(row)
+        return
     only = [a.replace("_", "-") for a in sys.argv[1:]] or None
     for fn in HUNTS:
         name = fn.__name__.replace("hunt_", "").replace("_", "-")
