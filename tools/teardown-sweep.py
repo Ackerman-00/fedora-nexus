@@ -176,6 +176,8 @@ def is_template_version(pv):
 
 
 _REPOLLOGY_LAST = [0.0]
+# True once Repology answers at all; separates "no such project" from "down".
+_REPOLOGY_ANSWERED = [False]
 
 
 def _repology_fetch(project_name, timeout=15):
@@ -196,6 +198,7 @@ def repology_newest(project_name):
     across 120+ repos — no hardcoding needed."""
     try:
         data = json.loads(_repology_fetch(project_name).decode())
+        _REPOLOGY_ANSWERED[0] = True
         if not isinstance(data, list):
             return None, None
         for p in data:
@@ -346,6 +349,7 @@ def repology_dep_info(pkg):
     Returns dict with upstream_version, status, deps, or empty dict."""
     try:
         data = json.loads(_repology_fetch(pkg).decode())
+        _REPOLOGY_ANSWERED[0] = True
         if not isinstance(data, list):
             return {}
         newest = None
@@ -2871,7 +2875,36 @@ def fallback_freshness(pkg, clean_pv, homepage, srcs):
     st, ver, source = live_artifact_fresh(pkg, srcs, clean_pv)
     if st:
         return st, ver, source
+    up, source = vendor_index_latest(pkg, clean_pv, srcs)
+    if up:
+        if _upstream_newer(up, clean_pv):
+            return "outdated", up, source
+        return "newest", up, source
     return None, None, None
+
+
+def vendor_index_latest(pkg, clean_pv, srcs):
+    """Newest release in a vendor's own release index, for a project no
+    tracker carries. The spec's Source0 host selects the feed and the pinned
+    major.minor bounds it, so a foreign same-named project cannot answer."""
+    hosts = set()
+    for item in srcs or []:
+        url = item[0] if isinstance(item, tuple) else None
+        if isinstance(url, str) and url.startswith("http"):
+            hosts.add(re.sub(r"^https?://", "", url).split("/")[0].lower())
+    if "ziglang.org" not in hosts:
+        return None, None
+    try:
+        index = json.loads(fetch("https://ziglang.org/download/index.json", timeout=30))
+    except Exception as e:
+        log("[WARN] ziglang index query failed for %s: %s" % (pkg, e))
+        return None, None
+    series = ".".join(clean_pv.split(".")[:2])
+    keys = [str(k) for k in index if re.fullmatch(re.escape(series) + r"\.\d+", str(k))]
+    if not keys:
+        return None, None
+    return max(keys, key=lambda v: tuple(int(p) for p in v.split("."))), \
+        "ziglang.org/download/index.json"
 
 
 def compute_libyear(pkg, pinned_pv, api_repo):
@@ -2998,22 +3031,22 @@ def check_vulns_and_deps(pkgs, repo_type):
             else:
                 log("[INFO] %s@%s status=%s" % (pkg, clean_pv))
         else:
+            why = ("repology has no entry" if _REPOLOGY_ANSWERED[0]
+                   else "repology unreachable")
             verdict = UPSTREAM_VERDICT.get(pkg)
             if verdict:
                 # Forge verdict already recorded; do not re-open it
                 log("[FRESHNESS] %s : '%s' recorded by the upstream check "
-                    "(%s); repology unreachable" % (pkg, verdict[0],
-                                                    verdict[1] or "forge"))
+                    "(%s); %s" % (pkg, verdict[0], verdict[1] or "forge", why))
             else:
                 st, fb_ver, source = fallback_freshness(pkg, clean_pv, homepage, srcs)
                 if st == "newest":
                     total_fresh += 1
-                    log("[FRESH] %s@%s (via %s; repology unreachable)"
-                        % (pkg, clean_pv, source))
+                    log("[FRESH] %s@%s (via %s; %s)"
+                        % (pkg, clean_pv, source, why))
                     rows.append((pkg, source, clean_pv, fb_ver, STATUS_OK,
-                                 "upstream %s == pinned %s [freshness via %s; "
-                                 "repology unreachable in this environment]"
-                                 % (fb_ver, clean_pv, source)))
+                                 "upstream %s == pinned %s [freshness via %s; %s]"
+                                 % (fb_ver, clean_pv, source, why)))
                 elif st == "outdated":
                     total_outdated += 1
                     tool = AUTO_UPDATE_TOOLS.get(repo_type, "manual")
@@ -3023,11 +3056,11 @@ def check_vulns_and_deps(pkgs, repo_type):
                                  "upstream %s available [%s], use %s"
                                  % (fb_ver, source, tool)))
                 else:
-                    log("[WARN] %s: repology unreachable and no fallback source "
-                        "could confirm freshness" % pkg)
+                    log("[WARN] %s: %s and no fallback source "
+                        "could confirm freshness" % (pkg, why))
                     rows.append((pkg, pkg, clean_pv, "", STATUS_UNVERIFIED,
-                                 "repology unreachable; anitya/pypi could not "
-                                 "confirm"))
+                                 "%s; anitya/pypi/vendor index could not "
+                                 "confirm" % why))
 
         api_repo = None
         for item in srcs:
