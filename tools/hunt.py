@@ -130,8 +130,12 @@ def vge(a, b):
 
 
 def newest_builds():
-    """Newest COPR build per package, and the NVR of the SRPM it built."""
-    newest, off = {}, 0
+    """Per package: the newest build's state, and the NVR of the newest SRPM.
+
+    A skipped build carries no SRPM, so the NVR has to come from the newest
+    row that actually built or the published NVR would look unknowable.
+    """
+    newest, built, off = {}, {}, 0
     while True:
         d = get_json("%s/build/list?ownername=ackerman&projectname=nexus&limit=200&offset=%d"
                      % (COPR, off))
@@ -143,18 +147,22 @@ def newest_builds():
             name = sp.get("name") if isinstance(sp, dict) else None
             if not name:
                 continue
-            if name not in newest or b.get("id", 0) > newest[name].get("id", 0):
+            bid = b.get("id", 0)
+            if name not in newest or bid > newest[name].get("id", 0):
                 newest[name] = b
+            if (sp.get("url") or "") and (name not in built or bid > built[name].get("id", 0)):
+                built[name] = b
         off += 200
         if off > 3000:
             break
     out = {}
     for name, b in newest.items():
-        url = ((b.get("source_package") or {}).get("url") or "").split("?")[0]
+        source = built.get(name) or b
+        url = ((source.get("source_package") or {}).get("url") or "").split("?")[0]
         base = os.path.basename(url)
         prefix = name + "-"
         nvr = base[len(prefix):] if base.startswith(prefix) else base
-        out[name] = (nvr_norm(nvr), b.get("id"), b.get("state"))
+        out[name] = (nvr_norm(nvr), source.get("id"), b.get("state"))
     return out
 
 
