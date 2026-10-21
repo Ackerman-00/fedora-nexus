@@ -1,6 +1,6 @@
 Name:           mangowm
 Version:        0.18.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <quietcraft@gmail.com>
@@ -8,6 +8,8 @@ URL:            https://github.com/mangowm/mango
 Source:         %{url}/archive/%{version}.tar.gz
 
 BuildRequires:  meson
+# meson.build:104 requires find_program('find') unconditionally.
+BuildRequires:  findutils
 BuildRequires:  ninja-build
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
@@ -77,5 +79,10 @@ sed -i "s/'-U_FORTIFY_SOURCE',//g" meson.build
 %{_userunitdir}/mango-session.target
 
 %changelog
+* Wed Oct 21 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.18.2-2
+- BuildRequires findutils: meson.build:104 calls find_program('find')
+  without required:false and uses it to enumerate src/*.c, so the build
+  tool was only ever present because the buildroot happens to carry it.
+
 * Sun Oct 18 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.2-1
 - Auto-update to version 0.18.2
