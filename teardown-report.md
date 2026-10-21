@@ -21,14 +21,14 @@ Repo type: **fedora**. Sweep of **64** packages. Exit code is the verdict; this 
 | cliphist | cliphist-v0.7.0.tar.gz | 0.7.0 | 0.7.0 | **SOURCE-OK** | tar version file=0.7.0 (cliphist-0.7.0/version.txt) \| hash no-checksum-pinned \| weak internal evidence 0.7.0 (not authoritative) |
 | concat | Concat-0.2.8-linux-x86_64.rpm | 0.2.8 | 0.2.8 | **OK** | rpm header concat=0.2.8-1 (tags NAME/VERSION/RELEASE) \| pinned 0.2.8 \| internal 0.2.8 |
 | concord | v2.6.3.tar.gz | 2.6.3 | 2.6.3 | **SOURCE-OK** | tar Cargo.toml=2.6.3 (concord-2.6.3/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 2.6.3 (not authoritative) |
-| craft-launcher | artcraft-launcher-0.6.0-linux-x86_64.rpm | 0.6.0 | 0.6.0 | **OK** | rpm header artcraft-launcher=0.6.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.6.0 \| internal 0.6.0 |
+| craft-launcher | artcraft-launcher-0.6.1-linux-x86_64.rpm | 0.6.1 | 0.6.1 | **OK** | rpm header artcraft-launcher=0.6.1-1 (tags NAME/VERSION/RELEASE) \| pinned 0.6.1 \| internal 0.6.1 |
 | extension-manager | extension-manager-0.6.5.tar.gz | 0.6.5 | >= 0.59.0 | **SOURCE-OK** | tar meson.build=>= 0.59.0 (extension-manager-0.6.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 0.59.0 (not authoritative) |
 | fluxer | rpm | 2026.1018.223338 | 2026.1018.223338 | **OK** | rpm header fluxer=2026.1018.223338-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1018.223338 \| internal 2026.1018.223338 |
 | freebuff | freebuff-linux-x64.tar.gz | 0.2.32 | 0.2.32 | **OK** | tar runtime probe freebuff --version: 0.2.32 \| pinned 0.2.32 \| internal 0.2.32 |
 | freebuff | LICENSE | 0.2.32 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | ghostty | ghostty_1.3.1-0.ppa2_amd64_24.04.deb | 1.3.1 | 1.3.1-0~ppa2 | **OK** | deb pkg=ghostty (control control.tar.zst) \| pinned 1.3.1 \| internal 1.3.1-0~ppa2 |
 | ghostty | LICENSE | 1.3.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| gpu-screen-recorder | gpu-screen-recorder.git.6.1.4.tar.gz | 6.1.4 | 6.1.4 | **SOURCE-OK** | tar meson.build=6.1.4 (meson.build) \| hash no-checksum-pinned \| weak internal evidence 6.1.4 (not authoritative) |
+| gpu-screen-recorder | gpu-screen-recorder.git.6.1.5.tar.gz | 6.1.5 | 6.1.5 | **SOURCE-OK** | tar meson.build=6.1.5 (meson.build) \| hash no-checksum-pinned \| weak internal evidence 6.1.5 (not authoritative) |
 | helium-browser | helium-0.19.4.1-x86_64_linux.tar.xz | 0.19.4.1 | 0.19.4.1 | **OK** | tar runtime probe chrome --version: Helium 0.19.4.1 (Chromium 155.0.8059.84) \| pinned 0.19.4.1 \| internal 0.19.4.1 |
 | helium-browser | net.imput.helium.metainfo.xml | 0.19.4.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | helium-browser | LICENSE | 0.19.4.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
@@ -58,7 +58,7 @@ Repo type: **fedora**. Sweep of **64** packages. Exit code is the verdict; this 
 | opencad-studio | LICENSE | 2026.42 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | openchamber | OpenChamber-2.5.0-linux-x86_64.AppImage | 2.5.0 | 2.5.0 | **OK** | AppImage 2.5.0 (resources/app.asar) \| pinned 2.5.0 \| internal 2.5.0 |
 | openchamber | LICENSE | 2.5.0 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| opencode-desktop | opencode-desktop-linux-amd64.deb | 2.1.1 | 2.1.1 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.1.1 \| internal 2.1.1 |
+| opencode-desktop | opencode-desktop-linux-amd64.deb | 2.1.2 | 2.1.2 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.1.2 \| internal 2.1.2 |
 | protonplus | ProtonPlus-v0.6.8.tar.gz | 0.6.8 | >= 1.0.0 | **SOURCE-OK** | tar meson.build=>= 1.0.0 (ProtonPlus-0.6.8/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 1.0.0 (not authoritative) |
 | python-mprisify | mprisify-v1.0.1.tar.gz | 1.0.1 | 1.0.1 | **SOURCE-OK** | tar changelog=1.0.1 (mprisify-v1.0.1/CHANGELOG.md) \| hash no-checksum-pinned \| weak internal evidence 1.0.1 (not authoritative) |
 | python-mprisify | LICENSE | 1.0.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
@@ -68,7 +68,7 @@ Repo type: **fedora**. Sweep of **64** packages. Exit code is the verdict; this 
 | python-yt-dlp-get-pot-rustypipe | yt_dlp_get_pot_rustypipe-0.2.0.tar.gz | 0.2.0 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | python-yt-dlp-get-pot-rustypipe | LICENSE | 0.2.0 |  | **OK** | hash hash-OK \| license/doc/aux asset, not an artifact |
 | python-ytmusicapi | ytmusicapi-1.12.3.tar.gz | 1.12.3 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
-| rootapp | Root.AppImage | 0.9.148 | 0.9.148 | **OK** | AppImage 0.9.148 (Root.desktop) \| pinned 0.9.148 \| internal 0.9.148 |
+| rootapp | Root.AppImage | 0.9.151 | 0.9.151 | **OK** | AppImage 0.9.151 (Root.desktop) \| pinned 0.9.151 \| internal 0.9.151 |
 | rustypipe-botguard | rustypipe-botguard-v0.1.2-x86_64-unknown-linux-gnu.tar.xz | 0.1.2 | 0.1.2 | **OK** | tar runtime probe rustypipe-botguard --version: rustypipe-botguard 0.1.2
 rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | rustypipe-botguard | LICENSE | 0.1.2 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
@@ -87,7 +87,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | LICENSE | 1.5.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| umbriel-git | live noctalia-dev/umbriel | b93ed3d2f9ee | b93ed3d2f9ee | **OK** | live noctalia-dev/umbriel pin b93ed3d2f9ee vs upstream b93ed3d2f9ee |
+| umbriel-git | live noctalia-dev/umbriel | 9c8b22ebd41a | 9c8b22ebd41a | **OK** | live noctalia-dev/umbriel pin 9c8b22ebd41a vs upstream 9c8b22ebd41a |
 | vesktop | vesktop-1.6.7.x86_64.rpm | 1.6.7 | 1.6.7 | **OK** | rpm header vesktop=1.6.7-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.7 \| internal 1.6.7 |
 | vesktop | LICENSE | 1.6.7 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
@@ -108,7 +108,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | cliphist | upstream github.com/sentriz/cliphist | 0.7.0 | v0.7.0 | **OK** | at upstream latest v0.7.0 [releases/latest] |
 | concat | upstream github.com/jub0t/Concat | 0.2.8 | v0.2.8 | **OK** | at upstream latest v0.2.8 [releases/latest] |
 | concord | upstream github.com/chojs23/concord | 2.6.3 | v2.6.3 | **OK** | at upstream latest v2.6.3 [releases/latest] |
-| craft-launcher | upstream github.com/storytold/craft-launcher | 0.6.0 | v0.6.0 | **OK** | at upstream latest v0.6.0 [releases/latest] |
+| craft-launcher | upstream github.com/storytold/craft-launcher | 0.6.1 | v0.6.1 | **OK** | at upstream latest v0.6.1 [releases/latest] |
 | extension-manager | upstream github.com/mjakeman/extension-manager | 0.6.5 | v0.6.5 | **OK** | at upstream latest v0.6.5 [releases/latest] |
 | freebuff | upstream github.com/CodebuffAI/codebuff-community | 0.2.32 | freebuff-v0.2.32 | **OK** | at upstream latest freebuff-v0.2.32 [releases/latest] |
 | ghostty | upstream github.com/mkasberg/ghostty-ubuntu | 1.3.1 | 1.3.1-0-ppa2 | **OK** | at upstream latest 1.3.1-0-ppa2 [releases/latest] |
@@ -144,7 +144,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | python-yt-dlp-ejs | pypi:yt-dlp-ejs | 0.8.0 | 0.8.0 | **OK** | upstream 0.8.0 == pinned 0.8.0 [freshness via pypi:yt-dlp-ejs; repology unreachable in this environment] |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology unreachable in this environment] |
 | python-ytmusicapi | pypi:ytmusicapi | 1.12.3 | 1.12.3 | **OK** | upstream 1.12.3 == pinned 1.12.3 [freshness via pypi:ytmusicapi; repology unreachable in this environment] |
-| rootapp | aur | 0.9.148 | 0.9.148 | **OK** | pinned 0.9.148 >= repology 0.9.148 (aur); tracker behind |
-| LIBYEAR | freshness | 0.16 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
+| rootapp | aur | 0.9.151 | 0.9.151 | **OK** | pinned 0.9.151 >= repology 0.9.151 (aur); tracker behind |
+| LIBYEAR | freshness | 0.17 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
 
 **Verdict: PASS** (0 failure(s))
