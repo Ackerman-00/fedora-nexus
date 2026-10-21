@@ -4,6 +4,8 @@
 # Local package files must reach SOURCES - spectool fetches URLs only.
 # Bash reads this script incrementally - never edit while jobs run.
 # Unescaped quotes in the smoke payload truncate the container script.
+# Electron payloads (chrome-sandbox in %files) get the AGENTS.md launch test:
+# seccomp=unconfined, non-root user, xvfb, rc 0 or 124, no setuid_sandbox_host.
 set -u
 PKG=$1
 CH=${2:-44}
@@ -11,6 +13,8 @@ SMOKE=${3:-}
 RPMN=${4:-$PKG}
 R=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 SPEC=$(basename "$(ls "$R/$PKG"/*.spec 2>/dev/null | head -1)")
+ELECTRON=0
+grep -q 'chrome-sandbox' "$R/$PKG/$SPEC" 2>/dev/null && ELECTRON=1
 OUTDIR=/tmp/teardown/$PKG
 mkdir -p "$OUTDIR"
 rm -f "$OUTDIR"/*.rpm "$OUTDIR"/build.log "$OUTDIR"/install.log
@@ -48,15 +52,24 @@ if ! grep -q 'RPMBUILD_EXIT=0' <<< "$build" || ! ls "$OUTDIR"/*.rpm >/dev/null 2
   exit 3
 fi
 
-inst=$(docker run --rm -v "$OUTDIR:/rpms:ro" "registry.fedoraproject.org/fedora:$CH" bash -lc "
-dnf -y -q --setopt=gpgcheck=0 install dnf-plugins-core >/dev/null 2>&1
+SECOPT=""
+EXTRAPKG="util-linux"
+SMOKE_RUN="( $SMOKE ); echo SMOKE_EXIT=\$?"
+if [ "$ELECTRON" = 1 ]; then
+  SECOPT="--security-opt seccomp=unconfined"
+  EXTRAPKG="util-linux xorg-x11-server-Xvfb"
+  SMOKE_RUN="useradd -m t; su t -c 'timeout 60 xvfb-run -a $SMOKE' > /tmp/smoke.log 2>&1; s=\$?; tail -5 /tmp/smoke.log; echo SMOKE_EXIT=\$s; echo SANDBOX_FATAL=\$(grep -c setuid_sandbox_host /tmp/smoke.log)"
+fi
+
+inst=$(docker run --rm $SECOPT -v "$OUTDIR:/rpms:ro" "registry.fedoraproject.org/fedora:$CH" bash -lc "
+dnf -y -q --setopt=gpgcheck=0 install dnf-plugins-core $EXTRAPKG >/dev/null 2>&1
 dnf -y -q --setopt=gpgcheck=0 copr enable ackerman/nexus >/dev/null 2>&1
 echo '--- install ---'
 dnf -y --setopt=gpgcheck=0 --setopt=install_weak_deps=False install /rpms/*.rpm 2>&1 | tail -2
 echo INSTALL_EXIT=\${PIPESTATUS[0]}
 rpm -V $RPMN && echo RPMV_OK
 echo '--- smoke ---'
-( $SMOKE ); echo SMOKE_EXIT=\$?
+$SMOKE_RUN
 " 2>&1)
 printf '%s\n' "$inst"
 
@@ -65,6 +78,9 @@ sok=FAIL
 if [ -z "$SMOKE" ]; then
   # Files-only or library package: no runnable entry point was requested.
   grep -q 'RPMV_OK' <<< "$inst" && sok=SKIP-files-only
+elif [ "$ELECTRON" = 1 ]; then
+  # rc 124 = still alive after the timeout, the correct keep-running answer.
+  grep -qE 'SMOKE_EXIT=(0|124)$' <<< "$inst" && grep -q 'SANDBOX_FATAL=0' <<< "$inst" && sok=PASS
 elif grep -q 'SMOKE_EXIT=0' <<< "$inst"; then
   sok=PASS
 fi
