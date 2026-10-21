@@ -129,8 +129,8 @@ def vge(a, b):
     return ka >= kb
 
 
-def hunt_builds():
-    """Newest COPR build per package must not be failed."""
+def newest_builds():
+    """Newest COPR build per package, and the NVR of the SRPM it built."""
     newest, off = {}, 0
     while True:
         d = get_json("%s/build/list?ownername=ackerman&projectname=nexus&limit=200&offset=%d"
@@ -141,18 +141,32 @@ def hunt_builds():
         for b in rows:
             sp = b.get("source_package")
             name = sp.get("name") if isinstance(sp, dict) else None
-            if name and name not in newest:
+            if not name:
+                continue
+            if name not in newest or b.get("id", 0) > newest[name].get("id", 0):
                 newest[name] = b
         off += 200
         if off > 3000:
             break
+    out = {}
+    for name, b in newest.items():
+        url = ((b.get("source_package") or {}).get("url") or "").split("?")[0]
+        base = os.path.basename(url)
+        prefix = name + "-"
+        nvr = base[len(prefix):] if base.startswith(prefix) else base
+        out[name] = (nvr_norm(nvr), b.get("id"), b.get("state"))
+    return out
+
+
+def hunt_builds():
+    """Newest COPR build per package must not be failed."""
+    newest = newest_builds()
     bad = []
-    for name, b in sorted(newest.items()):
-        if b.get("state") in ("failed", "unknown"):
-            bad.append((name, b.get("id"), b.get("state")))
     states = {}
-    for b in newest.values():
-        states[b.get("state")] = states.get(b.get("state"), 0) + 1
+    for name, (_nvr, bid, state) in sorted(newest.items()):
+        if state in ("failed", "unknown"):
+            bad.append((name, bid, state))
+        states[state] = states.get(state, 0) + 1
     return ("builds", "%d packages, %d failed" % (len(newest), len(bad)),
             "states: " + ", ".join("%s=%d" % kv for kv in sorted(states.items())), bad)
 
@@ -407,35 +421,6 @@ def nvr_norm(s):
     s = re.sub(r"\.fc\d+$", "", s)
     s = re.sub(r"^\d+:", "", s)
     return s
-
-
-def newest_builds():
-    """Newest COPR build per package, and the NVR of the SRPM it built."""
-    newest, off = {}, 0
-    while True:
-        d = get_json("%s/build/list?ownername=ackerman&projectname=nexus&limit=200&offset=%d"
-                     % (COPR, off))
-        rows = d.get("items", [])
-        if not rows:
-            break
-        for b in rows:
-            sp = b.get("source_package")
-            name = sp.get("name") if isinstance(sp, dict) else None
-            if not name:
-                continue
-            if name not in newest or b.get("id", 0) > newest[name].get("id", 0):
-                newest[name] = b
-        off += 200
-        if off > 3000:
-            break
-    out = {}
-    for name, b in newest.items():
-        url = ((b.get("source_package") or {}).get("url") or "").split("?")[0]
-        base = os.path.basename(url)
-        prefix = name + "-"
-        nvr = base[len(prefix):] if base.startswith(prefix) else base
-        out[name] = (nvr_norm(nvr), b.get("id"), b.get("state"))
-    return out
 
 
 def repodata_nvr(chroot):
