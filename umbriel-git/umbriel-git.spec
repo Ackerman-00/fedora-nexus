@@ -1,14 +1,14 @@
 # These will be automatically populated by update.sh
-%global commit          b93ed3d2f9eef54e593e29066d1a4ecf057888c2
+%global commit          9c8b22ebd41a2a97c7b6d424bedbe60f6eaa89e5
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261020204208
+%global gitdate         20261021092446
 
 # Fedora LTO flags break linking; keep escape hatch.
 %global _lto_cflags %{nil}
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -120,7 +120,5 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Tue Oct 20 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261020204208gitb93ed3d-2
-- Raise the libinput floor to 1.27, the version meson.build requires
-* Tue Oct 20 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261020204208gitb93ed3d-1
-- Nightly sync with upstream main branch (Commit: b93ed3d)
+* Wed Oct 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261021092446git9c8b22e-1
+- Nightly sync with upstream main branch (Commit: 9c8b22e)
