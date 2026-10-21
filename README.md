@@ -41,13 +41,13 @@ sudo dnf install <package-name>
 
 > **When Fedora ships a newer build of a package than this repo does:** dnf
 > prefers the higher version, so a plain `dnf install <pkg>` can pull Fedora's
-> package instead of ours. This happens today on Fedora 45 and Rawhide with
-> `ly` (Fedora has the 1.5.0~rc1 prerelease, this repo tracks stable 1.4.1;
-> `dnf repoquery --latest-limit 1 ly` in the Fedora containers returns
-> 1.4.0-2.fc43 / 1.4.0-2.fc44 against 1.5.0~rc1-1.fc45 / 1.5.0~rc1-1.fc46, so
-> ours wins on F43 and F44 only; checked 2026-10-21). Ask for the exact build
-> when that happens, for example `sudo dnf install 'ly-1.4.1-*'`.
-> `dnf list --showduplicates <pkg>` shows every version on offer.
+> package instead of ours. No package is shadowed today: `ly` used to be the
+> one case (Fedora 45 and Rawhide carry the `1.5.0~rc1` prerelease) and this
+> repo now builds the 1.5.0 final, which rpm sorts above `~rc1`
+> (`rpmdev-vercmp 1.5.0~rc1 1.5.0` → `-1`, checked 2026-10-21). If a shadowed
+> package ever appears, ask for the exact build, for example
+> `sudo dnf install 'ly-1.5.0-*'`. `dnf list --showduplicates <pkg>` shows
+> every version on offer.
 
 ---
 

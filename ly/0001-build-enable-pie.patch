@@ -1,8 +1,8 @@
 --- a/build.zig
 +++ b/build.zig
-@@ -72,6 +72,8 @@
-         .use_llvm = true,
+@@ -109,6 +109,8 @@
      });
+     exe.root_module.addImport("zlua", zlua.module("zlua"));
  
 +    exe.pie = true;
 +

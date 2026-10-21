@@ -1,24 +1,24 @@
-%global clap_hash clap-0.11.0-oBajB7foAQC3Iyn4IVCkUdYaOVVng5IZkSncySTjNig1
-%global zigini_hash zigini-0.5.0-BSkB7e9WAACfyCBABNZiWL3gFMw18GKn3qBcPs8L1Ec1
-%global ini_hash ini-0.1.0-YCQ9YiwsAACghqF8LZyjAF2H_NnL6n29QLuCe0fsmPTo
-%global termbox2_hash N-V-__8AAAUXBQD6Fwpi9m0MBqWXFFaqW5l1lVrJC2Ynj7a-
-%global translate_c_hash translate_c-0.0.0-Q_BUWvP1BgCjAk6PWv5286tOlvzD9-X-NkuTzh0KxY0Q
-%global aro_hash aro-0.0.0-JSD1Qi7QNgDnfcrdEJf82v3o6MhZySjYVrtdfEf3E4Se
+# Vendored Zig dependency versions, synced by update.sh from vendor.tar.zst.
+%global clap_ver 0.12.0
+%global zigini_ver 0.6.0
+%global ini_ver 0.1.0
+%global zlua_ver 0.1.0
 
 Name:           ly
-Version:        1.4.1
-Release:        5%{?dist}
+Version:        1.5.0
+Release:        1%{?dist}
 Summary:        Lightweight TUI display manager
 
 License:        WTFPL AND MIT
 URL:            https://codeberg.org/fairyglade/ly
 # Codeberg archive 503s; fetch the GitHub mirror instead.
 Source0:        https://github.com/fairyglade/ly/archive/v%{version}.tar.gz#/ly-%{version}.tar.gz
-# Zig deps are bundled; no systemwide Zig packaging.
+# Upstream vendor bundle: every Zig dependency, fetched with --system zig-pkg.
 Source1:        %{url}/releases/download/v%{version}/vendor.tar.zst#/ly-%{version}-vendor.tar.zst
 Patch0:         0001-build-enable-pie.patch
 
-ExclusiveArch:  %{zig_arches}
+# zig0.17 is x86_64-only; ly 1.5.0 needs the 0.17 series.
+ExclusiveArch:  x86_64
 
 BuildRequires:  gcc
 BuildRequires:  help2man
@@ -26,42 +26,42 @@ BuildRequires:  pam-devel
 BuildRequires:  pkgconfig(xcb)
 BuildRequires:  systemd-rpm-macros
 BuildRequires:  tar
-BuildRequires:  zig >= 0.16
-BuildRequires:  zig-rpm-macros
+BuildRequires:  zig0.17
 BuildRequires:  zstd
 
 Requires(post):      policycoreutils
 Requires(posttrans): policycoreutils
 
-Provides:       bundled(zig-clap) = 0.11.0
-Provides:       bundled(zigini) = 0.5.0
-Provides:       bundled(ini) = 0.1.0
+Provides:       bundled(zig-clap) = %{clap_ver}
+Provides:       bundled(zigini) = %{zigini_ver}
+Provides:       bundled(ini) = %{ini_ver}
+Provides:       bundled(zlua) = %{zlua_ver}
 Provides:       bundled(termbox2)
+Provides:       bundled(luajit)
 Provides:       bundled(zig-translate-c)
 Provides:       bundled(aro)
 
 Recommends:     brightnessctl
 
 %description
-Ly is a lightweight TUI (ncurses-like) display manager for Linux and BSD
-designed with portability in mind and doesn't require systemd to run.
+Ly is a lightweight TUI display manager for Linux and BSD, designed with
+portability in mind and without a dependency on systemd.
 
 %prep
 %autosetup -n %{name}-%{version} -a 1 -p1
-%zig_fetch zig-pkg/%{clap_hash}
-%zig_fetch zig-pkg/%{zigini_hash}
-%zig_fetch zig-pkg/%{ini_hash}
-%zig_fetch zig-pkg/%{termbox2_hash}
-%zig_fetch zig-pkg/%{translate_c_hash}
-%zig_fetch zig-pkg/%{aro_hash}
 
 %build
-%zig_build
+# 0.17 takes its caches from the environment; the flags moved.
+export ZIG_GLOBAL_CACHE_DIR=%{_builddir}/zig-cache
+export ZIG_LOCAL_CACHE_DIR=%{_builddir}/zig-cache
+zig0.17 build --release=safe --system zig-pkg \
+    -Dtarget=native -Dcpu=baseline --build-id=sha1
 
 %install
-%zig_build \
-    installexe \
-    -Ddest_directory=%{buildroot}
+export ZIG_GLOBAL_CACHE_DIR=%{_builddir}/zig-cache
+export ZIG_LOCAL_CACHE_DIR=%{_builddir}/zig-cache
+zig0.17 build installexe -Ddest_directory=%{buildroot} --release=safe \
+    --system zig-pkg -Dtarget=native -Dcpu=baseline --build-id=sha1
 
 # Hooks are config; invoke via /bin/sh, mode 644.
 sed -i '1{/^#!/d}' %{buildroot}%{_sysconfdir}/ly/setup.sh
@@ -78,13 +78,23 @@ help2man --no-discard-stderr -o %{buildroot}%{_mandir}/man1/ly.1 %{buildroot}%{_
 
 install -d %{buildroot}%{_licensedir}/ly
 install -pm0644 license.md %{buildroot}%{_licensedir}/ly/LICENSE-ly.md
-install -pm0644 zig-pkg/%{clap_hash}/LICENSE %{buildroot}%{_licensedir}/ly/LICENSE-zig-clap
-install -pm0644 zig-pkg/%{zigini_hash}/LICENSE %{buildroot}%{_licensedir}/ly/LICENSE-zigini
-install -pm0644 zig-pkg/%{ini_hash}/LICENCE %{buildroot}%{_licensedir}/ly/LICENSE-ini
-install -pm0644 zig-pkg/%{termbox2_hash}/LICENSE %{buildroot}%{_licensedir}/ly/LICENSE-termbox2
-install -pm0644 zig-pkg/%{aro_hash}/LICENSE %{buildroot}%{_licensedir}/ly/LICENSE-aro
-install -pm0644 zig-pkg/%{aro_hash}/LICENSE-UNICODE %{buildroot}%{_licensedir}/ly/LICENSE-aro-UNICODE
-install -pm0644 zig-pkg/%{translate_c_hash}/LICENSE %{buildroot}%{_licensedir}/ly/LICENSE-translate-c
+# Every bundled dependency's own license text, whatever upstream ships it as.
+for lic in zig-pkg/*/LICENSE zig-pkg/*/LICENCE zig-pkg/*/license \
+    zig-pkg/*/LICENSE-* zig-pkg/*/COPYRIGHT zig-pkg/*/COPYING; do
+    [ -f "$lic" ] || continue
+    dep=$(basename "$(dirname "$lic")")
+    base=$(basename "$lic")
+    case "$base" in
+        LICENSE|LICENCE|license|COPYRIGHT|COPYING)
+            install -pm0644 "$lic" "%{buildroot}%{_licensedir}/ly/LICENSE-$dep" ;;
+        *)
+            install -pm0644 "$lic" "%{buildroot}%{_licensedir}/ly/LICENSE-$dep-${base#LICENSE-}" ;;
+    esac
+done
+
+%check
+# Upstream ships no test target: prove the linked binary starts.
+./zig-out/bin/ly --help > /dev/null
 
 %post
 %systemd_post ly@.service ly-kmsconvt@.service
@@ -122,14 +132,7 @@ if [ $1 -eq 0 ]; then
 fi
 
 %files
-%license %{_licensedir}/ly/LICENSE-ly.md
-%license %{_licensedir}/ly/LICENSE-zig-clap
-%license %{_licensedir}/ly/LICENSE-zigini
-%license %{_licensedir}/ly/LICENSE-ini
-%license %{_licensedir}/ly/LICENSE-termbox2
-%license %{_licensedir}/ly/LICENSE-aro
-%license %{_licensedir}/ly/LICENSE-aro-UNICODE
-%license %{_licensedir}/ly/LICENSE-translate-c
+%license %{_licensedir}/ly/*
 %doc readme.md
 
 %{_bindir}/ly
@@ -145,31 +148,16 @@ fi
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/ly/setup.sh
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/ly/startup.sh
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/ly/example.dur
+%config(noreplace) %attr(0644,root,root) %{_sysconfdir}/ly/example.lua
 %config(noreplace) %{_sysconfdir}/ly/custom-sessions/README
 %config(noreplace) %{_sysconfdir}/ly/lang/*.ini
 
 %changelog
-* Fri Oct 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.1-5
-- Rebuild to retry after transient codeberg.org 429 rate limit on vendor.tar.zst
-
-* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.1-4
-- Fetch Source0 from the official GitHub mirror: codeberg.org
-  /archive/ returns 503 for ly and other projects (proven 2026-10-03).
-
-* Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.1-3
-- Install the bundled aro (MIT + Unicode License v3) and translate_c (MIT)
-  license texts via %%license; they ship in the vendor bundle but were
-  missing from the packaged licensedir.
-
-* Mon Aug 10 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.1-2
-- Release bump for the %post one-time enable-instructions message added by
-  the owner; with Release still at 1 the NVR was identical to the already
-  built 1.4.1-1 and COPR canceled the rebuild (fix would never ship).
-
-* Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.1-1
-- Initial package: ly 1.4.1 (Zig rewrite line, built with zig 0.16)
-- Modeled on the Fedora rawhide ly spec: bundled Zig deps via upstream
-  vendor.tar.zst release asset + %%zig_fetch, PIE patch, help2man man page,
-  systemd service scriptlets, SELinux xdm_exec_t fcontext rule
-- br: zig-srpm-macros dropped (Fedora 43/44 ship only zig-rpm-macros; its
-  sole macro %%zig_arches is already provided there)
+* Wed Oct 21 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.5.0-1
+- Update to upstream 1.5.0, which requires Zig 0.17.0 (Fedora ships 0.16):
+  build with the new zig0.17 parallel toolchain instead of the distro zig.
+- Declare --system zig-pkg and drop the %%zig_fetch calls: the vendor bundle
+  supplies every dependency and the 0.17 series renamed the cache flags.
+- Install every bundled license text found in the vendor bundle, including
+  the LuaJIT COPYRIGHT and zlua's license, which 1.4.1 never shipped.
+- Refresh the PIE patch against the 1.5.0 build.zig.
