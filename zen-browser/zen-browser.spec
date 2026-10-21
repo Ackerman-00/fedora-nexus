@@ -8,8 +8,8 @@
 %global             __requires_exclude ^lib(gkcodecs|lgpllibs|mozavutil|mozgtk|mozsandbox|mozsqlite3|mozwayland|nssutil3|nss3|smime3|nspr4)\\.so.*$
 
 Name:               zen-browser
-# Epoch required to supersede the withdrawn higher version.
-Epoch:              1
+# Epoch 2 supersedes the 1.23.4b build upstream withdrew; keep it forever.
+Epoch:              2
 Version:        1.23.3b
 Release:        4%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
@@ -97,11 +97,12 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
-* Wed Oct 21 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1:1.23.3b-4
+* Wed Oct 21 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2:1.23.3b-4
 - Return to 1.23.3b: upstream withdrew release 1.23.4b. Its release page,
   git tag and every asset now answer HTTP 404 (verified 2026-10-21 12:25
   UTC), so a spec pointing at it cannot rebuild. Same tarball as -3,
-  sha256 bb2045d3...
+  sha256 bb2045d3.... Epoch 2 supersedes the published 1:1.23.4b-1, so a
+  fresh install no longer selects the withdrawn build.
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1:1.23.3b-3
 - Ship the upstream MPL-2.0 LICENSE as Source4 (same 1.23.3b tag). The
   package declared MPL-2.0 but the binary tarball carries no license text.
