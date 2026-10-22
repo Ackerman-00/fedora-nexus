@@ -29,10 +29,10 @@ Repo type: **fedora**. Sweep of **65** packages. Exit code is the verdict; this 
 | ghostty | ghostty_1.3.1-0.ppa2_amd64_24.04.deb | 1.3.1 | 1.3.1-0~ppa2 | **OK** | deb pkg=ghostty (control control.tar.zst) \| pinned 1.3.1 \| internal 1.3.1-0~ppa2 |
 | ghostty | LICENSE | 1.3.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | gpu-screen-recorder | gpu-screen-recorder.git.6.1.5.tar.gz | 6.1.5 | 6.1.5 | **SOURCE-OK** | tar meson.build=6.1.5 (meson.build) \| hash no-checksum-pinned \| weak internal evidence 6.1.5 (not authoritative) |
-| helium-browser | helium-0.19.4.1-x86_64_linux.tar.xz | 0.19.4.1 | 0.19.4.1 | **OK** | tar runtime probe chrome --version: Helium 0.19.4.1 (Chromium 155.0.8059.84) \| pinned 0.19.4.1 \| internal 0.19.4.1 |
-| helium-browser | net.imput.helium.metainfo.xml | 0.19.4.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| helium-browser | LICENSE | 0.19.4.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| helium-browser | LICENSE.ungoogled_chromium | 0.19.4.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
+| helium-browser | helium-0.20.1.1-x86_64_linux.tar.xz | 0.20.1.1 | 0.20.1.1 | **OK** | tar runtime probe chrome --version: Helium 0.20.1.1 (Chromium 156.0.8078.47) \| pinned 0.20.1.1 \| internal 0.20.1.1 |
+| helium-browser | net.imput.helium.metainfo.xml | 0.20.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
+| helium-browser | LICENSE | 0.20.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
+| helium-browser | LICENSE.ungoogled_chromium | 0.20.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | hellwal | hellwal-1.0.8.tar.gz | 1.0.8 | $(shell | **SOURCE-OK** | tar Makefile=$(shell (hellwal-1.0.8/Makefile) \| hash no-checksum-pinned \| weak internal evidence $(shell (not authoritative) |
 | heroic-games-launcher | Heroic-2.22.4-linux-x86_64.rpm | 2.22.4 | 2.22.4 | **OK** | rpm header heroic=2.22.4-1 (tags NAME/VERSION/RELEASE) \| pinned 2.22.4 \| internal 2.22.4 |
 | heroic-games-launcher | COPYING | 2.22.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
@@ -58,7 +58,7 @@ Repo type: **fedora**. Sweep of **65** packages. Exit code is the verdict; this 
 | opencad-studio | LICENSE | 2026.42 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | openchamber | OpenChamber-2.5.0-linux-x86_64.AppImage | 2.5.0 | 2.5.0 | **OK** | AppImage 2.5.0 (resources/app.asar) \| pinned 2.5.0 \| internal 2.5.0 |
 | openchamber | LICENSE | 2.5.0 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| opencode-desktop | opencode-desktop-linux-amd64.deb | 2.1.2 | 2.1.2 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.1.2 \| internal 2.1.2 |
+| opencode-desktop | opencode-desktop-linux-amd64.deb | 2.1.3 | 2.1.3 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.1.3 \| internal 2.1.3 |
 | protonplus | ProtonPlus-v0.6.8.tar.gz | 0.6.8 | >= 1.0.0 | **SOURCE-OK** | tar meson.build=>= 1.0.0 (ProtonPlus-0.6.8/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 1.0.0 (not authoritative) |
 | python-mprisify | mprisify-v1.0.1.tar.gz | 1.0.1 | 1.0.1 | **SOURCE-OK** | tar changelog=1.0.1 (mprisify-v1.0.1/CHANGELOG.md) \| hash no-checksum-pinned \| weak internal evidence 1.0.1 (not authoritative) |
 | python-mprisify | LICENSE | 1.0.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
@@ -73,7 +73,7 @@ Repo type: **fedora**. Sweep of **65** packages. Exit code is the verdict; this 
 rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | rustypipe-botguard | LICENSE | 0.1.2 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | scenefx | 0.5.tar.gz | 0.5 | >=1.3 | **SOURCE-OK** | tar meson.build=>=1.3 (scenefx-0.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3 (not authoritative) |
-| sonora | v0.44.0.tar.gz | 0.44.0 | @VERSION@ | **SOURCE-OK** | tar Info.plist=@VERSION@ (sonora-0.44.0/assets/macos/Info.plist) \| hash no-checksum-pinned \| weak internal evidence @VERSION@ (not authoritative) |
+| sonora | v0.44.1.tar.gz | 0.44.1 | @VERSION@ | **SOURCE-OK** | tar Info.plist=@VERSION@ (sonora-0.44.1/assets/macos/Info.plist) \| hash no-checksum-pinned \| weak internal evidence @VERSION@ (not authoritative) |
 | splayer-next | splayer-next-1.1.0-x86_64.rpm | 1.1.0 | 1.1.0 | **OK** | rpm header splayer-next=1.1.0-1 (tags NAME/VERSION/RELEASE) \| pinned 1.1.0 \| internal 1.1.0 |
 | splayer-next | LICENSE | 1.1.0 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | starship | starship-x86_64-unknown-linux-gnu.tar.gz | 1.27.0 | 1.27.0 | **OK** | tar runtime probe starship --version: starship 1.27.0
@@ -87,7 +87,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | LICENSE | 1.5.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| umbriel-git | live noctalia-dev/umbriel | 8449975579a2 | 8449975579a2 | **OK** | live noctalia-dev/umbriel pin 8449975579a2 vs upstream 8449975579a2 |
+| umbriel-git | live noctalia-dev/umbriel | 5d657581e27e | 5d657581e27e | **OK** | live noctalia-dev/umbriel pin 5d657581e27e vs upstream 5d657581e27e |
 | vesktop | vesktop-1.6.8.x86_64.rpm | 1.6.8 | 1.6.8 | **OK** | rpm header vesktop=1.6.8-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.8 \| internal 1.6.8 |
 | vesktop | LICENSE | 1.6.8 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
@@ -113,7 +113,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | extension-manager | upstream github.com/mjakeman/extension-manager | 0.6.5 | v0.6.5 | **OK** | at upstream latest v0.6.5 [releases/latest] |
 | freebuff | upstream github.com/CodebuffAI/codebuff-community | 0.2.34 | freebuff-v0.2.34 | **OK** | at upstream latest freebuff-v0.2.34 [releases/latest] |
 | ghostty | upstream github.com/mkasberg/ghostty-ubuntu | 1.3.1 | 1.3.1-0-ppa2 | **OK** | at upstream latest 1.3.1-0-ppa2 [releases/latest] |
-| helium-browser | upstream github.com/imputnet/helium-linux | 0.19.4.1 | 0.19.4.1 | **OK** | at upstream latest 0.19.4.1 [releases/latest] |
+| helium-browser | upstream github.com/imputnet/helium-linux | 0.20.1.1 | 0.20.1.1 | **OK** | at upstream latest 0.20.1.1 [releases/latest] |
 | hellwal | upstream github.com/danihek/hellwal | 1.0.8 | 1.0.8 | **OK** | at upstream latest 1.0.8 [releases/latest] |
 | heroic-games-launcher | upstream github.com/Heroic-Games-Launcher/HeroicGamesLauncher | 2.22.4 | v2.22.4 | **OK** | at upstream latest v2.22.4 [releases/latest] |
 | libcava | upstream github.com/LukashonakV/cava | 1.0.0 | 1.0.0 | **OK** | at upstream latest 1.0.0 [releases/latest] |
@@ -131,7 +131,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | python-yt-dlp-get-pot-rustypipe | upstream codeberg.org/ThetaDev/rustypipe-botguard | 0.2.0 | yt-dlp-get-pot-rustypipe/v0.2.0 | **OK** | at upstream latest yt-dlp-get-pot-rustypipe/v0.2.0 in tag namespace 'yt-dlp-get-pot-rustypipe' [pinned yt-dlp-get-pot-rustypipe/v0.2.0] |
 | rustypipe-botguard | upstream codeberg.org/ThetaDev/rustypipe-botguard | 0.1.2 | v0.1.2 | **OK** | at upstream latest v0.1.2 [ls-remote] |
 | scenefx | upstream github.com/wlrfx/scenefx | 0.5 | 0.5 | **OK** | at upstream latest 0.5 [releases/latest] |
-| sonora | upstream github.com/sonorahq/sonora | 0.44.0 | v0.44.0 | **OK** | at upstream latest v0.44.0 [releases/latest] |
+| sonora | upstream github.com/sonorahq/sonora | 0.44.1 | v0.44.1 | **OK** | at upstream latest v0.44.1 [releases/latest] |
 | splayer-next | upstream github.com/SPlayer-Dev/SPlayer-Next | 1.1.0 | v1.1.0 | **OK** | at upstream latest v1.1.0 [releases/latest] |
 | starship | upstream github.com/starship/starship | 1.27.0 | v1.27.0 | **OK** | at upstream latest v1.27.0 [releases/latest] |
 | stoat-desktop | upstream github.com/stoatchat/for-desktop | 1.5.4 | v1.5.4 | **OK** | at upstream latest v1.5.4 [releases/latest] |
@@ -145,8 +145,8 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | python-yt-dlp-ejs | pypi:yt-dlp-ejs | 0.8.0 | 0.8.0 | **OK** | upstream 0.8.0 == pinned 0.8.0 [freshness via pypi:yt-dlp-ejs; repology has no entry] |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology has no entry] |
 | python-ytmusicapi | pypi:ytmusicapi | 1.12.3 | 1.12.3 | **OK** | upstream 1.12.3 == pinned 1.12.3 [freshness via pypi:ytmusicapi; repology has no entry] |
-| rootapp | aur | 0.9.153 | 0.9.152 | **OK** | pinned 0.9.153 >= repology 0.9.152 (aur); tracker behind |
+| rootapp | aur | 0.9.153 | 0.9.153 | **OK** | pinned 0.9.153 >= repology 0.9.153 (aur); tracker behind |
 | zig0.17 | ziglang.org/download/index.json | 0.17.0 | 0.17.0 | **OK** | upstream 0.17.0 == pinned 0.17.0 [freshness via ziglang.org/download/index.json; repology has no entry] |
-| LIBYEAR | freshness | 0.18 yr | 3 pkgs | **METRIC** | threshold=20 libyears |
+| LIBYEAR | freshness | 0.17 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
 
 **Verdict: PASS** (0 failure(s))
