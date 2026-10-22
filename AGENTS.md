@@ -94,9 +94,12 @@ If the agent skips the dependency table, the job fails and the next run retries 
 ### Environment baseline (verified 2026-09-17 via web search — re-discover every run, never hardcode)
 
 - Fedora 44 = current stable (GA 2026-04-28, EOL ~2027-06-02). Fedora 43
-  supported, EOL 2026-12-09. Fedora 45 branched 2026-08-11, beta freeze
-  2026-08-25, GA scheduled 2026-10-20 (GNOME 51, GCC 16.2, RPM 6.1,
-  Python 3.15, OpenSSL 4.0 wave). Rawhide = F46. COPR chroots
+  supported, EOL 2026-12-09 (fedorapeople F43 key tasks). Fedora 45 branched
+  2026-08-11, beta freeze 2026-08-25; its planned 2026-10-20 GA has NOT
+  landed: mirrors.kernel.org/fedora/releases/ lists up to 44 and
+  releases/45/ still answers 404 while development/45/ exists (checked
+  2026-10-22). Expected content of that wave: GNOME 51, GCC 16.2, RPM 6.1,
+  Python 3.15, OpenSSL 4.0. Rawhide = F46. COPR chroots
   fedora-43/44/45-x86_64 + fedora-rawhide-x86_64 match this — query the
   COPR project API every run.
 - RPM 6.0 (F43+, multi-key signing) / 6.1 (F45 beta); rpmlint 2.9–2.10
@@ -430,6 +433,13 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
   second fresh one, so the install test cannot see the build deps.
 - `bash tools/copr-install-check.sh <pkg> <rpm-name> <smoke-cmd> [chroot]` -
   install-test one published package from the live COPR repo.
+- `bash tools/install-sweep.sh <list> [jobs] [chroot]` - install-test the
+  whole inventory from the live COPR repo, one fresh container per line
+  (`pkg|dnf-name|smoke-cmd`, empty smoke = files-only). Each row is PASS only
+  when install, `rpm -V`, `ldd` over the entry points (`/usr/bin`,
+  `/usr/libexec`, else `/usr/lib64/*.so`, with the bundle's own `/opt/*/lib`
+  on the path) and the smoke agree, and the rows land in
+  `<outdir>/rows.txt` ready for the relay table.
 - `bash tools/check-workflows.sh` - YAML parse + actionlint + permission-scope
   scan for .github/workflows/*.yml, plus a drift check that the gate and the
   verifier parse the contract the same way. Run it before pushing any workflow
