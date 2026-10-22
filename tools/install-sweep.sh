@@ -24,8 +24,9 @@ dnf -y -q --setopt=gpgcheck=0 copr enable ackerman/nexus >/dev/null 2>&1
 echo '--- install ---'
 dnf -y --setopt=gpgcheck=0 --setopt=install_weak_deps=False install "$DNFN" 2>&1 | tail -3
 echo INSTALL_EXIT=${PIPESTATUS[0]}
-name=$PKG
-rpm -q "$name" >/dev/null 2>&1 || name=$(rpm -q --whatprovides "$PKG" 2>/dev/null | head -1)
+name=$DNFN
+rpm -q "$name" >/dev/null 2>&1 || name=$(rpm -q --whatprovides "$DNFN" 2>/dev/null | head -1)
+rpm -q "$name" >/dev/null 2>&1 || name=$PKG
 echo NVR=$(rpm -q --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}' "$name" 2>/dev/null)
 rpm -V "$name" >/tmp/v.log 2>&1 && echo RPMV_OK || { echo RPMV_DIRTY; head -3 /tmp/v.log; }
 echo '--- ldd ---'
