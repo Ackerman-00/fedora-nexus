@@ -20,14 +20,10 @@
 # tier 1 - benchmark leaders
 # deepseek-v4.1-flash-free - base DeepSeek V4 Pro coding 68.8 | checked 2026-10-20
 deepseek-v4.1-flash-free
-# minimax-m3.1-flash-free - base MiniMax M3 coding 58.6 | checked 2026-10-20
-minimax-m3.1-flash-free
 # mimo-v2.6-flash-free - base MiMo-V2.5 coding 56.8 | checked 2026-10-20
 mimo-v2.6-flash-free
 #
 # tier 2 - curated by OpenCode, no published score
-# big-pickle - stealth model | checked 2026-10-20
-big-pickle
 # nemotron-3.5-super-vl-free - checked 2026-10-20
 nemotron-3.5-super-vl-free
 # beam-free - unavailable in some regions | checked 2026-10-20
@@ -41,3 +37,6 @@ nemotron-3.5-lightning-free
 #
 # catalog live but owner-vetoed in tools/model-cascade.sh, so never ranked here:
 # glm-5.3-flash-free, jev-1.13-free (checked 2026-10-22)
+#
+# retired by the catalog on 2026-10-22, do not re-add without a live id:
+# minimax-m3.1-flash-free, big-pickle (absent from /inference/v1/models)

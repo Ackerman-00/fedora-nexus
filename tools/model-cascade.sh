@@ -49,6 +49,12 @@ for id in ${rank+"${rank[@]}"}; do
   is_live "$id" && ! excluded "$id" && chain+=("$id")
 done
 new=()
+retired=()
+for id in ${rank+"${rank[@]}"}; do
+  is_live "$id" && continue
+  excluded "$id" && continue
+  retired+=("$id")
+done
 for id in $live; do
   excluded "$id" && continue
   is_ranked "$id" && continue
@@ -62,6 +68,9 @@ if [ "${#chain[@]}" -eq 0 ]; then
 fi
 if [ "${#new[@]}" -gt 0 ]; then
   echo "NEW FREE MODELS (not ranked yet - research and rank them): ${new[*]}" >&2
+fi
+if [ "${#retired[@]}" -gt 0 ]; then
+  echo "RETIRED FREE MODELS (catalog stopped serving them - drop them from tools/model-rank.txt): ${retired[*]}" >&2
 fi
 
 for id in "${chain[@]}"; do printf 'opencode/%s\n' "$id"; done
