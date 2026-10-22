@@ -618,6 +618,39 @@ def hunt_copr_config():
             "", findings)
 
 
+def hunt_probes():
+    """Every package directory carries an install-test probe, and it is well formed.
+
+    The probe file is what the install sweep runs, so a missing row means a
+    package no run ever installs and a stale path means a false FAIL.
+    """
+    path = os.path.join(HERE, "probes.txt")
+    if not os.path.exists(path):
+        return ("probes", "unavailable (tools/probes.txt missing)", "", [])
+    rows = {}
+    findings = []
+    for line in open(path, encoding="utf-8"):
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split("|", 2)
+        if len(parts) != 3 or not all(x.strip() for x in parts):
+            findings.append((parts[0] or "?", "malformed row: %r" % line))
+            continue
+        pkg, dnf, smoke = parts
+        if pkg in rows:
+            findings.append((pkg, "duplicate row"))
+            continue
+        rows[pkg] = (dnf, smoke)
+    inv = {os.path.basename(os.path.dirname(sp)) for sp in specs()}
+    for pkg in sorted(inv - set(rows)):
+        findings.append((pkg, "no probe row in tools/probes.txt"))
+    for pkg in sorted(set(rows) - inv):
+        findings.append((pkg, "probe row for a directory that ships no spec"))
+    return ("probes", "%d rows, %d specs, %d findings" % (len(rows), len(inv), len(findings)),
+            "", findings)
+
+
 def hunt_fedora_releases():
     """Which Fedora is stable, and which is next - re-read, never remembered."""
     releases = re.findall(r'href="(\d+)/"', get_text("https://mirrors.kernel.org/fedora/releases/"))
@@ -646,7 +679,7 @@ def get_text(url):
 
 HUNTS = (hunt_builds, hunt_chroots, hunt_copr_config, hunt_upstream, hunt_cves,
          hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_readme,
-         hunt_published_nvr, hunt_fedora_releases)
+         hunt_published_nvr, hunt_probes, hunt_fedora_releases)
 
 
 def main():

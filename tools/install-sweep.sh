@@ -15,15 +15,26 @@ mkdir -p "$OUT"
 
 one() {
   IFS='|' read -r pkg dnf smoke <<< "$1"
-  [ -n "$pkg" ] || return 0
+  case "$pkg" in ''|\#*) return 0 ;; esac
+  [ "$smoke" = files-only ] && smoke=""
   local out="$OUT/$pkg.log"
   docker run --rm -i -e PKG="$pkg" -e DNFN="$dnf" -e SMOKE="$smoke" \
     "registry.fedoraproject.org/fedora:$CH" bash -s >"$out" 2>&1 <<'EOS'
 dnf -y -q --setopt=gpgcheck=0 install dnf-plugins-core >/dev/null 2>&1
 dnf -y -q --setopt=gpgcheck=0 copr enable ackerman/nexus >/dev/null 2>&1
 echo '--- install ---'
-dnf -y --setopt=gpgcheck=0 --setopt=install_weak_deps=False install "$DNFN" 2>&1 | tail -3
-echo INSTALL_EXIT=${PIPESTATUS[0]}
+iex=1
+for try in 1 2 3; do
+  dnf -y --setopt=gpgcheck=0 --setopt=install_weak_deps=False install "$DNFN" >/tmp/i.log 2>&1
+  iex=$?
+  [ $iex -eq 0 ] && break
+  # A mirror dropping one package mid-transaction is transient: retry it.
+  grep -qE 'Cannot download|All mirrors were tried|Librepo error|Timeout|timeout' /tmp/i.log || break
+  echo "INSTALL_RETRY $try $(grep -m1 -E 'Librepo error|Cannot download' /tmp/i.log)"
+  sleep 5
+done
+tail -3 /tmp/i.log
+echo INSTALL_EXIT=$iex
 name=$DNFN
 rpm -q "$name" >/dev/null 2>&1 || name=$(rpm -q --whatprovides "$DNFN" 2>/dev/null | head -1)
 rpm -q "$name" >/dev/null 2>&1 || name=$PKG
@@ -47,6 +58,16 @@ for f in $targets; do
   done
 done
 echo LDD_MISSING_COUNT=$miss
+echo '--- probe ---'
+# Probe literals must be payload the package ships; a stale path is a probe bug.
+# Only meaningful once the install succeeded - an empty file list proves nothing.
+pmiss=0
+if [ "$iex" -eq 0 ]; then
+  for lit in $(printf '%s\n' "$SMOKE" | grep -oE '/(usr|opt|etc)/[A-Za-z0-9._+@/-]+'); do
+    printf '%s\n' "$files" | grep -qx -- "$lit" || { echo "PROBE_MISSING $lit"; pmiss=$((pmiss+1)); }
+  done
+fi
+echo PROBE_MISSING_COUNT=$pmiss
 echo '--- smoke ---'
 if [ -n "$SMOKE" ]; then bash -c "$SMOKE"; else true; fi
 echo SMOKE_EXIT=$?
@@ -57,7 +78,16 @@ EOS
   rv=$(grep -c 'RPMV_OK' "$out")
   lddc=$(grep -m1 '^LDD_MISSING_COUNT=' "$out" | cut -d= -f2)
   sex=$(grep -m1 '^SMOKE_EXIT=' "$out" | cut -d= -f2)
+  local pmiss
+  pmiss=$(grep -c '^PROBE_MISSING ' "$out")
   local verdict=PASS why=""
+  # A probe naming a path the RPM does not ship is a probe bug, not a package FAIL.
+  if [ "$iex" = "0" ] && [ "$rv" = "1" ] && [ "${lddc:-0}" = "0" ] && [ "$sex" != "0" ] && [ "${pmiss:-0}" -gt 0 ]; then
+    why="probe names $(grep -m1 '^PROBE_MISSING ' "$out" | cut -d' ' -f2-) which the RPM does not ship"
+    printf '%s|%s|%s|%s|%s|%s\n' "$pkg" "$CH" "$nvr" "${smoke:-files-only}" "PROBE-BUG" "$why" >> "$OUT/rows.txt"
+    echo "ROW $pkg $CH ${nvr:-?} PROBE-BUG $why"
+    return 0
+  fi
   [ "$iex" = "0" ] || { verdict=FAIL; why="install rc=$iex"; }
   [ "$rv" = "1" ] || { verdict=FAIL; why="$why rpm -V dirty"; }
   [ "${lddc:-0}" = "0" ] || { verdict=FAIL; why="$why ldd missing=$lddc"; }

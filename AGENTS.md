@@ -439,7 +439,14 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
   when install, `rpm -V`, `ldd` over the entry points (`/usr/bin`,
   `/usr/libexec`, else `/usr/lib64/*.so`, with the bundle's own `/opt/*/lib`
   on the path) and the smoke agree, and the rows land in
-  `<outdir>/rows.txt` ready for the relay table.
+  `<outdir>/rows.txt` ready for the relay table. A mirror that drops a
+  package mid-transaction is retried; a smoke that names a path the RPM does
+  not ship is a `PROBE-BUG` row, not a package failure.
+- `tools/probes.txt` - the install-test probe per package
+  (`pkg|dnf-name|smoke`), so a sweep runs `install-sweep.sh tools/probes.txt`
+  instead of guessing paths. `python3 tools/hunt.py probes` fails when a
+  spec has no row, and `tools/verify-fedora.sh` refuses a relay while the
+  file does not cover the inventory.
 - `bash tools/check-workflows.sh` - YAML parse + actionlint + permission-scope
   scan for .github/workflows/*.yml, plus a drift check that the gate and the
   verifier parse the contract the same way. Run it before pushing any workflow

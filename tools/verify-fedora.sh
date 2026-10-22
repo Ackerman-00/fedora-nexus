@@ -259,6 +259,16 @@ if [[ "$bad_specs" -gt 0 ]]; then
   FAIL=1
 fi
 
+# Every package dir needs an install probe: no probe means no run installs it.
+probe_report=$(python3 tools/hunt.py probes 2>&1 || true)
+if ! grep -q ' 0 findings$' <<< "$probe_report"; then
+  echo "FAIL: NOT COMPLETE -- tools/probes.txt does not cover the inventory:"
+  printf '%s\n' "$probe_report" | sed 's/^/  /'
+  FAIL=1
+else
+  echo "PASS: install probes cover the inventory"
+fi
+
 # Defect accounting: every defect found this run is either fixed (counted)
 # or proven external (a GAP/HOLD line carrying the probe). Finding none is
 # allowed - leaving one unfixed and uncounted is not.

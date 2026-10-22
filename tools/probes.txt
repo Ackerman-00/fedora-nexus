@@ -1,0 +1,66 @@
+# pkg|dnf-name|smoke  - the install-test probe for every package (see tools/install-sweep.sh)
+app2unit|app2unit|test -x /usr/bin/app2unit && test -x /usr/bin/app2unit-open
+appmenu-glib-translator|appmenu-glib-translator|files-only
+astal|astal|files-only
+astal-gjs|astal-gjs|files-only
+astal-gtk4|astal-gtk4|files-only
+astal-io|astal-io|test -x /usr/bin/astal
+astal-libs|astal-libs|test -x /usr/bin/astal-apps
+astal-lua|astal-lua|files-only
+awww|awww|test -x /usr/bin/awww && test -x /usr/bin/awww-daemon
+aylurs-gtk-shell|aylurs-gtk-shell|test -x /usr/bin/ags
+bibata-cursor-theme|bibata-cursor-theme|files-only
+caelestia-cli-mango|caelestia-cli-mango|caelestia --help
+caelestia-shell-mango|caelestia-shell-mango|test -x /usr/bin/caelestia-shell
+cascadia-code-nerd-fonts|cascadia-code-nerd-fonts|files-only
+cliphist|cliphist|test -x /usr/bin/cliphist
+concat|concat|concat --version
+concord|concord|test -x /usr/bin/concord
+craft-launcher|craft-launcher|test -x /usr/bin/artcraft-launcher
+extension-manager|extension-manager|test -x /usr/bin/extension-manager
+fluxer|fluxer|test -f /usr/lib64/fluxer/resources/app.asar
+freebuff|freebuff|freebuff --version
+ghostty|ghostty|ghostty --version
+gpu-screen-recorder|gpu-screen-recorder|test -x /usr/bin/gpu-screen-recorder
+helium-browser|helium-browser|helium --no-sandbox --headless --disable-gpu --version
+hellwal|hellwal|test -x /usr/bin/hellwal
+heroic-games-launcher|heroic-games-launcher|test -d /opt/Heroic/resources
+lazyvim-git|lazyvim-git|files-only
+libcava|libcava|files-only
+localsend|localsend|test -x /usr/bin/localsend_app
+logseq|logseq|test -f /opt/logseq/resources/app.asar
+ly|ly|ly --help
+mangowm|mangowm|mango -v
+material-symbols-fonts|material-symbols-fonts|files-only
+materialyoucolor|python3-materialyoucolor|python3 -c "import materialyoucolor, materialyoucolor.scheme"
+matugen|matugen|matugen --version
+mixtapes|mixtapes|test -x /usr/bin/mixtapes
+mpvpaper|mpvpaper|test -x /usr/bin/mpvpaper
+noctalia-greeter|noctalia-greeter|noctalia-greeter --version
+nwg-look|nwg-look|test -x /usr/bin/nwg-look
+obsidian|obsidian|test -f /opt/Obsidian/resources/app.asar
+opencad-studio|opencad-studio|test -x /usr/bin/opencad-studio
+openchamber|openchamber|test -f /opt/openchamber/resources/app.asar
+opencode-desktop|opencode-desktop|test -f /opt/OpenCode/resources/app.asar
+protonplus|protonplus|test -x /usr/bin/protonplus
+python-mprisify|python-mprisify|python3 -c 'import mprisify'
+python-pydbus|python-pydbus|python3 -c 'import pydbus'
+python-yt-dlp-ejs|python-yt-dlp-ejs|python3 -c "import yt_dlp_ejs"
+python-yt-dlp-get-pot|python-yt-dlp-get-pot|python3 -c 'import yt_dlp_plugins.extractor'
+python-yt-dlp-get-pot-rustypipe|python-yt-dlp-get-pot-rustypipe|python3 -c 'import yt_dlp_plugins.extractor'
+python-ytmusicapi|python-ytmusicapi|python3 -c 'import ytmusicapi'
+rootapp|rootapp|test -x /usr/bin/rootapp
+rustypipe-botguard|rustypipe-botguard|rustypipe-botguard --version
+scenefx|scenefx|files-only
+sonora|sonora|test -x /usr/bin/sonora
+splayer-next|splayer-next|test -f /opt/SPlayer-Next/resources/app.asar
+starship|starship|starship --version
+stoat-desktop|stoat-desktop|test -f /opt/Stoat/resources/app.asar
+umbriel-git|umbriel-git|test -x /usr/bin/umbriel
+vesktop|vesktop|test -f /opt/Vesktop/resources/app.asar
+waypaper|waypaper|test -x /usr/bin/waypaper
+wlroots|wlroots|test -e /usr/lib64/libwlroots-0.20.so
+xcur2png|xcur2png|test -x /usr/bin/xcur2png
+xdg-desktop-portal-umbriel-git|xdg-desktop-portal-umbriel-git|test -x /usr/libexec/xdg-desktop-portal-umbriel
+zen-browser|zen-browser|MOZ_HEADLESS=1 zen --version
+zig0.17|zig0.17|zig0.17 version
