@@ -2,15 +2,17 @@
 """Compare the dependency floors a source tree declares with the floors a spec pins.
 
 Downloads each Source0 (when the URL expands without a shell macro), extracts the
-build manifest, reads every `dependency('x', version: '>=y')` / `pkg-config` floor,
-and reports:
+build manifest, reads every `dependency('x', version: '>=y')` / `pkg-config` floor
+plus the `go` directive of a go.mod, and reports:
   MISSING  - declared upstream, no BuildRequires line for it in the spec
   FLOOR    - BuildRequires carries a lower floor than upstream declares
 
-Usage: dep-floor-scan.py [--skip pkg1,pkg2] [--only pkg1,pkg2] [--selftest]
+Usage: dep-floor-scan.py [--skip pkg1,pkg2] [--only pkg1,pkg2] [--tree pkg=dir]
+                         [--selftest]
 Exit 0 = no finding, 1 = findings printed (the caller decides what to fix).
-Coverage is every package whose Source0 expands without a shell macro; a spec
-that needs one is proven by its container teardown instead.
+Coverage is every package whose Source0 expands without a shell macro, plus any
+tree passed with --tree (a source that a teardown already unpacked). A spec that
+needs a shell macro and has no --tree is proven by its container teardown instead.
 """
 import argparse
 import glob
@@ -194,18 +196,55 @@ def spec_floors(txt):
             pm = re.match(r"pkgconfig\(([^)]+)\)\s*(?:>=\s*([0-9][0-9A-Za-z.\-]*))?", tok)
             if pm:
                 out[pm.group(1).lower()] = pm.group(2)
-            else:
-                out.setdefault(tok.split()[0].lower() if tok else "", None)
+                continue
+            # plain package floors (`golang >= 1.26`) carry the same weight
+            gm = re.match(r"([A-Za-z0-9][A-Za-z0-9._+-]*)\s*(?:>=|==|>)\s*([0-9][0-9A-Za-z.\-_]*)", tok)
+            if gm:
+                out[gm.group(1).lower()] = gm.group(2)
+                continue
+            out.setdefault(tok.split()[0].lower() if tok else "", None)
     return out
+
+
+def go_mod_floor(tree):
+    """The Go toolchain floor a go.mod declares (`go 1.26.0` / `toolchain go1.26.4`)."""
+    path = os.path.join(tree, "go.mod")
+    if not os.path.exists(path):
+        return None
+    floor = None
+    try:
+        txt = open(path, errors="ignore").read()
+    except OSError:
+        return None
+    m = re.search(r"^go\s+([0-9]+\.[0-9]+(?:\.[0-9]+)?)", txt, re.M)
+    if m:
+        floor = m.group(1)
+    m = re.search(r"^toolchain\s+go([0-9]+\.[0-9]+(?:\.[0-9]+)?)", txt, re.M)
+    if m and (floor is None or cmp_ver(m.group(1), floor) > 0):
+        floor = m.group(1)
+    return floor
 
 
 def cmp_ver(a, b):
     def key(v):
-        return [int(x) if x.isdigit() else x for x in re.split(r"[.\-]", v)]
+        parts = [int(x) if x.isdigit() else x for x in re.split(r"[.\-]", v)]
+        while len(parts) > 1 and parts[-1] in (0, "0"):
+            parts.pop()
+        return parts
     try:
         return (key(a) > key(b)) - (key(a) < key(b))
     except TypeError:
         return 0
+
+
+def floor_finding(upstream, spec_floor, nofloor):
+    """The finding code for one dep, or None. NOFLOOR is opt-in: most specs here
+    name a pc file without a floor, and upstream's floor is often narrower."""
+    if not upstream:
+        return None
+    if spec_floor is None:
+        return "NOFLOOR" if nofloor else None
+    return "FLOOR" if cmp_ver(spec_floor, upstream) < 0 else None
 
 
 def selftest():
@@ -221,6 +260,18 @@ def selftest():
     ok = deps.get("libinput") == "1.27" and sf.get("libinput") == "1.23"
     ok = ok and cmp_ver(sf["libinput"], deps["libinput"]) < 0
     ok = ok and (PROVIDER.get("glib-2.0", set()) & set(sf)) == {"glib2-devel"}
+    # go.mod carries a toolchain floor the meson scan cannot see
+    with open(os.path.join(d, "src", "go.mod"), "w") as fh:
+        fh.write("module example.com/x\n\ngo 1.26.0\n\ntoolchain go1.27.1\n")
+    ok = ok and go_mod_floor(os.path.join(d, "src")) == "1.27.1"
+    ok = ok and spec_floors("BuildRequires: golang\n") == {"golang": None}
+    ok = ok and cmp_ver(spec_floors("BuildRequires: golang >= 1.26\n")["golang"], "1.26.0") == 0
+    ok = ok and cmp_ver("1.24", "1.26") < 0
+    ok = ok and floor_finding("1.26", None, True) == "NOFLOOR"
+    ok = ok and floor_finding("1.26", None, False) is None
+    ok = ok and floor_finding("1.26", "1.24", True) == "FLOOR"
+    ok = ok and floor_finding("1.26", "1.26", True) is None
+    ok = ok and floor_finding(None, None, True) is None
     print("selftest %s" % ("PASS" if ok else "FAIL"))
     return 0 if ok else 1
 
@@ -230,12 +281,17 @@ def main():
     ap.add_argument("--skip", default="")
     ap.add_argument("--only", default="")
     ap.add_argument("--no-fetch", action="store_true")
+    ap.add_argument("--nofloor", action="store_true",
+                    help="also report a dep whose spec line carries no floor")
+    ap.add_argument("--tree", action="append", default=[], metavar="PKG=DIR",
+                    help="scan an already-unpacked source tree (e.g. from a teardown)")
     ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args()
     if a.selftest:
         return selftest()
     skip = set(filter(None, a.skip.split(",")))
     only = set(filter(None, a.only.split(",")))
+    trees = dict(t.split("=", 1) for t in a.tree)
     findings = []
     checked = 0
     for pkg, spec in specs():
@@ -244,14 +300,15 @@ def main():
         txt = open(spec, errors="ignore").read()
         m = macros(txt)
         src = re.search(r"^Source0?\s*:\s*(\S+)", txt, re.M)
-        if not src:
+        tree = trees.get(pkg)
+        if not src and not tree:
             continue
-        first = expand(src.group(1), m)
-        if "%" in first:
+        first = expand(src.group(1), m) if src else ""
+        if not tree and "%" in first:
             continue  # shell macro in Source0: the container build is the proof, not this scan
         urls = [first.split("#")[0]]
-        tree = None
-        for u in urls:
+        tree = trees.get(pkg)
+        for u in ([] if tree else urls):
             if not u.startswith(("http://", "https://", "ftp://")):
                 continue
             if not re.search(r"\.(tar\.gz|tgz|tar\.xz|tar\.bz2|tar\.zst|zip|crate)$", u.split("#")[0]):
@@ -267,6 +324,9 @@ def main():
         if not tree:
             continue
         deps, fallbacks = meson_deps(tree)
+        gofloor = go_mod_floor(tree)
+        if gofloor:
+            deps["golang"] = gofloor
         if not deps:
             continue
         for name in sorted(fallbacks):
@@ -283,11 +343,12 @@ def main():
                 findings.append((pkg, "MISSING", name, floor or "-", "-"))
                 continue
             spec_floor = sf[name]
-            if floor and spec_floor and cmp_ver(spec_floor, floor) < 0:
-                findings.append((pkg, "FLOOR", name, floor, spec_floor))
+            code = floor_finding(floor, spec_floor, a.nofloor)
+            if code:
+                findings.append((pkg, code, name, floor, spec_floor or "-"))
     for f in findings:
         print("%-32s %-8s %-28s upstream=%-10s spec=%s" % f)
-    print("scanned %d packages with a meson tree; %d finding(s)" % (checked, len(findings)))
+    print("scanned %d packages with a build manifest; %d finding(s)" % (checked, len(findings)))
     return 1 if findings else 0
 
 
