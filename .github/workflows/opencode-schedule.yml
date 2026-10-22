@@ -1453,9 +1453,11 @@ jobs:
                       fetch anda/desktops/niri/*, anda/desktops/noctalia/nightly/*,
                       src.fedoraproject.org/rpms/niri, or
                       src.fedoraproject.org/rpms/quickshell for them)
-                    - zen-browser: Terra ships NO zen counterpart - ours is
-                      unique value; reference is upstream release tags +
-                      the binary artifact itself, not Terra.
+                    - zen-browser vs anda/apps/zen-browser/zen-browser.spec
+                      (Terra builds Zen from source at 1.23.4; ours repacks
+                      the upstream 1.23.4b artifact under Epoch 2, so Terra
+                      is a dependency reference only, never a version
+                      reference).
                     - ly: forge is Codeberg (fairyglade/ly), no GitHub
                       counterpart to cross-ref - reference is Codeberg
                       stable tags + update.sh; record `terra-ref: n/a
@@ -1466,16 +1468,20 @@ jobs:
                       rebuilds of umbriel/mangowm/greeter the same run);
                       record `terra-ref: n/a (gitlab-forge)` unless a
                       Terra anda path is verified live that run.
-                    KNOWN BASELINE (2026-09-08, re-verify every run, never
-                    trust from memory): Nexus pins NEWER than Terra
-                    (umbriel ac1952c > terra 509db24; noctalia 69f623c /
-                    5.0.1 > terra 830ce58 / 5.0.0); Nexus BR lists FULLER
-                    (umbriel: wayland-scanner/server, libinput, pixman,
-                    libdrm, egl/glesv2/gbm, lcms2, systemd-rpm-macros that
-                    Terra lacks; noctalia: 47 BR lines incl. split stb,
-                    %check desktop-file-validate, third_party license
-                    install, Recommends ddcutil/gpu-screen-recorder;
-                    mangowm: wlroots-0.20 vs Terra's stale wlroots-0.19);
+                    KNOWN BASELINE (re-verified 2026-10-22, re-verify every
+                    run, never trust from memory): Nexus is at least level
+                    with Terra and carries the fuller BR list (umbriel: both
+                    at commit 8449975, Nexus 29 BR lines vs Terra 17; both
+                    xdg-desktop-portal specs at 15 lines, Nexus adds
+                    wayland-scanner; greeter: Nexus 1.7.0^20261019110246git
+                    1c35a13-3 vs Terra 1.7.0-2; mangowm: Nexus wlroots-0.20 +
+                    scenefx-0.5 vs Terra wlroots-0.19 + scenefx-devel;
+                    helium/heroic/protonplus: Nexus repacks the release
+                    artifact, Terra builds or repacks its own). Nexus BRs
+                    stb_image_resize2-devel for greeter because
+                    src/render/core/image_file_loader.cpp includes only
+                    <stb/stb_image_resize2.h>; Terra's extra stb_image and
+                    stb_image_write BRs are not used by this tree.
                     helium /opt/helium __provides_exclude_from guard is a
                     Nexus-only proven fix (libvulkan.so.1 hijack breaking
                     umbriel, 2026-09-05) Terra lacks. NEVER regress these
