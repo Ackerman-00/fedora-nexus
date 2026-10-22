@@ -127,6 +127,11 @@ jobs:
             for pkg in $(printf '%s' "$content" | grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*\| version-checked \|" | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u); do
               grep -qE "upstream: $pkg .*($today|$yest)" <<< "$content" || return 1
             done
+            # deps-verified claims a container teardown: no same-run token, no claim.
+            # Mirror of tools/verify-fedora.sh - the two must not drift.
+            for pkg in $(printf '%s' "$content" | grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*\| (deps-verified|deps-fixed) \|" | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u); do
+              grep -qiE "docker-teardown: $pkg .*PASS.*($today|$yest)" <<< "$content" || return 1
+            done
             local slice_line slice_pkgs slice_n min_slice
             slice_line=$(grep -m1 -E "^teardown-slice:" <<< "$content" || true)
             [ -n "$slice_line" ] || return 1

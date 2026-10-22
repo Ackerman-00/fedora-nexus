@@ -18,7 +18,17 @@ one() {
   case "$pkg" in ''|\#*) return 0 ;; esac
   [ "$smoke" = files-only ] && smoke=""
   local out="$OUT/$pkg.log"
-  docker run --rm -i -e PKG="$pkg" -e DNFN="$dnf" -e SMOKE="$smoke" \
+  # Spec V/R, so a bare name that resolves to a Fedora package is caught.
+  local spec ever erel
+  spec=$(ls "$pkg/$pkg.spec" 2>/dev/null)
+  ever=""; erel=""
+  if [ -n "$spec" ]; then
+    ever=$(awk '/^Version:/{print $2; exit}' "$spec")
+    erel=$(awk '/^Release:/{print $2; exit}' "$spec" | sed 's/%.*//; s/[^0-9].*//')
+    case "$ever" in *%*|"") ever="" ;; esac
+    case "$erel" in *[!0-9]*|"") erel="" ;; esac
+  fi
+  docker run --rm -i -e PKG="$pkg" -e DNFN="$dnf" -e SMOKE="$smoke" -e EVER="$ever" -e EREL="$erel" \
     "registry.fedoraproject.org/fedora:$CH" bash -s >"$out" 2>&1 <<'EOS'
 dnf -y -q --setopt=gpgcheck=0 install dnf-plugins-core >/dev/null 2>&1
 dnf -y -q --setopt=gpgcheck=0 copr enable ackerman/nexus >/dev/null 2>&1
@@ -38,6 +48,36 @@ echo INSTALL_EXIT=$iex
 name=$DNFN
 rpm -q "$name" >/dev/null 2>&1 || name=$(rpm -q --whatprovides "$DNFN" 2>/dev/null | head -1)
 rpm -q "$name" >/dev/null 2>&1 || name=$PKG
+# A Fedora package that Provides our name wins on EVR: the install then proves
+# Fedora's build, not this one. Detect it from the spec V/R and pin the NEVRA.
+if [ "$iex" -eq 0 ] && [ -n "$EVER" ] && [ -n "$EREL" ]; then
+  gv=$(rpm -q --qf '%{VERSION}' "$name" 2>/dev/null)
+  gr=$(rpm -q --qf '%{RELEASE}' "$name" 2>/dev/null)
+  grn=$(printf '%s' "$gr" | sed 's/[^0-9].*//')
+  if [ "$gv" != "$EVER" ] || [ "$grn" != "$EREL" ]; then
+    echo "SHADOWED_BY_BARE_NAME installed=$gv-$gr spec=$EVER-$EREL"
+    # The shadowing package owns the same payload files, so drop it before
+    # proving ours in a clean transaction.
+    if [ "$name" != "$DNFN" ]; then
+      dnf -y --setopt=gpgcheck=0 remove "$name" >/tmp/rm.log 2>&1 || true
+      tail -2 /tmp/rm.log
+    fi
+    dnf -y --setopt=gpgcheck=0 --setopt=install_weak_deps=False install "$DNFN-$EVER-$EREL.*" >/tmp/i2.log 2>&1
+    iex=$?
+    tail -3 /tmp/i2.log
+    echo "INSTALL_EXIT_PINNED=$iex"
+    name=$DNFN
+    rpm -q "$name" >/dev/null 2>&1 || name=$PKG
+    gv=$(rpm -q --qf '%{VERSION}' "$name" 2>/dev/null)
+    gr=$(rpm -q --qf '%{RELEASE}' "$name" 2>/dev/null)
+    grn=$(printf '%s' "$gr" | sed 's/[^0-9].*//')
+    if [ "$gv" != "$EVER" ] || [ "$grn" != "$EREL" ]; then
+      echo "SHADOWED_PIN_FAILED installed=$gv-$gr spec=$EVER-$EREL"
+    else
+      echo "SHADOWED_PINNED installed=$gv-$gr"
+    fi
+  fi
+fi
 echo NVR=$(rpm -q --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}' "$name" 2>/dev/null)
 rpm -V "$name" >/tmp/v.log 2>&1 && echo RPMV_OK || { echo RPMV_DIRTY; head -3 /tmp/v.log; }
 echo '--- ldd ---'
@@ -75,6 +115,9 @@ EOS
   local nvr iex rv lddc sex
   nvr=$(grep -m1 '^NVR=' "$out" | cut -d= -f2-)
   iex=$(grep -m1 '^INSTALL_EXIT=' "$out" | cut -d= -f2)
+  if grep -q '^INSTALL_EXIT_PINNED=' "$out"; then
+    iex=$(grep -m1 '^INSTALL_EXIT_PINNED=' "$out" | cut -d= -f2)
+  fi
   rv=$(grep -c 'RPMV_OK' "$out")
   lddc=$(grep -m1 '^LDD_MISSING_COUNT=' "$out" | cut -d= -f2)
   sex=$(grep -m1 '^SMOKE_EXIT=' "$out" | cut -d= -f2)
@@ -89,6 +132,11 @@ EOS
     return 0
   fi
   [ "$iex" = "0" ] || { verdict=FAIL; why="install rc=$iex"; }
+  if grep -q '^SHADOWED_PIN_FAILED' "$out"; then
+    verdict=FAIL; why="$why $(grep -m1 '^SHADOWED_PIN_FAILED' "$out" | cut -d' ' -f2-)"
+  elif grep -q '^SHADOWED_PINNED' "$out"; then
+    why="$why bare name resolves to a Fedora package; pinned NEVRA proved this one"
+  fi
   [ "$rv" = "1" ] || { verdict=FAIL; why="$why rpm -V dirty"; }
   [ "${lddc:-0}" = "0" ] || { verdict=FAIL; why="$why ldd missing=$lddc"; }
   [ "$sex" = "0" ] || { verdict=FAIL; why="$why smoke rc=$sex"; }

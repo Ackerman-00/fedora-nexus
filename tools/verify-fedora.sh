@@ -208,6 +208,13 @@ if [[ -f "$RELAY" ]]; then
     done
   fi
 
+  # deps-verified claims a container teardown: no same-run token, no claim.
+  for pkg in $(printf '%s' "$scope" | grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*\| (deps-verified|deps-fixed) \|" | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u); do
+    if ! grep -qiE "docker-teardown: $pkg .*PASS.*($TODAY|$YEST)" <<< "$scope"; then
+      echo "FAIL: NOT COMPLETE -- $pkg is deps-verified with no same-run docker-teardown PASS"
+      FAIL=1
+    fi
+  done
   for pkg in $MAINS; do
     if ! grep -qiE "docker-teardown: $pkg .*PASS.*($TODAY|$YEST)" <<< "$scope"; then
       echo "FAIL: NOT COMPLETE -- main package '$pkg' lacks fresh dated docker-teardown PASS"
