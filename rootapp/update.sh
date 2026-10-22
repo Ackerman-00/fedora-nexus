@@ -51,7 +51,7 @@ EXTRACTED=0
 
 if command -v unsquashfs &>/dev/null; then
     OFFSET=$(od -An -N8 -t u8 -j 40 "$TMPDIR/Root.AppImage" | tr -d ' ')
-    MAGIC=$(dd if="$TMPDIR/Root.AppImage" bs=1 skip=$OFFSET count=4 2>/dev/null)
+    MAGIC=$(dd if="$TMPDIR/Root.AppImage" bs=1 skip=$OFFSET count=4 2>/dev/null | tr -d '\0')
 
     if [ "$MAGIC" != "hsqs" ]; then
         OFFSET=$(python3 -c "
