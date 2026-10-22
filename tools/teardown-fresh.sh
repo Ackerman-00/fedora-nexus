@@ -57,7 +57,7 @@ EXTRAPKG="util-linux ${TD_EXTRAPKG:-}"
 SMOKE_RUN="( $SMOKE ); echo SMOKE_EXIT=\$?"
 if [ "$ELECTRON" = 1 ]; then
   SECOPT="--security-opt seccomp=unconfined"
-  EXTRAPKG="util-linux xorg-x11-server-Xvfb"
+  EXTRAPKG="util-linux xorg-x11-server-Xvfb ${TD_EXTRAPKG:-}"
   SMOKE_RUN="useradd -m t; su t -c 'timeout 60 xvfb-run -a $SMOKE' > /tmp/smoke.log 2>&1; s=\$?; tail -5 /tmp/smoke.log; echo SMOKE_EXIT=\$s; echo SANDBOX_FATAL=\$(grep -c setuid_sandbox_host /tmp/smoke.log)"
 fi
 

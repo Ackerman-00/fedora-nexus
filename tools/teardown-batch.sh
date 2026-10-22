@@ -19,13 +19,16 @@ one() {
   [ -n "$pkg" ] || return 0
   bash "$R/tools/teardown-fresh.sh" "$pkg" "$CH" "$smoke" "${rpmn:-$pkg}" > "$OUT/$pkg.log" 2>&1
   local rc=$?
-  local line
-  line=$(grep -h 'TEARDOWN_' "$OUT/$pkg.log" | tail -1)
-  local verdict
-  if [ "$rc" -eq 0 ]; then verdict=PASS; else verdict=FAIL; fi
+  local line fields
+  line=$(grep -hF "TEARDOWN_$pkg=" "$OUT/$pkg.log" | tail -1)
+  fields=${line#*=}
+  # Token copies the tool's per-stage verdicts: a files-only smoke SKIP is not PASS.
+  if [ -z "$fields" ]; then
+    fields="rpmbuild-bb FAIL install FAIL smoke FAIL"
+  fi
   echo "TEARDOWN_${pkg}_EXIT=$rc"
-  echo "docker-teardown: $pkg rpmbuild-bb $verdict install $verdict smoke $verdict | $DATE"
-  echo "$pkg $verdict $line" >> "$OUT/tokens.txt"
+  echo "docker-teardown: $pkg $fields | $DATE"
+  echo "$pkg rc=$rc $line" >> "$OUT/tokens.txt"
 }
 export -f one
 export R CH OUT DATE
