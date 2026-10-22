@@ -24,8 +24,8 @@ Repo type: **fedora**. Sweep of **65** packages. Exit code is the verdict; this 
 | craft-launcher | artcraft-launcher-0.6.1-linux-x86_64.rpm | 0.6.1 | 0.6.1 | **OK** | rpm header artcraft-launcher=0.6.1-1 (tags NAME/VERSION/RELEASE) \| pinned 0.6.1 \| internal 0.6.1 |
 | extension-manager | extension-manager-0.6.5.tar.gz | 0.6.5 | >= 0.59.0 | **SOURCE-OK** | tar meson.build=>= 0.59.0 (extension-manager-0.6.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 0.59.0 (not authoritative) |
 | fluxer | rpm | 2026.1018.223338 | 2026.1018.223338 | **OK** | rpm header fluxer=2026.1018.223338-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1018.223338 \| internal 2026.1018.223338 |
-| freebuff | freebuff-linux-x64.tar.gz | 0.2.33 | 0.2.33 | **OK** | tar runtime probe freebuff --version: 0.2.33 \| pinned 0.2.33 \| internal 0.2.33 |
-| freebuff | LICENSE | 0.2.33 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
+| freebuff | freebuff-linux-x64.tar.gz | 0.2.34 | 0.2.34 | **OK** | tar runtime probe freebuff --version: 0.2.34 \| pinned 0.2.34 \| internal 0.2.34 |
+| freebuff | LICENSE | 0.2.34 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | ghostty | ghostty_1.3.1-0.ppa2_amd64_24.04.deb | 1.3.1 | 1.3.1-0~ppa2 | **OK** | deb pkg=ghostty (control control.tar.zst) \| pinned 1.3.1 \| internal 1.3.1-0~ppa2 |
 | ghostty | LICENSE | 1.3.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | gpu-screen-recorder | gpu-screen-recorder.git.6.1.5.tar.gz | 6.1.5 | 6.1.5 | **SOURCE-OK** | tar meson.build=6.1.5 (meson.build) \| hash no-checksum-pinned \| weak internal evidence 6.1.5 (not authoritative) |
@@ -68,7 +68,7 @@ Repo type: **fedora**. Sweep of **65** packages. Exit code is the verdict; this 
 | python-yt-dlp-get-pot-rustypipe | yt_dlp_get_pot_rustypipe-0.2.0.tar.gz | 0.2.0 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | python-yt-dlp-get-pot-rustypipe | LICENSE | 0.2.0 |  | **OK** | hash hash-OK \| license/doc/aux asset, not an artifact |
 | python-ytmusicapi | ytmusicapi-1.12.3.tar.gz | 1.12.3 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
-| rootapp | Root.AppImage | 0.9.152 | 0.9.152 | **OK** | AppImage 0.9.152 (Root.desktop) \| pinned 0.9.152 \| internal 0.9.152 |
+| rootapp | Root.AppImage | 0.9.153 | 0.9.153 | **OK** | AppImage 0.9.153 (Root.desktop) \| pinned 0.9.153 \| internal 0.9.153 |
 | rustypipe-botguard | rustypipe-botguard-v0.1.2-x86_64-unknown-linux-gnu.tar.xz | 0.1.2 | 0.1.2 | **OK** | tar runtime probe rustypipe-botguard --version: rustypipe-botguard 0.1.2
 rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | rustypipe-botguard | LICENSE | 0.1.2 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
@@ -111,7 +111,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | concord | upstream github.com/chojs23/concord | 2.6.3 | v2.6.3 | **OK** | at upstream latest v2.6.3 [releases/latest] |
 | craft-launcher | upstream github.com/storytold/craft-launcher | 0.6.1 | v0.6.1 | **OK** | at upstream latest v0.6.1 [releases/latest] |
 | extension-manager | upstream github.com/mjakeman/extension-manager | 0.6.5 | v0.6.5 | **OK** | at upstream latest v0.6.5 [releases/latest] |
-| freebuff | upstream github.com/CodebuffAI/codebuff-community | 0.2.33 | freebuff-v0.2.33 | **OK** | at upstream latest freebuff-v0.2.33 [releases/latest] |
+| freebuff | upstream github.com/CodebuffAI/codebuff-community | 0.2.34 | freebuff-v0.2.34 | **OK** | at upstream latest freebuff-v0.2.34 [releases/latest] |
 | ghostty | upstream github.com/mkasberg/ghostty-ubuntu | 1.3.1 | 1.3.1-0-ppa2 | **OK** | at upstream latest 1.3.1-0-ppa2 [releases/latest] |
 | helium-browser | upstream github.com/imputnet/helium-linux | 0.19.4.1 | 0.19.4.1 | **OK** | at upstream latest 0.19.4.1 [releases/latest] |
 | hellwal | upstream github.com/danihek/hellwal | 1.0.8 | 1.0.8 | **OK** | at upstream latest 1.0.8 [releases/latest] |
@@ -145,7 +145,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | python-yt-dlp-ejs | pypi:yt-dlp-ejs | 0.8.0 | 0.8.0 | **OK** | upstream 0.8.0 == pinned 0.8.0 [freshness via pypi:yt-dlp-ejs; repology has no entry] |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology has no entry] |
 | python-ytmusicapi | pypi:ytmusicapi | 1.12.3 | 1.12.3 | **OK** | upstream 1.12.3 == pinned 1.12.3 [freshness via pypi:ytmusicapi; repology has no entry] |
-| rootapp | aur | 0.9.152 | 0.9.152 | **OK** | pinned 0.9.152 >= repology 0.9.152 (aur); tracker behind |
+| rootapp | aur | 0.9.153 | 0.9.152 | **OK** | pinned 0.9.153 >= repology 0.9.152 (aur); tracker behind |
 | zig0.17 | ziglang.org/download/index.json | 0.17.0 | 0.17.0 | **OK** | upstream 0.17.0 == pinned 0.17.0 [freshness via ziglang.org/download/index.json; repology has no entry] |
 | LIBYEAR | freshness | 0.18 yr | 3 pkgs | **METRIC** | threshold=20 libyears |
 
