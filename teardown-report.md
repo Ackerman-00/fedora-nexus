@@ -68,12 +68,12 @@ Repo type: **fedora**. Sweep of **65** packages. Exit code is the verdict; this 
 | python-yt-dlp-get-pot-rustypipe | yt_dlp_get_pot_rustypipe-0.2.0.tar.gz | 0.2.0 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | python-yt-dlp-get-pot-rustypipe | LICENSE | 0.2.0 |  | **OK** | hash hash-OK \| license/doc/aux asset, not an artifact |
 | python-ytmusicapi | ytmusicapi-1.12.3.tar.gz | 1.12.3 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
-| rootapp | Root.AppImage | 0.9.151 | 0.9.151 | **OK** | AppImage 0.9.151 (Root.desktop) \| pinned 0.9.151 \| internal 0.9.151 |
+| rootapp | Root.AppImage | 0.9.152 | 0.9.152 | **OK** | AppImage 0.9.152 (Root.desktop) \| pinned 0.9.152 \| internal 0.9.152 |
 | rustypipe-botguard | rustypipe-botguard-v0.1.2-x86_64-unknown-linux-gnu.tar.xz | 0.1.2 | 0.1.2 | **OK** | tar runtime probe rustypipe-botguard --version: rustypipe-botguard 0.1.2
 rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | rustypipe-botguard | LICENSE | 0.1.2 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | scenefx | 0.5.tar.gz | 0.5 | >=1.3 | **SOURCE-OK** | tar meson.build=>=1.3 (scenefx-0.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3 (not authoritative) |
-| sonora | v0.43.0.tar.gz | 0.43.0 | @VERSION@ | **SOURCE-OK** | tar Info.plist=@VERSION@ (sonora-0.43.0/assets/macos/Info.plist) \| hash no-checksum-pinned \| weak internal evidence @VERSION@ (not authoritative) |
+| sonora | v0.44.0.tar.gz | 0.44.0 | @VERSION@ | **SOURCE-OK** | tar Info.plist=@VERSION@ (sonora-0.44.0/assets/macos/Info.plist) \| hash no-checksum-pinned \| weak internal evidence @VERSION@ (not authoritative) |
 | splayer-next | splayer-next-1.1.0-x86_64.rpm | 1.1.0 | 1.1.0 | **OK** | rpm header splayer-next=1.1.0-1 (tags NAME/VERSION/RELEASE) \| pinned 1.1.0 \| internal 1.1.0 |
 | splayer-next | LICENSE | 1.1.0 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | starship | starship-x86_64-unknown-linux-gnu.tar.gz | 1.27.0 | 1.27.0 | **OK** | tar runtime probe starship --version: starship 1.27.0
@@ -88,8 +88,8 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | LICENSE | 1.5.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | umbriel-git | live noctalia-dev/umbriel | 8449975579a2 | 8449975579a2 | **OK** | live noctalia-dev/umbriel pin 8449975579a2 vs upstream 8449975579a2 |
-| vesktop | vesktop-1.6.7.x86_64.rpm | 1.6.7 | 1.6.7 | **OK** | rpm header vesktop=1.6.7-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.7 \| internal 1.6.7 |
-| vesktop | LICENSE | 1.6.7 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
+| vesktop | vesktop-1.6.8.x86_64.rpm | 1.6.8 | 1.6.8 | **OK** | rpm header vesktop=1.6.8-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.8 \| internal 1.6.8 |
+| vesktop | LICENSE | 1.6.8 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
 | waypaper | screeninfo-0.8.1.tar.gz | 2.9 | 0.8.1 | **SOURCE-OK** | tar pyproject.toml=0.8.1 (screeninfo-0.8.1/pyproject.toml) \| hash no-checksum-pinned \| weak internal evidence 0.8.1 (not authoritative) |
 | waypaper | imageio_ffmpeg-0.6.0.tar.gz | 2.9 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
@@ -131,11 +131,11 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | python-yt-dlp-get-pot-rustypipe | upstream codeberg.org/ThetaDev/rustypipe-botguard | 0.2.0 | yt-dlp-get-pot-rustypipe/v0.2.0 | **OK** | at upstream latest yt-dlp-get-pot-rustypipe/v0.2.0 in tag namespace 'yt-dlp-get-pot-rustypipe' [pinned yt-dlp-get-pot-rustypipe/v0.2.0] |
 | rustypipe-botguard | upstream codeberg.org/ThetaDev/rustypipe-botguard | 0.1.2 | v0.1.2 | **OK** | at upstream latest v0.1.2 [ls-remote] |
 | scenefx | upstream github.com/wlrfx/scenefx | 0.5 | 0.5 | **OK** | at upstream latest 0.5 [releases/latest] |
-| sonora | upstream github.com/sonorahq/sonora | 0.43.0 | v0.43.0 | **OK** | at upstream latest v0.43.0 [releases/latest] |
+| sonora | upstream github.com/sonorahq/sonora | 0.44.0 | v0.44.0 | **OK** | at upstream latest v0.44.0 [releases/latest] |
 | splayer-next | upstream github.com/SPlayer-Dev/SPlayer-Next | 1.1.0 | v1.1.0 | **OK** | at upstream latest v1.1.0 [releases/latest] |
 | starship | upstream github.com/starship/starship | 1.27.0 | v1.27.0 | **OK** | at upstream latest v1.27.0 [releases/latest] |
 | stoat-desktop | upstream github.com/stoatchat/for-desktop | 1.5.4 | v1.5.4 | **OK** | at upstream latest v1.5.4 [releases/latest] |
-| vesktop | upstream github.com/Vencord/Vesktop | 1.6.7 | v1.6.7 | **OK** | at upstream latest v1.6.7 [releases/latest] |
+| vesktop | upstream github.com/Vencord/Vesktop | 1.6.8 | v1.6.8 | **OK** | at upstream latest v1.6.8 [releases/latest] |
 | waypaper | upstream github.com/anufrievroman/waypaper | 2.9 | 2.9 | **OK** | at upstream latest 2.9 [releases/latest] |
 | wlroots | upstream gitlab.freedesktop.org/wlroots/wlroots | 0.20.2 | 0.20.2 | **OK** | at upstream latest 0.20.2 [ls-remote] |
 | xcur2png | upstream github.com/eworm-de/xcur2png | 0.7.1 | 0.7.1 | **OK** | at upstream latest 0.7.1 [releases/latest] |
@@ -145,7 +145,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | python-yt-dlp-ejs | pypi:yt-dlp-ejs | 0.8.0 | 0.8.0 | **OK** | upstream 0.8.0 == pinned 0.8.0 [freshness via pypi:yt-dlp-ejs; repology has no entry] |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology has no entry] |
 | python-ytmusicapi | pypi:ytmusicapi | 1.12.3 | 1.12.3 | **OK** | upstream 1.12.3 == pinned 1.12.3 [freshness via pypi:ytmusicapi; repology has no entry] |
-| rootapp | aur | 0.9.151 | 0.9.151 | **OK** | pinned 0.9.151 >= repology 0.9.151 (aur); tracker behind |
+| rootapp | aur | 0.9.152 | 0.9.152 | **OK** | pinned 0.9.152 >= repology 0.9.152 (aur); tracker behind |
 | zig0.17 | ziglang.org/download/index.json | 0.17.0 | 0.17.0 | **OK** | upstream 0.17.0 == pinned 0.17.0 [freshness via ziglang.org/download/index.json; repology has no entry] |
 | LIBYEAR | freshness | 0.18 yr | 3 pkgs | **METRIC** | threshold=20 libyears |
 
