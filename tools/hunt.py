@@ -668,6 +668,36 @@ def hunt_fedora_releases():
             "mirrors.kernel.org/fedora", findings)
 
 
+def hunt_slice():
+    """The fleet rotation slice, derived from the relay teardown ledger.
+
+    Rotating by memory drops the packages nobody remembers; deriving it from
+    the dated docker-teardown tokens makes the oldest-tested the next slice.
+    """
+    relay = os.path.join(ROOT, ".opencode-relay.md")
+    inv = sorted(os.path.basename(os.path.dirname(sp)) for sp in specs())
+    if not os.path.exists(relay):
+        return ("slice", "unavailable (.opencode-relay.md missing)", "", [])
+    last = {}
+    for line in open(relay, encoding="utf-8", errors="replace"):
+        m = re.match(r"^\s*docker-teardown:\s*(\S+)\s+.*\|\s*(\d{4}-\d{2}-\d{2})", line)
+        if not m:
+            continue
+        pkg, day = m.group(1), m.group(2)
+        if pkg in inv and day > last.get(pkg, ""):
+            last[pkg] = day
+    width = -(-len(inv) // 8)
+    order = sorted(inv, key=lambda p: (last.get(p, ""), p))
+    slice_pkgs, rest = order[:width], order[width:width + width]
+    never = [p for p in inv if p not in last]
+    findings = [("slice", "%s: no docker-teardown token in the relay" % p) for p in never]
+    summary = ("%d packages, slice of %d, untested %d, oldest %s"
+               % (len(inv), len(slice_pkgs), len(never),
+                  min((last[p] for p in inv if p in last), default="none")))
+    note = "teardown-slice: %s | next-start: %s" % (" ".join(slice_pkgs), " ".join(rest))
+    return ("slice", summary, note, findings)
+
+
 def get_text(url):
     try:
         req = urllib.request.Request(url, headers=UA)
@@ -679,7 +709,7 @@ def get_text(url):
 
 HUNTS = (hunt_builds, hunt_chroots, hunt_copr_config, hunt_upstream, hunt_cves,
          hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_readme,
-         hunt_published_nvr, hunt_probes, hunt_fedora_releases)
+         hunt_published_nvr, hunt_probes, hunt_fedora_releases, hunt_slice)
 
 
 def main():
