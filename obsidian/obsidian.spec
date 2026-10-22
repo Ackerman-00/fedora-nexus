@@ -2,8 +2,8 @@
 %global debug_package %{nil}
 
 Name:           obsidian
-Version:        1.14.4
-Release:        2%{?dist}
+Version:        1.14.5
+Release:        1%{?dist}
 Summary:        A powerful knowledge base that works on top of a local folder of plain text Markdown files
 
 License:        LicenseRef-Proprietary
@@ -36,6 +36,8 @@ Requires:       libXScrnSaver
 Requires:       libXtst
 Requires:       mesa-libgbm
 Requires:       xdg-utils
+# tray icon needs an appindicator implementation (upstream deb Recommends)
+Recommends:     libappindicator-gtk3
 
 %description
 Obsidian is a powerful knowledge base that works on top of a local folder 
@@ -91,10 +93,6 @@ ln -sf /opt/Obsidian/obsidian %{buildroot}%{_bindir}/obsidian
 %doc %{_datadir}/doc/obsidian/
 
 %changelog
-* Mon Oct 19 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.14.4-2
-- Bump Release so the LicenseRef-Proprietary license correction (commit
-  794ee38) is actually published: the "Commercial" tag is not a valid SPDX
-  identifier. Without a new NVR COPR rebuilt 1.14.4-1 (build 11171203) and a
-  clean fedora:44 container `dnf upgrade` printed "Nothing to do.".
-* Mon Oct 05 2026 Ackerman-00 <quietcraft@gmail.com> - 1.14.4-1
-- Auto-updated to 1.14.4 via update.sh
+* Thu Oct 22 2026 Ackerman-00 <quietcraft@gmail.com> - 1.14.5-1
+- Auto-updated to 1.14.5 via update.sh
+- Track upstream deb Recommends with Recommends: libappindicator-gtk3
