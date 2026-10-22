@@ -6,8 +6,8 @@
 %global __provides_exclude_from ^/opt/Vesktop/.*$
 
 Name:           vesktop
-Version:        1.6.7
-Release:        3%{?dist}
+Version:        1.6.8
+Release:        1%{?dist}
 Summary:        Custom Discord desktop client with Vencord preinstalled (Nexus Optimized)
 
 License:        GPL-3.0-or-later
@@ -94,6 +94,9 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %attr(4755, root, root) /opt/Vesktop/chrome-sandbox
 
 %changelog
+* Thu Oct 22 2026 Nexus Auto-Updater <bot@github.com> - 1.6.8-1
+- Update to version 1.6.8
+
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.6.7-3
 - Ship the upstream GPL-3.0 license text as Source1 (same v1.6.7 tag as the
   RPM payload, which contains none).

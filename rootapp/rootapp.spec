@@ -4,7 +4,7 @@
 %global __provides_exclude_from ^/opt/rootapp/.*$
 
 Name:           rootapp
-Version:        0.9.151
+Version:        0.9.152
 Release:        1%{?dist}
 Summary:        Root App is a new Discord alternative, designed for gaming communities and large online groups
 
@@ -13,9 +13,9 @@ URL:            https://www.rootapp.com
 ExclusiveArch:  x86_64
 
 Source0:        https://installer.rootapp.com/installer/Linux/X64/Root.AppImage
-# sha256: 6824d70a511a26da88d11feaa563e7970a4252a3658733d3f06ee7451a7cf493
-# content-length: 496790008
-# last-modified: Wed, 21 Oct 2026 05:50:34 GMT
+# sha256: 5376e6b1c94cdf59ba8f35a8af821c14de71364778d9d9d65037cdb5c2f24b8e
+# content-length: 497363448
+# last-modified: Thu, 22 Oct 2026 01:06:47 GMT
 
 BuildRequires:  binutils
 BuildRequires:  squashfs-tools
@@ -156,5 +156,5 @@ DESKTOP_EOF
 %{_datadir}/pixmaps/rootapp.png
 
 %changelog
-* Wed Oct 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.151-1
-- Auto-update to 0.9.151 via update.sh
+* Thu Oct 22 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.152-1
+- Auto-update to 0.9.152 via update.sh

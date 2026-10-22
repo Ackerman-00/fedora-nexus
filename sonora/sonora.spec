@@ -3,8 +3,8 @@
 %global appid io.github.nolight132.sonora
 
 Name:           sonora
-Version:        0.43.0
-Release:        2%{?dist}
+Version:        0.44.0
+Release:        1%{?dist}
 Summary:        Native music streaming client
 # SPDX: GPL-3.0-or-later AND embedded OFL/ISC/MIT/Apache/CC-BY.
 License:        GPL-3.0-or-later AND OFL-1.1 AND ISC AND MIT AND Apache-2.0 AND CC-BY-4.0
@@ -128,9 +128,5 @@ esac
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
-* Fri Oct 16 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.43.0-2
-- Install the six same-basename icon-pack LICENSE files under distinct names
-  so all bundled licenses ship (one survived before)
-
-* Tue Oct 13 2026 Ackerman-00 <quietcraft@gmail.com> - 0.43.0-1
-- Auto-update to upstream stable release v0.43.0
+* Thu Oct 22 2026 Ackerman-00 <quietcraft@gmail.com> - 0.44.0-1
+- Auto-update to upstream stable release v0.44.0
