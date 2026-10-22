@@ -53,7 +53,7 @@ Repo type: **fedora**. Sweep of **65** packages. Exit code is the verdict; this 
 | mpvpaper | 1.9.tar.gz | 1.9 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | noctalia-greeter | live noctalia-dev/noctalia-greeter | 1c35a133958c | 1c35a133958c | **OK** | live noctalia-dev/noctalia-greeter pin 1c35a133958c vs upstream 1c35a133958c |
 | nwg-look | v1.2.1.tar.gz | 1.2.1 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
-| obsidian | obsidian_1.14.4_amd64.deb | 1.14.4 | 1.14.4 | **OK** | deb pkg=obsidian (control control.tar.xz) \| pinned 1.14.4 \| internal 1.14.4 |
+| obsidian | obsidian_1.14.5_amd64.deb | 1.14.5 | 1.14.5 | **OK** | deb pkg=obsidian (control control.tar.xz) \| pinned 1.14.5 \| internal 1.14.5 |
 | opencad-studio | OpenCADStudio-v2026.42-linux-x86_64.AppImage | 2026.42 | 2026.42 | **OK** | AppImage strings 2026.42 (AppRun) \| pinned 2026.42 \| internal 2026.42 |
 | opencad-studio | LICENSE | 2026.42 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | openchamber | OpenChamber-2.5.0-linux-x86_64.AppImage | 2.5.0 | 2.5.0 | **OK** | AppImage 2.5.0 (resources/app.asar) \| pinned 2.5.0 \| internal 2.5.0 |
@@ -87,7 +87,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | LICENSE | 1.5.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| umbriel-git | live noctalia-dev/umbriel | 5d657581e27e | 5d657581e27e | **OK** | live noctalia-dev/umbriel pin 5d657581e27e vs upstream 5d657581e27e |
+| umbriel-git | live noctalia-dev/umbriel | 6d57b5083ad7 | ef5be0135a5a | **STALE** | live noctalia-dev/umbriel pin 6d57b5083ad7 vs upstream ef5be0135a5a |
 | vesktop | vesktop-1.6.8.x86_64.rpm | 1.6.8 | 1.6.8 | **OK** | rpm header vesktop=1.6.8-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.8 \| internal 1.6.8 |
 | vesktop | LICENSE | 1.6.8 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
@@ -123,7 +123,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | mangowm | upstream github.com/mangowm/mango | 0.18.2 | 0.18.2 | **OK** | at upstream latest 0.18.2 [releases/latest] |
 | mpvpaper | upstream github.com/GhostNaN/mpvpaper | 1.9 | 1.9 | **OK** | at upstream latest 1.9 [releases/latest] |
 | nwg-look | upstream github.com/nwg-piotr/nwg-look | 1.2.1 | v1.2.1 | **OK** | at upstream latest v1.2.1 [releases/latest] |
-| obsidian | upstream github.com/obsidianmd/obsidian-releases | 1.14.4 | v1.14.4 | **OK** | at upstream latest v1.14.4 [releases/latest] |
+| obsidian | upstream github.com/obsidianmd/obsidian-releases | 1.14.5 | v1.14.5 | **OK** | at upstream latest v1.14.5 [releases/latest] |
 | opencad-studio | upstream github.com/HakanSeven12/OpenCADStudio | 2026.42 | v2026.42 | **OK** | at upstream latest v2026.42 [releases/latest] |
 | openchamber | upstream github.com/openchamber/openchamber | 2.5.0 | v2.5.0 | **OK** | at upstream latest v2.5.0 [releases/latest] |
 | protonplus | upstream github.com/vysp3r/ProtonPlus | 0.6.8 | v0.6.8 | **OK** | at upstream latest v0.6.8 [releases/latest] |
@@ -149,4 +149,4 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | zig0.17 | ziglang.org/download/index.json | 0.17.0 | 0.17.0 | **OK** | upstream 0.17.0 == pinned 0.17.0 [freshness via ziglang.org/download/index.json; repology has no entry] |
 | LIBYEAR | freshness | 0.17 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
 
-**Verdict: PASS** (0 failure(s))
+**Verdict: FAIL** (1 failure(s))
