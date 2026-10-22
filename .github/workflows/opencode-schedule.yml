@@ -306,6 +306,17 @@ jobs:
             fresh run of this workflow by another push that touches a spec, or
             stop: the next cron pickup will finish the remainder.
 
+            CHECKPOINT PUSH (MANDATORY - an unpushed run is a lost run). Within
+            the first 40 minutes, write this run's relay block with `status:
+            unfinished`, the scope you derived and every row you have already
+            proved, and PUSH it. Push the same block again at each milestone
+            (after the fleet install sweep, after the teardown slice), always
+            marking it unfinished until the verifier passes. A runner shutdown
+            killed run 39772933169 two hours in with its verifier already green
+            and nothing pushed; everything it proved died with the process. The
+            workflow salvages an on-disk checkpoint on exit, but only if you
+            wrote one.
+
             GIT IDENTITY (MANDATORY - "ONLY opencode-agent[bot], NOTHING ELSE").
             The ONLY allowed commit identity is exactly
             `opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com>`.
@@ -2369,6 +2380,35 @@ jobs:
               you closed, which PRs you merged/rejected, which COPR builds you verified
               and their result, and what remains. Include the pre-completion gate
               checklist with PASS/FAIL + evidence per item.
+
+      - name: Preserve relay checkpoint
+        if: always()
+        shell: bash
+        env:
+          RUN_ID: ${{ github.run_id }}
+          GIT_AUTHOR_NAME: opencode-agent[bot]
+          GIT_AUTHOR_EMAIL: 41898282+opencode-agent[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: opencode-agent[bot]
+          GIT_COMMITTER_EMAIL: 41898282+opencode-agent[bot]@users.noreply.github.com
+        run: |
+          # A killed agent loses unpushed work; land the checkpoint it wrote.
+          # Touches no working-tree file: one commit built straight from the blob.
+          [ -f .opencode-relay.md ] || { echo "no relay on disk"; exit 0; }
+          grep -qx "run_id: $RUN_ID" .opencode-relay.md || { echo "on-disk relay is not this run - leaving it alone"; exit 0; }
+          git fetch -q origin main || true
+          if git show origin/main:.opencode-relay.md 2>/dev/null | cmp -s - .opencode-relay.md; then
+            echo "relay on main already matches this run - nothing to preserve"
+            exit 0
+          fi
+          blob=$(git hash-object -w .opencode-relay.md)
+          export GIT_INDEX_FILE=$(mktemp -u)
+          git read-tree origin/main
+          git update-index --add --cacheinfo "100644,$blob,.opencode-relay.md"
+          tree=$(git write-tree)
+          commit=$(git commit-tree "$tree" -p origin/main -m "chore(relay): preserve run $RUN_ID checkpoint")
+          rm -f "$GIT_INDEX_FILE"
+          git push origin "$commit:main" || { echo "::warning::checkpoint push rejected (concurrent push?) - the run's own push stands"; exit 0; }
+          echo "checkpoint committed as $commit"
 
       - name: Verify completion (external, battle-tested 2026)
         if: always()
