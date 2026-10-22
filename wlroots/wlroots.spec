@@ -5,7 +5,7 @@
 
 Name:           wlroots
 Version:        0.20.2
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        A modular Wayland compositor library
 
 # Convert tilde to dash for source tag (e.g. 0.20.0~rc2 -> 0.20.0-rc2)
@@ -26,7 +26,7 @@ BuildRequires:  glslang
 BuildRequires:  meson >= 1.3
 
 BuildRequires:  (pkgconfig(libliftoff) >= %{liftoff_ver} with pkgconfig(libliftoff) < 0.6)
-BuildRequires:  pkgconfig(egl)
+BuildRequires:  pkgconfig(egl) >= 1.5
 BuildRequires:  pkgconfig(gbm) >= 21.1
 BuildRequires:  pkgconfig(glesv2)
 BuildRequires:  pkgconfig(hwdata)
@@ -100,6 +100,8 @@ MESON_OPTIONS=(
 %{_libdir}/pkgconfig/wlroots-%{abi_ver}.pc
 
 %changelog
+* Thu Oct 22 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-9
+- Floor pkgconfig(egl) at 1.5, the version meson.build declares
 * Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-8
 - Carry upstream's wayland-client >= 1.24.0 floor (meson.build
   wayland_kwargs, shared with wayland-server which already had it)
