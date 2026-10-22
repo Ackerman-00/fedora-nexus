@@ -24,8 +24,9 @@ build=$(docker run --rm -v "$R:/srv:ro" -v "$OUTDIR:/out" "registry.fedoraprojec
 dnf -y -q --setopt=gpgcheck=0 install dnf-plugins-core rpm-build rpmdevtools >/dev/null 2>&1
 dnf -y -q --setopt=gpgcheck=0 copr enable ackerman/nexus >/dev/null 2>&1
 cd /tmp && rm -rf w && cp -r /srv/$PKG ./w && cd w
-for bpass in 1 2; do dnf -y --setopt=gpgcheck=0 builddep $SPEC > /tmp/bd.log 2>&1; brc=\$?; [ \$brc -eq 0 ] && break; sleep 5; done
+for bpass in 1 2 3; do dnf -y --setopt=gpgcheck=0 builddep $SPEC > /tmp/bd.log 2>&1; brc=\$?; [ \$brc -eq 0 ] && break; sleep 10; done
 echo BUILDEP_EXIT=\$brc
+[ \$brc -ne 0 ] && tail -3 /tmp/bd.log | sed 's/^/BUILDEP_ERROR: /'
 mkdir -p /root/rpmbuild/{SOURCES,BUILD,BUILDROOT,RPMS,SRPMS,SPECS}
 for sp in 1 2 3; do spectool -g -C /root/rpmbuild/SOURCES $SPEC > /tmp/sp.log 2>&1 && break; sleep 5; done
 tail -1 /tmp/sp.log
@@ -48,7 +49,12 @@ echo BUILT=\$(ls /out/*.rpm 2>/dev/null | wc -l)
 printf '%s\n' "$build"
 
 if ! grep -q 'RPMBUILD_EXIT=0' <<< "$build" || ! ls "$OUTDIR"/*.rpm >/dev/null 2>&1; then
-  echo "TEARDOWN_$PKG=FAIL rpmbuild"
+  # A builddep failure is the repo, not the spec: say which one it was.
+  if grep -q 'BUILDEP_EXIT=0' <<< "$build"; then
+    echo "TEARDOWN_$PKG=FAIL rpmbuild"
+  else
+    echo "TEARDOWN_$PKG=FAIL builddep (dependencies unreachable, treat as repo/mirror)"
+  fi
   exit 3
 fi
 
