@@ -3,7 +3,7 @@
 # Build in one container, install + smoke in a second fresh container.
 # Local package files must reach SOURCES - spectool fetches URLs only.
 # Bash reads this script incrementally - never edit while jobs run.
-# Unescaped quotes in the smoke payload truncate the container script.
+# The smoke payload travels as a mounted file, so quotes survive verbatim.
 # Electron payloads (chrome-sandbox in %files) get the AGENTS.md launch test:
 # seccomp=unconfined, non-root user, xvfb, rc 0 or 124, no setuid_sandbox_host.
 set -u
@@ -60,11 +60,14 @@ fi
 
 SECOPT=""
 EXTRAPKG="util-linux ${TD_EXTRAPKG:-}"
-SMOKE_RUN="( $SMOKE ); echo SMOKE_EXIT=\$?"
+# Payload goes through a file: a nested double quote in $SMOKE used to be
+# eaten by the bash -lc layer and ran a truncated command.
+printf '%s\n' "$SMOKE" > "$OUTDIR/smoke.sh"
+SMOKE_RUN="bash /rpms/smoke.sh; echo SMOKE_EXIT=\$?"
 if [ "$ELECTRON" = 1 ]; then
   SECOPT="--security-opt seccomp=unconfined"
   EXTRAPKG="util-linux xorg-x11-server-Xvfb ${TD_EXTRAPKG:-}"
-  SMOKE_RUN="useradd -m t; su t -c 'timeout 60 xvfb-run -a $SMOKE' > /tmp/smoke.log 2>&1; s=\$?; tail -5 /tmp/smoke.log; echo SMOKE_EXIT=\$s; echo SANDBOX_FATAL=\$(grep -c setuid_sandbox_host /tmp/smoke.log)"
+  SMOKE_RUN="useradd -m t; su t -c 'timeout 60 xvfb-run -a bash /rpms/smoke.sh' > /tmp/smoke.log 2>&1; s=\$?; tail -5 /tmp/smoke.log; echo SMOKE_EXIT=\$s; echo SANDBOX_FATAL=\$(grep -c setuid_sandbox_host /tmp/smoke.log)"
 fi
 
 inst=$(docker run --rm $SECOPT -v "$OUTDIR:/rpms:ro" "registry.fedoraproject.org/fedora:$CH" bash -lc "
