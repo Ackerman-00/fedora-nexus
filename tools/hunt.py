@@ -579,6 +579,45 @@ def hunt_published_nvr():
     return ("published-nvr", "%d packages, %d findings" % (checked, len(findings)), note, findings)
 
 
+def hunt_copr_config():
+    """Every repo spec has a COPR record that points at its own subdir and spec.
+
+    A push only builds when the record's subdirectory, spec name and
+    webhook flag all agree with the repo directory.
+    """
+    d = get_json("%s/package/list?ownername=ackerman&projectname=nexus" % COPR)
+    items = (d or {}).get("items") or (d or {}).get("packages") or []
+    if not items:
+        return ("copr-config", "unavailable (package list unreachable)", "", [])
+    findings = []
+    by_sub = {}
+    for it in items:
+        sd = it.get("source_dict") or {}
+        name = it.get("name") or "?"
+        by_sub[sd.get("subdirectory") or ""] = it
+        if "Ackerman-00/fedora-nexus" not in (sd.get("clone_url") or ""):
+            findings.append((name, "clone_url %s" % (sd.get("clone_url") or "missing")))
+        if not it.get("auto_rebuild"):
+            findings.append((name, "auto_rebuild off: a push to main would not build it"))
+    seen = set()
+    for sp in specs():
+        sub = os.path.basename(os.path.dirname(sp))
+        want = os.path.basename(sp)
+        seen.add(sub)
+        rec = by_sub.get(sub)
+        if rec is None:
+            findings.append((sub, "no COPR package record for this repo directory"))
+            continue
+        got = (rec.get("source_dict") or {}).get("spec") or ""
+        if got != want:
+            findings.append((sub, "COPR spec is %r but the directory ships %r" % (got, want)))
+    for sub in sorted(set(by_sub) - seen):
+        findings.append((by_sub[sub].get("name") or sub,
+                         "COPR record for subdir %r with no repo directory" % sub))
+    return ("copr-config", "%d records, %d specs, %d findings" % (len(items), len(seen), len(findings)),
+            "", findings)
+
+
 def hunt_fedora_releases():
     """Which Fedora is stable, and which is next - re-read, never remembered."""
     releases = re.findall(r'href="(\d+)/"', get_text("https://mirrors.kernel.org/fedora/releases/"))
@@ -605,8 +644,8 @@ def get_text(url):
         return ""
 
 
-HUNTS = (hunt_builds, hunt_chroots, hunt_upstream, hunt_cves, hunt_licenses,
-         hunt_release_discipline, hunt_version_probe, hunt_readme,
+HUNTS = (hunt_builds, hunt_chroots, hunt_copr_config, hunt_upstream, hunt_cves,
+         hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_readme,
          hunt_published_nvr, hunt_fedora_releases)
 
 
