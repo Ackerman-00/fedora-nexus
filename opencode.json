@@ -49,10 +49,6 @@
             "output": 262144
           }
         },
-        "longcat-2.5-preview-free": {
-          "name": "LongCat 2.5 Preview Free",
-          "modelID": "longcat-2.5-preview-free"
-        },
         "beam-free": {
           "name": "Beam Free",
           "modelID": "beam-free"

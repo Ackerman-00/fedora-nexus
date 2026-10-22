@@ -30,8 +30,6 @@ mimo-v2.6-flash-free
 big-pickle
 # nemotron-3.5-super-vl-free - checked 2026-10-20
 nemotron-3.5-super-vl-free
-# longcat-2.5-preview-free - checked 2026-10-20
-longcat-2.5-preview-free
 # beam-free - unavailable in some regions | checked 2026-10-20
 beam-free
 # flint-40b-free - curated free list, no published coding score | checked 2026-10-21
@@ -40,3 +38,6 @@ flint-40b-free
 # tier 3 - last resort
 # nemotron-3.5-lightning-free - coding 26.8 | checked 2026-10-20
 nemotron-3.5-lightning-free
+#
+# catalog live but owner-vetoed in tools/model-cascade.sh, so never ranked here:
+# glm-5.3-flash-free, jev-1.13-free (checked 2026-10-22)
