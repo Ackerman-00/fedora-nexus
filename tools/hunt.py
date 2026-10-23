@@ -686,7 +686,8 @@ def hunt_slice():
         pkg, day = m.group(1), m.group(2)
         if pkg in inv and day > last.get(pkg, ""):
             last[pkg] = day
-    width = -(-len(inv) // 8)
+    # 4-run rotation: tools/verify-fedora.sh requires ceil(n/4) per slice
+    width = -(-len(inv) // 4)
     order = sorted(inv, key=lambda p: (last.get(p, ""), p))
     slice_pkgs, rest = order[:width], order[width:width + width]
     never = [p for p in inv if p not in last]
