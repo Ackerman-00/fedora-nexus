@@ -11,7 +11,7 @@ Repo type: **fedora**. Sweep of **63** packages. Exit code is the verdict; this 
 | astal-io | live Aylur/astal | cbcd9f49dd6b | cbcd9f49dd6b | **OK** | live Aylur/astal pin cbcd9f49dd6b vs upstream cbcd9f49dd6b |
 | astal-libs | live Aylur/astal | cbcd9f49dd6b | cbcd9f49dd6b | **OK** | live Aylur/astal pin cbcd9f49dd6b vs upstream cbcd9f49dd6b |
 | astal-lua | live Aylur/astal | cbcd9f49dd6b | cbcd9f49dd6b | **OK** | live Aylur/astal pin cbcd9f49dd6b vs upstream cbcd9f49dd6b |
-| awww | awww-0.12.1.tar.gz | 0.12.1 | 0.12.1 | **SOURCE-OK** | tar changelog=0.12.1 (awww-0.12.1/CHANGELOG.md) \| hash no-checksum-pinned \| weak internal evidence 0.12.1 (not authoritative) |
+| awww | v0.12.1.tar.gz | 0.12.1 | 0.12.1 | **SOURCE-OK** | tar changelog=0.12.1 (awww/CHANGELOG.md) \| hash hash-OK \| weak internal evidence 0.12.1 (not authoritative) |
 | aylurs-gtk-shell | aylurs-gtk-shell-3.1.2.tar.gz | 3.1.2 | 3.1.2 | **SOURCE-OK** | tar package.json=3.1.2 (ags-3.1.2/package.json) \| hash no-checksum-pinned \| weak internal evidence 3.1.2 (not authoritative) |
 | aylurs-gtk-shell | gnim-1.9.1.tgz | 3.1.2 | 1.9.1 | **SOURCE-OK** | tar package.json=1.9.1 (package/package.json) \| hash no-checksum-pinned \| weak internal evidence 1.9.1 (not authoritative) |
 | bibata-cursor-theme | Bibata.tar.xz | 2.0.7 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
@@ -49,7 +49,7 @@ Repo type: **fedora**. Sweep of **63** packages. Exit code is the verdict; this 
 | matugen | matugen-4.2.0.crate | 4.2.0 |  | **SOURCE-OK** | crate (cargo package tarball), source by construction \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | mixtapes | live m-obeid/Mixtapes | 618c24c3abfb | 618c24c3abfb | **OK** | live m-obeid/Mixtapes pin 618c24c3abfb vs upstream 618c24c3abfb |
 | mpvpaper | 1.9.tar.gz | 1.9 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
-| noctalia-greeter | live noctalia-dev/noctalia-greeter | 59152ab7aacb | 59152ab7aacb | **OK** | live noctalia-dev/noctalia-greeter pin 59152ab7aacb vs upstream 59152ab7aacb |
+| noctalia-greeter | live noctalia-dev/noctalia-greeter | 8cc00abfdce3 | 8cc00abfdce3 | **OK** | live noctalia-dev/noctalia-greeter pin 8cc00abfdce3 vs upstream 8cc00abfdce3 |
 | nwg-look | v1.2.1.tar.gz | 1.2.1 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | obsidian | obsidian_1.14.5_amd64.deb | 1.14.5 | 1.14.5 | **OK** | deb pkg=obsidian (control control.tar.xz) \| pinned 1.14.5 \| internal 1.14.5 |
 | opencad-studio | OpenCADStudio-v2026.42-linux-x86_64.AppImage | 2026.42 | 2026.42 | **OK** | AppImage strings 2026.42 (AppRun) \| pinned 2026.42 \| internal 2026.42 |
@@ -84,7 +84,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | LICENSE | 1.5.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| umbriel-git | live noctalia-dev/umbriel | 9ebb0573ba02 | 9ebb0573ba02 | **OK** | live noctalia-dev/umbriel pin 9ebb0573ba02 vs upstream 9ebb0573ba02 |
+| umbriel-git | live noctalia-dev/umbriel | 185b559ca6bb | 185b559ca6bb | **OK** | live noctalia-dev/umbriel pin 185b559ca6bb vs upstream 185b559ca6bb |
 | vesktop | vesktop-1.6.8.x86_64.rpm | 1.6.8 | 1.6.8 | **OK** | rpm header vesktop=1.6.8-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.8 \| internal 1.6.8 |
 | vesktop | LICENSE | 1.6.8 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
@@ -100,6 +100,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | zen-browser | LICENSE | 1.23.4b |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | zig0.17 | zig-x86_64-linux-0.17.0.tar.xz | 0.17.0 | 0.0.0 | **SOURCE-OK** | tar build.zig.zon=0.0.0 (zig-x86_64-linux-0.17.0/lib/init/build.zig.zon) \| hash no-checksum-pinned \| weak internal evidence 0.0.0 (not authoritative) |
 | appmenu-glib-translator | upstream github.com/rilian-la-te/vala-panel-appmenu | 25.04^20261012202807git8281a25 | 0.6.1 | **OK** | at upstream latest 0.6.1 [releases/latest] |
+| awww | upstream codeberg.org/LGFae/awww | 0.12.1 | v0.12.1 | **OK** | at upstream latest v0.12.1 [ls-remote] |
 | aylurs-gtk-shell | upstream github.com/Aylur/ags | 3.1.2 | v3.1.2 | **OK** | at upstream latest v3.1.2 [releases/latest] |
 | bibata-cursor-theme | upstream github.com/ful1e5/Bibata_Cursor | 2.0.7 | v2.0.7 | **OK** | at upstream latest v2.0.7 [releases/latest] |
 | cascadia-code-nerd-fonts | upstream github.com/ryanoasis/nerd-fonts | 3.5.1 | v3.5.1 | **OK** | at upstream latest v3.5.1 [releases/latest] |
