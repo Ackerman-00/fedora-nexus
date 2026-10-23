@@ -1,11 +1,11 @@
 # These will be automatically populated by update.sh
-%global commit          1c35a133958c83b7cd018cced2119c1026504497
+%global commit          59152ab7aacbf131b933bdf7a81f5b4285ac4257
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261019110246
+%global gitdate         20261023013609
 
 Name:           noctalia-greeter
 Version:        1.7.0^%{gitdate}git%{shortcommit}
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 # SPDX: MIT AND Apache-2.0 (vendored Wuffs).
@@ -124,11 +124,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Tue Oct 20 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261019110246git1c35a13-3
-- Drop unused pkgconfig(harfbuzz) BuildRequires
-
-* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261019110246git1c35a13-2
-- Ship the vendored Wuffs Apache-2.0 and MIT texts and set License to MIT AND Apache-2.0
-
-* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261019110246git1c35a13-1
-- Nightly sync with upstream main branch (Commit: 1c35a13)
+* Fri Oct 23 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261023013609git59152ab-1
+- Nightly sync with upstream main branch (Commit: 59152ab)

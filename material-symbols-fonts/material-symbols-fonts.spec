@@ -1,10 +1,10 @@
-%global commit          49d4db35df873165d6bd6ba09b063c7dafbac2f4
+%global commit          10ecc14790612ca8fd164e3f4ffe9c16fc50d5b7
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global snapdate         20261009022539
+%global snapdate         20261023021843
 
 Name:           material-symbols-fonts
 Version:        4.0.0^%{snapdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Material Symbols variable icon font by Google
 License:        Apache-2.0
 URL:            https://github.com/google/material-design-icons
@@ -39,9 +39,5 @@ install -Dpm 0644 %{SOURCE3} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/fonts/%{name}
 
 %changelog
-* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 4.0.0^20261009022539git49d4db3-2
-- Ship the Apache-2.0 LICENSE from google/material-design-icons at the
-  pinned commit. The package declared Apache-2.0 but shipped no license text.
-
-* Fri Oct 09 2026 Ackerman-00 <quietcraft@gmail.com> - 4.0.0^20261009022539git49d4db3-1
-- Nightly sync with upstream master branch (Commit: 49d4db3)
+* Fri Oct 23 2026 Ackerman-00 <quietcraft@gmail.com> - 4.0.0^20261023021843git10ecc14-1
+- Nightly sync with upstream master branch (Commit: 10ecc14)
