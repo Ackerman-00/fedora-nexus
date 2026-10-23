@@ -62,6 +62,12 @@ fi
 
 SECOPT=""
 EXTRAPKG="util-linux ${TD_EXTRAPKG:-}"
+# A missing rpm here is a harness fault, not an install verdict: say so.
+if ! compgen -G "$OUTDIR/*.rpm" >/dev/null; then
+  echo "HARNESS_ERROR no rpm in $OUTDIR after a passing build: $(ls -A "$OUTDIR" | tr '\n' ' ')"
+  echo "TEARDOWN_$PKG=chroot:$CH rpmbuild-bb PASS install FAIL smoke FAIL"
+  exit 5
+fi
 # Payload goes through a file: a nested double quote in $SMOKE used to be
 # eaten by the bash -lc layer and ran a truncated command.
 printf '%s\n' "$SMOKE" > "$OUTDIR/smoke.sh"
