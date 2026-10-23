@@ -1,5 +1,5 @@
 diff --git a/Makefile b/Makefile
-index 3b59d05..4197cc6 100644
+index f087b3d..1aa6cec 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -1,9 +1,9 @@
@@ -7,15 +7,15 @@ index 3b59d05..4197cc6 100644
  
 -CFLAGS = -Wall -Wextra -O3
 -LDFLAGS = -lm
-+CFLAGS += -Wall -Wextra -O3
++CFLAGS += -Wall -Wextra
 +LDFLAGS += -lm
  
 -DESTDIR = /usr/local/bin
-+DESTDIR ?= /usr/local/bin
++DESTDIR ?= /usr/local
  
- hellwal: hellwal.c
+ hellwal: hellwal.c $(wildcard src/*.h)
  	$(CC) $(CFLAGS) hellwal.c -o hellwal $(LDFLAGS) -DVERSION=\"$(VERSION)\"
-@@ -14,10 +14,8 @@ debug: hellwal.c
+@@ -14,10 +14,8 @@ debug: hellwal.c $(wildcard src/*.h)
  clean:
  	rm hellwal
  

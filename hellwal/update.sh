@@ -13,7 +13,7 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 
-# upstream mixes v-prefixed and bare tags - plain sort -V picks the wrong latest
+# Tags are v-prefixed upstream; the exact tag is what the archive URL needs.
 LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | sed -E 's/^v?([0-9].*)/\1 &/' | sort -V -k1,1 | tail -1 | awk '{print $2}')
 LATEST_VERSION=$(echo "$LATEST_TAG" | sed 's/^v//')
 
@@ -27,8 +27,21 @@ CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     echo "Update found: $CURRENT_VERSION -> $LATEST_VERSION"
 
+    SOURCE_URL="https://github.com/$GITHUB_REPO/archive/$LATEST_TAG/hellwal-$LATEST_VERSION.tar.gz"
+    CODE=$(curl -sIL -o /dev/null -w '%{http_code}' "$SOURCE_URL")
+    if [ "$CODE" != "200" ]; then
+        echo "FATAL: $SOURCE_URL returned $CODE; refusing to bump to a source that does not exist" >&2
+        exit 1
+    fi
+
     sed -i "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
+    if grep -q '^%global tag' "$SPEC_FILE"; then
+        sed -i "s|^%global tag.*|%global tag     $LATEST_TAG|" "$SPEC_FILE"
+    else
+        sed -i "/^URL:/a %global tag     $LATEST_TAG" "$SPEC_FILE"
+        sed -i "s|^Source:.*|Source:         %{url}/archive/%{tag}/%{name}-%{version}.tar.gz|" "$SPEC_FILE"
+    fi
 
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
     sed -i '/^%changelog/,$d' "$SPEC_FILE"
