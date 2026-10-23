@@ -1,6 +1,6 @@
 # Teardown Sweep Report
 
-Repo type: **fedora**. Sweep of **65** packages. Exit code is the verdict; this report is the receipt.
+Repo type: **fedora**. Sweep of **63** packages. Exit code is the verdict; this report is the receipt.
 | Package | Distfile | Pinned | Internal | Status | Note |
 |---|---|---|---|---|---|
 | app2unit | live Vladimir-csp/app2unit | 47e23ec6ab9e | 47e23ec6ab9e | **OK** | live Vladimir-csp/app2unit pin 47e23ec6ab9e vs upstream 47e23ec6ab9e |
@@ -43,8 +43,6 @@ Repo type: **fedora**. Sweep of **65** packages. Exit code is the verdict; this 
 | logseq | Logseq-linux-x86_64-2.0.2.zip | 2.0.2 | 2.0.2 | **OK** | zip asar=2.0.2 (resources/app.asar) \| pinned 2.0.2 \| internal 2.0.2 |
 | logseq | logseq.png | 2.0.2 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | logseq | LICENSE.md | 2.0.2 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| ly | ly-1.5.0.tar.gz | 1.5.0 | 1.5.0 | **SOURCE-OK** | tar build.zig.zon=1.5.0 (ly-1.5.0/build.zig.zon) \| hash no-checksum-pinned \| weak internal evidence 1.5.0 (not authoritative) |
-| ly | ly-1.5.0-vendor.tar.zst | 1.5.0 |  | **OK** | hash no-checksum-pinned \| dependency/aux bundle (zstd/7z, not extractable with stdlib); package version verified via primary artifact |
 | mangowm | 0.18.2.tar.gz | 0.18.2 | 0.18.2 | **SOURCE-OK** | tar meson.build=0.18.2 (mango-0.18.2/meson.build) \| hash no-checksum-pinned \| weak internal evidence 0.18.2 (not authoritative) |
 | material-symbols-fonts | live google/material-design-icons | 10ecc1479061 | 10ecc1479061 | **OK** | live google/material-design-icons pin 10ecc1479061 vs upstream 10ecc1479061 |
 | python3-materialyoucolor | materialyoucolor-3.0.4.tar.gz | 3.0.4 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
@@ -62,7 +60,6 @@ Repo type: **fedora**. Sweep of **65** packages. Exit code is the verdict; this 
 | protonplus | ProtonPlus-v0.6.8.tar.gz | 0.6.8 | >= 1.0.0 | **SOURCE-OK** | tar meson.build=>= 1.0.0 (ProtonPlus-0.6.8/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 1.0.0 (not authoritative) |
 | python-mprisify | mprisify-v1.0.1.tar.gz | 1.0.1 | 1.0.1 | **SOURCE-OK** | tar changelog=1.0.1 (mprisify-v1.0.1/CHANGELOG.md) \| hash no-checksum-pinned \| weak internal evidence 1.0.1 (not authoritative) |
 | python-mprisify | LICENSE | 1.0.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| python-pydbus | pydbus-0.6.0.tar.gz | 0.6.0 | 0.6.0 | **SOURCE-OK** | tar setup.py=0.6.0 (pydbus-0.6.0/setup.py) \| hash no-checksum-pinned \| weak internal evidence 0.6.0 (not authoritative) |
 | python-yt-dlp-ejs | yt_dlp_ejs-0.8.0.tar.gz | 0.8.0 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | python-yt-dlp-get-pot | yt_dlp_get_pot-0.3.0.tar.gz | 0.3.0 | 0.3.0 | **SOURCE-OK** | tar pyproject.toml=0.3.0 (yt_dlp_get_pot-0.3.0/pyproject.toml) \| hash no-checksum-pinned \| weak internal evidence 0.3.0 (not authoritative) |
 | python-yt-dlp-get-pot-rustypipe | yt_dlp_get_pot_rustypipe-0.2.0.tar.gz | 0.2.0 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
@@ -87,7 +84,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | LICENSE | 1.5.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| umbriel-git | live noctalia-dev/umbriel | 350794892e2b | 350794892e2b | **OK** | live noctalia-dev/umbriel pin 350794892e2b vs upstream 350794892e2b |
+| umbriel-git | live noctalia-dev/umbriel | 9ebb0573ba02 | 9ebb0573ba02 | **OK** | live noctalia-dev/umbriel pin 9ebb0573ba02 vs upstream 9ebb0573ba02 |
 | vesktop | vesktop-1.6.8.x86_64.rpm | 1.6.8 | 1.6.8 | **OK** | rpm header vesktop=1.6.8-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.8 \| internal 1.6.8 |
 | vesktop | LICENSE | 1.6.8 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
@@ -119,7 +116,6 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | libcava | upstream github.com/LukashonakV/cava | 1.0.0 | 1.0.0 | **OK** | at upstream latest 1.0.0 [releases/latest] |
 | localsend | upstream github.com/localsend/localsend | 1.18.2 | v1.18.2 | **OK** | at upstream latest v1.18.2 [releases/latest] |
 | logseq | upstream github.com/logseq/logseq | 2.0.2 | 2.0.2 | **OK** | at upstream latest 2.0.2 [releases/latest] |
-| ly | upstream github.com/fairyglade/ly | 1.5.0 | v1.0.3 | **OK** | at upstream latest v1.0.3 [releases/latest] |
 | mangowm | upstream github.com/mangowm/mango | 0.18.2 | 0.18.2 | **OK** | at upstream latest 0.18.2 [releases/latest] |
 | mpvpaper | upstream github.com/GhostNaN/mpvpaper | 1.9 | 1.9 | **OK** | at upstream latest 1.9 [releases/latest] |
 | nwg-look | upstream github.com/nwg-piotr/nwg-look | 1.2.1 | v1.2.1 | **OK** | at upstream latest v1.2.1 [releases/latest] |
@@ -141,7 +137,6 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | xcur2png | upstream github.com/eworm-de/xcur2png | 0.7.1 | 0.7.1 | **OK** | at upstream latest 0.7.1 [releases/latest] |
 | zen-browser | upstream github.com/zen-browser/desktop | 1.23.4b | 1.23.4b | **OK** | at upstream latest 1.23.4b [releases/latest] |
 | python3-materialyoucolor | pypi:materialyoucolor | 3.0.4 | 3.0.4 | **OK** | upstream 3.0.4 == pinned 3.0.4 [freshness via pypi:materialyoucolor; repology has no entry] |
-| python-pydbus | pypi:pydbus | 0.6.0 | 0.6.0 | **OK** | upstream 0.6.0 == pinned 0.6.0 [freshness via pypi:pydbus; repology has no entry] |
 | python-yt-dlp-ejs | pypi:yt-dlp-ejs | 0.8.0 | 0.8.0 | **OK** | upstream 0.8.0 == pinned 0.8.0 [freshness via pypi:yt-dlp-ejs; repology has no entry] |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology has no entry] |
 | python-ytmusicapi | pypi:ytmusicapi | 1.12.3 | 1.12.3 | **OK** | upstream 1.12.3 == pinned 1.12.3 [freshness via pypi:ytmusicapi; repology has no entry] |
