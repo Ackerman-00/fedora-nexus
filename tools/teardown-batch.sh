@@ -1,11 +1,21 @@
 #!/bin/bash
-# teardown-batch.sh <list-file> [jobs] [chroot]
+# teardown-batch.sh <list-file> [jobs] [chroot] [--probes]
 # List lines: pkg|smoke|rpm-name (smoke may be empty for a files-only package).
+# --probes takes tools/probes.txt's order instead: pkg|dnf-name|smoke.
 # Runs tools/teardown-fresh.sh per line, N at a time, keeps every log under
 # --outdir, and prints one relay-ready token per package.
 # Jobs above the CPU count only makes docker thrash.
 set -u
-LIST=${1:?usage: teardown-batch.sh <list-file> [jobs] [chroot]}
+FORMAT=smoke-first
+_args=()
+for a in "$@"; do
+  case "$a" in
+    --probes) FORMAT=probes ;;
+    *) _args+=("$a") ;;
+  esac
+done
+set -- ${_args[@]+"${_args[@]}"}
+LIST=${1:?usage: teardown-batch.sh <list-file> [jobs] [chroot] [--probes]}
 JOBS=${2:-4}
 CH=${3:-44}
 OUT=${TD_OUTDIR:-/tmp/teardown-batch}
@@ -15,7 +25,13 @@ mkdir -p "$OUT"
 : > "$OUT/tokens.txt"
 
 one() {
-  IFS='|' read -r pkg smoke rpmn <<< "$1"
+  local pkg smoke rpmn _rpmn
+  if [ "$FORMAT" = probes ]; then
+    IFS='|' read -r pkg _rpmn smoke <<< "$1"
+    rpmn=$_rpmn
+  else
+    IFS='|' read -r pkg smoke rpmn <<< "$1"
+  fi
   [ -n "$pkg" ] || return 0
   bash "$R/tools/teardown-fresh.sh" "$pkg" "$CH" "$smoke" "${rpmn:-$pkg}" > "$OUT/$pkg.log" 2>&1
   local rc=$?
@@ -31,7 +47,7 @@ one() {
   echo "$pkg rc=$rc $line" >> "$OUT/tokens.txt"
 }
 export -f one
-export R CH OUT DATE
+export R CH OUT DATE FORMAT
 
 tr '\n' '\0' < "$LIST" | xargs -0 -P "$JOBS" -I{} bash -c 'one "$@"' _ {}
 echo "logs: $OUT"
