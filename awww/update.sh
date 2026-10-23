@@ -33,7 +33,7 @@ fi
 
 echo "Updating: $CURRENT_VERSION -> $VERSION"
 
-ARCHIVE_URL="$UPSTREAM_URL/archive/$LATEST_TAG/awww-$VERSION.tar.gz"
+ARCHIVE_URL="$UPSTREAM_URL/archive/$LATEST_TAG.tar.gz"
 TMP_ARCHIVE=$(mktemp)
 if ! curl -sL --max-time 120 --fail -o "$TMP_ARCHIVE" "$ARCHIVE_URL"; then
     echo "Error: $ARCHIVE_URL did not download."
@@ -51,7 +51,7 @@ rm -f "$TMP_ARCHIVE"
 
 sed -i "s/^Version:.*/Version:        $VERSION/" "$SPEC_FILE"
 sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
-sed -i "s|^Source0:.*|Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz|" "$SPEC_FILE"
+sed -i "s|^Source0:.*|Source0:        %{url}/archive/v%{version}.tar.gz|" "$SPEC_FILE"
 if grep -q '^# sha256:' "$SPEC_FILE"; then
     sed -i -E "s|^# sha256:.*|# sha256: $SHA256|" "$SPEC_FILE"
 else

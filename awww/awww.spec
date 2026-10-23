@@ -1,11 +1,11 @@
 Name:           awww
 Version:        0.12.1
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Efficient animated wallpaper daemon for Wayland, controlled at runtime
 
 License:        GPL-3.0-only AND MIT AND Apache-2.0 AND MPL-2.0 AND BSD-3-Clause AND ISC
 URL:            https://codeberg.org/LGFae/awww
-Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0:        %{url}/archive/v%{version}.tar.gz
 # sha256: 97b3f1c6d65d9d30e51b17092a45244f8c8549607c9207f3c98d82b28ba18fca
 
 ExclusiveArch:  x86_64 aarch64
@@ -49,6 +49,10 @@ install -Dpm 0644 contrib/systemd/awww-daemon.service %{buildroot}%{_userunitdir
 %{_userunitdir}/awww-daemon.service
 
 %changelog
+* Fri Oct 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.1-7
+- Point Source0 at the codeberg archive path that exists
+  (archive/v%{version}.tar.gz); -6 used archive/v<ver>/<name>-<ver>.tar.gz
+  and COPR build 11199746 died in rpkg srpm with curl 404
 * Fri Oct 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.1-6
 - Fetch Source0 from the codeberg tag archive (HTTP 200, sha256 pinned)
   instead of shipping the tarball in git; the archive is byte-identical
