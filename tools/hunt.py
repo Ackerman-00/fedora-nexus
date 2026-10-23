@@ -484,6 +484,47 @@ def head_probe(url):
         return 0, "", 0
 
 
+def hunt_sources():
+    """Every http(s) Source must answer: a dead Source0 fails the SRPM stage."""
+    findings, checked, skipped = [], 0, 0
+    for sp in specs():
+        url = spec_field(sp, "URL")
+        txt = open(sp, encoding="utf-8", errors="replace").read()
+        mac = {}
+        for name, val in re.findall(r"^%global\s+(\w+)\s+(\S+)", txt, re.M):
+            mac[name] = val
+        for field, key in (("Name", "name"), ("Version", "version")):
+            val = spec_field(sp, field)
+            if val:
+                mac[key] = val
+        if mac.get("shortcommit", "").startswith("%(") and mac.get("commit"):
+            mac["shortcommit"] = mac["commit"][:7]
+        for m in re.finditer(r"^Source\d*:\s*(\S+)", txt, re.M):
+            src = m.group(1)
+            if not (src.startswith("http") or src.startswith("%{url}")):
+                skipped += 1
+                continue
+            u = src.replace("%{url}", url)
+            for _ in range(6):
+                mm = re.search(r"%\{(\w+)\}", u)
+                if not mm:
+                    break
+                val = mac.get(mm.group(1), "")
+                if not val or val.startswith("%("):
+                    break
+                u = u.replace(mm.group(0), val)
+            if "%{" in u:
+                skipped += 1
+                continue
+            checked += 1
+            code, _ctype, _clen = head_probe(u)
+            if code in (404, 410):
+                findings.append((os.path.basename(sp),
+                                 "Source answers %d: %s" % (code, u)))
+    return ("sources", "%d http sources probed, %d skipped (local/macro), %d dead"
+            % (checked, skipped, len(findings)), "", findings)
+
+
 def hunt_readme():
     """Every package directory needs a row in the README's package table."""
     try:
@@ -719,8 +760,9 @@ def get_text(url):
 
 
 HUNTS = (hunt_builds, hunt_chroots, hunt_copr_config, hunt_upstream, hunt_cves,
-         hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_readme,
-         hunt_published_nvr, hunt_probes, hunt_fedora_releases, hunt_slice)
+         hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_sources,
+         hunt_readme, hunt_published_nvr, hunt_probes, hunt_fedora_releases,
+         hunt_slice)
 
 
 def main():
