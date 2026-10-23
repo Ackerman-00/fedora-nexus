@@ -8,7 +8,7 @@
 
 Name:           opencode-desktop
 Version:        2.1.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        AI coding agent desktop app
 
 License:        MIT
@@ -97,12 +97,15 @@ WRAPPER_EOF
 chmod 755 %{buildroot}%{_bindir}/opencode-desktop
 
 
-install -Dm0644 usr/share/icons/hicolor/32x32/apps/ai.opencode.desktop.png \
-    %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/opencode-desktop.png
-install -Dm0644 usr/share/icons/hicolor/64x64/apps/ai.opencode.desktop.png \
-    %{buildroot}%{_datadir}/icons/hicolor/64x64/apps/opencode-desktop.png
-install -Dm0644 usr/share/icons/hicolor/128x128/apps/ai.opencode.desktop.png \
-    %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/opencode-desktop.png
+# icon basename is upstream's business (ai.opencode.desktop.png before 2.1.4)
+icons=0
+for sz in 32x32 64x64 128x128; do
+    src=$(ls usr/share/icons/hicolor/"$sz"/apps/*.png 2>/dev/null | head -1)
+    [ -n "$src" ] || continue
+    install -Dm0644 "$src" %{buildroot}%{_datadir}/icons/hicolor/"$sz"/apps/opencode-desktop.png
+    icons=$((icons + 1))
+done
+[ "$icons" -gt 0 ] || { echo "ERROR: upstream deb ships no hicolor app icon" >&2; exit 1; }
 
 # Our desktop entry uses the PATH wrapper.
 install -dm755 %{buildroot}%{_datadir}/applications/
@@ -140,5 +143,9 @@ sed -i -e 's|<launchable type="desktop-id">ai.opencode.desktop.desktop</launchab
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
+* Fri Oct 23 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.4-2
+- Fix build: upstream renamed the hicolor icons to ai.opencode.png
+- Install the app icon from whichever png upstream ships per size
+
 * Fri Oct 23 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.4-1
 - Auto-update to upstream release 2.1.4
