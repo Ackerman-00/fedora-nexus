@@ -165,7 +165,7 @@ def newest_builds():
         base = os.path.basename(url)
         prefix = name + "-"
         nvr = base[len(prefix):] if base.startswith(prefix) else base
-        out[name] = (nvr_norm(nvr), source.get("id"), b.get("state"))
+        out[name] = (nvr_norm(nvr), source.get("id"), b.get("state"), b.get("id"))
     return out
 
 
@@ -174,9 +174,9 @@ def hunt_builds():
     newest = newest_builds()
     bad = []
     states = {}
-    for name, (_nvr, bid, state) in sorted(newest.items()):
+    for name, (_nvr, _srcid, state, newestid) in sorted(newest.items()):
         if state in ("failed", "unknown"):
-            bad.append((name, bid, state))
+            bad.append((name, newestid, state))
         states[state] = states.get(state, 0) + 1
     return ("builds", "%d packages, %d failed" % (len(newest), len(bad)),
             "states: " + ", ".join("%s=%d" % kv for kv in sorted(states.items())), bad)
@@ -562,7 +562,7 @@ def hunt_published_nvr():
             continue
         want = nvr_norm(m.group(1))
         checked += 1
-        built, bid, state = builds.get(name, ("", None, None))
+        built, bid, state = builds.get(name, ("", None, None))[:3]
         if not built:
             findings.append((name, "no COPR build row for this package"))
         elif built != want:
