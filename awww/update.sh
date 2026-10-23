@@ -33,28 +33,30 @@ fi
 
 echo "Updating: $CURRENT_VERSION -> $VERSION"
 
-echo "Fetching source archive for $LATEST_TAG via git (codeberg archive endpoint is unreliable)..."
-TMP_DIR=$(mktemp -d)
-if ! git clone --depth 1 --branch "$LATEST_TAG" "$UPSTREAM_URL.git" "$TMP_DIR/src" 2>/dev/null; then
-    echo "Error: failed to clone $UPSTREAM_URL.git at tag $LATEST_TAG."
-    rm -rf "$TMP_DIR"
+ARCHIVE_URL="$UPSTREAM_URL/archive/$LATEST_TAG/awww-$VERSION.tar.gz"
+TMP_ARCHIVE=$(mktemp)
+if ! curl -sL --max-time 120 --fail -o "$TMP_ARCHIVE" "$ARCHIVE_URL"; then
+    echo "Error: $ARCHIVE_URL did not download."
+    rm -f "$TMP_ARCHIVE"
+    exit 1
+fi
+if ! tar tzf "$TMP_ARCHIVE" >/dev/null 2>&1; then
+    echo "Error: $ARCHIVE_URL is not a valid tarball."
+    rm -f "$TMP_ARCHIVE"
     exit 1
 fi
 
-if ! (cd "$TMP_DIR/src" && git archive --format=tar.gz --prefix="awww-$VERSION/" -o "$TMP_DIR/awww-$VERSION.tar.gz" HEAD); then
-    echo "Error: failed to generate source archive for $VERSION."
-    rm -rf "$TMP_DIR"
-    exit 1
-fi
-
-rm -f awww-*.tar.gz
-mv "$TMP_DIR/awww-$VERSION.tar.gz" "./awww-$VERSION.tar.gz"
-rm -rf "$TMP_DIR"
-
-ls -la awww-*.tar.gz
+SHA256=$(sha256sum "$TMP_ARCHIVE" | awk '{print $1}')
+rm -f "$TMP_ARCHIVE"
 
 sed -i "s/^Version:.*/Version:        $VERSION/" "$SPEC_FILE"
 sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
+sed -i "s|^Source0:.*|Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz|" "$SPEC_FILE"
+if grep -q '^# sha256:' "$SPEC_FILE"; then
+    sed -i -E "s|^# sha256:.*|# sha256: $SHA256|" "$SPEC_FILE"
+else
+    sed -i "/^Source0:/a # sha256: $SHA256" "$SPEC_FILE"
+fi
 
 DATE_STRING=$(LC_ALL=C date +"%a %b %d %Y")
 sed -i '/^%changelog/,$d' "$SPEC_FILE"
@@ -64,7 +66,7 @@ sed -i '/^%changelog/,$d' "$SPEC_FILE"
     echo "- Update to version $VERSION"
 } >> "$SPEC_FILE"
 
-echo "Successfully patched $SPEC_FILE. Commit awww-$VERSION.tar.gz together with the spec."
+echo "Successfully patched $SPEC_FILE (sha256 $SHA256)."
 if ! grep -q "^Name:" "$SPEC_FILE"; then
     echo "FATAL: $SPEC_FILE lost its Name: header during update; restoring" >&2
     git checkout -- "$SPEC_FILE" 2>/dev/null || true
