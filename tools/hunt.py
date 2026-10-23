@@ -514,18 +514,28 @@ def nvr_norm(s):
 
 
 def repodata_nvr(chroot):
-    """Published name -> NVR for one chroot, read from its own primary.xml.gz."""
+    """Published name -> NVR for one chroot, read from its own primary.xml.gz.
+
+    A fetch that fails must raise, never return {}: an empty map used to make
+    every package read as "missing from repodata" (133 bogus findings).
+    """
     base = "https://download.copr.fedorainfracloud.org/results/ackerman/nexus/%s" % chroot
-    md = get_text(base + "/repodata/repomd.xml")
-    m = re.search(r"([a-f0-9]+-primary\.xml\.gz)", md)
-    if not m:
-        return {}
-    try:
-        raw = urllib.request.urlopen(
-            urllib.request.Request(base + "/repodata/" + m.group(1), headers=UA), timeout=120).read()
-        prim = gzip.decompress(raw).decode("utf-8", "replace")
-    except Exception:
-        return {}
+    md, raw = "", None
+    for attempt in range(3):
+        md = get_text(base + "/repodata/repomd.xml")
+        m = re.search(r"([a-f0-9]+-primary\.xml\.gz)", md)
+        if m:
+            try:
+                raw = urllib.request.urlopen(
+                    urllib.request.Request(base + "/repodata/" + m.group(1), headers=UA),
+                    timeout=120).read()
+                break
+            except Exception:
+                raw = None
+        time.sleep(3 * (attempt + 1))
+    if not raw:
+        raise RuntimeError("repodata unreadable for %s after 3 tries" % chroot)
+    prim = gzip.decompress(raw).decode("utf-8", "replace")
     out = {}
     for p in re.finditer(r'<package type="rpm">.*?<name>([^<]+)</name>'
                          r'.*?<version epoch="([^"]*)" ver="([^"]+)" rel="([^"]+)"/>', prim, re.S):
