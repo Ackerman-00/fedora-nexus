@@ -1404,21 +1404,18 @@ jobs:
                  break silently -
                  umbriel-git, xdg-desktop-portal-umbriel-git,
                  helium-browser, zen-browser, heroic-games-launcher,
-                 protonplus, mangowm, noctalia-greeter, ly, wlroots.
-                 (ly + wlroots added 2026-09-22: ly's forge is Codeberg
-                 fairyglade/ly, NOT GitHub - the generic tag scanner cannot
-                 see it, check codeberg API + update.sh; wlroots is the
-                 foundation every compositor here builds on, a soname bump
-                 breaks all of them at once.)
-                 The delta/carry-over logic does NOT apply to the ten:
+                 protonplus, mangowm, noctalia-greeter, wlroots.
+                 (wlroots is the foundation every compositor here builds
+                 on, so a soname bump breaks all of them at once. ly left
+                 this list on 2026-10-23 with the package itself: Fedora
+                 ships it now.)
+                 The delta/carry-over logic does NOT apply to the nine:
                  a. EVERY run, FIRST: check each against upstream HEAD
                     (`git ls-remote` default branch + `gh api
-                    releases/latest` where applicable; ly via Codeberg
-                    `https://codeberg.org/api/v1/repos/fairyglade/ly/releases`
-                    stable tags only, NEVER -rc; wlroots via GitLab
+                    releases/latest` where applicable; wlroots via GitLab
                     `https://gitlab.freedesktop.org/api/v4/projects/wlroots%2Fwlroots/releases`).
                     ALWAYS-LIVE (2026-09-22, no exceptions, no carry-over):
-                    upstream + dependency checks for all ten mains run FRESH
+                    upstream + dependency checks for all nine mains run FRESH
                     every run and their raw output is pasted in the relay, one
                     line per main:
                     `upstream: <pkg> <ref>@<sha/ver> == spec | <cmd> | <today-UTC-date>`
@@ -1444,10 +1441,10 @@ jobs:
                     smoke PASS` token per package (the verifier counts these);
                     a failure
                     here outranks all other non-build-failure work.
-                 c. Never mark these eleven done based on a previous run's
+                 c. Never mark these nine done based on a previous run's
                     result. "Unchanged since last run" is not verification
                     for these packages - re-verify every time.
-                 d. TERRA CROSS-REFERENCE (MANDATORY for all eleven, every
+                 d. TERRA CROSS-REFERENCE (MANDATORY for all nine, every
                     run - Terra https://github.com/terrapkg/packages branch
                     frawhide is the closest sibling packager for this exact
                     stack). For each priority package, fetch Terra's
@@ -1474,10 +1471,6 @@ jobs:
                       the upstream 1.23.4b artifact under Epoch 2, so Terra
                       is a dependency reference only, never a version
                       reference).
-                    - ly: forge is Codeberg (fairyglade/ly), no GitHub
-                      counterpart to cross-ref - reference is Codeberg
-                      stable tags + update.sh; record `terra-ref: n/a
-                      (codeberg-forge)`.
                     - wlroots: reference is GitLab releases + Fedora
                       official src.fedoraproject.org/rpms/wlroots (watch
                       the soname: a 0.20 -> 0.21 bump means coordinated
@@ -1515,7 +1508,7 @@ jobs:
                     with token) or
                     `curl -H "Authorization: token $GITHUB_TOKEN"
                     https://raw.githubusercontent.com/terrapkg/packages/frawhide/<path>`.
-                    Batch all eleven fetches, back off 60s on 403/429,
+                    Batch all nine fetches, back off 60s on 403/429,
                     throttle to 1 req/s. Record per package one line:
                     `terra-ref: <path>@<shortsha> | ours: <pin/ver> |
                     delta: ahead/behind/in-sync | kept-improvements: <list>`.

@@ -29,7 +29,6 @@ lazyvim-git|lazyvim-git|files-only
 libcava|libcava|files-only
 localsend|localsend|test -x /usr/bin/localsend_app
 logseq|logseq|test -f /opt/logseq/resources/app.asar
-ly|ly|ly --help
 mangowm|mangowm|mango -v
 material-symbols-fonts|material-symbols-fonts|files-only
 materialyoucolor|python3-materialyoucolor|python3 -c "import materialyoucolor, materialyoucolor.scheme"
@@ -44,7 +43,6 @@ openchamber|openchamber|test -f /opt/openchamber/resources/app.asar
 opencode-desktop|opencode-desktop|test -f /opt/OpenCode/resources/app.asar
 protonplus|protonplus|test -x /usr/bin/protonplus
 python-mprisify|python-mprisify|python3 -c 'import mprisify'
-python-pydbus|python-pydbus|python3 -c 'import pydbus'
 python-yt-dlp-ejs|python-yt-dlp-ejs|python3 -c "import yt_dlp_ejs"
 python-yt-dlp-get-pot|python-yt-dlp-get-pot|python3 -c 'import yt_dlp_plugins.extractor'
 python-yt-dlp-get-pot-rustypipe|python-yt-dlp-get-pot-rustypipe|python3 -c 'import yt_dlp_plugins.extractor'

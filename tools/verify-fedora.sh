@@ -2,7 +2,7 @@
 set -euo pipefail
 # Strict completion verifier for fedora-nexus.
 if [[ "${1:-}" == "--print-mains" ]]; then
-  echo "umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter ly wlroots"
+  echo "umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter wlroots"
   exit 0
 fi
 RUN_ID="${RUN_ID:-}"

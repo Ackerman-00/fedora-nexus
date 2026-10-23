@@ -32,35 +32,25 @@ sudo dnf install <package-name>
 
 > **Supported releases:** Fedora 43, 44, 45 and Rawhide (x86_64), exactly the
 > four chroots this COPR builds (project API `chroot_repos`, checked
-> 2026-10-22). Fedora 44 is the current stable release and Fedora 45 is still
+> 2026-10-23). Fedora 44 is the current stable release and Fedora 45 is still
 > pre-GA: the mirror lists `releases/43/` and `releases/44/` only, and
 > `releases/45/` returns 404 while `development/45/` exists (checked
-> 2026-10-22). Fedora 43 reaches end-of-life on 2026-12-09, after which its
+> 2026-10-23). Fedora 43 reaches end-of-life on 2026-12-09, after which its
 > chroot will be disabled. If you are still on F43, upgrade to F44 or newer.
 > The COPR project follows Fedora branching automatically.
 
-> **When Fedora's build of a package outranks this repo's:** dnf prefers the
-> higher EVR, so a plain `dnf install <pkg>` can pull Fedora's package instead
-> of ours. Two shapes exist, both checked on 2026-10-22:
-> - a newer version of the same name. `ly` used to be the only case (Fedora 45
->   and Rawhide carry the `1.5.0~rc1` prerelease); this repo now builds the
->   1.5.0 final, which rpm sorts above `~rc1` (`rpmdev-vercmp 1.5.0~rc1 1.5.0`
->   → `-1`), so no package is behind today.
-> - a Fedora package that *Provides* our name. Fedora's `python3-pydbus`
->   carries `Provides: python-pydbus = 0.6.0-34.fc44`, so `dnf install
->   python-pydbus` resolves to Fedora's build, not the one here (which adds
->   the LGPL license text). Install ours by version: `sudo dnf install
->   'python-pydbus-0.6.0-5.*'`.
->
-> Ask for the exact build whenever this happens; `dnf list --showduplicates
-> <pkg>` shows every version on offer.
+> **Packages Fedora already ships:** `ly` and `python-pydbus` were dropped
+> from this repo on 2026-10-23 because Fedora itself provides them now
+> (`ly` 1.5.0 and `python3-pydbus` with `Provides: python-pydbus`). Install
+> those from Fedora; the older builds already published here still install
+> for users who have them pinned.
 
 ---
 
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 65 packages</summary>
+<summary>Click to expand — 63 packages</summary>
 
 <br />
 
@@ -96,7 +86,6 @@ sudo dnf install <package-name>
 | `libcava` | Fork of CAVA built as a shared library | Stable |
 | `localsend` | Open source cross-platform AirDrop alternative | Stable |
 | `logseq` | Privacy-first, local-first knowledge management and collaboration platform | Stable |
-| `ly` | Lightweight TUI display manager | Stable |
 | `mangowm` | Modern, lightweight, high-performance Wayland compositor built on dwl | Stable |
 | `material-symbols-fonts` | Material Symbols variable icon font by Google | Git |
 | `mixtapes` | Modern, Linux-first YouTube Music player (Git Snapshot) | Git |
@@ -111,7 +100,6 @@ sudo dnf install <package-name>
 | `protonplus` | Modern compatibility tools manager | Stable |
 | `materialyoucolor` | Material You color generation algorithms (pure Python + C++ quantizer); install as `python3-materialyoucolor` | Stable |
 | `python-mprisify` | MPRIS D-Bus interface library for Python | Stable |
-| `python-pydbus` | Pythonic D-Bus library (Fedora's `python3-pydbus` provides this name too — install by version, see the note above) | Stable |
 | `python-yt-dlp-ejs` | External JavaScript runtimes for yt-dlp | Stable |
 | `python-yt-dlp-get-pot` | PO token provider plugin for yt-dlp | Stable |
 | `python-yt-dlp-get-pot-rustypipe` | PO token provider plugin for yt-dlp using rustypipe-botguard | Stable |
