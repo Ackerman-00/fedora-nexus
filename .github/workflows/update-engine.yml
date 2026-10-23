@@ -27,7 +27,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install System Dependencies
-        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils rpm
 
       - run: python3 -m pip install requests
 
@@ -209,6 +209,11 @@ jobs:
           done
           echo "downgrades-reverted=$reverted"
           exit 0
+
+      - name: Verify changed spec sources resolve
+        run: |
+          # A bump whose Source0 404s dies at the SRPM stage and ships nothing.
+          bash tools/source-url-check.sh --revert
 
       - name: Check for Changes
         id: changes
