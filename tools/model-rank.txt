@@ -24,6 +24,9 @@ deepseek-v4.1-flash-free
 mimo-v2.6-flash-free
 #
 # tier 2 - curated by OpenCode, no published score
+# big-pickle - stealth model, curated free list, no published score
+#   https://opencode.ai/v2/docs/console/models/ (Big Pickle, free) | checked 2026-10-23
+big-pickle
 # nemotron-3.5-super-vl-free - checked 2026-10-20
 nemotron-3.5-super-vl-free
 # beam-free - unavailable in some regions | checked 2026-10-20
@@ -38,5 +41,5 @@ nemotron-3.5-lightning-free
 # catalog live but owner-vetoed in tools/model-cascade.sh, so never ranked here:
 # glm-5.3-flash-free, jev-1.13-free (checked 2026-10-22)
 #
-# retired by the catalog on 2026-10-22, do not re-add without a live id:
-# minimax-m3.1-flash-free, big-pickle (absent from /inference/v1/models)
+# retired by the catalog, do not re-add without a live id:
+# minimax-m3.1-flash-free (absent from /inference/v1/models 2026-10-23)
