@@ -21,7 +21,7 @@ Repo type: **fedora**. Sweep of **65** packages. Exit code is the verdict; this 
 | cliphist | cliphist-v0.7.0.tar.gz | 0.7.0 | 0.7.0 | **SOURCE-OK** | tar version file=0.7.0 (cliphist-0.7.0/version.txt) \| hash no-checksum-pinned \| weak internal evidence 0.7.0 (not authoritative) |
 | concat | Concat-0.2.8-linux-x86_64.rpm | 0.2.8 | 0.2.8 | **OK** | rpm header concat=0.2.8-1 (tags NAME/VERSION/RELEASE) \| pinned 0.2.8 \| internal 0.2.8 |
 | concord | v2.6.3.tar.gz | 2.6.3 | 2.6.3 | **SOURCE-OK** | tar Cargo.toml=2.6.3 (concord-2.6.3/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 2.6.3 (not authoritative) |
-| craft-launcher | artcraft-launcher-0.6.1-linux-x86_64.rpm | 0.6.1 | 0.6.1 | **OK** | rpm header artcraft-launcher=0.6.1-1 (tags NAME/VERSION/RELEASE) \| pinned 0.6.1 \| internal 0.6.1 |
+| craft-launcher | artcraft-launcher-0.7.0-linux-x86_64.rpm | 0.7.0 | 0.7.0 | **OK** | rpm header artcraft-launcher=0.7.0-1 (tags NAME/VERSION/RELEASE) \| pinned 0.7.0 \| internal 0.7.0 |
 | extension-manager | extension-manager-0.6.5.tar.gz | 0.6.5 | >= 0.59.0 | **SOURCE-OK** | tar meson.build=>= 0.59.0 (extension-manager-0.6.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 0.59.0 (not authoritative) |
 | fluxer | rpm | 2026.1018.223338 | 2026.1018.223338 | **OK** | rpm header fluxer=2026.1018.223338-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1018.223338 \| internal 2026.1018.223338 |
 | freebuff | freebuff-linux-x64.tar.gz | 0.2.34 | 0.2.34 | **OK** | tar runtime probe freebuff --version: 0.2.34 \| pinned 0.2.34 \| internal 0.2.34 |
@@ -33,7 +33,7 @@ Repo type: **fedora**. Sweep of **65** packages. Exit code is the verdict; this 
 | helium-browser | net.imput.helium.metainfo.xml | 0.20.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | helium-browser | LICENSE | 0.20.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | helium-browser | LICENSE.ungoogled_chromium | 0.20.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| hellwal | hellwal-1.0.8.tar.gz | 1.0.8 | $(shell | **SOURCE-OK** | tar Makefile=$(shell (hellwal-1.0.8/Makefile) \| hash no-checksum-pinned \| weak internal evidence $(shell (not authoritative) |
+| hellwal | hellwal-1.0.9.tar.gz | 1.0.9 | $(shell | **SOURCE-OK** | tar Makefile=$(shell (hellwal-1.0.9/Makefile) \| hash no-checksum-pinned \| weak internal evidence $(shell (not authoritative) |
 | heroic-games-launcher | Heroic-2.22.4-linux-x86_64.rpm | 2.22.4 | 2.22.4 | **OK** | rpm header heroic=2.22.4-1 (tags NAME/VERSION/RELEASE) \| pinned 2.22.4 \| internal 2.22.4 |
 | heroic-games-launcher | COPYING | 2.22.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | lazyvim-git | live LazyVim/LazyVim | 999700997f72 | 999700997f72 | **OK** | live LazyVim/LazyVim pin 999700997f72 vs upstream 999700997f72 |
@@ -46,18 +46,18 @@ Repo type: **fedora**. Sweep of **65** packages. Exit code is the verdict; this 
 | ly | ly-1.5.0.tar.gz | 1.5.0 | 1.5.0 | **SOURCE-OK** | tar build.zig.zon=1.5.0 (ly-1.5.0/build.zig.zon) \| hash no-checksum-pinned \| weak internal evidence 1.5.0 (not authoritative) |
 | ly | ly-1.5.0-vendor.tar.zst | 1.5.0 |  | **OK** | hash no-checksum-pinned \| dependency/aux bundle (zstd/7z, not extractable with stdlib); package version verified via primary artifact |
 | mangowm | 0.18.2.tar.gz | 0.18.2 | 0.18.2 | **SOURCE-OK** | tar meson.build=0.18.2 (mango-0.18.2/meson.build) \| hash no-checksum-pinned \| weak internal evidence 0.18.2 (not authoritative) |
-| material-symbols-fonts | live google/material-design-icons | 49d4db35df87 | 49d4db35df87 | **OK** | live google/material-design-icons pin 49d4db35df87 vs upstream 49d4db35df87 |
+| material-symbols-fonts | live google/material-design-icons | 10ecc1479061 | 10ecc1479061 | **OK** | live google/material-design-icons pin 10ecc1479061 vs upstream 10ecc1479061 |
 | python3-materialyoucolor | materialyoucolor-3.0.4.tar.gz | 3.0.4 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | matugen | matugen-4.2.0.crate | 4.2.0 |  | **SOURCE-OK** | crate (cargo package tarball), source by construction \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | mixtapes | live m-obeid/Mixtapes | 618c24c3abfb | 618c24c3abfb | **OK** | live m-obeid/Mixtapes pin 618c24c3abfb vs upstream 618c24c3abfb |
 | mpvpaper | 1.9.tar.gz | 1.9 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
-| noctalia-greeter | live noctalia-dev/noctalia-greeter | 1c35a133958c | 1c35a133958c | **OK** | live noctalia-dev/noctalia-greeter pin 1c35a133958c vs upstream 1c35a133958c |
+| noctalia-greeter | live noctalia-dev/noctalia-greeter | 59152ab7aacb | 59152ab7aacb | **OK** | live noctalia-dev/noctalia-greeter pin 59152ab7aacb vs upstream 59152ab7aacb |
 | nwg-look | v1.2.1.tar.gz | 1.2.1 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | obsidian | obsidian_1.14.5_amd64.deb | 1.14.5 | 1.14.5 | **OK** | deb pkg=obsidian (control control.tar.xz) \| pinned 1.14.5 \| internal 1.14.5 |
 | opencad-studio | OpenCADStudio-v2026.42-linux-x86_64.AppImage | 2026.42 | 2026.42 | **OK** | AppImage strings 2026.42 (AppRun) \| pinned 2026.42 \| internal 2026.42 |
 | opencad-studio | LICENSE | 2026.42 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| openchamber | OpenChamber-2.5.0-linux-x86_64.AppImage | 2.5.0 | 2.5.0 | **OK** | AppImage 2.5.0 (resources/app.asar) \| pinned 2.5.0 \| internal 2.5.0 |
-| openchamber | LICENSE | 2.5.0 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
+| openchamber | OpenChamber-2.5.1-linux-x86_64.AppImage | 2.5.1 | 2.5.1 | **OK** | AppImage 2.5.1 (resources/app.asar) \| pinned 2.5.1 \| internal 2.5.1 |
+| openchamber | LICENSE | 2.5.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | opencode-desktop | opencode-desktop-linux-amd64.deb | 2.1.3 | 2.1.3 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.1.3 \| internal 2.1.3 |
 | protonplus | ProtonPlus-v0.6.8.tar.gz | 0.6.8 | >= 1.0.0 | **SOURCE-OK** | tar meson.build=>= 1.0.0 (ProtonPlus-0.6.8/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 1.0.0 (not authoritative) |
 | python-mprisify | mprisify-v1.0.1.tar.gz | 1.0.1 | 1.0.1 | **SOURCE-OK** | tar changelog=1.0.1 (mprisify-v1.0.1/CHANGELOG.md) \| hash no-checksum-pinned \| weak internal evidence 1.0.1 (not authoritative) |
@@ -87,7 +87,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | LICENSE | 1.5.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| umbriel-git | live noctalia-dev/umbriel | 6d57b5083ad7 | ef5be0135a5a | **STALE** | live noctalia-dev/umbriel pin 6d57b5083ad7 vs upstream ef5be0135a5a |
+| umbriel-git | live noctalia-dev/umbriel | ef5be0135a5a | ef5be0135a5a | **OK** | live noctalia-dev/umbriel pin ef5be0135a5a vs upstream ef5be0135a5a |
 | vesktop | vesktop-1.6.8.x86_64.rpm | 1.6.8 | 1.6.8 | **OK** | rpm header vesktop=1.6.8-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.8 \| internal 1.6.8 |
 | vesktop | LICENSE | 1.6.8 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
@@ -109,12 +109,12 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | cliphist | upstream github.com/sentriz/cliphist | 0.7.0 | v0.7.0 | **OK** | at upstream latest v0.7.0 [releases/latest] |
 | concat | upstream github.com/jub0t/Concat | 0.2.8 | v0.2.8 | **OK** | at upstream latest v0.2.8 [releases/latest] |
 | concord | upstream github.com/chojs23/concord | 2.6.3 | v2.6.3 | **OK** | at upstream latest v2.6.3 [releases/latest] |
-| craft-launcher | upstream github.com/storytold/craft-launcher | 0.6.1 | v0.6.1 | **OK** | at upstream latest v0.6.1 [releases/latest] |
+| craft-launcher | upstream github.com/storytold/craft-launcher | 0.7.0 | v0.7.0 | **OK** | at upstream latest v0.7.0 [releases/latest] |
 | extension-manager | upstream github.com/mjakeman/extension-manager | 0.6.5 | v0.6.5 | **OK** | at upstream latest v0.6.5 [releases/latest] |
 | freebuff | upstream github.com/CodebuffAI/codebuff-community | 0.2.34 | freebuff-v0.2.34 | **OK** | at upstream latest freebuff-v0.2.34 [releases/latest] |
 | ghostty | upstream github.com/mkasberg/ghostty-ubuntu | 1.3.1 | 1.3.1-0-ppa2 | **OK** | at upstream latest 1.3.1-0-ppa2 [releases/latest] |
 | helium-browser | upstream github.com/imputnet/helium-linux | 0.20.1.1 | 0.20.1.1 | **OK** | at upstream latest 0.20.1.1 [releases/latest] |
-| hellwal | upstream github.com/danihek/hellwal | 1.0.8 | 1.0.8 | **OK** | at upstream latest 1.0.8 [releases/latest] |
+| hellwal | upstream github.com/danihek/hellwal | 1.0.9 | v1.0.9 | **OK** | at upstream latest v1.0.9 [releases/latest] |
 | heroic-games-launcher | upstream github.com/Heroic-Games-Launcher/HeroicGamesLauncher | 2.22.4 | v2.22.4 | **OK** | at upstream latest v2.22.4 [releases/latest] |
 | libcava | upstream github.com/LukashonakV/cava | 1.0.0 | 1.0.0 | **OK** | at upstream latest 1.0.0 [releases/latest] |
 | localsend | upstream github.com/localsend/localsend | 1.18.2 | v1.18.2 | **OK** | at upstream latest v1.18.2 [releases/latest] |
@@ -125,7 +125,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | nwg-look | upstream github.com/nwg-piotr/nwg-look | 1.2.1 | v1.2.1 | **OK** | at upstream latest v1.2.1 [releases/latest] |
 | obsidian | upstream github.com/obsidianmd/obsidian-releases | 1.14.5 | v1.14.5 | **OK** | at upstream latest v1.14.5 [releases/latest] |
 | opencad-studio | upstream github.com/HakanSeven12/OpenCADStudio | 2026.42 | v2026.42 | **OK** | at upstream latest v2026.42 [releases/latest] |
-| openchamber | upstream github.com/openchamber/openchamber | 2.5.0 | v2.5.0 | **OK** | at upstream latest v2.5.0 [releases/latest] |
+| openchamber | upstream github.com/openchamber/openchamber | 2.5.1 | v2.5.1 | **OK** | at upstream latest v2.5.1 [releases/latest] |
 | protonplus | upstream github.com/vysp3r/ProtonPlus | 0.6.8 | v0.6.8 | **OK** | at upstream latest v0.6.8 [releases/latest] |
 | python-mprisify | upstream gitlab.com/zehkira/mprisify | 1.0.1 | v1.0.1 | **OK** | at upstream latest v1.0.1 [ls-remote] |
 | python-yt-dlp-get-pot-rustypipe | upstream codeberg.org/ThetaDev/rustypipe-botguard | 0.2.0 | yt-dlp-get-pot-rustypipe/v0.2.0 | **OK** | at upstream latest yt-dlp-get-pot-rustypipe/v0.2.0 in tag namespace 'yt-dlp-get-pot-rustypipe' [pinned yt-dlp-get-pot-rustypipe/v0.2.0] |
@@ -149,4 +149,4 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | zig0.17 | ziglang.org/download/index.json | 0.17.0 | 0.17.0 | **OK** | upstream 0.17.0 == pinned 0.17.0 [freshness via ziglang.org/download/index.json; repology has no entry] |
 | LIBYEAR | freshness | 0.17 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
 
-**Verdict: FAIL** (1 failure(s))
+**Verdict: PASS** (0 failure(s))
