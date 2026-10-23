@@ -10,6 +10,8 @@ set -u
 PKG=$1
 CH=${2:-44}
 SMOKE=${3:-}
+# probes.txt marks a row with no smoke probe as files-only
+[ "$SMOKE" = "files-only" ] && SMOKE=""
 RPMN=${4:-$PKG}
 R=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 SPEC=$(basename "$(ls "$R/$PKG"/*.spec 2>/dev/null | head -1)")
