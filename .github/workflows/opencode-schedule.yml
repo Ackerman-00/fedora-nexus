@@ -1399,7 +1399,7 @@ jobs:
                  for upstream changes EVERY run (git ls-remote HEAD for
                  -git packages, releases/tags for versioned ones, artifact
                  internals for prebuilt binaries - real change only, per
-                 NO-CHURN). The ten mains named below simply go FIRST and get
+                 NO-CHURN). The nine mains named below simply go FIRST and get
                  the DEEPEST treatment each run because they move fast and
                  break silently -
                  umbriel-git, xdg-desktop-portal-umbriel-git,
