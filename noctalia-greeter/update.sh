@@ -65,6 +65,23 @@ sed -i -E "s/^%global gitdate.*/%global gitdate         $GIT_DATE/" "$SPEC_FILE"
 sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 sed -i -E "s/^Version:.*/Version:        ${BASE_VER}^%{gitdate}git%{shortcommit}/" "$SPEC_FILE"
 
+# Source0 is the archive of the new commit: its pin must move with the commit
+TARBALL_URL="https://github.com/$GITHUB_REPO/archive/$LATEST_COMMIT/noctalia-greeter-$LATEST_COMMIT.tar.gz"
+WORKDIR=$(mktemp -d)
+trap 'rm -rf "$WORKDIR"' EXIT
+if ! curl -sL --fail -o "$WORKDIR/src.tar.gz" "$TARBALL_URL"; then
+    echo "FATAL: cannot fetch $TARBALL_URL; restoring" >&2
+    git checkout -- "$SPEC_FILE" 2>/dev/null || true
+    exit 1
+fi
+NEW_SHA=$(sha256sum "$WORKDIR/src.tar.gz" | awk '{print $1}')
+sed -i -E "0,/^# sha256:.*/s//# sha256: $NEW_SHA/" "$SPEC_FILE"
+if ! grep -q "^# sha256: $NEW_SHA" "$SPEC_FILE"; then
+    echo "FATAL: Source0 pin was not rewritten; restoring" >&2
+    git checkout -- "$SPEC_FILE" 2>/dev/null || true
+    exit 1
+fi
+
 DATE_STRING=$(LC_ALL=C date +"%a %b %d %Y")
 CHANGELOG_VER="${BASE_VER}^${GIT_DATE}git${SHORT_COMMIT}-1"
 sed -i '/^%changelog/,$d' "$SPEC_FILE"
