@@ -7,8 +7,8 @@
 %global better_sqlite3_version 13.0.3
 
 Name:           splayer-next
-Version:        1.1.0
-Release:        3%{?dist}
+Version:        1.2.0
+Release:        1%{?dist}
 Summary:        Cross-platform desktop music player with rich lyric support (Nexus Optimized)
 
 License:        AGPL-3.0-only
@@ -114,6 +114,9 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %attr(4755, root, root) /opt/SPlayer-Next/chrome-sandbox
 
 %changelog
+* Sat Oct 24 2026 Ackerman-00 <quietcraft@gmail.com> - 1.2.0-1
+- Auto-update to upstream release v1.2.0
+
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.1.0-3
 - Ship the upstream AGPL-3.0 LICENSE (Source1, same v1.1.0 tag as the rpm
   payload, which contains no license text).
