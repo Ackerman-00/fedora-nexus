@@ -702,6 +702,64 @@ def hunt_probes():
             "", findings)
 
 
+def supported_releases(readme_text):
+    """Parse the README 'Supported releases' claim into (numbers, rawhide)."""
+    m = re.search(r"\*\*Supported releases:\*\*(.*?)(?:\n>\s*$|\n\n)", readme_text, re.S)
+    if not m:
+        return (None, None)
+    line = m.group(1).replace("\n> ", " ")
+    nums = set(int(x) for x in re.findall(r"\b(\d{2})\b", line) if 30 <= int(x) <= 60)
+    return (nums, bool(re.search(r"rawhide", line, re.I)))
+
+
+def chroot_doc_findings(copr_nums, copr_rawhide, doc_nums, doc_rawhide):
+    """Every mismatch between the built chroots and the documented ones."""
+    findings = []
+    for n in sorted(copr_nums - doc_nums):
+        findings.append(("docs", "F%d chroot builds but README does not list it" % n))
+    for n in sorted(doc_nums - copr_nums):
+        findings.append(("docs", "README lists F%d but no chroot builds it" % n))
+    if copr_rawhide != doc_rawhide:
+        findings.append(("docs", "rawhide chroot=%s, README rawhide=%s"
+                         % (copr_rawhide, doc_rawhide)))
+    return findings
+
+
+def hunt_chroot_docs():
+    """README's supported releases must be the chroots COPR actually builds.
+
+    A release the README promises without a chroot is a support claim with no
+    package behind it; a chroot nobody documents is invisible to users.
+    """
+    d = get_json("%s/project?ownername=ackerman&projectname=nexus" % COPR)
+    roots = sorted((d.get("chroot_repos") or {}).keys())
+    copr_nums = set()
+    copr_rawhide = False
+    for r in roots:
+        m = re.search(r"fedora-(\d+)-", r)
+        if m:
+            copr_nums.add(int(m.group(1)))
+        if "rawhide" in r:
+            copr_rawhide = True
+    readme = open(os.path.join(ROOT, "README.md"), encoding="utf-8").read()
+    doc_nums, doc_rawhide = supported_releases(readme)
+    if doc_nums is None:
+        return ("chroot-docs", "unavailable (no 'Supported releases' line in README)", "",
+                [("readme", "supported releases line missing")])
+    findings = chroot_doc_findings(copr_nums, copr_rawhide, doc_nums, doc_rawhide)
+    releases = re.findall(r'href="(\d+)/"', get_text("https://mirrors.kernel.org/fedora/releases/"))
+    if releases:
+        stable = max(int(x) for x in releases)
+        for n in sorted(copr_nums):
+            if n < stable - 1:
+                findings.append(("docs", "F%d chroot is older than supported F%d/F%d"
+                                 % (n, stable - 1, stable)))
+    summary = "%d chroots vs README [%s], %d findings" % (
+        len(roots), ",".join(str(x) for x in sorted(doc_nums)) + ("+rawhide" if doc_rawhide else ""),
+        len(findings))
+    return ("chroot-docs", summary, "COPR chroot_repos + README supported releases", findings)
+
+
 def hunt_fedora_releases():
     """Which Fedora is stable, and which is next - re-read, never remembered."""
     releases = re.findall(r'href="(\d+)/"', get_text("https://mirrors.kernel.org/fedora/releases/"))
@@ -833,7 +891,7 @@ def hunt_pins():
 HUNTS = (hunt_builds, hunt_chroots, hunt_copr_config, hunt_upstream, hunt_cves,
          hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_sources,
          hunt_pins, hunt_readme, hunt_published_nvr, hunt_probes, hunt_sandbox,
-         hunt_fedora_releases, hunt_slice)
+         hunt_fedora_releases, hunt_chroot_docs, hunt_slice)
 
 
 def main():
