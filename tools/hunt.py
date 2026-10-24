@@ -759,10 +759,32 @@ def get_text(url):
         return ""
 
 
+def hunt_sandbox():
+    """An Electron payload ships chrome-sandbox 4755 or not at all.
+
+    A plain 0755 helper trips Chromium's SUID preflight and aborts for every
+    non-root user, so the spec must carry %attr(4755, root, root) or remove it.
+    """
+    n = 0
+    findings = []
+    for sp in specs():
+        txt = open(sp, encoding="utf-8", errors="replace").read()
+        if "chrome-sandbox" not in txt:
+            continue
+        n += 1
+        pkg = os.path.basename(os.path.dirname(sp))
+        if re.search(r"%attr\(\s*4755", txt):
+            continue
+        if re.search(r"^[ \t]*rm[ \t].*chrome-sandbox", txt, re.M):
+            continue
+        findings.append((pkg, "chrome-sandbox without %attr(4755, root, root) and not removed"))
+    return ("sandbox", "%d Electron specs, %d findings" % (n, len(findings)), "", findings)
+
+
 HUNTS = (hunt_builds, hunt_chroots, hunt_copr_config, hunt_upstream, hunt_cves,
          hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_sources,
-         hunt_readme, hunt_published_nvr, hunt_probes, hunt_fedora_releases,
-         hunt_slice)
+         hunt_readme, hunt_published_nvr, hunt_probes, hunt_sandbox,
+         hunt_fedora_releases, hunt_slice)
 
 
 def main():
