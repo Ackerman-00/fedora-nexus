@@ -2,20 +2,20 @@
 %global __requires_exclude_from ^/opt/SPlayer-Next/.*$
 %global __provides_exclude_from ^/opt/SPlayer-Next/.*$
 
-# versions read from the 1.1.0 app.asar, not the filename
-%global electron_version 43.2.0
+# versions read from the 1.2.0 payload, not the filename
+%global electron_version 44.9.0
 %global better_sqlite3_version 13.0.3
 
 Name:           splayer-next
 Version:        1.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Cross-platform desktop music player with rich lyric support (Nexus Optimized)
 
 License:        AGPL-3.0-only
 URL:            https://github.com/SPlayer-Dev/SPlayer-Next
 
-# sha256: 7fe7ec69ba6353c0230d4a65dbea7d014fb40310f90745c0babfeda235224e1a
 Source0:        %{url}/releases/download/v%{version}/splayer-next-%{version}-x86_64.rpm
+# sha256: 30acae5ddc98e2b5f3254af6004613194ac9daa43f8d05eb6a1831481c7e9441
 # The rpm payload carries no license text; the repo does at the same tag.
 Source1:        %{url}/raw/v%{version}/LICENSE
 
@@ -114,6 +114,11 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %attr(4755, root, root) /opt/SPlayer-Next/chrome-sandbox
 
 %changelog
+* Sat Oct 24 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.2.0-2
+- Refresh the sha256 pin and both bundled() versions from the 1.2.0 payload:
+  the auto-update left the pin and bundled(electron) at their 1.1.0 values
+  (Electron 43.2.0 -> 44.9.0; better-sqlite3 13.0.3 unchanged).
+
 * Sat Oct 24 2026 Ackerman-00 <quietcraft@gmail.com> - 1.2.0-1
 - Auto-update to upstream release v1.2.0
 

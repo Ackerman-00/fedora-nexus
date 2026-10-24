@@ -33,19 +33,36 @@ fi
 echo "  -> [UPDATE] $CURRENT_VERSION -> $LATEST_VERSION"
 
 RPM_URL="https://github.com/$GITHUB_REPO/releases/download/v${LATEST_VERSION}/splayer-next-${LATEST_VERSION}-x86_64.rpm"
-echo "  -> [CHECK] Verifying $RPM_URL"
-if ! curl --output /dev/null --silent --location --head --fail "$RPM_URL"; then
+echo "  -> [CHECK] Downloading $RPM_URL"
+WORKDIR=$(mktemp -d)
+trap 'rm -rf "$WORKDIR"' EXIT
+if ! curl --silent --location --fail -o "$WORKDIR/pkg.rpm" "$RPM_URL"; then
     echo "  -> [SKIP] Upstream x86_64 RPM for $LATEST_TAG is not published (yet). Keeping $CURRENT_VERSION."
     exit 0
 fi
 
+NEW_SHA=$(sha256sum "$WORKDIR/pkg.rpm" | awk '{print $1}')
+(cd "$WORKDIR" && rpm2cpio pkg.rpm | cpio -idm --quiet) || {
+    echo "  -> [ERROR] Could not unpack the release RPM; keeping $CURRENT_VERSION."
+    exit 1
+}
+BUNDLED_SQLITE=$(python3 -c "import json;print(json.load(open('$WORKDIR/opt/SPlayer-Next/resources/app.asar.unpacked/node_modules/better-sqlite3/package.json'))['version'])" 2>/dev/null)
+BUNDLED_ELECTRON=$(strings -a "$WORKDIR/opt/SPlayer-Next/SPlayer-Next" 2>/dev/null \
+    | grep -oE 'Electron/[0-9]+\.[0-9]+\.[0-9]+' | head -1 | cut -d/ -f2)
+if [ -z "$BUNDLED_SQLITE" ] || [ -z "$BUNDLED_ELECTRON" ]; then
+    echo "  -> [ERROR] Could not read the bundled electron/better-sqlite3 versions from the release RPM; keeping $CURRENT_VERSION."
+    exit 1
+fi
+
 sed -i -E "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
 sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
+# Provides: bundled() must name what the payload really carries
+sed -i -E "s/^%global electron_version .*/%global electron_version $BUNDLED_ELECTRON/" "$SPEC_FILE"
+sed -i -E "s/^%global better_sqlite3_version .*/%global better_sqlite3_version $BUNDLED_SQLITE/" "$SPEC_FILE"
+# A pin that lags the artifact is a false receipt
+sed -i -E "0,/^# sha256:.*/s//# sha256: $NEW_SHA/" "$SPEC_FILE"
 
-echo "  -> [NOTE] Re-verify the bundled electron/better-sqlite3 versions,"
-echo "            the sha256 comment, and the readelf NEEDED set in"
-echo "            $SPEC_FILE against the new artifact:"
-echo "            rpm2cpio splayer-next-${LATEST_VERSION}-x86_64.rpm | cpio -idm"
+echo "  -> [NOTE] Re-verify the readelf NEEDED set in $SPEC_FILE against the new payload."
 
 DATE=$(LC_ALL=C date +"%a %b %d %Y")
 CHANGELOG_ENTRY="* $DATE $PACKAGER - $LATEST_VERSION-1\n- Auto-update to upstream release $LATEST_TAG\n"
@@ -58,6 +75,14 @@ fi
 echo "  -> [DONE] Successfully patched $SPEC_FILE."
 if ! grep -q "^Name:" "$SPEC_FILE"; then
     echo "FATAL: $SPEC_FILE lost its Name: header during update; restoring" >&2
+    git checkout -- "$SPEC_FILE" 2>/dev/null || true
+    exit 1
+fi
+# Never ship a spec whose pin or bundled Provides disagree with the artifact
+if ! grep -q "^# sha256: $NEW_SHA" "$SPEC_FILE" \
+   || ! grep -q "^%global electron_version $BUNDLED_ELECTRON" "$SPEC_FILE" \
+   || ! grep -q "^%global better_sqlite3_version $BUNDLED_SQLITE" "$SPEC_FILE"; then
+    echo "FATAL: $SPEC_FILE does not carry the new pin/bundled versions; restoring" >&2
     git checkout -- "$SPEC_FILE" 2>/dev/null || true
     exit 1
 fi
