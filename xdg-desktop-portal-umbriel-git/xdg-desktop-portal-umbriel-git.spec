@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          1cc6eb18ba0d6c82dd66999646d7e554f76a85b6
+%global commit          e69d6f72122a99aa3668e182a4df8755ada81c17
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261019133907
+%global gitdate         20261024195939
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
@@ -72,6 +72,5 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %config(noreplace) %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
-* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261019133907git1cc6eb1-1
-- Nightly sync with upstream main branch (Commit: 1cc6eb1)
-- Run upstream's new pipewire-buffer-params regression test in %check
+* Sat Oct 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261024195939gite69d6f7-1
+- Nightly sync with upstream main branch (Commit: e69d6f7)
