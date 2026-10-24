@@ -199,6 +199,45 @@ def test_strings_version():
     return failures
 
 
+def test_pin_attribution():
+    """A `# sha256:` line belongs to the Source line ABOVE it.
+
+    Placement is the contract: a pin written ABOVE its Source is invisible to
+    the sweep (splayer-next shipped a stale 1.1.0 pin that way) or attributed
+    to the previous file (noctalia-greeter's license pins). Both specs were
+    moved to pin-below-source, so this test keeps the rule honest.
+    """
+    A = "a" * 64
+    B = "b" * 64
+    C = "c" * 64
+    below = """
+Name: x
+Source0:        https://example.com/x-%%{version}.tar.gz
+# sha256: %s
+Source1:        https://example.com/LICENSE
+# sha256: %s
+""" % (A, B)
+    above = """
+Name: x
+Source0:        https://example.com/x.tar.gz
+# sha256: %s
+Source1:        https://example.com/LICENSE
+""" % C
+    failures = 0
+    got = ts.parse_spec_sources(below, {"version": "1"})
+    want = [("https://example.com/x-1.tar.gz", "x-1.tar.gz", A),
+            ("https://example.com/LICENSE", "LICENSE", B)]
+    ok = got == want
+    failures += 0 if ok else 1
+    print(f"{'PASS' if ok else 'FAIL'}: pin below its Source attaches -> {got}")
+    got = ts.parse_spec_sources(above, {"version": "1"})
+    ok = [g[2] for g in got] == [C, None]
+    failures += 0 if ok else 1
+    print(f"{'PASS' if ok else 'FAIL'}: pin above a Source attaches to the "
+          f"previous Source (documented limit) -> {got}")
+    return failures
+
+
 def main():
     failures = 0
     for pinned, upstream, want, why in CASES:
@@ -212,6 +251,7 @@ def main():
     failures += test_namespaced_tags()
     failures += test_detect_type()
     failures += test_strings_version()
+    failures += test_pin_attribution()
     print(f"\n{'ALL PASS' if not failures else str(failures) + ' FAILURE(S)'}"
           f" ({len(CASES)} cases)")
     return 1 if failures else 0

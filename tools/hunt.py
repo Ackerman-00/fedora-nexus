@@ -781,9 +781,58 @@ def hunt_sandbox():
     return ("sandbox", "%d Electron specs, %d findings" % (n, len(findings)), "", findings)
 
 
+def hunt_pins():
+    """Every pinned `# sha256:` comment must match the artifact it names.
+
+    A pin that lags the version it ships is a false receipt: the auto-updater
+    once bumped splayer-next to 1.2.0 and left the 1.1.0 hash in place.
+    Sources over PIN_SIZE_CAP are reported, not downloaded - the run has a
+    clock and a 500 MB AppImage is not what this check is for.
+    """
+    ts = sweep_module()
+    PIN_SIZE_CAP = 150 * 1024 * 1024
+    checked, skipped, findings = 0, [], []
+    for sp in specs():
+        txt = open(sp, encoding="utf-8", errors="replace").read()
+        vars_ = ts.spec_vars(txt)
+        pkg = os.path.basename(sp)
+        for url, name, sha in ts.parse_spec_sources(txt, vars_):
+            if not sha:
+                continue
+            if not url.startswith("http"):
+                skipped.append("%s:%s(unexpanded)" % (pkg, name))
+                continue
+            try:
+                req = urllib.request.Request(url, headers=UA, method="HEAD")
+                with urllib.request.urlopen(req, timeout=45) as r:
+                    size = int(r.headers.get("Content-Length") or 0)
+            except Exception:
+                size = 0
+            if size > PIN_SIZE_CAP:
+                skipped.append("%s:%s(%dMB)" % (pkg, name, size // (1024 * 1024)))
+                continue
+            checked += 1
+            h = hashlib.sha256()
+            try:
+                req = urllib.request.Request(url, headers=UA)
+                with urllib.request.urlopen(req, timeout=600) as r:
+                    for chunk in iter(lambda: r.read(1 << 20), b""):
+                        h.update(chunk)
+            except Exception as exc:
+                findings.append((pkg, "cannot fetch %s: %s" % (name, exc)))
+                continue
+            if h.hexdigest() != sha:
+                findings.append((pkg, "pin mismatch on %s: pinned %s got %s"
+                                 % (name, sha[:16], h.hexdigest()[:16])))
+    note = "skipped (over %dMB or unexpanded): %s" % (
+        PIN_SIZE_CAP // (1024 * 1024), ", ".join(skipped) or "none")
+    return ("pins", "%d pinned sources hashed, %d mismatched" % (checked, len(findings)),
+            note, findings)
+
+
 HUNTS = (hunt_builds, hunt_chroots, hunt_copr_config, hunt_upstream, hunt_cves,
          hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_sources,
-         hunt_readme, hunt_published_nvr, hunt_probes, hunt_sandbox,
+         hunt_pins, hunt_readme, hunt_published_nvr, hunt_probes, hunt_sandbox,
          hunt_fedora_releases, hunt_slice)
 
 
