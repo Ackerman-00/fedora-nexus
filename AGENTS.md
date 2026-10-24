@@ -431,6 +431,12 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
 - `bash tools/teardown-fresh.sh <pkgdir> [chroot] [smoke-cmd] [rpm-name]` -
   the same, with the build in one container and the install + smoke in a
   second fresh one, so the install test cannot see the build deps.
+- `bash tools/teardown-batch.sh <list> [jobs] [chroot] [--probes]` - run
+  teardown-fresh.sh N at a time, keep a log per package under `TD_OUTDIR`,
+  and print the relay tokens. Keeps every job slot full: a barrier between
+  batches wastes half the run when one package builds slowly.
+- `bash tools/spec-lint.sh [chroot] [spec ...]` - `rpmspec -P`, `rpmlint`
+  and `dnf builddep --assumeno` for every spec in one container.
 - `bash tools/copr-install-check.sh <pkg> <rpm-name> <smoke-cmd> [chroot]` -
   install-test one published package from the live COPR repo.
 - `bash tools/install-sweep.sh <list> [jobs] [chroot]` - install-test the
