@@ -50,6 +50,23 @@ def get_json(url, timeout=45):
         raise
 
 
+def fetch_sha256(url, attempts=3):
+    """sha256 of a remote file, retried: a dropped socket is not a mismatch."""
+    last = ""
+    for n in range(attempts):
+        h = hashlib.sha256()
+        try:
+            req = urllib.request.Request(url, headers=UA)
+            with urllib.request.urlopen(req, timeout=600) as r:
+                for chunk in iter(lambda: r.read(1 << 20), b""):
+                    h.update(chunk)
+            return h.hexdigest(), ""
+        except Exception as exc:  # noqa: BLE001 - any transport error retries
+            last = "%s: %s" % (type(exc).__name__, exc)
+            time.sleep(2 * (n + 1))
+    return "", last
+
+
 def resolve_version(path, raw):
     """Expand %{macro} in a spec field from the spec's own %global definitions."""
     txt = open(path, encoding="utf-8", errors="replace").read()
@@ -870,21 +887,19 @@ def hunt_pins():
                 skipped.append("%s:%s(%dMB)" % (pkg, name, size // (1024 * 1024)))
                 continue
             checked += 1
-            h = hashlib.sha256()
-            try:
-                req = urllib.request.Request(url, headers=UA)
-                with urllib.request.urlopen(req, timeout=600) as r:
-                    for chunk in iter(lambda: r.read(1 << 20), b""):
-                        h.update(chunk)
-            except Exception as exc:
-                findings.append((pkg, "cannot fetch %s: %s" % (name, exc)))
+            digest, err = fetch_sha256(url)
+            if err:
+                # Unreachable is not a mismatch; retries already ran.
+                findings.append((pkg, "cannot fetch %s: %s" % (name, err)))
                 continue
-            if h.hexdigest() != sha:
+            if digest != sha:
                 findings.append((pkg, "pin mismatch on %s: pinned %s got %s"
-                                 % (name, sha[:16], h.hexdigest()[:16])))
+                                 % (name, sha[:16], digest[:16])))
+    mismatched = [f for f in findings if "pin mismatch" in f[1]]
     note = "skipped (over %dMB or unexpanded): %s" % (
         PIN_SIZE_CAP // (1024 * 1024), ", ".join(skipped) or "none")
-    return ("pins", "%d pinned sources hashed, %d mismatched" % (checked, len(findings)),
+    return ("pins", "%d pinned sources hashed, %d mismatched, %d unreachable"
+            % (checked, len(mismatched), len(findings) - len(mismatched)),
             note, findings)
 
 
