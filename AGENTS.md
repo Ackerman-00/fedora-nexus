@@ -451,6 +451,11 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
   `<outdir>/rows.txt` ready for the relay table. A mirror that drops a
   package mid-transaction is retried; a smoke that names a path the RPM does
   not ship is a `PROBE-BUG` row, not a package failure.
+- `bash tools/rpm-desktop-audit.sh <rpm> [chroot]` - install one built RPM
+  in a fresh container and resolve every shipped `.desktop`: `Icon=` must hit
+  a shipped icon file, `Exec=` must be an existing binary. `rpmbuild` and the
+  install test both pass on an icon that no file provides (mangowm shipped
+  `Icon=mango` with no icon for months), so this is the check that catches it.
 - `tools/probes.txt` - the install-test probe per package
   (`pkg|dnf-name|smoke`), so a sweep runs `install-sweep.sh tools/probes.txt`
   instead of guessing paths. `python3 tools/hunt.py probes` fails when a
