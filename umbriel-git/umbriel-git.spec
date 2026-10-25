@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          5527c8ff76f33ed90eca7b7648bf731f6b522d7b
+%global commit          e57420b088e3ab77057e4e7f1db96db7b719a7d9
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261025032409
+%global gitdate         20261025145009
 
 # Fedora LTO flags break linking; keep escape hatch.
 %global _lto_cflags %{nil}
@@ -121,6 +121,5 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Sun Oct 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261025032409git5527c8f-1
-- Nightly sync with upstream main branch (Commit: 5527c8f)
-- Add BuildRequires pkgconfig(libeis-1.0) >= 1.3 (upstream EIS input, meson.build)
+* Sun Oct 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261025145009gite57420b-1
+- Nightly sync with upstream main branch (Commit: e57420b)
