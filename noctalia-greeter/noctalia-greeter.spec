@@ -5,7 +5,7 @@
 
 Name:           noctalia-greeter
 Version:        1.7.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 # SPDX: MIT AND Apache-2.0 (vendored Wuffs).
@@ -23,6 +23,8 @@ BuildRequires:  gcc-c++
 BuildRequires:  greetd
 BuildRequires:  dbus
 BuildRequires:  polkit
+# %check's apply-appearance test invokes cmp.
+BuildRequires:  diffutils
 BuildRequires:  stb_image_resize2-devel
 BuildRequires:  libinput-devel
 # wlroots 0.20 layout is ABI-critical; pin the series.
@@ -56,6 +58,8 @@ BuildRequires:  pkgconfig(wayland-server)
 BuildRequires:  pkgconfig(xkbcommon)
 
 Requires:       dbus
+# The session script execs dbus-run-session when present (dbus-daemon).
+Requires:       /usr/bin/dbus-run-session
 Requires:       greetd
 Requires:       wlroots >= 0.20
 
@@ -125,5 +129,9 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Sun Oct 25 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261025021409gitdbace1c-2
+- Declare diffutils for the %check test that calls cmp
+- Require the dbus-run-session provider the session script execs
+
 * Sun Oct 25 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261025021409gitdbace1c-1
 - Nightly sync with upstream main branch (Commit: dbace1c)
