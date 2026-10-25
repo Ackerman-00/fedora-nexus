@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          65bd2f1335bfc725d75d6b76b5ddd9556262ddb4
+%global commit          5527c8ff76f33ed90eca7b7648bf731f6b522d7b
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261025015111
+%global gitdate         20261025032409
 
 # Fedora LTO flags break linking; keep escape hatch.
 %global _lto_cflags %{nil}
@@ -32,6 +32,7 @@ BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.47
 BuildRequires:  pkgconfig(xkbcommon)
 BuildRequires:  pkgconfig(libinput) >= 1.27
+BuildRequires:  pkgconfig(libeis-1.0) >= 1.3
 BuildRequires:  pkgconfig(pixman-1) >= 0.43.0
 # libdisplay-info: upstream floor, F43 needs relaxation.
 %if 0%{?fedora} >= 44
@@ -120,5 +121,6 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Sun Oct 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261025015111git65bd2f1-1
-- Nightly sync with upstream main branch (Commit: 65bd2f1)
+* Sun Oct 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261025032409git5527c8f-1
+- Nightly sync with upstream main branch (Commit: 5527c8f)
+- Add BuildRequires pkgconfig(libeis-1.0) >= 1.3 (upstream EIS input, meson.build)
