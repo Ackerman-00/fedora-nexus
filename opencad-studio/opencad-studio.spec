@@ -8,15 +8,15 @@
 %global __requires_exclude_from ^/opt/opencad-studio/.*$
 
 Name:           opencad-studio
-Version:        2026.42
-Release:        3%{?dist}
+Version:        2026.43
+Release:        1%{?dist}
 Summary:        Open-source 2D/3D CAD with native DWG/DXF support
 
 License:        GPL-3.0-only
 URL:            https://www.opencadstudio.com
 ExclusiveArch:  x86_64
-Source0:        https://github.com/HakanSeven12/OpenCADStudio/releases/download/v2026.42/OpenCADStudio-v2026.42-linux-x86_64.AppImage
-# sha256: 3c0cc42bb7266ed67a1a5be7548ed954d3951a4c8867bed2840e9a9c685b337a
+Source0:        https://github.com/HakanSeven12/OpenCADStudio/releases/download/v2026.43/OpenCADStudio-v2026.43-linux-x86_64.AppImage
+# sha256: 824d957b32fb92bfc97a043907f0a51a134f5a892636fb1fb6319a98d88edb8d
 # The AppImage carries no license text; the repo has the GPL-3.0 at the tag.
 Source1:        https://raw.githubusercontent.com/HakanSeven12/OpenCADStudio/v%{version}/LICENSE
 
@@ -107,13 +107,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
-* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2026.42-3
-- Pin Source0's sha256 under Source0: the hash was written below Source1,
-  so it read as a pin of the LICENSE text it does not match.
-
-* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2026.42-2
-- Ship the upstream GPL-3.0 LICENSE (Source1, same v2026.42 tag as
-  Source0); the AppImage payload carries no license text.
-
-* Sun Oct 18 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.42-1
-- Auto-update to upstream release v2026.42
+* Sun Oct 25 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.43-1
+- Auto-update to upstream release v2026.43
