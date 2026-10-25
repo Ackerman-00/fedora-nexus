@@ -1,18 +1,18 @@
 # These will be automatically populated by update.sh
-%global commit          8cc00abfdce3d8c1e68709a44eb0efc055932ada
+%global commit          dbace1c834a9e0f2e1b5d4ef186db8ec3b422a49
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261023191448
+%global gitdate         20261025021409
 
 Name:           noctalia-greeter
 Version:        1.7.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 # SPDX: MIT AND Apache-2.0 (vendored Wuffs).
 License:        MIT AND Apache-2.0
 URL:            https://github.com/noctalia-dev/noctalia-greeter
 Source0:        %{url}/archive/%{commit}/%{name}-%{commit}.tar.gz
-# sha256: f713e487aef6411e0b42d4d891006fa0012e909618e3360391a7e093ff59a59b
+# sha256: 3fae5d0c4ec5043a60c4e66ed13d8dad6ea32340fee9c3ba2321288ab48e1cd4
 Source1:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-APACHE
 # sha256: 0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594
 Source2:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-MIT
@@ -125,9 +125,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Sat Oct 24 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.7.0^20261023191448git8cc00ab-2
-- Pin Source0's tarball and move every pin below its own Source line: a pin
-  above the next Source was attributed to the wrong file by the sweep.
-
-* Fri Oct 23 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261023191448git8cc00ab-1
-- Nightly sync with upstream main branch (Commit: 8cc00ab)
+* Sun Oct 25 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261025021409gitdbace1c-1
+- Nightly sync with upstream main branch (Commit: dbace1c)
