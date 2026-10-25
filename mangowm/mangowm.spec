@@ -1,6 +1,6 @@
 Name:           mangowm
 Version:        0.18.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <quietcraft@gmail.com>
@@ -36,8 +36,13 @@ BuildRequires:  pkgconfig(scenefx-0.5) >= 0.5.0
 
 Requires:       xorg-x11-server-Xwayland
 Requires:       vulkan-loader
+Requires:       hicolor-icon-theme
+Requires(post): gtk-update-icon-cache
+Requires(postun): gtk-update-icon-cache
 Recommends:     xdg-desktop-portal >= 1.18
 Recommends:     xdg-desktop-portal-gtk
+# mango-portals.conf routes ScreenCast/Screenshot to the wlr backend.
+Recommends:     xdg-desktop-portal-wlr
 
 %global mangowc_ver 0.12.5-1
 
@@ -62,6 +67,23 @@ sed -i "s/'-U_FORTIFY_SOURCE',//g" meson.build
 
 %install
 %meson_install
+# mango.desktop ships Icon=mango; upstream never installs the SVG.
+install -Dpm0644 assets/mango.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/mango.svg
+
+%post
+/bin/touch --no-create %{_datadir}/icons/hicolor >/dev/null 2>&1 || :
+/usr/bin/gtk-update-icon-cache -q %{_datadir}/icons/hicolor >/dev/null 2>&1 || :
+
+%postun
+case "$1" in
+    0)
+        /bin/touch --no-create %{_datadir}/icons/hicolor >/dev/null 2>&1
+        /usr/bin/gtk-update-icon-cache -q %{_datadir}/icons/hicolor >/dev/null 2>&1 || :
+        ;;
+esac
+
+%posttrans
+/usr/bin/gtk-update-icon-cache -q %{_datadir}/icons/hicolor >/dev/null 2>&1 || :
 
 %files
 %doc README.md
@@ -74,10 +96,15 @@ sed -i "s/'-U_FORTIFY_SOURCE',//g" meson.build
 %config(noreplace) %{_sysconfdir}/mango/config.conf
 %config(noreplace) %{_sysconfdir}/mango/config.toml
 %{_datadir}/wayland-sessions/mango.desktop
+%{_datadir}/icons/hicolor/scalable/apps/mango.svg
 %config(noreplace) %{_datadir}/xdg-desktop-portal/mango-portals.conf
 # Mango activates it itself; see set_activation_env() in src/main.c
 %{_userunitdir}/mango-session.target
 
 %changelog
+* Sun Oct 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.3-2
+- Install the mango session icon so Icon=mango resolves
+- Recommend xdg-desktop-portal-wlr for the wlr ScreenCast/Screenshot backend
+
 * Sat Oct 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.3-1
 - Auto-update to version 0.18.3
