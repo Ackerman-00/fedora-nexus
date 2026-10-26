@@ -4,10 +4,12 @@
 %global __provides_exclude_from ^%{_libdir}/%{name}/.*$
 # Drop auto-deps fluxer used to satisfy itself.
 %global __requires_exclude ^libffmpeg\\.so.*$|^libcbor\\.so.*$
+# The download CDN drops HTTP/2 streams (curl 92); rpm's urlhelper needs h1.1.
+%global __urlhelper_localopts --http1.1
 
 Name:           fluxer
 Version:        2026.1026.24218
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 # SPDX from app.asar package.json and LICENSES.chromium.html
@@ -106,5 +108,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/app.fluxer.FluxerDesk
 %attr(4755, root, root) %{_libdir}/%{name}/chrome-sandbox
 
 %changelog
+* Mon Oct 26 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1026.24218-2
+- Force the source fetch over HTTP/1.1; the CDN drops HTTP/2 streams
+
 * Mon Oct 26 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1026.24218-1
 - Update to version 2026.1026.24218
