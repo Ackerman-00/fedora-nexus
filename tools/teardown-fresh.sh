@@ -22,6 +22,8 @@ mkdir -p "$OUTDIR"
 rm -f "$OUTDIR"/*.rpm "$OUTDIR"/build.log "$OUTDIR"/install.log
 [ -z "$SPEC" ] && { echo "TEARDOWN_$PKG=FAIL no-spec"; exit 2; }
 
+# a healthy cargo/meson build prints nothing for minutes; say it is alive
+echo "BUILDING $PKG on fedora:$CH ($(date -u +%H:%M:%SZ))"
 build=$(docker run --rm -v "$R:/srv:ro" -v "$OUTDIR:/out" "registry.fedoraproject.org/fedora:$CH" bash -lc "
 dnf -y -q --setopt=gpgcheck=0 install dnf-plugins-core rpm-build rpmdevtools >/dev/null 2>&1
 dnf -y -q --setopt=gpgcheck=0 copr enable ackerman/nexus >/dev/null 2>&1
@@ -78,6 +80,7 @@ if [ "$ELECTRON" = 1 ]; then
   SMOKE_RUN="useradd -m t; su t -c 'timeout 60 xvfb-run -a bash /rpms/smoke.sh' > /tmp/smoke.log 2>&1; s=\$?; tail -5 /tmp/smoke.log; echo SMOKE_EXIT=\$s; echo SANDBOX_FATAL=\$(grep -c setuid_sandbox_host /tmp/smoke.log)"
 fi
 
+echo "INSTALLING $PKG on fedora:$CH ($(date -u +%H:%M:%SZ))"
 inst=$(docker run --rm $SECOPT -v "$OUTDIR:/rpms:ro" "registry.fedoraproject.org/fedora:$CH" bash -lc "
 dnf -y -q --setopt=gpgcheck=0 install dnf-plugins-core $EXTRAPKG >/dev/null 2>&1
 dnf -y -q --setopt=gpgcheck=0 copr enable ackerman/nexus >/dev/null 2>&1
