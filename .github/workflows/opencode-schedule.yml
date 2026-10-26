@@ -2386,8 +2386,17 @@ jobs:
         run: |
           # A killed agent loses unpushed work; land the checkpoint it wrote.
           # Touches no working-tree file: one commit built straight from the blob.
-          [ -f .opencode-relay.md ] || { echo "no relay on disk"; exit 0; }
-          grep -qx "run_id: $RUN_ID" .opencode-relay.md || { echo "on-disk relay is not this run - leaving it alone"; exit 0; }
+          # A run that died before writing anything still leaves a block under
+          # its own run_id, else the gate reports "relay is not for this run"
+          # and the next run inherits a failure it cannot read (issue #74).
+          [ -f .opencode-relay.md ] || : > .opencode-relay.md
+          if ! grep -qx "run_id: $RUN_ID" .opencode-relay.md; then
+            { printf 'run_id: %s\nstatus: unfinished\n\n### Handoff (synthesised by the checkpoint step)\n- This run ended without writing its own block; no evidence was recorded.\n- Run: %s/%s/actions/runs/%s\n- Continue from the last block below; it is the last proven state.\n\n' \
+                "$RUN_ID" "${GITHUB_SERVER_URL:-https://github.com}" "${GITHUB_REPOSITORY:-}" "$RUN_ID"
+              cat .opencode-relay.md; } > .opencode-relay.md.new
+            mv .opencode-relay.md.new .opencode-relay.md
+            echo "synthesised an owned unfinished block for run $RUN_ID"
+          fi
           git fetch -q origin main || true
           if git show origin/main:.opencode-relay.md 2>/dev/null | cmp -s - .opencode-relay.md; then
             echo "relay on main already matches this run - nothing to preserve"
