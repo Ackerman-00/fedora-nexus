@@ -6,14 +6,14 @@
 %global __requires_exclude_from ^/opt/openchamber/.*$
 
 Name:           openchamber
-Version:        2.5.1
+Version:        2.5.2
 Release:        1%{?dist}
 Summary:        AI coding agent workspace (Electron)
 
 License:        MIT
 URL:            https://github.com/openchamber/openchamber
-Source0:        %{url}/releases/download/v2.5.1/OpenChamber-2.5.1-linux-x86_64.AppImage
-# sha256: fb7bab5b1dba6b9f19113d0257d6a48d554fb0bde6d924a5b0c116edaf3ba4da
+Source0:        %{url}/releases/download/v2.5.2/OpenChamber-2.5.2-linux-x86_64.AppImage
+# sha256: e9580f2a8e5cb67e69a4246d163bb09c7f2f2858504bd7086d4fa206554a5878
 # The AppImage carries no license text; the repo does at the same tag.
 Source1:        %{url}/raw/v%{version}/LICENSE
 
@@ -114,5 +114,5 @@ install -Dm644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %attr(4755, root, root) /opt/openchamber/chrome-sandbox
 
 %changelog
-* Fri Oct 23 2026 Ackerman-00 <quietcraft@gmail.com> - 2.5.1-1
-- Auto-update to upstream release v2.5.1
+* Mon Oct 26 2026 Ackerman-00 <quietcraft@gmail.com> - 2.5.2-1
+- Auto-update to upstream release v2.5.2
