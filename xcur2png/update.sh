@@ -32,7 +32,10 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
         exit 0
     fi
 
-    SHA256=$(curl -sL "$ASSET_URL" | sha256sum | awk '{print $1}')
+    if ! SHA256=$(bash "$_update_sh_dir/../tools/fetch-sha256.sh" "$ASSET_URL"); then
+        echo "Error: could not download $ASSET_URL for hashing." >&2
+        exit 1
+    fi
     if [ -z "$SHA256" ]; then
         echo "Error: could not hash $ASSET_URL."
         exit 1

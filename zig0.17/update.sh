@@ -45,7 +45,7 @@ fi
 
 URL="https://ziglang.org/download/$LATEST/zig-$ARCH-$LATEST.tar.xz"
 echo "  -> [UPDATE] $CURRENT_VERSION -> $LATEST"
-if ! SHA=$(curl --silent --location --retry 3 --max-time 300 --fail "$URL" | sha256sum | awk '{print $1}'); then
+if ! SHA=$(bash "$_update_sh_dir/../tools/fetch-sha256.sh" "$URL"); then
     echo "  -> [ERROR] could not download $URL" >&2
     exit 1
 fi

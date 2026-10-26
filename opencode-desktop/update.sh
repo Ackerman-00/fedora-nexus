@@ -44,7 +44,10 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     sed -i -E "s|files/bin/[^/]+/opencode-desktop-linux-amd64.deb|files/bin/%{version}/opencode-desktop-linux-amd64.deb|" "$SPEC_FILE"
 
     echo "  -> [HASH] Computing sha256 of $DEB_URL"
-    SHA256=$(curl -sL "$DEB_URL" | sha256sum | awk '{print $1}')
+    if ! SHA256=$(bash "$_update_sh_dir/../tools/fetch-sha256.sh" "$DEB_URL"); then
+        echo "Error: could not download $DEB_URL for hashing." >&2
+        exit 1
+    fi
     if [ -n "$SHA256" ]; then
         sed -i -E "s|^# sha256:.*|# sha256: $SHA256|" "$SPEC_FILE"
     else

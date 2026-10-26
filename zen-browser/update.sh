@@ -43,7 +43,10 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
     sed -i -E "s|download/[^/]+/zen.linux-x86_64.tar.xz|download/$LATEST_TAG/zen.linux-x86_64.tar.xz|g" "$SPEC_FILE"
 
     echo "  -> [HASH] Computing sha256 of $TARBALL_URL"
-    SHA256=$(curl -sL "$TARBALL_URL" | sha256sum | awk '{print $1}')
+    if ! SHA256=$(bash "$_update_sh_dir/../tools/fetch-sha256.sh" "$TARBALL_URL"); then
+        echo "Error: could not download $TARBALL_URL for hashing." >&2
+        exit 1
+    fi
     if [ -n "$SHA256" ]; then
         sed -i -E "s|^# sha256:.*|# sha256: $SHA256|" "$SPEC_FILE"
     else

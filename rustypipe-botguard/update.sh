@@ -38,7 +38,9 @@ echo "  -> [UPDATE] $CURRENT_VERSION -> $LATEST_VERSION"
 
 ASSET_URL="https://codeberg.org/$CODEBERG_REPO/releases/download/${LATEST_TAG}/rustypipe-botguard-${LATEST_VERSION}-x86_64-unknown-linux-gnu.tar.xz"
 echo "  -> [CHECK] Verifying $ASSET_URL"
-NEW_SHA=$(curl --silent --location --fail "$ASSET_URL" 2>/dev/null | sha256sum 2>/dev/null | awk '{print $1}')
+if ! NEW_SHA=$(bash "$_update_sh_dir/../tools/fetch-sha256.sh" "$ASSET_URL"); then
+    NEW_SHA=""
+fi
 if [ -z "$NEW_SHA" ]; then
     echo "  -> [SKIP] Upstream asset for $LATEST_TAG is not fetchable (yet). Keeping $CURRENT_VERSION."
     exit 0

@@ -45,7 +45,10 @@ if [ "$CURRENT_VERSION" != "$VERSION" ]; then
     sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
     echo "  -> [HASH] Computing sha256 of served artifact"
-    SHA256=$(curl -sL --max-time 120 -A "Mozilla/5.0" "$API_URL" | sha256sum | awk '{print $1}')
+    if ! SHA256=$(bash "$_update_sh_dir/../tools/fetch-sha256.sh" "$API_URL" --http1.1 -A "Mozilla/5.0"); then
+        echo "Error: could not download $API_URL for hashing." >&2
+        exit 1
+    fi
     if [ -n "$SHA256" ]; then
         if grep -q "^# sha256:" "$SPEC_FILE"; then
             sed -i -E "s|^# sha256:.*|# sha256: $SHA256|" "$SPEC_FILE"

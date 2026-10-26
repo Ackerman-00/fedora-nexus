@@ -38,7 +38,10 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     sed -i -E "s|releases/download/[^/]+/Concat-.*-linux-x86_64.rpm|releases/download/$LATEST_TAG/Concat-${LATEST_VERSION}-linux-x86_64.rpm|" "$SPEC_FILE"
 
     echo "  -> [HASH] Computing sha256 of $RPM_URL"
-    SHA256=$(curl -sL "$RPM_URL" | sha256sum | awk '{print $1}')
+    if ! SHA256=$(bash "$_update_sh_dir/../tools/fetch-sha256.sh" "$RPM_URL"); then
+        echo "Error: could not download $RPM_URL for hashing." >&2
+        exit 1
+    fi
     if [ -n "$SHA256" ]; then
         sed -i -E "s|^# sha256:.*|# sha256: $SHA256|" "$SPEC_FILE"
     else

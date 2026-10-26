@@ -38,7 +38,10 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     sed -i -E "s|releases/download/[^/]+/OpenChamber-.*-linux-x86_64.AppImage|releases/download/$LATEST_TAG/OpenChamber-${LATEST_VERSION}-linux-x86_64.AppImage|" "$SPEC_FILE"
 
     echo "  -> [HASH] Computing sha256 of $APPIMAGE_URL"
-    SHA256=$(curl -sL "$APPIMAGE_URL" | sha256sum | awk '{print $1}')
+    if ! SHA256=$(bash "$_update_sh_dir/../tools/fetch-sha256.sh" "$APPIMAGE_URL"); then
+        echo "Error: could not download $APPIMAGE_URL for hashing." >&2
+        exit 1
+    fi
     if [ -n "$SHA256" ]; then
         sed -i -E "s|^# sha256:.*|# sha256: $SHA256|" "$SPEC_FILE"
     else
