@@ -8,7 +8,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -51,6 +51,7 @@ BuildRequires:  pkgconfig(gbm)
 BuildRequires:  pkgconfig(jemalloc)
 BuildRequires:  pkgconfig(lcms2)
 BuildRequires:  pkgconfig(xcb)
+BuildRequires:  pkgconfig(xcb-shape)
 BuildRequires:  pkgconfig(xcb-icccm)
 BuildRequires:  pkgconfig(xcb-ewmh)
 # Native DRM policy optional; off breaks [drm] config.
@@ -121,5 +122,7 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Mon Oct 26 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261026131611gitd9497f3-2
+- Declare the xcb-shape dependency upstream now requires unconditionally
 * Mon Oct 26 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261026131611gitd9497f3-1
 - Nightly sync with upstream main branch (Commit: d9497f3)
