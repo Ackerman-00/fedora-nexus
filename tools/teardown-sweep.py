@@ -99,6 +99,59 @@ def fetch_with_name(url, timeout=120):
         return data, (m.group(1).strip() if m else None)
 
 
+def _cd_filename(header):
+    m = re.search(r'filename="?([^";]+)"?', header or "")
+    return m.group(1).strip() if m else None
+
+
+def fetch_to_file(url, dst, timeout=120, attempts=4):
+    """Stream url into dst, resuming a short read with Range (CDNs cut big bodies)."""
+    headers = _github_headers() if ("api.github.com" in url or "github.com" in url) else dict(UA)
+    total = None
+    last = "no attempt"
+    for _ in range(attempts):
+        have = dst.stat().st_size if dst.exists() else 0
+        h = dict(headers)
+        if have:
+            h["Range"] = "bytes=%d-" % have
+        try:
+            req = urllib.request.Request(url, headers=h)
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                cd = r.headers.get("Content-Disposition", "")
+                if have and r.status == 206:
+                    mode = "ab"
+                    m = re.search(r"/(\d+)\s*$", r.headers.get("Content-Range") or "")
+                    if m:
+                        total = int(m.group(1))
+                else:
+                    mode, have = "wb", 0
+                    cl = r.headers.get("Content-Length") or ""
+                    total = int(cl) if cl.isdigit() else None
+                log("  fetching %s bytes%s%s" % (dst.name, "" if total is None else "/%d" % total,
+                                                "" if not have else " (resume at %d)" % have))
+                with open(dst, mode) as f:
+                    while True:
+                        chunk = r.read(1 << 20)
+                        if not chunk:
+                            break
+                        f.write(chunk)
+            size = dst.stat().st_size
+            if total is None or size == total:
+                return dst, _cd_filename(cd)
+            last = "short read %d/%d" % (size, total)
+        except urllib.error.HTTPError as e:
+            if e.code == 416:
+                dst.unlink(missing_ok=True)
+                last = "range rejected (416), restarting"
+                continue
+            last = "%s: %s" % (e, e.read()[:200])
+        except Exception as e:
+            last = "%s (have %d%s)" % (e, dst.stat().st_size if dst.exists() else 0,
+                                       "" if total is None else "/%d" % total)
+        log("  retry %s: %s" % (dst.name, last))
+    raise IOError(last)
+
+
 def http_status(url, timeout=60):
     try:
         req = urllib.request.Request(url, method="HEAD", headers=UA)
@@ -2229,8 +2282,7 @@ def sweep_package(pkg, pv, srcs, live, repo_type, workdir):
         if not dst.exists():
             try:
                 log("  downloading %s (%s)" % (name, url))
-                data, cd_name = fetch_with_name(url)
-                dst.write_bytes(data)
+                _, cd_name = fetch_to_file(url, dst)
                 if cd_name and cd_name != name:
                     (dl / (name + ".cdname")).write_text(cd_name)
             except Exception as e:
