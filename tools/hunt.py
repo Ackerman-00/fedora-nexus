@@ -50,30 +50,59 @@ def get_json(url, timeout=45):
         raise
 
 
-def fetch_sha256(url, attempts=3):
-    """sha256 of a remote file, retried: a dropped socket is not a mismatch.
+def _range_total(header):
+    """Total size from a 206 Content-Range, 0 when it cannot be read."""
+    try:
+        return int(header.split("/")[-1])
+    except (AttributeError, ValueError):
+        return 0
 
-    A short read must never yield a digest: a proxy that closes early returns
-    different bytes on every attempt, which would read as a stale pin.
+
+def fetch_sha256(url, attempts=3):
+    """sha256 of a remote file, resumed across attempts.
+
+    A short read must never yield a digest, and a CDN that closes early is
+    resumed from the bytes already received: restarting at zero lets a flaky
+    host read as an unreachable pin.
     """
     last = ""
-    for n in range(attempts):
-        h = hashlib.sha256()
+    fd, path = tempfile.mkstemp(prefix="hunt-sha256-")
+    os.close(fd)
+    try:
+        for n in range(attempts):
+            got = os.path.getsize(path)
+            headers = dict(UA)
+            if got:
+                headers["Range"] = "bytes=%d-" % got
+            try:
+                req = urllib.request.Request(url, headers=headers)
+                with urllib.request.urlopen(req, timeout=600) as r:
+                    if got and r.status != 206:
+                        open(path, "wb").close()
+                        got = 0
+                    total = int(r.headers.get("Content-Length") or 0) + got
+                    if r.status == 206:
+                        total = _range_total(r.headers.get("Content-Range")) or total
+                    with open(path, "ab") as fh:
+                        for chunk in iter(lambda: r.read(1 << 20), b""):
+                            fh.write(chunk)
+                            got += len(chunk)
+                if total and got != total:
+                    raise IOError("short read %d of %d bytes" % (got, total))
+                h = hashlib.sha256()
+                with open(path, "rb") as fh:
+                    for chunk in iter(lambda: fh.read(1 << 20), b""):
+                        h.update(chunk)
+                return h.hexdigest(), ""
+            except Exception as exc:  # noqa: BLE001 - any transport error retries
+                last = "%s: %s" % (type(exc).__name__, exc)
+                time.sleep(2 * (n + 1))
+        return "", last
+    finally:
         try:
-            req = urllib.request.Request(url, headers=UA)
-            with urllib.request.urlopen(req, timeout=600) as r:
-                expected = int(r.headers.get("Content-Length") or 0)
-                seen = 0
-                for chunk in iter(lambda: r.read(1 << 20), b""):
-                    h.update(chunk)
-                    seen += len(chunk)
-            if expected and seen != expected:
-                raise IOError("short read %d of %d bytes" % (seen, expected))
-            return h.hexdigest(), ""
-        except Exception as exc:  # noqa: BLE001 - any transport error retries
-            last = "%s: %s" % (type(exc).__name__, exc)
-            time.sleep(2 * (n + 1))
-    return "", last
+            os.unlink(path)
+        except OSError:
+            pass
 
 
 def resolve_version(path, raw):
