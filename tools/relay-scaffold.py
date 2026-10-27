@@ -53,20 +53,26 @@ def dep_table(verified, fixed, notes):
     return "\n".join(rows)
 
 
-def install_table(rows_path):
-    """Install-test rows from install-sweep's rows.txt, with the COPR build id.
+def install_table(rows_paths):
+    """Install-test rows from every install-sweep rows.txt, with the COPR build id.
 
     rows.txt is the sweep's own log: pkg|chroot|nvr|smoke|verdict|why. The build
-    id comes from COPR so a row can be traced to the build users download.
+    id comes from COPR so a row can be traced to the build users download. One
+    sweep per chroot means the caller passes several files.
     """
     builds = {name: v[3] for name, v in H.newest_builds().items()}
     out = ["| package | COPR build | chroot | installed NVR | verdict |",
            "| --- | --- | --- | --- | --- |"]
-    for line in open(rows_path, encoding="utf-8"):
-        parts = line.rstrip("\n").split("|")
-        if len(parts) < 5:
-            continue
-        pkg, chroot, nvr, _smoke, verdict = parts[:5]
+    seen = {}
+    for rows_path in rows_paths:
+        for line in open(rows_path, encoding="utf-8"):
+            parts = line.rstrip("\n").split("|")
+            if len(parts) < 5:
+                continue
+            pkg, chroot, nvr, _smoke, verdict = parts[:5]
+            seen[(pkg, chroot)] = (nvr, verdict)
+    for (pkg, chroot) in sorted(seen):
+        nvr, verdict = seen[(pkg, chroot)]
         out.append("| %s | %s | %s | %s | %s |"
                    % (pkg, builds.get(pkg, "-"), chroot, nvr or "-", verdict))
     return "\n".join(out)
@@ -77,7 +83,8 @@ def main():
     ap.add_argument("--verified", default="", help="packages torn down this run")
     ap.add_argument("--fixed", default="", help="packages whose spec this run changed")
     ap.add_argument("--dep-rows", default="", help="file of hand-written dep rows (pkg|row lines)")
-    ap.add_argument("--install-rows", default="", help="install-sweep rows.txt to render")
+    ap.add_argument("--install-rows", action="append", default=[],
+                    help="install-sweep rows.txt to render (repeat for one sweep per chroot)")
     ap.add_argument("--only", choices=["versions", "deps", "both", "install"], default="both")
     a = ap.parse_args()
     notes = {}
