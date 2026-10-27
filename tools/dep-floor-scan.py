@@ -140,36 +140,50 @@ def balanced_calls(txt, head):
         i = j
 
 
+TESTS_GUARD = re.compile(r"^\s*if\b.*\b(build_tests|tests_option|test_ipc)\b")
+
+
 def meson_deps(x):
-    """(declared, fallback) dependency floors from the tree's meson.build files.
+    """(declared, fallback, tests-only, option-gated) dependency floors.
 
     A dependency assigned inside `if not x.found():` is a fallback for a package
     the spec already provides, so it is reported separately instead of as a miss.
+    One behind a tests guard, or declared under a tests/ dir, only counts when
+    the spec actually builds the tests. One whose `required:` is a meson feature
+    option only counts when the spec enables that option.
     """
-    found, fallback = {}, {}
+    found, fallback, testonly, gated = {}, {}, {}, {}
     for f in glob.glob(os.path.join(x, "**", "meson.build"), recursive=True):
         if "/subprojects/" in f or "/build/" in f:
             continue
+        rel = f.replace(os.sep, "/")
+        in_tests = "/tests/" in rel or rel.endswith("/tests")
         try:
             txt = open(f, errors="ignore").read()
         except Exception:
             continue
         txt = re.sub(r"#[^\n]*", "", txt)
-        stack = []  # (indent, var) of the enclosing `if not var.found():` blocks
+        stack = []  # (indent, kind) of the enclosing guarded blocks
         for line in txt.splitlines():
-            if line.strip():
+            stripped = line.strip()
+            if stripped:
                 indent = len(line) - len(line.lstrip())
-                while stack and indent <= stack[-1][0] and not line.lstrip().startswith("if "):
+                while stack and indent <= stack[-1][0] and not stripped.startswith("if "):
                     stack.pop()
             m = re.match(r"(\s*)if not (\w+)\.found\(\)\s*:?\s*$", line)
             if m:
-                stack.append((len(m.group(1)), m.group(2)))
+                stack.append((len(m.group(1)), "fallback"))
+                continue
+            if TESTS_GUARD.match(line):
+                stack.append((len(line) - len(line.lstrip()), "tests"))
                 continue
             if "dependency(" not in line:
                 continue
             calls = list(balanced_calls(line, "dependency("))
             if not calls:
                 continue
+            kind = "tests" if in_tests or any(k == "tests" for _i, k in stack) else (
+                "fallback" if stack else "declared")
             for args in calls:
                 nm = re.search(r"['\"]([^'\"]+)['\"]", args)
                 if not nm:
@@ -183,8 +197,13 @@ def meson_deps(x):
                     vv = re.search(r"(>=\s*|==\s*)([0-9][0-9A-Za-z.\-]*)", v.group(1))
                     if vv:
                         floor = vv.group(2)
-                (fallback if stack else found).setdefault(name, floor)
-    return found, fallback
+                opt = re.search(r"required\s*:\s*get_option\(\s*['\"]([^'\"]+)['\"]", args)
+                if opt and not in_tests and not any(k == "tests" for _i, k in stack):
+                    gated.setdefault(name, (floor, opt.group(1)))
+                    continue
+                dest = {"declared": found, "fallback": fallback, "tests": testonly}[kind]
+                dest.setdefault(name, floor)
+    return found, fallback, testonly, gated
 
 
 def spec_floors(txt):
@@ -237,6 +256,15 @@ def cmp_ver(a, b):
         return 0
 
 
+PRERELEASE = re.compile(r"^([0-9][0-9.]*)[.\-~]?(alpha|beta|rc|pre)", re.I)
+
+
+def numeric_base(v):
+    """The numeric head of a version: rpm cannot express a meson pre-release."""
+    m = PRERELEASE.match(v) or re.match(r"^([0-9][0-9.]*)", v)
+    return (m.group(1) if m else v).rstrip(".")
+
+
 def floor_finding(upstream, spec_floor, nofloor):
     """The finding code for one dep, or None. NOFLOOR is opt-in: most specs here
     name a pc file without a floor, and upstream's floor is often narrower."""
@@ -244,7 +272,12 @@ def floor_finding(upstream, spec_floor, nofloor):
         return None
     if spec_floor is None:
         return "NOFLOOR" if nofloor else None
-    return "FLOOR" if cmp_ver(spec_floor, upstream) < 0 else None
+    if cmp_ver(spec_floor, upstream) < 0:
+        # `>= 1.8.alpha` is pinned as `>= 1.8`: same base, rpm-safe form
+        if PRERELEASE.match(upstream) and cmp_ver(numeric_base(spec_floor), numeric_base(upstream)) >= 0:
+            return None
+        return "FLOOR"
+    return None
 
 
 def selftest():
@@ -255,7 +288,7 @@ def selftest():
     with open(os.path.join(d, "src", "meson.build"), "w") as fh:
         fh.write("libinput_dep = dependency('libinput', version: '>=1.27')\n"
                  "glib_dep = dependency('glib-2.0')\n")
-    deps, _fb = meson_deps(d)
+    deps, _fb, _to, _g = meson_deps(d)
     sf = spec_floors("BuildRequires: pkgconfig(libinput) >= 1.23\nBuildRequires: glib2-devel\n")
     ok = deps.get("libinput") == "1.27" and sf.get("libinput") == "1.23"
     ok = ok and cmp_ver(sf["libinput"], deps["libinput"]) < 0
@@ -271,7 +304,24 @@ def selftest():
     ok = ok and floor_finding("1.26", None, False) is None
     ok = ok and floor_finding("1.26", "1.24", True) == "FLOOR"
     ok = ok and floor_finding("1.26", "1.26", True) is None
+    ok = ok and floor_finding("1.8.alpha", "1.8", True) is None
+    ok = ok and floor_finding("1.9", "1.8", True) == "FLOOR"
     ok = ok and floor_finding(None, None, True) is None
+    # tests-only deps classify apart from the shipped build
+    os.makedirs(os.path.join(d, "src", "tests"), exist_ok=True)
+    with open(os.path.join(d, "src", "tests", "meson.build"), "w") as fh:
+        fh.write("xt = dependency('xcb-xtest')\n")
+    with open(os.path.join(d, "src", "meson.build"), "a") as fh:
+        fh.write("if build_tests\n  xr = dependency('xcb-render')\nendif\n")
+    deps, _fb, to, g = meson_deps(d)
+    ok = ok and "xcb-xtest" in to and "xcb-render" in to
+    ok = ok and "xcb-xtest" not in deps and "xcb-render" not in deps
+    ok = ok and "libinput" in deps
+    # an option-gated dep only counts once the spec enables the option
+    with open(os.path.join(d, "src", "meson.build"), "a") as fh:
+        fh.write("tr = dependency('tracy', required: get_option('tracy'))\n")
+    deps2, _fb2, _to2, g = meson_deps(d)
+    ok = ok and g.get("tracy") == (None, "tracy") and "tracy" not in deps2
     print("selftest %s" % ("PASS" if ok else "FAIL"))
     return 0 if ok else 1
 
@@ -323,17 +373,36 @@ def main():
                 break
         if not tree:
             continue
-        deps, fallbacks = meson_deps(tree)
+        deps, fallbacks, testonly, gated = meson_deps(tree)
         gofloor = go_mod_floor(tree)
         if gofloor:
             deps["golang"] = gofloor
+        # A tests-only dep is required exactly when the spec builds the tests.
+        tests_built = bool(re.search(r"-Dtests[= ]enabled|--buildtype[= ]debug", txt))
+        if tests_built:
+            for name, floor in testonly.items():
+                deps.setdefault(name, floor)
+        sf = spec_floors(txt)
+        # An option-gated dep is required exactly when the spec enables its option.
+        for name, (floor, opt) in sorted(gated.items()):
+            if re.search(r"-D%s[= ](enabled|true)" % re.escape(opt), txt):
+                deps.setdefault(name, floor)
+                continue
+            if name in sf:
+                continue
+            print("%-32s %-8s %-28s upstream=%-10s spec=%s (optional, -D%s not enabled)"
+                  % (pkg, "EXCLUDED", name, floor or "-", "-", opt))
         if not deps:
             continue
+        checked += 1
+        for name in sorted(testonly):
+            if name in deps or name in sf:
+                continue
+            print("%-32s %-8s %-28s upstream=%-10s spec=%s (tests-only, not built: no -Dtests=enabled)"
+                  % (pkg, "EXCLUDED", name, testonly[name] or "-", "-"))
         for name in sorted(fallbacks):
             print("%-32s %-8s %-28s upstream=%-10s spec=%s (only if the primary dep is absent)"
                   % (pkg, "FALLBACK", name, fallbacks[name] or "-", "-"))
-        checked += 1
-        sf = spec_floors(txt)
         for name, floor in sorted(deps.items()):
             if name in IGNORE:
                 continue
