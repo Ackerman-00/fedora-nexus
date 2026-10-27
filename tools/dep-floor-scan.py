@@ -140,7 +140,25 @@ def balanced_calls(txt, head):
 TESTS_GUARD = re.compile(r"^\s*if\b.*\b(build_tests|tests_option|test_ipc)\b")
 
 
-def meson_deps(x):
+def meson_projects(x, skip=()):
+    """Project names a source tree builds: the providers for its own pkgconfig names."""
+    out = set()
+    for f in glob.glob(os.path.join(x, "**", "meson.build"), recursive=True):
+        if "/subprojects/" in f or "/examples/" in f.replace(os.sep, "/"):
+            continue
+        m = re.search(r"project\(\s*['\"]([A-Za-z0-9._+-]+)['\"]", open(f, errors="ignore").read())
+        if m:
+            out.add(m.group(1).lower())
+    return out
+
+
+def same_tree_provider(name, projects):
+    """True when a dep resolves to a project built in the same source tree."""
+    base = re.sub(r"-[0-9][0-9.]*$", "", name.lower())
+    return base in projects or name.lower() in projects
+
+
+def meson_deps(x, skip=()):
     """(declared, fallback, tests-only, option-gated) dependency floors.
 
     A dependency assigned inside `if not x.found():` is a fallback for a package
@@ -151,7 +169,9 @@ def meson_deps(x):
     """
     found, fallback, testonly, gated = {}, {}, {}, {}
     for f in glob.glob(os.path.join(x, "**", "meson.build"), recursive=True):
-        if "/subprojects/" in f or "/build/" in f:
+        if "/subprojects/" in f or "/build/" in f or "/examples/" in f.replace(os.sep, "/"):
+            continue
+        if skip and any(("/" + s.strip("./") + "/") in f.replace(os.sep, "/") for s in skip):
             continue
         rel = f.replace(os.sep, "/")
         in_tests = "/tests/" in rel or rel.endswith("/tests")
@@ -365,7 +385,12 @@ def main():
                 break
         if not tree:
             continue
-        deps, fallbacks, testonly, gated = meson_deps(tree)
+        vpath = re.search(r"^%(?:global|define)\s+_vpath_srcdir\s+(\S+)", txt, re.M)
+        if vpath and os.path.isdir(os.path.join(tree, vpath.group(1))):
+            tree = os.path.join(tree, vpath.group(1))
+        skip = re.findall(r"-not\s+-path\s+\./([A-Za-z0-9._/-]+)", txt)
+        deps, fallbacks, testonly, gated = meson_deps(tree, skip)
+        projects = meson_projects(tree, skip)
         gofloor = go_mod_floor(tree)
         if gofloor:
             deps["golang"] = gofloor
@@ -398,6 +423,10 @@ def main():
                 continue
             if name not in sf:
                 if PROVIDER.get(name, set()) & set(sf):
+                    continue
+                if same_tree_provider(name, projects):
+                    print("%-32s %-8s %-28s upstream=%-10s spec=%s (built in the same source tree)"
+                          % (pkg, "SELF", name, floor or "-", "-"))
                     continue
                 findings.append((pkg, "MISSING", name, floor or "-", "-"))
                 continue
