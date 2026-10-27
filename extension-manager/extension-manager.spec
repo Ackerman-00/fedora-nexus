@@ -2,7 +2,7 @@
 
 Name:           extension-manager
 Version:        0.6.5
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A native tool for browsing, installing, and managing GNOME Shell Extensions
 
 License:        GPL-3.0-or-later
@@ -19,7 +19,7 @@ BuildRequires:  gobject-introspection-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  libappstream-glib
 BuildRequires:  pkgconfig(gtk4)
-BuildRequires:  pkgconfig(libadwaita-1)
+BuildRequires:  pkgconfig(libadwaita-1) >= 1.8
 BuildRequires:  pkgconfig(libsoup-3.0)
 BuildRequires:  pkgconfig(json-glib-1.0)
 BuildRequires:  pkgconfig(libxml-2.0)
@@ -66,6 +66,10 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{uuid}.desktop
 %{_datadir}/icons/hicolor/*/*/*.svg
 
 %changelog
+* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.5-3
+- Pin the upstream libadwaita-1 >= 1.8 floor (src/meson.build asks for
+  1.8.alpha; F43 ships 1.8.8 and F44 1.9.4)
+
 * Tue Aug 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.5-2
 - Add missing runtime dependency: vulkan-loader (libvulkan.so.1)
 
