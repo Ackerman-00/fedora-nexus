@@ -83,10 +83,26 @@ def resolve_version(path, raw):
         m = re.search(r"%\{(\w+)\}", raw)
         if not m:
             break
-        g = re.search(r"^%%global\s+%s\s+(\S+)" % re.escape(m.group(1)), txt, re.M)
+        g = re.search(r"^%%global\s+%s\s+(\S.*?)\s*$" % re.escape(m.group(1)), txt, re.M)
         if not g:
             break
         raw = raw.replace(m.group(0), g.group(1))
+    return expand_shell(raw)
+
+
+def expand_shell(raw):
+    """Evaluate the %( ) shell macros that git snapshots use for shortcommit."""
+    for _ in range(3):
+        m = re.search(r"%\((.*?)\)", raw, re.S)
+        if not m:
+            return raw
+        try:
+            # bash, not sh: %(c=...; echo ${c:0:7}) is a bash substitution
+            out = subprocess.run(["bash", "-c", m.group(1)], capture_output=True,
+                                 text=True, timeout=20).stdout.strip()
+        except Exception:
+            return raw
+        raw = raw[:m.start()] + out + raw[m.end():]
     return raw
 
 
