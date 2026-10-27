@@ -3,7 +3,7 @@
 %global appid io.github.nolight132.sonora
 
 Name:           sonora
-Version:        0.44.2
+Version:        0.45.0
 Release:        1%{?dist}
 Summary:        Native music streaming client
 License:        GPL-3.0-or-later AND OFL-1.1 AND ISC AND MIT AND Apache-2.0 AND CC-BY-4.0
@@ -118,5 +118,5 @@ esac
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
-* Sun Oct 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.44.2-1
-- Auto-update to upstream stable release v0.44.2
+* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.45.0-1
+- Auto-update to upstream stable release v0.45.0
