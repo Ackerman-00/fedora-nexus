@@ -1,7 +1,7 @@
 # These will be automatically populated by update.sh
-%global commit          e69d6f72122a99aa3668e182a4df8755ada81c17
+%global commit          e24762d9c75e294f89dbe7a0e3fd55c5cdc3ff0a
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261024195939
+%global gitdate         20261027145449
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
@@ -72,5 +72,5 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %config(noreplace) %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
-* Sat Oct 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261024195939gite69d6f7-1
-- Nightly sync with upstream main branch (Commit: e69d6f7)
+* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261027145449gite24762d-1
+- Nightly sync with upstream main branch (Commit: e24762d)

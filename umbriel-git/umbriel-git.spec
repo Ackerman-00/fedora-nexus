@@ -1,14 +1,14 @@
 # These will be automatically populated by update.sh
-%global commit          910297eab0a343d4caeb6fbff4e6c62727b5a55c
+%global commit          814d761e4a753cc6a8b214749dc49349daa445f4
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261027105401
+%global gitdate         20261027145535
 
 # Fedora LTO flags break linking; keep escape hatch.
 %global _lto_cflags %{nil}
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -123,11 +123,5 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261027105401git910297e-2
-- Pin the upstream xkbcommon >= 1.10.0 floor (spec had no floor)
-- State -Dtracy=disabled explicitly; tests stay off, so their deps
-  (libei-1.0, xcb-render/xtest/xfixes) are not BuildRequires
-
-* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261027105401git910297e-1
-- Nightly sync with upstream main branch (Commit: 910297e)
-
+* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261027145535git814d761-1
+- Nightly sync with upstream main branch (Commit: 814d761)
