@@ -3,7 +3,7 @@
 
 Name:           python-yt-dlp-ejs
 Version:        0.8.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        External JavaScript runtimes for yt-dlp
 
 License:        Unlicense AND MIT AND ISC
@@ -20,6 +20,9 @@ BuildRequires:  nodejs-npm
 
 # Solvers serve yt-dlp only; soft dep.
 Recommends:     yt-dlp
+# The shipped bundle is JavaScript: yt-dlp needs a runtime to execute it.
+# nodejs is the default; deno/bun/quickjs also work, so not a hard Requires.
+Recommends:     nodejs
 
 %description
 yt-dlp-ejs provides external JavaScript runtimes (node/deno/quickjs)
@@ -47,6 +50,9 @@ install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 %license %{_licensedir}/%{name}/LICENSE
 
 %changelog
+* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.0-6
+- Recommend nodejs: the package ships a JavaScript bundle that only runs on
+  an external JS runtime, so without one the plugin is silently inert
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.8.0-5
 - Install the LICENSE that the 0.8.0 sdist already ships as a %license file
   (it was extracted but never installed).
