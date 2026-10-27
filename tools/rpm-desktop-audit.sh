@@ -14,9 +14,31 @@ dnf -y -q --setopt=gpgcheck=0 install "/rpms/$FILE" >/tmp/i.log 2>&1 || {
 name=$(rpm -qp --qf "%{NAME}" "/rpms/$FILE")
 rc=0
 found=0
+menu=0
 for d in $(rpm -ql "$name" | grep "\.desktop$"); do
   found=$((found+1))
   icon=$(sed -n "s/^Icon=//p" "$d" | head -1)
+  exe=$(sed -n "s/^Exec=//p" "$d" | head -1 | awk "{print \$1}")
+  case "$d" in
+    /usr/share/applications/*|/usr/local/share/applications/*|/usr/share/wayland-sessions/*|/usr/share/xsessions/*|/etc/xdg/autostart/*) ;;
+    *)
+      # bundle metadata: no XDG lookup, the bundle launcher supplies the PATH
+      b=$(dirname "$d")
+      case "$exe" in
+        /*) if [ -x "$exe" ]; then echo "BUNDLE_EXEC_OK: $d Exec=$exe"
+            else echo "BUNDLE_EXEC_MISSING: $d Exec=$exe"; rc=1; fi ;;
+        "") : ;;
+        *) hit=""
+           for c in "$b/$exe" "$b/bin/$exe" "$b/usr/bin/$exe"; do
+             [ -x "$c" ] && { hit="$c"; break; }
+           done
+           if [ -n "$hit" ]; then echo "BUNDLE_EXEC_OK: $d Exec=$exe -> $hit"
+           else echo "BUNDLE_EXEC_MISSING: $d Exec=$exe (not in $b, bin or usr/bin)"; rc=1; fi ;;
+      esac
+      echo "BUNDLE_META: $d (not an XDG entry, not rendered in a menu)"
+      continue ;;
+  esac
+  menu=$((menu+1))
   if [ -n "$icon" ]; then
     hit=$(find /usr/share/icons /usr/share/pixmaps -name "$icon.*" -print -quit 2>/dev/null)
     if [ -n "$hit" ]; then
@@ -26,11 +48,13 @@ for d in $(rpm -ql "$name" | grep "\.desktop$"); do
       rc=1
     fi
   fi
-  exe=$(sed -n "s/^Exec=//p" "$d" | head -1 | awk "{print \$1}")
   case "$exe" in
-    /*) [ -x "$exe" ] || { echo "EXEC_MISSING: $d Exec=$exe"; rc=1; } ;;
+    /*) if [ -x "$exe" ]; then echo "EXEC_OK: $d Exec=$exe"
+        else echo "EXEC_MISSING: $d Exec=$exe"; rc=1; fi ;;
     "") : ;;
+    *) if command -v "$exe" >/dev/null 2>&1; then echo "EXEC_OK: $d Exec=$exe -> $(command -v "$exe")"
+       else echo "EXEC_MISSING: $d Exec=$exe (not in PATH)"; rc=1; fi ;;
   esac
 done
-echo "DESKTOP_ENTRIES=$found"
+echo "DESKTOP_ENTRIES=$found MENU_ENTRIES=$menu"
 exit $rc'
