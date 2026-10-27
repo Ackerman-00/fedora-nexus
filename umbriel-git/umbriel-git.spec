@@ -8,7 +8,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -30,7 +30,7 @@ BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(wayland-server) >= 1.24
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.47
-BuildRequires:  pkgconfig(xkbcommon)
+BuildRequires:  pkgconfig(xkbcommon) >= 1.10.0
 BuildRequires:  pkgconfig(libinput) >= 1.27
 BuildRequires:  pkgconfig(libeis-1.0) >= 1.3
 BuildRequires:  pkgconfig(pixman-1) >= 0.43.0
@@ -93,7 +93,8 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 
 %build
 # -Dtests=disabled states release intent explicitly.
-%meson -Db_lto=true -Dtests=disabled -Dtest_ipc=disabled -Dlocaled=enabled
+%meson -Db_lto=true -Dtests=disabled -Dtest_ipc=disabled -Dlocaled=enabled \
+    -Dtracy=disabled
 %meson_build
 
 %install
@@ -122,5 +123,11 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261027105401git910297e-2
+- Pin the upstream xkbcommon >= 1.10.0 floor (spec had no floor)
+- State -Dtracy=disabled explicitly; tests stay off, so their deps
+  (libei-1.0, xcb-render/xtest/xfixes) are not BuildRequires
+
 * Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261027105401git910297e-1
 - Nightly sync with upstream main branch (Commit: 910297e)
+
