@@ -1,5 +1,5 @@
 Name:           gpu-screen-recorder
-Version:        6.1.5
+Version:        6.1.6
 Release:        1%{?dist}
 Summary:        A shadowplay-like screen recorder for Linux. The fastest screen recorder for Linux
 
@@ -11,7 +11,6 @@ Source0:        https://dec05eba.com/snapshot/gpu-screen-recorder.git.%{version}
 ExclusiveArch:  x86_64
 
 BuildRequires:  gcc
-BuildRequires:  gcc-c++
 BuildRequires:  meson
 BuildRequires:  pkgconfig(dbus-1)
 BuildRequires:  pkgconfig(libavcodec)
@@ -20,7 +19,6 @@ BuildRequires:  pkgconfig(libavformat)
 BuildRequires:  pkgconfig(libavutil)
 BuildRequires:  pkgconfig(libcap)
 BuildRequires:  pkgconfig(libdrm)
-BuildRequires:  pkgconfig(libglvnd)
 BuildRequires:  pkgconfig(libpipewire-0.3)
 BuildRequires:  pkgconfig(libpulse)
 BuildRequires:  pkgconfig(libspa-0.2)
@@ -35,7 +33,6 @@ BuildRequires:  pkgconfig(xcomposite)
 BuildRequires:  pkgconfig(xdamage)
 BuildRequires:  pkgconfig(xfixes)
 BuildRequires:  pkgconfig(xrandr)
-BuildRequires:  pkgconfig(vulkan)
 BuildRequires:  vulkan-headers
 
 Requires:       libglvnd
@@ -88,5 +85,7 @@ on both X11 and Wayland.
 /usr/lib/modprobe.d/gsr-nvidia.conf
 
 %changelog
-* Wed Oct 21 2026 Ackerman-00 <quietcraft@gmail.com> - 6.1.5-1
-- Update to version 6.1.5
+* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 6.1.6-1
+- Update to version 6.1.6
+- Drop unused BuildRequires (gcc-c++, libglvnd, vulkan.pc): the tree is C only
+  and loads libvulkan/libEGL/libGL with dlopen, so only vulkan-headers is needed
