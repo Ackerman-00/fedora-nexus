@@ -41,8 +41,11 @@ def dep_table(verified, fixed, notes):
             continue
         if pkg in verified:
             status = "deps-fixed" if pkg in fixed else "deps-verified"
-            rows.append("| %s | re-derived from Source0 this run | %d BuildRequires | none | none | %s "
-                        "| unproven: 0 (teardown + install + smoke PASS) |" % (pkg, nbr, status))
+            rows.append("| %s | build files of the pinned Source0, consumed by this run's "
+                        "container build | %d BuildRequires | none: builddep resolved every "
+                        "one and rpmbuild -bb + install + smoke PASS | unused-BR rot not "
+                        "re-derived (build proof only) | %s | unproven: 0 missing (a missing "
+                        "BR cannot compile); unused-BR rot unproven on extras |" % (pkg, nbr, status))
         else:
             rows.append("| %s | Source0 artifact (version-checked only) | %d BuildRequires | none found | n/a "
                         "| version-checked | unproven: dependency list not re-derived this run (outside the "
@@ -50,12 +53,33 @@ def dep_table(verified, fixed, notes):
     return "\n".join(rows)
 
 
+def install_table(rows_path):
+    """Install-test rows from install-sweep's rows.txt, with the COPR build id.
+
+    rows.txt is the sweep's own log: pkg|chroot|nvr|smoke|verdict|why. The build
+    id comes from COPR so a row can be traced to the build users download.
+    """
+    # newest_builds: name -> (nvr, built_id, state, newest_id)
+    builds = {name: v[3] for name, v in H.newest_builds().items()}
+    out = ["| package | COPR build | chroot | installed NVR | verdict |",
+           "| --- | --- | --- | --- | --- |"]
+    for line in open(rows_path, encoding="utf-8"):
+        parts = line.rstrip("\n").split("|")
+        if len(parts) < 5:
+            continue
+        pkg, chroot, nvr, _smoke, verdict = parts[:5]
+        out.append("| %s | %s | %s | %s | %s |"
+                   % (pkg, builds.get(pkg, "-"), chroot, nvr or "-", verdict))
+    return "\n".join(out)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--verified", default="", help="packages torn down this run")
     ap.add_argument("--fixed", default="", help="packages whose spec this run changed")
     ap.add_argument("--dep-rows", default="", help="file of hand-written dep rows (pkg|row lines)")
-    ap.add_argument("--only", choices=["versions", "deps", "both"], default="both")
+    ap.add_argument("--install-rows", default="", help="install-sweep rows.txt to render")
+    ap.add_argument("--only", choices=["versions", "deps", "both", "install"], default="both")
     a = ap.parse_args()
     notes = {}
     if a.dep_rows:
@@ -70,6 +94,8 @@ def main():
         out.append(version_table())
     if a.only in ("deps", "both"):
         out.append(dep_table(set(a.verified.split()), set(a.fixed.split()), notes))
+    if a.only == "install":
+        out.append(install_table(a.install_rows))
     print("\n\n".join(out))
 
 

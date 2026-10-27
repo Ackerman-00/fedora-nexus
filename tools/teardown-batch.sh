@@ -32,6 +32,15 @@ one() {
   else
     IFS='|' read -r pkg smoke rpmn <<< "$1"
   fi
+  # The two list orders are one flag apart; reading a file in the wrong order
+  # feeds the probe to rpm -V and reports a healthy package as an install
+  # failure. An rpm name is one token, so anything else is harness, not FAIL.
+  if [[ "$rpmn" == *" "* || "$rpmn" == /* || "$rpmn" == *=* ]]; then
+    echo "TEARDOWN_${pkg}_EXIT=harness"
+    echo "docker-teardown: $pkg HARNESS_ERROR list-order (rpm-name field is a command: $rpmn)"
+    echo "$pkg rc=harness list-order" >> "$OUT/tokens.txt"
+    return 6
+  fi
   [ -n "$pkg" ] || return 0
   bash "$R/tools/teardown-fresh.sh" "$pkg" "$CH" "$smoke" "${rpmn:-$pkg}" > "$OUT/$pkg.log" 2>&1
   local rc=$?

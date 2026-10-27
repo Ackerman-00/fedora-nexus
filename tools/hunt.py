@@ -819,6 +819,68 @@ def hunt_fedora_releases():
             "mirrors.kernel.org/fedora", findings)
 
 
+def official_req_set(spec_text):
+    """BuildRequires/Requires names from a spec, normalized for comparison."""
+    out = set()
+    for line in spec_text.splitlines():
+        m = re.match(r"^(Build)?Requires:\s*(\S+)", line.strip(), re.I)
+        if not m:
+            continue
+        dep = m.group(2).strip()
+        dep = re.sub(r"\s*[><]=?.*$", "", dep)
+        out.add(dep)
+    return out
+
+
+def hunt_official():
+    """Reconcile our specs against Fedora's official dist-git, where one exists.
+
+    The official spec is an independent derivation of the same upstream build
+    files, so a BuildRequires it carries and we do not is a lead worth reading.
+    Presence is a Pagure API answer, never an HTML scrape.
+    """
+    present, absent, findings = 0, [], []
+    for sp in specs():
+        pkg = os.path.basename(os.path.dirname(sp))
+        name = (spec_field(sp, "Name") or pkg).strip()
+        txt = open(sp, encoding="utf-8", errors="replace").read()
+        hit = None
+        for cand in dict.fromkeys([pkg, name]):
+            try:
+                # Pagure answers JSON null for a project that does not exist
+                if get_json("https://src.fedoraproject.org/api/0/rpms/%s" % cand, timeout=30):
+                    hit = cand
+                    break
+            except Exception:
+                time.sleep(1.0)
+        if not hit:
+            absent.append(pkg)
+            continue
+        present += 1
+        ours = official_req_set(txt)
+        off = ""
+        for branch in ("rawhide", "main", "f44"):
+            try:
+                off = get_text("https://src.fedoraproject.org/rpms/%s/raw/%s/f/%s.spec"
+                               % (hit, branch, hit))
+                if off and "Name:" in off:
+                    break
+            except Exception:
+                off = ""
+            time.sleep(1.0)
+        if not off or "Name:" not in off:
+            findings.append((pkg, "official spec %s exists but its raw spec did not fetch" % hit))
+            continue
+        theirs = official_req_set(off)
+        over = sorted(theirs - ours)
+        if over:
+            findings.append((pkg, "official adds: " + ", ".join(over)))
+        time.sleep(1.0)
+    return ("official", "%d with an official dist-git spec, %d absent, %d findings"
+            % (present, len(absent), len(findings)),
+            "absent: %s" % (", ".join(absent) or "none"), findings)
+
+
 def hunt_slice():
     """The fleet rotation slice, derived from the relay teardown ledger.
 
@@ -929,6 +991,7 @@ def hunt_pins():
 
 
 HUNTS = (hunt_builds, hunt_chroots, hunt_copr_config, hunt_upstream, hunt_cves,
+         hunt_official,
          hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_sources,
          hunt_pins, hunt_readme, hunt_published_nvr, hunt_probes, hunt_sandbox,
          hunt_fedora_releases, hunt_chroot_docs, hunt_slice)
