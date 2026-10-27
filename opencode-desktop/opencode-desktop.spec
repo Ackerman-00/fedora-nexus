@@ -7,15 +7,15 @@
 %global __requires_exclude_from ^/opt/OpenCode/.*$
 
 Name:           opencode-desktop
-Version:        2.1.4
-Release:        2%{?dist}
+Version:        2.2.0
+Release:        1%{?dist}
 Summary:        AI coding agent desktop app
 
 License:        MIT
 URL:            https://opencode.ai
 # fpm-built debs have no rpmbuild brp-strip phase, so repack from the deb.
 Source0:        https://opencode.ai/files/bin/%{version}/opencode-desktop-linux-amd64.deb
-# sha256: 3ba25052b860344c1dae29921287239705950798d16000651eed00d9327411d5
+# sha256: 0825bae71f87a5ab6e2c1fe362c17441fe3381e3c65c8ccd3e6fd35386d74b62
 
 ExclusiveArch:  x86_64
 
@@ -143,9 +143,5 @@ sed -i -e 's|<launchable type="desktop-id">ai.opencode.desktop.desktop</launchab
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
-* Fri Oct 23 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.4-2
-- Fix build: upstream renamed the hicolor icons to ai.opencode.png
-- Install the app icon from whichever png upstream ships per size
-
-* Fri Oct 23 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.4-1
-- Auto-update to upstream release 2.1.4
+* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 2.2.0-1
+- Auto-update to upstream release 2.2.0
