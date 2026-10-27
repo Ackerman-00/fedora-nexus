@@ -13,7 +13,6 @@ License:        MIT
 URL:            https://github.com/nwg-piotr/nwg-look
 Source0:        %{gosource}
 
-# go.mod declares go 1.26.0
 BuildRequires:  golang >= 1.26
 BuildRequires:  make
 BuildRequires:  pkgconfig(gio-2.0)
@@ -24,7 +23,6 @@ BuildRequires:  pkgconfig(gtk+-3.0)
 BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(cairo-gobject)
 
-# Pure Wayland requirements
 Requires:       gtk3
 Requires:       glib2
 
@@ -37,7 +35,6 @@ Packaged specifically for the Nexus repository. Compiled natively using optimize
 %autopatch -p1
 
 %build
-# Build the native Go binary
 make build
 
 %install

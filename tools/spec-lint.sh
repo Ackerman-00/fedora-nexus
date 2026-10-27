@@ -1,8 +1,4 @@
 #!/bin/bash
-# spec-lint.sh [chroot] [spec ...] - rpmspec/rpmlint/builddep for every spec.
-# Criteria: rpmspec -P rc 0; rpmlint summary "0 errors"; dnf builddep output
-# free of the no-provider markers (its exit code is 1 whenever a transaction
-# would run, which is the normal case). Exit 1 when any spec fails.
 set -u
 CH=${1:-44}
 shift || true

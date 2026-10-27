@@ -13,7 +13,6 @@ PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 
-# upstream mixes v-prefixed and bare tags - plain sort -V picks the wrong latest
 LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E '^v?[0-9]' | sed -E 's/^v?([0-9].*)/\1 &/' | sort -V -k1,1 | tail -1 | awk '{print $2}')
 BASE_VER=$(echo "$LATEST_TAG" | sed 's/^v//')
 

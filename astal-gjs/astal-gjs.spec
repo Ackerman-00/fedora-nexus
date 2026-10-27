@@ -1,4 +1,3 @@
-# These will be automatically populated by update.sh
 %global commit          cbcd9f49dd6b9638dc5623b56cc6e1e0a60b593e
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20260923200029
@@ -18,7 +17,6 @@ Source0:        %{url}/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
 BuildRequires:  meson
 BuildRequires:  pkgconfig(astal-io-0.1)
 BuildRequires:  pkgconfig(astal-3.0)
-# astal-4-4.0 is probed optional upstream but MUST stay pinned - unprobed built the gtk4 bindings against nothing
 BuildRequires:  pkgconfig(astal-4-4.0)
 
 Requires:       gjs%{?_isa}

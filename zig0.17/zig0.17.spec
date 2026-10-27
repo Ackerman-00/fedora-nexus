@@ -1,4 +1,3 @@
-# Parallel toolchain: Fedora ships zig 0.16, ly 1.5.0 builds only with 0.17.
 %global debug_package %{nil}
 
 Name:           zig0.17
@@ -22,7 +21,6 @@ can be installed at once. It exists for packages that pin 0.17 syntax.
 %setup -q -c -T
 
 %build
-# Prebuilt upstream toolchain; no compilation.
 
 %install
 install -d %{buildroot}%{_libdir}/zig/%{version} \

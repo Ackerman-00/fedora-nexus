@@ -42,7 +42,6 @@ Requires:       libxcb
 Requires:       pulseaudio-libs
 Requires:       libwayland-client
 Requires:       vulkan-loader
-# Optional JPEG dep; falls back to stb encoder.
 Recommends:     turbojpeg
 Recommends:     xdotool
 Recommends:     /usr/bin/pactl
@@ -74,7 +73,6 @@ on both X11 and Wayland.
 %doc README.md
 %{_bindir}/gpu-screen-recorder
 %{_bindir}/gsr-cli
-# Declare CAP_SYS_ADMIN via caps, not a setcap scriptlet.
 %caps(cap_sys_admin=ep) %{_bindir}/gsr-kms-server
 %{_includedir}/gsr/plugin.h
 %{_datadir}/gpu-screen-recorder

@@ -1,6 +1,4 @@
-# Version of the .so library
 %global abi_ver 0.20
-# libliftoff does not bump soname on API changes
 %global liftoff_ver 0.5.0
 
 Name:           wlroots
@@ -8,19 +6,14 @@ Version:        0.20.2
 Release:        9%{?dist}
 Summary:        A modular Wayland compositor library
 
-# Convert tilde to dash for source tag (e.g. 0.20.0~rc2 -> 0.20.0-rc2)
 %global tag     %(v='%{version}'; echo "${v//'~'/-}")
 
-# protocol/*.xml are HPND-sell-variant and LGPL-2.1-or-later, not MIT
 License:        MIT
 URL:            https://gitlab.freedesktop.org/wlroots/wlroots
-# Use the git archive endpoint; releases endpoint 504s.
 Source0:        %{url}/-/archive/%{tag}/%{name}-%{tag}.tar.gz
 
-# Fedora patch required for phoc.
 Patch:          Revert-layer-shell-error-on-0-dimension-without-anch.patch
 
-# Single gcc build dep; minimal buildroots ship none.
 BuildRequires:  gcc
 BuildRequires:  glslang
 BuildRequires:  meson >= 1.3
@@ -38,7 +31,6 @@ BuildRequires:  pkgconfig(libseat) >= 0.2.0
 BuildRequires:  pkgconfig(libudev)
 BuildRequires:  pkgconfig(pixman-1) >= 0.46.0
 BuildRequires:  pkgconfig(vulkan) >= 1.2.182
-# wayland floor applies to client and server.
 BuildRequires:  pkgconfig(wayland-client) >= 1.24.0
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.47
 BuildRequires:  pkgconfig(wayland-scanner)
@@ -66,7 +58,6 @@ Requires:       libliftoff%{?_isa} >= %{liftoff_ver}
 %package        devel
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} == %{version}-%{release}
-# Not required per se, so not picked up automatically by RPM
 Recommends:     pkgconfig(xcb-icccm)
 
 %description    devel

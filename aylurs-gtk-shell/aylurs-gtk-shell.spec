@@ -17,7 +17,6 @@ BuildRequires:  tar
 
 Obsoletes:      aylurs-gtk-shell-git < 3.1.2
 
-# import graph -> Requires astal, astal-gtk4, libadwaita
 Requires:       gjs >= 1.79.0
 Requires:       gtk4-layer-shell%{?_isa}
 Requires:       astal%{?_isa}

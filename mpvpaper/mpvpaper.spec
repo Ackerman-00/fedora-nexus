@@ -16,7 +16,6 @@ BuildRequires:  pkgconfig(wayland-egl)
 BuildRequires:  pkgconfig(egl)
 BuildRequires:  pkgconfig(mpv)
 
-# Shells out to pidof for watch-list detection.
 Requires:       procps-ng
 
 %description

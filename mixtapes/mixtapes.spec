@@ -1,7 +1,4 @@
-# verify-fedora-source0: https://github.com/m-obeid/Mixtapes/archive/618c24c3abfb12266825a4373155f26e9abbff36/mixtapes-618c24c.tar.gz
-# verify-fedora-sha256: a09276af07e80fcdeb84398807c184ef29d34120e23e6cdc3be8c0af78c2d37f
 
-# debug_package nil: empty debugsource errors on rpm>=6.
 %global debug_package %{nil}
 %global commit          618c24c3abfb12266825a4373155f26e9abbff36
 %global gitdate         20261019181359
@@ -22,13 +19,11 @@ BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  make
 BuildRequires:  cmake
-# v8 fetches librusty_v8 via python3; aws-lc-sys needs cmake.
 BuildRequires:  python3
 BuildRequires:  curl
 BuildRequires:  pkgconf-pkg-config
 BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  glib2-devel
-# Version floors mirror upstream crate features.
 BuildRequires:  pkgconfig(gtk4) >= 4.18
 BuildRequires:  pkgconfig(libadwaita-1) >= 1.8
 BuildRequires:  pkgconfig(webkitgtk-6.0) >= 2.44
@@ -40,7 +35,6 @@ BuildRequires:  pkgconfig(gstreamer-pbutils-1.0)
 BuildRequires:  pkgconfig(gstreamer-app-1.0)
 BuildRequires:  pkgconfig(gstreamer-play-1.0)
 BuildRequires:  pkgconfig(gstreamer-plugins-base-1.0)
-# reqwest native-tls -> openssl-sys; rusqlite non-bundled on Linux.
 BuildRequires:  pkgconfig(openssl)
 BuildRequires:  pkgconfig(sqlite3)
 BuildRequires:  desktop-file-utils
@@ -56,7 +50,6 @@ Requires:       gstreamer1-plugins-bad-free
 Requires:       gstreamer1-plugin-libav
 Requires:       sqlite-libs
 Requires:       openssl-libs
-# yt-dlp spawned at runtime; EJS runs under node.
 Requires:       yt-dlp
 Requires:       python3-yt-dlp-ejs
 Requires:       nodejs

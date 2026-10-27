@@ -1,4 +1,3 @@
-# No debuginfo: pure-Python wheel, no ELF binaries.
 %global debug_package %{nil}
 
 Name:           python-ytmusicapi
@@ -10,7 +9,6 @@ License:        MIT
 URL:            https://pypi.org/project/ytmusicapi/
 Source0:        %{pypi_source ytmusicapi}
 
-# Aliased name expected by dependent specs.
 Provides:       python3-ytmusicapi
 
 BuildRequires:  python3-devel
@@ -21,7 +19,6 @@ playlists, uploads, radio). Packaged for the Nexus repository as a
 dependency of mixtapes.
 
 %prep
-# Unpack sdist so build-requires generation finds setup.py.
 %autosetup -p1 -n ytmusicapi-%{version}
 
 %generate_buildrequires
@@ -37,7 +34,6 @@ install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %files -f %{pyproject_files}
 %license %{_licensedir}/%{name}/LICENSE
-# Upstream ships a console-script entry point (oauth CLI).
 %{_bindir}/ytmusicapi
 
 %changelog

@@ -17,7 +17,6 @@ BuildRequires:  pkgconf
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols)
 BuildRequires:  libxkbcommon-devel
-# common/build.rs probes liblz4 with atleast_version("1.8") - carry the floor
 BuildRequires:  pkgconfig(liblz4) >= 1.8
 BuildRequires:  systemd-rpm-macros
 

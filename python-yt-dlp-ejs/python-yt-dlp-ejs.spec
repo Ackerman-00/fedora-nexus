@@ -1,4 +1,3 @@
-# No debuginfo: pure-Python wheel, no ELF binaries.
 %global debug_package %{nil}
 
 Name:           python-yt-dlp-ejs
@@ -8,17 +7,13 @@ Summary:        External JavaScript runtimes for yt-dlp
 
 License:        Unlicense AND MIT AND ISC
 URL:            https://pypi.org/project/yt-dlp-ejs/
-# pypi_source name 404s; use the underscore URL.
 Source0:        https://files.pythonhosted.org/packages/source/y/yt-dlp-ejs/yt_dlp_ejs-%{version}.tar.gz
 
-# Aliased name expected by dependent specs.
 Provides:       python3-yt-dlp-ejs
 
 BuildRequires:  python3-devel
-# Build hook needs a JS runtime (pnpm/deno/bun/npm).
 BuildRequires:  nodejs-npm
 
-# Solvers serve yt-dlp only; soft dep.
 Recommends:     yt-dlp
 # The shipped bundle is JavaScript: yt-dlp needs a runtime to execute it.
 # nodejs is the default; deno/bun/quickjs also work, so not a hard Requires.
@@ -30,7 +25,6 @@ for yt-dlp YouTube challenge solving. Packaged for the Nexus
 repository as a dependency of mixtapes.
 
 %prep
-# Unpack sdist so build-requires generation finds setup.py.
 %autosetup -p1 -n yt_dlp_ejs-%{version}
 
 %generate_buildrequires
@@ -43,7 +37,6 @@ repository as a dependency of mixtapes.
 %pyproject_install
 %pyproject_save_files yt_dlp_ejs
 
-# Upstream license text shipped inside the sdist
 install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %files -f %{pyproject_files}

@@ -1,4 +1,3 @@
-# These will be automatically populated by update.sh
 %global commit          8281a2534ef4b0e0f69a0eeb5a812d2cb69beddc
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20261012202807

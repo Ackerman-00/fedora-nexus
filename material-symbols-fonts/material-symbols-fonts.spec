@@ -11,7 +11,6 @@ URL:            https://github.com/google/material-design-icons
 Source0:        %{url}/raw/%{commit}/variablefont/MaterialSymbolsOutlined%%5BFILL%%2CGRAD%%2Copsz%%2Cwght%%5D.ttf#/MaterialSymbolsOutlined.ttf
 Source1:        %{url}/raw/%{commit}/variablefont/MaterialSymbolsRounded%%5BFILL%%2CGRAD%%2Copsz%%2Cwght%%5D.ttf#/MaterialSymbolsRounded.ttf
 Source2:        %{url}/raw/%{commit}/variablefont/MaterialSymbolsSharp%%5BFILL%%2CGRAD%%2Copsz%%2Cwght%%5D.ttf#/MaterialSymbolsSharp.ttf
-# Fonts lack license text; repo text is Apache-2.0.
 Source3:        %{url}/raw/%{commit}/LICENSE
 
 BuildArch:      noarch
@@ -22,10 +21,8 @@ Requires:       fonts-filesystem
 Material Symbols variable icon font in Outlined, Rounded, and Sharp styles.
 
 %prep
-# Font files are used directly as sources
 
 %build
-# Nothing to build
 
 %install
 install -m 0755 -d %{buildroot}%{_datadir}/fonts/%{name}

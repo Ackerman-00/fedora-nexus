@@ -1,7 +1,4 @@
 #!/bin/bash
-# source-url-check.sh [--revert] [spec ...]
-# Every http(s) Source must answer before a bump lands on main: a spec whose
-# source 404s fails the SRPM stage and users get no package.
 set -u
 REVERT=0
 ARGS=()
@@ -28,7 +25,6 @@ for spec in "${ARGS[@]}"; do
   bad=""
   while IFS= read -r u; do
     [ -z "$u" ] && continue
-    # Unset host macro (dash cannot run bash-only %(...)); not a source defect.
     case "$u" in *%*|*/archive//*|*///*) echo "skipped (unexpanded macro): $spec"; continue ;; esac
     code=$(curl -sIL -o /dev/null -w '%{http_code}' --max-time 60 "$u")
     CHECKED=$((CHECKED + 1))

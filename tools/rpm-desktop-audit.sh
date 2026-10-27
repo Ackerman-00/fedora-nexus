@@ -1,8 +1,4 @@
 #!/bin/bash
-# rpm-desktop-audit.sh <rpm> [chroot]
-# Installs one built RPM in a fresh container and checks that every shipped
-# .desktop entry resolves: Icon= has a matching icon file, Exec= has a binary.
-# Report-only per entry; exit 1 when any entry is unresolved.
 set -u
 RPM=${1:?usage: rpm-desktop-audit.sh <rpm> [chroot]}
 CH=${2:-44}

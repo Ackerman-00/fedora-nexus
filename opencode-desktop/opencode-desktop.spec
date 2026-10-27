@@ -1,8 +1,5 @@
-# Debuginfo disabled: all binaries are prebuilt upstream.
 %global debug_package %{nil}
-# Never put RPM directives in comments.
 
-# Bundled /opt Chromium libs must not become Provides.
 %global __provides_exclude_from ^/opt/OpenCode/.*$
 %global __requires_exclude_from ^/opt/OpenCode/.*$
 
@@ -13,13 +10,11 @@ Summary:        AI coding agent desktop app
 
 License:        MIT
 URL:            https://opencode.ai
-# fpm-built debs have no rpmbuild brp-strip phase, so repack from the deb.
 Source0:        https://opencode.ai/files/bin/%{version}/opencode-desktop-linux-amd64.deb
 # sha256: 0825bae71f87a5ab6e2c1fe362c17441fe3381e3c65c8ccd3e6fd35386d74b62
 
 ExclusiveArch:  x86_64
 
-# The install section validates the desktop entry; minimal buildroots lack it.
 BuildRequires:  binutils
 BuildRequires:  tar
 BuildRequires:  xz
@@ -48,7 +43,6 @@ remote models. (For the CLI, use the upstream installer instead.)
 
 %prep
 %setup -T -c
-# Rip open the upstream deb natively; detect whichever data archive it holds.
 ar x %{SOURCE0}
 for data_archive in data.tar.zst data.tar.xz data.tar.gz; do
     if [ -f "$data_archive" ]; then
@@ -57,20 +51,15 @@ for data_archive in data.tar.zst data.tar.xz data.tar.gz; do
     fi
 done
 
-# upstream rpm is strip-damaged - repack from the deb
 %install
 install -dm755 %{buildroot}/opt/OpenCode
 cp -a opt/OpenCode/* %{buildroot}/opt/OpenCode/
-# Delete bundled app-update.yml; dnf owns updates.
 rm -f %{buildroot}/opt/OpenCode/resources/app-update.yml
-# Prune musl native modules: dead weight on glibc Fedora (same prune as AUR).
 find %{buildroot}/opt/OpenCode -name '*.musl.node' -delete
 find %{buildroot}/opt/OpenCode -depth -type d -name '*-musl' -exec rm -rf {} + 2>/dev/null || true
-# Warn if the bundled CLI is strip-damaged again.
 if ! opt/OpenCode/resources/opencode-cli --version 2>/dev/null | grep -q '^opencode v2'; then
   echo "WARNING: bundled opencode-cli does not answer as v2 (strip damage?)" >&2
 fi
-# Replace the Bun CLI with a resolver wrapper.
 mv %{buildroot}/opt/OpenCode/resources/opencode-cli %{buildroot}/opt/OpenCode/resources/opencode-cli.bundled
 cat > %{buildroot}/opt/OpenCode/resources/opencode-cli <<'CLI_EOF'
 #!/bin/sh
@@ -97,7 +86,6 @@ WRAPPER_EOF
 chmod 755 %{buildroot}%{_bindir}/opencode-desktop
 
 
-# icon basename is upstream's business (ai.opencode.desktop.png before 2.1.4)
 icons=0
 for sz in 32x32 64x64 128x128; do
     src=$(ls usr/share/icons/hicolor/"$sz"/apps/*.png 2>/dev/null | head -1)
@@ -107,7 +95,6 @@ for sz in 32x32 64x64 128x128; do
 done
 [ "$icons" -gt 0 ] || { echo "ERROR: upstream deb ships no hicolor app icon" >&2; exit 1; }
 
-# Our desktop entry uses the PATH wrapper.
 install -dm755 %{buildroot}%{_datadir}/applications/
 cat > %{buildroot}%{_datadir}/applications/opencode-desktop.desktop <<DESKTOP_EOF
 [Desktop Entry]
@@ -124,9 +111,6 @@ DESKTOP_EOF
 
 desktop-file-validate %{buildroot}%{_datadir}/applications/opencode-desktop.desktop || true
 
-# Upstream ships AppStream metadata in the deb. Keep the upstream component id
-# (an RDNS id; the file name must match it) and point the launchable at the
-# desktop entry this package installs, so app centers can match the component.
 install -Dm0644 usr/share/metainfo/ai.opencode.desktop.metainfo.xml \
     %{buildroot}%{_datadir}/metainfo/ai.opencode.desktop.metainfo.xml
 sed -i -e 's|<launchable type="desktop-id">ai.opencode.desktop.desktop</launchable>|<launchable type="desktop-id">opencode-desktop.desktop</launchable>|' \
@@ -139,7 +123,6 @@ sed -i -e 's|<launchable type="desktop-id">ai.opencode.desktop.desktop</launchab
 %{_datadir}/applications/opencode-desktop.desktop
 %{_datadir}/metainfo/ai.opencode.desktop.metainfo.xml
 %{_datadir}/icons/hicolor/*/apps/opencode-desktop.png
-# Chromium SUID sandbox must stay setuid root.
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog

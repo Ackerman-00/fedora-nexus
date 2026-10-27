@@ -49,13 +49,11 @@ STATUS_FAIL = "FAIL"
 STATUS_UNVERIFIED = "UNVERIFIED"
 STATUS_SKIP = "SKIP-LIVE-UNVERIFIED"
 
-rows = []  # (package, distfile, pinned, internal, status, note)
+rows = []
 
-# Freshness verdict reused by the Repology fallback
-UPSTREAM_VERDICT = {}  # pkg -> (kind, source, value)
-# Internal version; rebuild-tag comparison reads it
-INTERNAL_VER = {}  # pkg -> internal version string
-ARTIFACT_PATH = {}  # pkg -> Path
+UPSTREAM_VERDICT = {}
+INTERNAL_VER = {}
+ARTIFACT_PATH = {}
 
 
 def log(msg):
@@ -229,7 +227,6 @@ def is_template_version(pv):
 
 
 _REPOLLOGY_LAST = [0.0]
-# True once Repology answers at all; separates "no such project" from "down".
 _REPOLOGY_ANSWERED = [False]
 
 
@@ -267,7 +264,6 @@ def repology_newest(project_name):
 
 
 ECOSYSTEM_MAP = {
-    # OSV ecosystems only; unknown name 400s silently
     "gentoo": None,
     "fedora": None,
     "opensuse": "openSUSE",
@@ -288,7 +284,6 @@ def osv_query(pkg, version, ecosystem=None):
         vulns = data.get("vulns", [])
         return [v.get("id", "?") for v in vulns]
     except Exception as exc:
-        # Empty list must mean queried-clean, never failed
         log("  OSV query failed for %s-%s (eco=%s): %s: %s"
             % (pkg, version, ecosystem, type(exc).__name__, exc))
         return []
@@ -389,7 +384,6 @@ def repology_is_newer(pinned, upstream):
         pk, uk = key(pinned), key(upstream)
     except Exception:
         return True
-    # Pad implicit zeros: 1.0 == 1.0.0
     while len(pk) < len(uk):
         pk.append((0, 0, ""))
     while len(uk) < len(pk):
@@ -552,7 +546,6 @@ def sri_to_hex(sri):
         return None
 
 
-# Inventory + parsing per repo type
 
 def detect_type(root):
     if list(root.rglob("*.ebuild")) and list(root.rglob("Manifest")):
@@ -563,7 +556,6 @@ def detect_type(root):
         return "nix"
     specs = list(root.rglob("*.spec"))
     if specs:
-        # Real openSUSE construct, not a comment word
         suse_re = re.compile(
             r"%\{\s*\??suse_version|openSUSE-buildservice|Vendor:\s*openSUSE"
             r"|\bobs_project\b")
@@ -590,7 +582,6 @@ def expand(text, vars_):
     for _ in range(8):
         out = text
 
-        # Host rpm lacks %{pypi_source}; build the URL here
         def pypi_source(m):
             ver = vars_.get("version", "")
             if not ver or "%" in ver:
@@ -613,7 +604,7 @@ def expand(text, vars_):
             v = vars_.get(m.group(1), "")
             pat = m.group(2)
             if pat == ".*":
-                rx = r"\.[^.]*$"  # bash %.* = shortest suffix match
+                rx = r"\.[^.]*$"
             else:
                 rx = re.escape(pat).replace(r"\*", ".*") + "$"
             return re.sub(rx, "", v)
@@ -661,7 +652,6 @@ def parse_spec_sources(content, vars_):
         m = re.match(r"^Source\d*:\s*(.+?)\s*$", line)
         if m:
             raw = m.group(1).strip()
-            # Drop trailing comment only; macros contain spaces
             raw = re.split(r"\s+#\s", raw, 1)[0].strip()
             if not raw:
                 continue
@@ -784,7 +774,6 @@ def resolve_codeberg_url(repo, version):
     return None
 
 
-# fedora / opensuse
 
 def parse_fedora(spec):
     content = spec.read_text(errors="ignore")
@@ -837,7 +826,6 @@ def parse_fedora(spec):
     return pkg, pv, srcs, live, homepage
 
 
-# void (XBPS)
 
 VAR_RE = re.compile(r'^(\w+)=(?:"([^"]*)"|\'([^\']*)\'|(\S+))', re.M)
 MULTI_VAR_RE = re.compile(r'^(\w+)\+?=(?:"([^"]*)"|\'([^\']*)\')', re.M | re.S)
@@ -922,7 +910,6 @@ def parse_void(template):
     return pkg, pv, srcs, live, homepage
 
 
-# nix
 
 def parse_nix(pnix):
     content = pnix.read_text(errors="ignore")
@@ -968,7 +955,6 @@ def parse_nix(pnix):
     return pkg, pv, srcs, live, homepage
 
 
-# gentoo
 
 DIST_RE = re.compile(r"^DIST\s+(\S+)\s+(\d+)\s+BLAKE2B\s+([0-9a-fA-F]+)\s+SHA512\s+([0-9a-fA-F]+)")
 
@@ -1055,7 +1041,6 @@ def pypi_sdist_url(pn, pv):
     return None
 
 
-# Teardown machinery (shared with gentoo sweep)
 
 def ar_names(path):
     data = path.read_bytes()
@@ -1246,7 +1231,6 @@ DOC_NAMES = {"license", "license.txt", "license.md", "copying", "copying.txt",
 DOC_EXT = {".md", ".txt", ".patch", ".diff"}
 AUX_EXT = {".png", ".svg", ".ico", ".jpg", ".jpeg", ".gif", ".webp", ".xml",
            ".plist", ".metainfo"}
-# Legal stems only; "license-server" stays an artifact
 DOC_STEMS = {"license", "licence", "copying", "copyright", "notice",
              "authors", "contributors", "maintainers"}
 
@@ -1256,7 +1240,6 @@ def looks_like_doc(distname):
     base = d.rsplit(".", 1)[0] if d.rsplit(".", 1)[-1] in DOC_EXT else d
     if base in DOC_NAMES or d.endswith(tuple(DOC_EXT)):
         return True
-    # Qualifier-suffixed legal text; stem split on '.'/':' only
     return re.split(r"[.:]", d, 1)[0] in DOC_STEMS
 
 
@@ -1394,8 +1377,8 @@ def staleness_pv(pv):
     v = re.sub(r"-r\d+$", "", v)
     v = re.sub(r"\^.*$", "", v)
     v = re.sub(r"~.*$", "", v)
-    v = re.sub(r"\+[a-zA-Z0-9._]+$", "", v)  # 1.18.2+64 -> 1.18.2
-    v = re.sub(r"\.git[0-9a-f]+$", "", v)     # 1.0.0.gitabc123 -> 1.0.0
+    v = re.sub(r"\+[a-zA-Z0-9._]+$", "", v)
+    v = re.sub(r"\.git[0-9a-f]+$", "", v)
     return v
 
 
@@ -1889,7 +1872,6 @@ def tear_apart(path, distname, tmp):
     return None, "unknown artifact type", False, False
 
 
-# Dependency checking
 
 def get_elf_needed(elf_path):
     """Return list of NEEDED shared libraries from an ELF binary via readelf."""
@@ -1927,7 +1909,7 @@ def find_elfs_in_dir(root, max_depth=6):
 
 
 _LIB_CONTAINER = {"name": None, "state": None}
-_LIB_CACHE = {}  # soname -> True/False/None (None = could not be determined)
+_LIB_CACHE = {}
 
 
 def _lib_container():
@@ -2030,7 +2012,6 @@ def check_deps_in_dir(pkg, root):
     missing = []
     unverified = []
     elfs = find_elfs_in_dir(root)
-    # Bundled libs may sit anywhere in the tree
     bundled = {p.name for p in root.rglob("*") if p.is_file()}
     needed = []
     for elf in elfs:
@@ -2057,7 +2038,6 @@ def check_deps_in_dir(pkg, root):
     return missing, unverified
 
 
-# Live-check + per-repo openSUSE source resolution
 
 def check_live(pkg, live):
     repo, pin = live[0], live[1]
@@ -2161,9 +2141,6 @@ def channel_url_for_pkg(pkg):
 
 
 def sweep_package(pkg, pv, srcs, live, repo_type, workdir):
-    # Per package: several packages ship a source called LICENSE, and a shared
-    # directory made one package's file look like another's - the hash check
-    # then failed on a file that was never pinned by that package.
     dl = workdir / "distfiles" / pkg
     dl.mkdir(parents=True, exist_ok=True)
     if live:
@@ -2267,7 +2244,6 @@ def sweep_package(pkg, pv, srcs, live, repo_type, workdir):
             log("[%s] %s : %s signature/keyring material" % (STATUS_OK, pkg, name))
             pkg_verified = True
             continue
-        # Disambiguate same-filename multi-arch distfiles (e.g. rootapp)
         dst = dl / name
         if dst.exists():
             if sha:
@@ -2464,7 +2440,6 @@ def check_upstream_latest(pkgs):
         if live or not pv or PLACEHOLDER_RE.match(pv):
             continue
         if is_template_version(pv):
-            # Snapshot: prove the pinned commit exists upstream
             cand_urls = [u[0] for u in srcs
                          if isinstance(u, tuple) and isinstance(u[0], str)
                          and u[0].startswith("http")]
@@ -2568,7 +2543,6 @@ def check_upstream_latest(pkgs):
             return tuple(re.findall(r"[a-z]+|\d+", s))
 
         def same(a, b):
-            # Rebuild tags use another separator; compare internal too
             extras = [INTERNAL_VER.get(pkg, "")]
             for aa in dict.fromkeys([a, staleness_pv(a)] + extras):
                 if not aa:
@@ -2587,7 +2561,6 @@ def check_upstream_latest(pkgs):
             log("[%s] %s : %s" % (STATUS_OK, pkg, note))
             continue
         if source == "releases/latest":
-            # releases/latest pointer lags an advancing tag series
             all_tags = _lsremote_version_tags(clone)
             match_tag = next((t for t in all_tags or []
                               if same(pv, t)), None)
@@ -2612,8 +2585,6 @@ def check_upstream_latest(pkgs):
             UPSTREAM_VERDICT[pkg] = ("stale", source, latest)
             log("[%s] %s : %s" % (STATUS_STALE, pkg, note))
             continue
-        # Monorepo tag namespace: 'component/v1.2.3' is a version line of its
-        # own, so a package pinned there is compared inside that namespace.
         ns_match = next((t for t in ns_tags
                          if same(pv, t.rsplit("/", 1)[-1])), None)
         if ns_match:
@@ -2629,7 +2600,6 @@ def check_upstream_latest(pkgs):
                 UPSTREAM_VERDICT[pkg] = ("fresh", "ls-remote-namespace", ns_latest)
                 log("[%s] %s : %s" % (STATUS_OK, pkg, note))
                 continue
-        # ls-remote only: guard against branded-suffix misordering
         if all_tags and any(same(pv, t) for t in all_tags):
             note = ("pinned %s matches an existing tag but lexical-max is %s "
                     "- ambiguous scheme, verify manually" % (pv, latest))
@@ -2772,7 +2742,6 @@ def redirect_channel_version(pkg, srcs, homepage):
         candidates.append(cu)
     if homepage and homepage.startswith(("http://", "https://")):
         candidates.append(homepage)
-    # Not Source0: parsing the pin is circular
     seen = set()
     for url in candidates:
         if url in seen:
@@ -2784,7 +2753,6 @@ def redirect_channel_version(pkg, srcs, homepage):
         for cand in (tgt, url):
             m = re.search(r"/(?:v)?(\d+\.\d+(?:\.\d+)*)(?:/|$|[^0-9.])", cand)
             if not m:
-                # Version may also sit in the filename tail
                 m = re.search(r"-(\d+\.\d+(?:\.\d+)*)[-.]", cand)
             if m:
                 return m.group(1), "redirect:%s" % _host_of(cand.strip())
@@ -2915,7 +2883,6 @@ def fallback_freshness(pkg, clean_pv, homepage, srcs):
             return "outdated", up, source
         return "newest", up, source
 
-    # Redirect-channel version is freshness proof when equal
     rver, rsrc = redirect_channel_version(pkg, srcs, homepage)
     if rver:
         if _version_key(rver) == _version_key(clean_pv):
@@ -3060,7 +3027,6 @@ def check_vulns_and_deps(pkgs, repo_type):
             upstream = info.get("upstream_version", "?")
             status = info.get("status", "?")
             if status == "outdated" and upstream:
-                # Repology status: relative to its newest, not ours
                 if not repology_is_newer(clean_pv, upstream):
                     log("[AHEAD] %s: pinned %s >= repology %s (%s) - tracker "
                         "behind/foreign project, not outdated"
@@ -3087,7 +3053,6 @@ def check_vulns_and_deps(pkgs, repo_type):
                    else "repology unreachable")
             verdict = UPSTREAM_VERDICT.get(pkg)
             if verdict:
-                # Forge verdict already recorded; do not re-open it
                 log("[FRESHNESS] %s : '%s' recorded by the upstream check "
                     "(%s); %s" % (pkg, verdict[0], verdict[1] or "forge", why))
             else:
@@ -3317,7 +3282,6 @@ def check_rpm_dependencies(root, repo_type):
     if not tools:
         tools.append("static repology/packages.fedoraproject.org check")
     log("Tools available: %s" % ", ".join(tools))
-    # static build-tool map for RPM324
     BUILD_TOOL_BRS = {
         "cmake": "cmake", "meson": "meson", "ninja": "ninja-build",
         "autoreconf": "autoconf", "automake": "automake",
@@ -3351,7 +3315,6 @@ def check_rpm_dependencies(root, repo_type):
                                      capture_output=True, text=True, timeout=15)
                 if out.returncode != 0:
                     err = (out.stderr or out.stdout).strip()
-                    # Host rpm lacks distro macros; retry in container
                     if re.search(r"(?i)unknown tag|undefined macro|bad expansion", err):
                         cerr = rpmspec_in_container(spec, root)
                         if cerr == "":
@@ -3369,7 +3332,6 @@ def check_rpm_dependencies(root, repo_type):
             except Exception as e:
                 rpmspec_ok = False
                 rpmspec_err = str(e)[:120]
-        # BuildRequires resolvability via dnf builddep
         br_missing = []
         if has_rpmspec and has_dnf:
             try:
@@ -3384,7 +3346,6 @@ def check_rpm_dependencies(root, repo_type):
                                           capture_output=True, text=True, timeout=60)
                 srpms = list(Path(td).rglob("*.src.rpm"))
                 if srpms:
-                    # --assumeno resolves only; nothing is installed
                     bd = subprocess.run(["dnf", "builddep", "--assumeno", str(srpms[0])],
                                         capture_output=True, text=True, timeout=60)
                     if bd.returncode != 0:
@@ -3394,9 +3355,7 @@ def check_rpm_dependencies(root, repo_type):
                 shutil.rmtree(td, ignore_errors=True)
             except Exception:
                 pass
-        # RPM324: build-tool used without BR (static)
         build_script = "\n".join(re.findall(r"^%(?:build|install|check)\b.*?(?=^%|\Z)", txt, re.M | re.S))
-        # Spec comments name tools without using them
         build_script = "\n".join(line for line in build_script.splitlines()
                                  if not line.lstrip().startswith("#"))
         for tool, br_atom in BUILD_TOOL_BRS.items():
@@ -3406,11 +3365,9 @@ def check_rpm_dependencies(root, repo_type):
                 continue
             if re.search(r"\b%s\b" % re.escape(tool), build_script):
                 br_missing.append("RPM324: %s -> BuildRequires: %s" % (tool, br_atom))
-        # Requires looks like BuildRequires (devel)
         for r in list(req):
             if r.endswith("-devel") or r in BUILD_TOOL_BRS:
                 br_missing.append("RPM323: Requires:%s looks like BuildRequires" % r)
-        # chrome-sandbox must be %attr(4755) or removed
         if ("chrome-sandbox" in txt
                 and not re.search(r"%attr\(\s*4755\s*,\s*root\s*,\s*root\s*\)[^\n]*chrome-sandbox", txt)
                 and not re.search(r"^\s*(?:rm|rm -f)\b[^\n]*chrome-sandbox", txt, re.M)):
@@ -3426,7 +3383,6 @@ def check_rpm_dependencies(root, repo_type):
         rows_dep.append((pkg, len(br), len(req), ";".join(sorted(br_missing)[:3]) or "-", status))
         if status != "deps-verified":
             log("  [DEPS] %s: %s (BR:%d Req:%d)" % (pkg, status, len(br), len(req)))
-    # summary table
     log("")
     log("  %-28s %4s %4s %-30s %s" % ("PACKAGE", "BR", "Req", "ISSUES", "STATUS"))
     for pkg, n_br, n_req, issues, st in sorted(rows_dep):
@@ -3435,7 +3391,6 @@ def check_rpm_dependencies(root, repo_type):
     if n_bad:
         log("")
         log("  DEPS-FAIL: %d/%d packages need fix (see table above)" % (n_bad, len(rows_dep)))
-        # Exit code decided by main; keep it visible
         global_rows = globals().get("rows")
         if global_rows is not None:
             for pkg, _, _, _, s in rows_dep:
@@ -3544,8 +3499,7 @@ def main():
         return (s in bad_statuses or s.startswith("DEPS-")
                 or s in ("VULN", "OUTDATED", "OVER-BUDGET"))
 
-    # Worst status per package; SKIP counts unverified
-    pkg_worst = {}  # pkg -> worst status seen
+    pkg_worst = {}
     for pkg, dist, pinned, internal, status, note in rows:
         log("%-34s %-34s %-16s %-14s %-12s %s" % (
             pkg, (dist or "")[:34], (pinned or "")[:16], (internal or "")[:14], status, note))

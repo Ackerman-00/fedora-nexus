@@ -1,10 +1,5 @@
 #!/bin/bash
 set -u
-# usage: copr-install-check.sh <pkg> <rpm-name> <smoke-cmd> [chroot-number]
-# Chroot defaults to 44; rotate for secondary coverage
-# helium-browser: /opt/helium/helium --no-sandbox --headless --disable-gpu --version
-# zen-browser: MOZ_HEADLESS=1 /opt/zen/zen --version
-# heroic-games-launcher: ls /opt/Heroic/resources/app.asar
 PKG=$1; PAT=$2; SMOKE=$3; CHROOT=${4:-44}
 docker run --rm registry.fedoraproject.org/fedora:$CHROOT bash -lc "
 dnf -y -q --setopt=gpgcheck=0 install dnf-plugins-core >/dev/null 2>&1

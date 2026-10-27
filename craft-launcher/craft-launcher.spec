@@ -1,7 +1,5 @@
-# Keep upstream appid: renames break StartupWMClass/AppStream matching.
 %global appid ai.storyteller.artcraft-launcher
 
-# Payload keeps upstream artcraft-launcher paths; native binary.
 %global debug_package %{nil}
 
 Name:           craft-launcher
@@ -19,7 +17,6 @@ ExclusiveArch:  x86_64
 BuildRequires:  cpio
 BuildRequires:  desktop-file-utils
 BuildRequires:  hicolor-icon-theme
-# Upstream deps are correct; no SUSE libgcc_s1 name.
 Requires:       hicolor-icon-theme
 Requires:       libX11-xcb.so.1()(64bit)
 Requires:       libX11.so.6()(64bit)
@@ -31,7 +28,6 @@ Requires:       libwayland-client.so.0()(64bit)
 Requires:       libxcb.so.1()(64bit)
 Requires:       libxkbcommon-x11.so.0()(64bit)
 Requires:       libxkbcommon.so.0()(64bit)
-# GPU/display helpers stay weak: the launcher runs without them, degraded.
 Recommends:     mesa-vulkan-drivers
 Recommends:     xdg-desktop-portal
 
@@ -46,11 +42,9 @@ vectorcraft): install their upstream builds through the launcher instead.
 
 %prep
 %setup -q -c -T
-# Upstream rpm is a plain FHS tree (see packaging/linux/package.sh); repack it.
 rpm2cpio %{SOURCE0} | cpio -idmv
 
 %build
-# No compilation required for pre-built binaries
 
 %install
 install -d -m 0755 %{buildroot}%{_bindir}
@@ -79,7 +73,6 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop
 %{_datadir}/metainfo/%{appid}.metainfo.xml
 
 %post
-# || : so a locked icon cache never fails the install.
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %postun

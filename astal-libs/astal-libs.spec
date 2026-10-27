@@ -1,4 +1,3 @@
-# These will be automatically populated by update.sh
 %global commit          cbcd9f49dd6b9638dc5623b56cc6e1e0a60b593e
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20260923200029
@@ -15,7 +14,6 @@ URL:            https://github.com/Aylur/astal
 Source0:        %{url}/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
 Source1:        https://github.com/LukashonakV/cava/archive/1.0.0.tar.gz#/cava-1.0.0.tar.gz
 Source2:        https://github.com/kotontrion/wl-vapi-gen/archive/refs/tags/1.0.0.tar.gz#/wl-vapi-gen-1.0.0.tar.gz
-# Source3 must match lib/workspace/subprojects/wl-vapi-gen.wrap
 Source3:        https://github.com/kotontrion/wl-vapi-gen/archive/refs/tags/1.1.0.tar.gz#/wl-vapi-gen-1.1.0.tar.gz
 
 BuildRequires:  gcc
@@ -62,7 +60,6 @@ Requires:       libcava%{?_isa} = 1.0.0
 %prep
 %autosetup -n astal-%{commit} -p1
 tar -xf %{SOURCE1} -C lib/cava/subprojects
-# never hardcode subproject dirs - upstream adds wrap dirs
 for d in lib/*/subprojects lib/*/*/subprojects; do
   if [ -f "$d/wl-vapi-gen.wrap" ]; then
     if grep -q 'directory = wl-vapi-gen-1.1.0' "$d/wl-vapi-gen.wrap"; then
@@ -75,9 +72,7 @@ done
 
 %build
 cd lib
-# Stage libs into a prefix; COPR runs unprivileged.
 mkdir -p %{_builddir}/astal-stage
-# Dependents build after the stage prefix is exported.
 for lib in quarrel wayland-glib wl/wl; do
   pushd $lib
   meson setup --prefix=%{_builddir}/astal-stage --libdir=lib64 redhat-linux-build . --auto-features=auto
@@ -116,7 +111,6 @@ sed -i 's/ cava,//' %{buildroot}%{_libdir}/pkgconfig/astal-cava-0.1.pc
 rm -rf %{buildroot}%{_includedir}/cava
 rm -rf %{buildroot}%{_datadir}/consolefonts/cava.psf
 rm -rf %{buildroot}%{_libdir}/pkgconfig/libcava.pc
-# Drop bundled libcava; the standalone package owns it.
 rm -rf %{buildroot}%{_libdir}/libcava.so*
 
 %files

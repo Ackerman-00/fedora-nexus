@@ -1,7 +1,4 @@
 #!/bin/bash
-# fetch-sha256.sh <url> [curl args...] - sha256 of a COMPLETE download.
-# A truncated transfer hashes cleanly and would pin a wrong artifact, so the
-# transfer's exit status is the verdict, never the presence of output.
 set -u
 url=${1:?usage: fetch-sha256.sh <url> [curl args...]}
 shift

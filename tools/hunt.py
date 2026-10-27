@@ -97,7 +97,6 @@ def expand_shell(raw):
         if not m:
             return raw
         try:
-            # bash, not sh: %(c=...; echo ${c:0:7}) is a bash substitution
             out = subprocess.run(["bash", "-c", m.group(1)], capture_output=True,
                                  text=True, timeout=20).stdout.strip()
         except Exception:
@@ -408,7 +407,6 @@ def hunt_cves():
             if m:
                 ver = m.group(1)
             else:
-                # a template or git-snapshot version: nothing to ask OSV about
                 skipped.append(os.path.basename(sp))
                 continue
         checked += 1
@@ -458,8 +456,6 @@ def hunt_release_discipline():
         ver = resolve_version(sp, spec_field(sp, "Version")).strip()
         rel = resolve_version(sp, spec_field(sp, "Release")).split("%{?dist}")[0].strip()
         if "%{" in ver:
-            # Macro from outside the spec (redhat-rpm-config, forge-srpm-macros):
-            # only a Fedora buildroot can expand it - not a finding.
             skipped.append(os.path.basename(sp))
             continue
         ch = re.search(r"^%changelog\s*\n(.*)", txt, re.M | re.S)
@@ -847,7 +843,6 @@ def hunt_official():
         hit = None
         for cand in dict.fromkeys([pkg, name]):
             try:
-                # Pagure answers JSON null for a project that does not exist
                 if get_json("https://src.fedoraproject.org/api/0/rpms/%s" % cand, timeout=30):
                     hit = cand
                     break
@@ -899,7 +894,6 @@ def hunt_slice():
         pkg, day = m.group(1), m.group(2)
         if pkg in inv and day > last.get(pkg, ""):
             last[pkg] = day
-    # 4-run rotation: tools/verify-fedora.sh requires ceil(n/4) per slice
     width = -(-len(inv) // 4)
     order = sorted(inv, key=lambda p: (last.get(p, ""), p))
     slice_pkgs, rest = order[:width], order[width:width + width]
@@ -976,7 +970,6 @@ def hunt_pins():
             checked += 1
             digest, err = fetch_sha256(url)
             if err:
-                # Unreachable is not a mismatch; retries already ran.
                 findings.append((pkg, "cannot fetch %s: %s" % (name, err)))
                 continue
             if digest != sha:

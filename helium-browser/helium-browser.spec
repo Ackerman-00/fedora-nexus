@@ -1,9 +1,6 @@
-# MAINTENANCE: ackerman/nexus COPR only — auto-update DISABLED (2026-09-17).
 %global             debug_package %{nil}
-# COPR release runs unreliable - manual bump only
 %global             helium_base /opt/helium
 
-# Bundled Chromium libs must not become Provides.
 %global __provides_exclude_from ^%{helium_base}/.*$
 
 Name:               helium-browser
@@ -16,19 +13,15 @@ URL:                https://github.com/imputnet/helium-linux
 Source0:            https://github.com/imputnet/helium-linux/releases/download/%{version}/helium-%{version}-x86_64_linux.tar.xz
 # sha256: 2023fa44cefa0fbd3e19071c87e90d61275f08ba8f5b48d58c235215565e9b53
 Source1:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/package/net.imput.helium.metainfo.xml
-# Tarball lacks license texts; stage from the tag.
 Source2:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/LICENSE
 Source3:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/LICENSE.ungoogled_chromium
 
 ExclusiveArch:      x86_64
 
-# www-browser convention shared by Fedora's firefox/chromium packages
 Provides:           www-browser = %{version}-%{release}
 
 Requires:           hicolor-icon-theme
-# xdg-* helpers are runtime-called, not ELF-linked.
 Requires:           xdg-utils
-# Chromium dlopens dbus; auto-deps miss it.
 Requires:           dbus-daemon
 Requires(post):     desktop-file-utils
 Requires(post):     gtk-update-icon-cache
@@ -45,12 +38,10 @@ while keeping the Chromium browsing experience.
 %prep
 %setup -q -n helium-%{version}-x86_64_linux
 
-# Stage the tag-fetched license texts for %license (see Source2/Source3).
 cp %{SOURCE2} LICENSE.GPL-3.0-only
 cp %{SOURCE3} LICENSE.ungoogled_chromium
 
 %build
-# Using prebuilt binaries
 
 %install
 mkdir -p %{buildroot}%{helium_base} \
@@ -61,7 +52,6 @@ mkdir -p %{buildroot}%{helium_base} \
 
 cp -a . %{buildroot}%{helium_base}
 
-# Brand the wrapper so bug reports show the distribution the build came from
 sed -Ei "s/(CHROME_VERSION_EXTRA=).*/\1rpm/" \
     %{buildroot}%{helium_base}/helium-wrapper
 
@@ -77,7 +67,6 @@ install -m 644 %{SOURCE1} \
 ln -sf %{helium_base}/helium-wrapper %{buildroot}%{_bindir}/helium
 
 %post
-# Refresh the desktop database and icon cache
 /usr/bin/update-desktop-database > /dev/null 2>&1 || :
 /bin/touch --no-create %{_datadir}/icons/hicolor > /dev/null 2>&1 || :
 

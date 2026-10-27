@@ -15,18 +15,14 @@ Summary:        Open source launcher for GOG, Epic, and Amazon Games (Nexus Opti
 License:        GPL-3.0-only AND MIT AND BSD-3-Clause
 URL:            https://github.com/Heroic-Games-Launcher/HeroicGamesLauncher
 
-# Use the native upstream RPM
 Source0:        %{url}/releases/download/v%{version}/Heroic-%{version}-linux-x86_64.rpm
-# The upstream RPM payload ships no license text; the repo has COPYING at the tag.
 Source1:        %{url}/raw/v%{version}/COPYING
 
 ExclusiveArch:  x86_64
 
-# Required to unpack the upstream RPM natively
 BuildRequires:  cpio
 BuildRequires:  desktop-file-utils
 
-# Explicit dependencies (matching upstream RPM runtime Requires)
 Requires:       alsa-lib
 Requires:       atk
 Requires:       at-spi2-core
@@ -49,7 +45,6 @@ Requires:       python3
 Requires:       which
 Requires:       xdg-utils
 
-# Native gaming ecosystem integrations
 Recommends:     gamemode
 Recommends:     mangohud
 
@@ -65,24 +60,19 @@ Packaged exclusively for the Nexus repository. This version bypasses bloated sou
 
 %prep
 %setup -c -T
-# Rip open the upstream RPM natively
 rpm2cpio %{SOURCE0} | cpio -idmv
 
 %build
-# No compilation required for pre-built binaries
 
 %install
 
-# 1. Install the main application folder
 install -d -m 0755 %{buildroot}/opt/Heroic
 cp -a opt/Heroic/* %{buildroot}/opt/Heroic/
 
-# 2. Install standard desktop entries and icons
 install -d -m 0755 %{buildroot}%{_datadir}
 cp -a usr/share/applications %{buildroot}%{_datadir}/
 cp -a usr/share/icons %{buildroot}%{_datadir}/
 
-# 3. Create the Native Wayland Wrapper Script
 install -d -m 0755 %{buildroot}%{_bindir}
 cat <<-'EOF' > %{buildroot}%{_bindir}/heroic
 #!/bin/sh
@@ -93,10 +83,8 @@ exec /opt/Heroic/heroic "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/heroic
 
-# 4. Optimization: Strip useless static libraries bundled by upstream
 find %{buildroot}/opt/Heroic -type f -name "*.a" -delete
 
-# 5. Upstream GPL-3.0 license text (the vendored RPM ships none)
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/COPYING
 
 %files
@@ -105,7 +93,6 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/COPYING
 %{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/apps/*.*
 /opt/Heroic/
-# Electron aborts unless chrome-sandbox is SUID root 4755.
 %attr(4755, root, root) /opt/Heroic/chrome-sandbox
 
 %changelog

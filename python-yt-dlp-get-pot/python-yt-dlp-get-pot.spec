@@ -1,4 +1,3 @@
-# No debuginfo: pure-Python wheel, no ELF binaries.
 %global debug_package %{nil}
 
 Name:           python-yt-dlp-get-pot
@@ -8,15 +7,12 @@ Summary:        PO token provider plugin for yt-dlp
 
 License:        Unlicense
 URL:            https://pypi.org/project/yt-dlp-get-pot/
-# pypi_source name 404s; use the underscore URL.
 Source0:        https://files.pythonhosted.org/packages/source/y/yt-dlp-get-pot/yt_dlp_get_pot-%{version}.tar.gz
 
-# Aliased name expected by dependent specs.
 Provides:       python3-yt-dlp-get-pot
 
 BuildRequires:  python3-devel
 
-# plugin needs yt-dlp at runtime - proven in fedora:44
 Requires:       yt-dlp
 
 %description
@@ -25,7 +21,6 @@ PO-token-gated formats (e.g. seekable Opus) keep working. Packaged
 for the Nexus repository as a dependency of mixtapes.
 
 %prep
-# Unpack sdist so build-requires generation finds setup.py.
 %autosetup -p1 -n yt_dlp_get_pot-%{version}
 
 %generate_buildrequires
@@ -38,7 +33,6 @@ for the Nexus repository as a dependency of mixtapes.
 %pyproject_install
 %pyproject_save_files yt_dlp_plugins
 
-# Upstream license text shipped inside the sdist
 install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %files -f %{pyproject_files}

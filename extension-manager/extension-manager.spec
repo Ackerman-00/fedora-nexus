@@ -39,7 +39,6 @@ With Extension Manager you can:
 %autosetup
 
 %build
-# We translate the Arch meson flags directly to Fedora, branding it for your repo
 %meson \
     -Dbacktrace=false \
     -Dpackage="Fedora" \
@@ -51,7 +50,6 @@ With Extension Manager you can:
 %find_lang %{name}
 
 %check
-# Run the internal test suite just like Arch does
 %meson_test
 appstream-util validate-relax --nonet %{buildroot}%{_datadir}/metainfo/%{uuid}.metainfo.xml
 desktop-file-validate %{buildroot}/%{_datadir}/applications/%{uuid}.desktop

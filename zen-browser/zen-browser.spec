@@ -2,13 +2,10 @@
 %global             application_name zen
 %global             debug_package %{nil}
 
-# Bundled /opt Gecko libs must not become Provides.
 %global             __provides_exclude_from ^/opt/%{application_name}/.*$
-# bundled libnssutil3.so needs NSSUTIL_3.130, F45 nss-util is 3.129.0
 %global             __requires_exclude ^lib(gkcodecs|lgpllibs|mozavutil|mozgtk|mozsandbox|mozsqlite3|mozwayland|nssutil3|nss3|smime3|nspr4)\\.so.*$
 
 Name:               zen-browser
-# Epoch 2 supersedes the 1.23.4b build upstream withdrew; keep it forever.
 Epoch:              2
 Version:        1.23.4b
 Release:        1%{?dist}
@@ -21,7 +18,6 @@ Source0:            https://github.com/zen-browser/desktop/releases/download/1.2
 Source1:            %{full_name}.desktop
 Source2:            policies.json
 Source3:            %{full_name}
-# Tarball lacks MPL text; fetch from the tag.
 Source4:            https://github.com/zen-browser/desktop/raw/%{version}/LICENSE
 
 ExclusiveArch:      x86_64
@@ -55,29 +51,23 @@ install -D -m 0644 %{SOURCE1} -t %{buildroot}%{_datadir}/applications
 install -D -m 0444 %{SOURCE2} -t %{buildroot}/opt/%{application_name}/distribution
 install -D -m 0755 %{SOURCE3} -t %{buildroot}%{_bindir}
 
-# Convenience symlink
 ln -sf %{full_name} %{buildroot}%{_bindir}/zen
 
-# Ship the MPL-2.0 text the binary tarball does not carry
 install -Dpm 0644 %{SOURCE4} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
-# Safeguard: Only run patchelf if upstream actually shipped libonnxruntime.so in the root
 if [ -f "%{buildroot}/opt/%{application_name}/libonnxruntime.so" ]; then
     patchelf --set-rpath '$ORIGIN' %{buildroot}/opt/%{application_name}/libonnxruntime.so
 fi
 
-# Icons - symlinks from upstream icons
 ln -s ../../../../../../opt/%{application_name}/browser/chrome/icons/default/default128.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/%{full_name}.png
 ln -s ../../../../../../opt/%{application_name}/browser/chrome/icons/default/default64.png %{buildroot}%{_datadir}/icons/hicolor/64x64/apps/%{full_name}.png
 ln -s ../../../../../../opt/%{application_name}/browser/chrome/icons/default/default48.png %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/%{full_name}.png
 ln -s ../../../../../../opt/%{application_name}/browser/chrome/icons/default/default32.png %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/%{full_name}.png
 ln -s ../../../../../../opt/%{application_name}/browser/chrome/icons/default/default16.png %{buildroot}%{_datadir}/icons/hicolor/16x16/apps/%{full_name}.png
 
-# Pixmaps icon for legacy apps
 ln -s ../../../../../../opt/%{application_name}/browser/chrome/icons/default/default128.png %{buildroot}%{_datadir}/pixmaps/%{full_name}.png
 
 %post
-# Added || : to prevent post-install scriptlet failures if the icon cache is locked
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %postun

@@ -31,9 +31,7 @@ READMES = [
 for text, want in READMES:
     check("parse %r" % text[:40], hunt.supported_releases(text), want)
 
-# In sync: no findings.
 check("in-sync", hunt.chroot_doc_findings({43, 44, 45}, True, {43, 44, 45}, True), [])
-# Drift each way must be detected, otherwise the check cannot fail.
 check("undocumented chroot",
       [f[1] for f in hunt.chroot_doc_findings({43, 44, 45}, True, {44, 45}, True)],
       ["F43 chroot builds but README does not list it"])

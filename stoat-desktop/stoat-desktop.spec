@@ -1,11 +1,8 @@
-# Disable debuginfo extraction since we are repackaging pre-compiled binaries
 %global debug_package %{nil}
 
-# Prevent RPM from trying to auto-generate dependencies from the bundled Electron libraries
 %global __requires_exclude_from ^/opt/Stoat/.*$
 %global __provides_exclude_from ^/opt/Stoat/.*$
 
-# Strip Nix-store RUNPATHs from bundled native modules.
 %global __brp_check_rpaths %{nil}
 
 Name:           stoat-desktop
@@ -19,7 +16,6 @@ Source0:        %{url}/releases/download/v%{version}/Stoat-linux-x64-%{version}.
 Source1:        stoat-desktop.desktop
 Source2:        stoat.png
 Source3:        chat.stoat.StoatDesktop.metainfo.xml
-# The zip payload carries no license text; the repo does at the same tag.
 Source4:        %{url}/raw/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
@@ -59,20 +55,16 @@ Nexus repository.
 unzip -q %{SOURCE0}
 
 %build
-# No compilation required for pre-built binaries
 
 %install
 
-# 1. Install the main application folder
 install -d -m 0755 %{buildroot}/opt/Stoat
 cp -a Stoat-linux-x64/* %{buildroot}/opt/Stoat/
 
-# 2. Install desktop entry, icon and metainfo
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_datadir}/applications/chat.stoat.StoatDesktop.desktop
 install -Dpm 0644 %{SOURCE2} %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/chat.stoat.StoatDesktop.png
 install -Dpm 0644 %{SOURCE3} %{buildroot}%{_datadir}/metainfo/chat.stoat.StoatDesktop.metainfo.xml
 
-# 3. Create the Wayland-aware wrapper script
 install -d -m 0755 %{buildroot}%{_bindir}
 cat <<-'EOF' > %{buildroot}%{_bindir}/stoat-desktop
 #!/bin/sh
@@ -83,7 +75,6 @@ exec /opt/Stoat/stoat-desktop "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/stoat-desktop
 
-# 4. Ship the upstream AGPL-3.0 license text
 install -Dpm 0644 %{SOURCE4} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %files
@@ -93,7 +84,6 @@ install -Dpm 0644 %{SOURCE4} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/icons/hicolor/256x256/apps/chat.stoat.StoatDesktop.png
 %{_datadir}/metainfo/chat.stoat.StoatDesktop.metainfo.xml
 /opt/Stoat/
-# Enforce strict sandbox permissions natively
 %attr(4755, root, root) /opt/Stoat/chrome-sandbox
 
 %changelog

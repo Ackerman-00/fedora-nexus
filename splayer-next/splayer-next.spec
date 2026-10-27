@@ -2,7 +2,6 @@
 %global __requires_exclude_from ^/opt/SPlayer-Next/.*$
 %global __provides_exclude_from ^/opt/SPlayer-Next/.*$
 
-# versions read from the 1.2.0 payload, not the filename
 %global electron_version 44.9.0
 %global better_sqlite3_version 13.0.3
 
@@ -16,16 +15,13 @@ URL:            https://github.com/SPlayer-Dev/SPlayer-Next
 
 Source0:        %{url}/releases/download/v%{version}/splayer-next-%{version}-x86_64.rpm
 # sha256: 30acae5ddc98e2b5f3254af6004613194ac9daa43f8d05eb6a1831481c7e9441
-# The rpm payload carries no license text; the repo does at the same tag.
 Source1:        %{url}/raw/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
 
-# Required to unpack the upstream RPM natively
 BuildRequires:  cpio
 BuildRequires:  desktop-file-utils
 
-# Runtime deps are NEEDED plus dlopen/helper deps.
 Requires:       alsa-lib
 Requires:       atk
 Requires:       at-spi2-atk
@@ -72,25 +68,19 @@ rendering wrapper.
 
 %prep
 %setup -c -T
-# Rip open the upstream RPM natively
 rpm2cpio %{SOURCE0} | cpio -idmv
 
 %build
-# No compilation required for pre-built binaries
 
 %install
 
-# 1. Install the main application folder
 install -d -m 0755 %{buildroot}/opt/SPlayer-Next
 cp -a opt/SPlayer-Next/* %{buildroot}/opt/SPlayer-Next/
 
-# 2. Install standard desktop entries and icons
 install -d -m 0755 %{buildroot}%{_datadir}
 cp -a usr/share/applications %{buildroot}%{_datadir}/
 cp -a usr/share/icons %{buildroot}%{_datadir}/
-# Skip upstream .build-id symlinks; they dangle.
 
-# 3. Create the Native Wayland Wrapper Script
 install -d -m 0755 %{buildroot}%{_bindir}
 cat <<-'EOF' > %{buildroot}%{_bindir}/splayer-next
 #!/bin/sh
@@ -101,7 +91,6 @@ exec /opt/SPlayer-Next/SPlayer-Next "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/splayer-next
 
-# 4. Ship the upstream AGPL-3.0 license text
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %files
@@ -110,7 +99,6 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/applications/top.imsyy.splayer_next.desktop
 %{_datadir}/icons/hicolor/512x512/apps/SPlayer-Next.png
 /opt/SPlayer-Next/
-# Electron aborts unless chrome-sandbox is SUID root 4755.
 %attr(4755, root, root) /opt/SPlayer-Next/chrome-sandbox
 
 %changelog

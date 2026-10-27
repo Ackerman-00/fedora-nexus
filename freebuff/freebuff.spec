@@ -1,6 +1,4 @@
-# Disable debuginfo extraction since we are repackaging pre-compiled binaries
 %global debug_package %{nil}
-# Never strip the prebuilt Bun binary.
 %global __strip /bin/true
 
 Name:           freebuff
@@ -12,7 +10,6 @@ License:        MIT
 URL:            https://freebuff.com/desktop
 Source0:        https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v%{version}/freebuff-linux-x64.tar.gz
 # sha256: 5d9f18b5a56ac80e457547ca3859766a28fd8ddd32c396492f2cdb28b92507e2
-# The binary tarball carries no license text; the release repo's MIT
 Source1:        https://raw.githubusercontent.com/CodebuffAI/codebuff-community/freebuff-v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
@@ -30,21 +27,16 @@ No subscriptions, no API keys — powerful coding models funded by text ads.
 tar xf %{SOURCE0}
 
 %build
-# Nothing to compile.
 
 %install
-# 1. Install the standalone binary
 install -dm755 %{buildroot}%{_bindir}
 install -m755 freebuff %{buildroot}%{_bindir}/freebuff
 
-# 2. Install the tree-sitter WASM module alongside the binary
 install -dm755 %{buildroot}%{_datadir}/freebuff
 install -m644 tree-sitter.wasm %{buildroot}%{_datadir}/freebuff/tree-sitter.wasm
 
-# License text from the upstream release repo (MIT, same release tag)
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
-# No upstream icon; install the standard desktop entry.
 install -dm755 %{buildroot}%{_datadir}/applications
 cat > %{buildroot}%{_datadir}/applications/freebuff.desktop <<'EOF'
 [Desktop Entry]

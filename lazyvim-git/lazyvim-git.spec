@@ -3,7 +3,6 @@
 %global gitdate         20260908200953
 
 Name:           lazyvim-git
-# Shipped since the first build; removing it breaks upgrades.
 Epoch:          1
 Version:        0.1^%{gitdate}git%{shortcommit}
 Release:        1%{?dist}
@@ -14,7 +13,6 @@ URL:            https://github.com/LazyVim/LazyVim
 Source0:        %{url}/archive/%{commit}/lazyvim-%{shortcommit}.tar.gz
 Packager:       Ackerman-00 <quietcraft@gmail.com>
 
-# Neovim, git mandatory; ripgrep/fd/gcc for search and parsers.
 Requires:       neovim >= 0.11.2
 Requires:       git
 Recommends:     ripgrep
@@ -35,7 +33,6 @@ install -d -m 0755 %{buildroot}%{_datadir}/lazyvim
 cp -a init.lua lua doc queries scripts LICENSE NEWS.md %{buildroot}%{_datadir}/lazyvim/
 
 %post
-# One-time usage instructions on fresh installs (not on upgrades)
 if [ "$1" -eq 1 ]; then
     echo
     echo "================================================================"

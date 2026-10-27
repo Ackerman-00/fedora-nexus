@@ -1,4 +1,3 @@
-# No debuginfo: pure-Python wheel, no ELF binaries.
 %global debug_package %{nil}
 
 Name:           python-yt-dlp-get-pot-rustypipe
@@ -8,20 +7,14 @@ Summary:        PO token provider plugin for yt-dlp using rustypipe-botguard
 
 License:        MIT
 URL:            https://pypi.org/project/yt-dlp-get-pot-rustypipe/
-# pypi_source name 404s; use the underscore URL.
 Source0:        https://files.pythonhosted.org/packages/source/y/yt-dlp-get-pot-rustypipe/yt_dlp_get_pot_rustypipe-%{version}.tar.gz
-# The sdist ships no license file and PyPI metadata carries no author or
-# project URL. The plugin itself lives in the rustypipe-botguard repo (tag
-# yt-dlp-get-pot-rustypipe/v0.2.0), whose root LICENSE is this MIT text.
 Source1:        https://codeberg.org/ThetaDev/rustypipe-botguard/raw/tag/yt-dlp-get-pot-rustypipe/v%{version}/LICENSE
 # sha256: fc3908dc021285b75d2fb91464dcb03545d966b9011cc009f8a230f4ce468701
 
-# Aliased name expected by dependent specs.
 Provides:       python3-yt-dlp-get-pot-rustypipe
 
 BuildRequires:  python3-devel
 
-# Plugin shells out to rustypipe-botguard; Recommends only.
 Recommends:     rustypipe-botguard
 
 %description
@@ -30,7 +23,6 @@ via the rustypipe-botguard helper binary. Packaged for the Nexus
 repository as a dependency of mixtapes.
 
 %prep
-# Unpack sdist so build-requires generation finds setup.py.
 %autosetup -p1 -n yt_dlp_get_pot_rustypipe-%{version}
 cp -p %{SOURCE1} LICENSE
 

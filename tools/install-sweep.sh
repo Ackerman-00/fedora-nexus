@@ -1,9 +1,4 @@
 #!/bin/bash
-# install-sweep.sh <list> [jobs] [chroot]
-# List lines: pkg|dnf-name|smoke-cmd
-# One fresh container per line: enable the live COPR repo, install, rpm -V,
-# ldd the entry points, then the smoke when one is given (empty = files-only).
-# A row is PASS only when install, rpm -V, ldd and the smoke all agree.
 set -u
 LIST=${1:?usage: install-sweep.sh <list> [jobs] [chroot]}
 JOBS=${2:-4}
@@ -18,7 +13,6 @@ one() {
   case "$pkg" in ''|\#*) return 0 ;; esac
   [ "$smoke" = files-only ] && smoke=""
   local out="$OUT/$pkg.log"
-  # Spec V/R, so a bare name that resolves to a Fedora package is caught.
   local spec ever erel
   spec=$(ls "$pkg/$pkg.spec" 2>/dev/null)
   ever=""; erel=""
@@ -38,7 +32,6 @@ for try in 1 2 3; do
   dnf -y --setopt=gpgcheck=0 --setopt=install_weak_deps=False install "$DNFN" >/tmp/i.log 2>&1
   iex=$?
   [ $iex -eq 0 ] && break
-  # A mirror dropping one package mid-transaction is transient: retry it.
   grep -qE 'Cannot download|All mirrors were tried|Librepo error|Timeout|timeout' /tmp/i.log || break
   echo "INSTALL_RETRY $try $(grep -m1 -E 'Librepo error|Cannot download' /tmp/i.log)"
   sleep 5
@@ -48,16 +41,12 @@ echo INSTALL_EXIT=$iex
 name=$DNFN
 rpm -q "$name" >/dev/null 2>&1 || name=$(rpm -q --whatprovides "$DNFN" 2>/dev/null | head -1)
 rpm -q "$name" >/dev/null 2>&1 || name=$PKG
-# A Fedora package that Provides our name wins on EVR: the install then proves
-# Fedora's build, not this one. Detect it from the spec V/R and pin the NEVRA.
 if [ "$iex" -eq 0 ] && [ -n "$EVER" ] && [ -n "$EREL" ]; then
   gv=$(rpm -q --qf '%{VERSION}' "$name" 2>/dev/null)
   gr=$(rpm -q --qf '%{RELEASE}' "$name" 2>/dev/null)
   grn=$(printf '%s' "$gr" | sed 's/[^0-9].*//')
   if [ "$gv" != "$EVER" ] || [ "$grn" != "$EREL" ]; then
     echo "SHADOWED_BY_BARE_NAME installed=$gv-$gr spec=$EVER-$EREL"
-    # The shadowing package owns the same payload files, so drop it before
-    # proving ours in a clean transaction.
     if [ "$name" != "$DNFN" ]; then
       dnf -y --setopt=gpgcheck=0 remove "$name" >/tmp/rm.log 2>&1 || true
       tail -2 /tmp/rm.log
@@ -81,8 +70,6 @@ fi
 echo NVR=$(rpm -q --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}' "$name" 2>/dev/null)
 rpm -V "$name" >/tmp/v.log 2>&1 && echo RPMV_OK || { echo RPMV_DIRTY; head -3 /tmp/v.log; }
 echo '--- ldd ---'
-# Entry points only: a bundled payload lib is dlopen'd by the app, so the
-# smoke owns that closure. /opt bundles resolve against their own lib dir.
 files=$(rpm -ql "$name" 2>/dev/null)
 optlib=$(printf '%s\n' "$files" | grep -oE '^/opt/[^/]+/lib' | sort -u | paste -sd:)
 shipped=$(printf '%s\n' "$files" | awk -F/ '{print $NF}' | sort -u)
@@ -99,8 +86,6 @@ for f in $targets; do
 done
 echo LDD_MISSING_COUNT=$miss
 echo '--- probe ---'
-# Probe literals must be payload the package ships; a stale path is a probe bug.
-# Only meaningful once the install succeeded - an empty file list proves nothing.
 pmiss=0
 if [ "$iex" -eq 0 ]; then
   for lit in $(printf '%s\n' "$SMOKE" | grep -oE '/(usr|opt|etc)/[A-Za-z0-9._+@/-]+'); do
@@ -124,7 +109,6 @@ EOS
   local pmiss
   pmiss=$(grep -c '^PROBE_MISSING ' "$out")
   local verdict=PASS why=""
-  # A probe naming a path the RPM does not ship is a probe bug, not a package FAIL.
   if [ "$iex" = "0" ] && [ "$rv" = "1" ] && [ "${lddc:-0}" = "0" ] && [ "$sex" != "0" ] && [ "${pmiss:-0}" -gt 0 ]; then
     why="probe names $(grep -m1 '^PROBE_MISSING ' "$out" | cut -d' ' -f2-) which the RPM does not ship"
     printf '%s|%s|%s|%s|%s|%s\n' "$pkg" "$CH" "$nvr" "${smoke:-files-only}" "PROBE-BUG" "$why" >> "$OUT/rows.txt"

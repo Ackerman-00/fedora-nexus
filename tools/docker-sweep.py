@@ -52,7 +52,6 @@ def detect_type(root):
     return None
 
 
-# Per-repo package metadata
 
 def get_gentoo_packages(root):
     pkgs = []
@@ -107,9 +106,7 @@ def get_void_packages(root):
     return pkgs
 
 
-# Docker test runners
 
-# Pinned image; never :latest (rolls on GA day)
 FEDORA_IMAGE = "fedora:44"
 
 
@@ -220,7 +217,6 @@ def test_void_package(name, template_path, workdir, timeout=300):
     return result
 
 
-# Reporting and main
 
 def trivy_scan_image(image_tag):
     """Scan a built Docker image with Trivy for known CVEs.

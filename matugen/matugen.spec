@@ -5,7 +5,6 @@ Version:        4.2.0
 Release:        4%{?dist}
 Summary:        Material You color generation tool (Nexus Optimized)
 
-# Full license audit of vendors and core logic
 License:        GPL-2.0-or-later AND MIT AND Apache-2.0 AND Zlib
 URL:            https://github.com/InioX/matugen
 Source0:        https://crates.io/api/v1/crates/%{crate}/%{version}/download#/%{crate}-%{version}.crate
@@ -26,7 +25,6 @@ environments.
 %setup -q -n %{crate}-%{version}
 
 %build
-# Set the linker to native
 export CARGO_NET_OFFLINE=false
 export RUSTFLAGS="%{build_rustflags}"
 cargo build --release --locked

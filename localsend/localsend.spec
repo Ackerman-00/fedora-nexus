@@ -1,7 +1,5 @@
-# Disable debuginfo extraction since we are repackaging pre-compiled binaries
 %global debug_package %{nil}
 
-# Prevent RPM from trying to auto-generate dependencies from the bundled Flutter libraries
 %global __requires_exclude_from ^%{_libdir}/localsend_app/.*$
 %global __provides_exclude_from ^%{_libdir}/localsend_app/.*$
 
@@ -12,23 +10,18 @@ Summary:        An open source cross-platform alternative to AirDrop
 
 License:        Apache-2.0
 URL:            https://github.com/localsend/localsend
-# Use the upstream DEB as our raw source payload
 Source0:        %{url}/releases/download/v1.18.2/LocalSend-1.18.2-linux-x86-64.deb
-# The deb payload carries no license text; the repo does at the same tag.
 Source1:        %{url}/raw/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
 
-# Required to unpack the upstream DEB natively
 BuildRequires:  binutils
 BuildRequires:  patchelf
 BuildRequires:  tar
 
-# Explicit dependencies mapped from the upstream DEB to Fedora
 Requires:           hicolor-icon-theme
 Requires:       libayatana-appindicator-gtk3
 Requires:       libayatana-ido-gtk3
-# bundled libflutter dlopens libEGL/libGLESv2 - invisible to ldd
 Requires:       libEGL.so.1()(64bit)
 Requires:       libGLESv2.so.2()(64bit)
 Requires:       xdg-user-dirs
@@ -44,9 +37,7 @@ extracts the upstream DEB payload.
 
 %prep
 %setup -c -T
-# Rip open the upstream DEB natively
 ar x %{SOURCE0}
-# Detect whichever data archive the .deb actually contains and extract it.
 for data_archive in data.tar.zst data.tar.xz data.tar.gz; do
     if [ -f "$data_archive" ]; then
         tar xf "$data_archive"
@@ -55,19 +46,15 @@ for data_archive in data.tar.zst data.tar.xz data.tar.gz; do
 done
 
 %build
-# No compilation required for pre-built binaries
 
 %install
 
-# 1. Install standard desktop entries and icons
 install -d -m 0755 %{buildroot}%{_datadir}
 cp -a usr/share/* %{buildroot}%{_datadir}/
 
-# Binary and lib/ must stay adjacent; RUNPATH relative.
 install -d -m 0755 %{buildroot}%{_libdir}
 cp -a opt/localsend_app %{buildroot}%{_libdir}/localsend_app
 
-# 3. Create the launcher wrapper (upstream DEB ships no /usr/bin entry)
 install -d -m 0755 %{buildroot}%{_bindir}
 cat <<-'EOF' > %{buildroot}%{_bindir}/localsend_app
 #!/bin/sh
@@ -75,11 +62,9 @@ exec %{_libdir}/localsend_app/localsend_app "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/localsend_app
 
-# Plugins carry the Flutter build machine's RPATH; rewrite to the sibling dir
 find %{buildroot}%{_libdir}/localsend_app/lib -type f -name '*.so*' \
     -exec patchelf --set-rpath '$ORIGIN' {} +
 
-# 4. Ship the upstream Apache-2.0 license text
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %files

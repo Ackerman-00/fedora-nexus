@@ -1,5 +1,4 @@
 #!/bin/bash
-# Tracks the 0.17 series from ziglang.org/download/index.json.
 set -u
 
 _update_sh_dir=$(cd "$(dirname "$0")" && pwd) || exit 1

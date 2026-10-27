@@ -8,7 +8,6 @@ Source:         %{url}/releases/download/%{version}/%{name}-%{version}.tar.gz
 # sha256: bc6a062fdb48615a7159ed56ef3d2011168cd8a9decaf1d8a4e316d3064132c9
 Packager:       Ackerman-00 <quietcraft@gmail.com>
 
-# C23 rejects the K&R extern; patch required.
 Patch:          c23-extern-int.patch
 
 BuildRequires:  gcc
@@ -36,7 +35,6 @@ Not packaged in Fedora before this (packages.fedoraproject.org 404).
 %make_install
 
 %check
-# Smoke-test `xcur2png --help` output contains xcursor.
 ./xcur2png --help 2>&1 | grep -qi xcursor
 
 %files

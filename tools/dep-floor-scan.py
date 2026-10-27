@@ -28,15 +28,12 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.environ.get("DEP_SCAN_CACHE", "/tmp/dep-floor-scan")
 MAXB = 200 * 1024 * 1024
 
-# meson builtins and platform-gated names that are not Fedora pkgconfig packages
 IGNORE = {
     "threads", "opengl", "jack", "appleframeworks", "pthreads4w",
     "python", "python3", "windows", "corefoundation", "iokit", "cocoa",
-    "x11", "xext", "xrandr",  # reached through libX*-devel, checked via PROVIDER
+    "x11", "xext", "xrandr",
 }
 
-# pkgconfig name -> the Fedora package(s) that satisfy it, so a spec that names the
-# package instead of the pc file (or pulls it through a DE toolkit) is not a finding.
 PROVIDER = {
     "gl": {"libglvnd-devel", "libglvnd-core-devel", "libglvnd", "mesa-libgl-devel"},
     "glesv2": {"libglvnd-devel", "libglvnd-core-devel", "mesa-libgles-devel"},
@@ -163,7 +160,7 @@ def meson_deps(x):
         except Exception:
             continue
         txt = re.sub(r"#[^\n]*", "", txt)
-        stack = []  # (indent, kind) of the enclosing guarded blocks
+        stack = []
         for line in txt.splitlines():
             stripped = line.strip()
             if stripped:
@@ -216,7 +213,6 @@ def spec_floors(txt):
             if pm:
                 out[pm.group(1).lower()] = pm.group(2)
                 continue
-            # plain package floors (`golang >= 1.26`) carry the same weight
             gm = re.match(r"([A-Za-z0-9][A-Za-z0-9._+-]*)\s*(?:>=|==|>)\s*([0-9][0-9A-Za-z.\-_]*)", tok)
             if gm:
                 out[gm.group(1).lower()] = gm.group(2)
@@ -273,7 +269,6 @@ def floor_finding(upstream, spec_floor, nofloor):
     if spec_floor is None:
         return "NOFLOOR" if nofloor else None
     if cmp_ver(spec_floor, upstream) < 0:
-        # `>= 1.8.alpha` is pinned as `>= 1.8`: same base, rpm-safe form
         if PRERELEASE.match(upstream) and cmp_ver(numeric_base(spec_floor), numeric_base(upstream)) >= 0:
             return None
         return "FLOOR"
@@ -293,7 +288,6 @@ def selftest():
     ok = deps.get("libinput") == "1.27" and sf.get("libinput") == "1.23"
     ok = ok and cmp_ver(sf["libinput"], deps["libinput"]) < 0
     ok = ok and (PROVIDER.get("glib-2.0", set()) & set(sf)) == {"glib2-devel"}
-    # go.mod carries a toolchain floor the meson scan cannot see
     with open(os.path.join(d, "src", "go.mod"), "w") as fh:
         fh.write("module example.com/x\n\ngo 1.26.0\n\ntoolchain go1.27.1\n")
     ok = ok and go_mod_floor(os.path.join(d, "src")) == "1.27.1"
@@ -307,7 +301,6 @@ def selftest():
     ok = ok and floor_finding("1.8.alpha", "1.8", True) is None
     ok = ok and floor_finding("1.9", "1.8", True) == "FLOOR"
     ok = ok and floor_finding(None, None, True) is None
-    # tests-only deps classify apart from the shipped build
     os.makedirs(os.path.join(d, "src", "tests"), exist_ok=True)
     with open(os.path.join(d, "src", "tests", "meson.build"), "w") as fh:
         fh.write("xt = dependency('xcb-xtest')\n")
@@ -317,7 +310,6 @@ def selftest():
     ok = ok and "xcb-xtest" in to and "xcb-render" in to
     ok = ok and "xcb-xtest" not in deps and "xcb-render" not in deps
     ok = ok and "libinput" in deps
-    # an option-gated dep only counts once the spec enables the option
     with open(os.path.join(d, "src", "meson.build"), "a") as fh:
         fh.write("tr = dependency('tracy', required: get_option('tracy'))\n")
     deps2, _fb2, _to2, g = meson_deps(d)
@@ -355,7 +347,7 @@ def main():
             continue
         first = expand(src.group(1), m) if src else ""
         if not tree and "%" in first:
-            continue  # shell macro in Source0: the container build is the proof, not this scan
+            continue
         urls = [first.split("#")[0]]
         tree = trees.get(pkg)
         for u in ([] if tree else urls):
@@ -377,13 +369,11 @@ def main():
         gofloor = go_mod_floor(tree)
         if gofloor:
             deps["golang"] = gofloor
-        # A tests-only dep is required exactly when the spec builds the tests.
         tests_built = bool(re.search(r"-Dtests[= ]enabled|--buildtype[= ]debug", txt))
         if tests_built:
             for name, floor in testonly.items():
                 deps.setdefault(name, floor)
         sf = spec_floors(txt)
-        # An option-gated dep is required exactly when the spec enables its option.
         for name, (floor, opt) in sorted(gated.items()):
             if re.search(r"-D%s[= ](enabled|true)" % re.escape(opt), txt):
                 deps.setdefault(name, floor)

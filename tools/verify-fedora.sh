@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# Strict completion verifier for fedora-nexus.
 if [[ "${1:-}" == "--print-mains" ]]; then
   echo "umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter wlroots"
   exit 0
@@ -8,8 +7,6 @@ fi
 RUN_ID="${RUN_ID:-}"
 RELAY=".opencode-relay.md"
 FAIL=0
-# One source for the mains list: the workflow gate calls --print-mains, so a
-# second literal here could check a different set than the gate.
 MAINS="$(bash "${BASH_SOURCE[0]}" --print-mains)"
 
 echo "----- VERIFICATION REPORT -----"
@@ -24,14 +21,12 @@ if [[ -f "$RELAY" ]]; then
     echo "PASS: relay run_id matches this run"
   fi
 
-  # Mirror of gate_passes() in opencode-schedule.yml - the two must not drift
   expected=$(find . -mindepth 2 -maxdepth 2 -name '*.spec' -type f -print | wc -l)
   if [[ "$expected" -eq 0 ]]; then
     echo "FAIL: NOT COMPLETE -- no package specs found"
     FAIL=1
   fi
 
-  # Scope is this run's block only, so old runs cannot satisfy a check
   scope=$(awk -v id="run_id: $RUN_ID" '$0==id{f=1;next} f&&/^run_id: /{exit} f' "$RELAY")
 
   if ! grep -qix "status: complete" <<< "$scope"; then
@@ -85,8 +80,6 @@ if [[ -f "$RELAY" ]]; then
     fi
   done
 
-  # The workflow files on main must be valid: a file GitHub rejects kills every
-  # run of it, and the agent that would fix it cannot run either.
   if bash tools/check-workflows.sh >/tmp/check-workflows.log 2>&1; then
     echo "PASS: workflow files on main are valid"
   else
@@ -115,9 +108,6 @@ if [[ -f "$RELAY" ]]; then
   else
     echo "PASS: install-test table present"
   fi
-  # Install-test verdicts are TRUTH, not decoration. A FAIL row means the
-  # package is broken right now, and a FAIL row next to a same-run
-  # "install PASS" teardown is self-contradicting. Both fail the run.
   IT=$(printf '%s' "$scope" | awk -F'|' '
               /^\|/ {
                 n = split($0, a, "|");
@@ -208,7 +198,6 @@ if [[ -f "$RELAY" ]]; then
     done
   fi
 
-  # deps-verified claims a container teardown: no same-run token, no claim.
   for pkg in $(printf '%s' "$scope" | grep -oE "^\| [a-zA-Z0-9._+-]+ \|.*\| (deps-verified|deps-fixed) \|" | awk -F'|' '{gsub(/ /,"",$2); print $2}' | sort -u); do
     if ! grep -qiE "docker-teardown: $pkg .*PASS.*($TODAY|$YEST)" <<< "$scope"; then
       echo "FAIL: NOT COMPLETE -- $pkg is deps-verified with no same-run docker-teardown PASS"
@@ -225,7 +214,6 @@ if [[ -f "$RELAY" ]]; then
       FAIL=1
     fi
   done
-  # GAP/HOLD classification - mirror of gate_passes()
   g_decl=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:|not verified\b)" <<< "$scope" || true)
   g_head=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:|not verified\b)[^:]*:[[:space:]]*$" <<< "$scope" || true)
   g_cls=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:[[:space:]]*(external|actionable)|not verified\b.*\b(external|actionable)\b|(GAP|HOLD)[[:space:]]*:[[:space:]]*(none|nothing|n/a)\b|not verified\b[ 	]*:?[ 	]*(none|nothing|n/a)\b)" <<< "$scope" || true)
@@ -266,7 +254,6 @@ if [[ "$bad_specs" -gt 0 ]]; then
   FAIL=1
 fi
 
-# Every package dir needs an install probe: no probe means no run installs it.
 probe_report=$(python3 tools/hunt.py probes 2>&1 || true)
 if ! grep -q ' 0 findings$' <<< "$probe_report"; then
   echo "FAIL: NOT COMPLETE -- tools/probes.txt does not cover the inventory:"
@@ -276,9 +263,6 @@ else
   echo "PASS: install probes cover the inventory"
 fi
 
-# Defect accounting: every defect found this run is either fixed (counted)
-# or proven external (a GAP/HOLD line carrying the probe). Finding none is
-# allowed - leaving one unfixed and uncounted is not.
 d_found=$(grep -oE '^[[:space:]]*defects-found:[[:space:]]*[0-9]+' <<< "$scope" | tail -1 | grep -oE '[0-9]+' || true)
 d_fixed=$(grep -oE '^[[:space:]]*defects-fixed:[[:space:]]*[0-9]+' <<< "$scope" | tail -1 | grep -oE '[0-9]+' || true)
 if [[ -z "$d_found" || -z "$d_fixed" ]]; then

@@ -1,7 +1,5 @@
-# Disable debuginfo extraction since we are repackaging pre-compiled binaries
 %global debug_package %{nil}
 
-# Prevent RPM from trying to auto-generate dependencies from the bundled Electron libraries
 %global __requires_exclude_from ^/opt/Vesktop/.*$
 %global __provides_exclude_from ^/opt/Vesktop/.*$
 
@@ -12,17 +10,13 @@ Summary:        Custom Discord desktop client with Vencord preinstalled (Nexus O
 
 License:        GPL-3.0-or-later
 URL:            https://github.com/Vencord/Vesktop
-# Use the native upstream RPM as our raw source payload
 Source0:        %{url}/releases/download/v%{version}/%{name}-%{version}.x86_64.rpm
-# Upstream payload lacks license text; fetch from tag.
 Source1:        %{url}/raw/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
 
-# Required to unpack the upstream RPM natively
 BuildRequires:  cpio
 
-# Deps mapped from Void template plus ldd NEEDED.
 Requires:           hicolor-icon-theme
 Requires:       gtk3
 Requires:       pango
@@ -53,24 +47,19 @@ Packaged exclusively for the Nexus repository. This version bypasses bloated sou
 
 %prep
 %setup -c -T
-# Rip open the upstream RPM natively
 rpm2cpio %{SOURCE0} | cpio -idmv
 
 %build
-# No compilation required for pre-built binaries
 
 %install
 
-# 1. Install the main application folder
 install -d -m 0755 %{buildroot}/opt/Vesktop
 cp -a opt/Vesktop/* %{buildroot}/opt/Vesktop/
 
-# 2. Install standard desktop entries and icons
 install -d -m 0755 %{buildroot}%{_datadir}
 cp -a usr/share/applications %{buildroot}%{_datadir}/
 cp -a usr/share/icons %{buildroot}%{_datadir}/
 
-# 3. Create the Native Wayland Wrapper Script
 install -d -m 0755 %{buildroot}%{_bindir}
 cat <<-'EOF' > %{buildroot}%{_bindir}/vesktop
 #!/bin/sh
@@ -81,7 +70,6 @@ exec /opt/Vesktop/vesktop "$@"
 EOF
 chmod 0755 %{buildroot}%{_bindir}/vesktop
 
-# 4. Ship the upstream GPL-3.0 license text
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %files
@@ -90,7 +78,6 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/apps/*.*
 /opt/Vesktop/
-# Enforce strict sandbox permissions natively
 %attr(4755, root, root) /opt/Vesktop/chrome-sandbox
 
 %changelog

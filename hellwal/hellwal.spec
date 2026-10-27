@@ -5,7 +5,6 @@ Summary:        Pywal-like color palette generator, but faster and in C
 
 License:        MIT
 URL:            https://github.com/danihek/hellwal
-# upstream tags are v-prefixed; bare %{version} 404s
 %global tag     v%{version}
 Source:         %{url}/archive/%{tag}/%{name}-%{version}.tar.gz
 Patch:          hellwal.patch
@@ -24,7 +23,6 @@ BuildRequires:  gcc
 
 %install
 %make_install
-# Completion is sourced, not executed; drop the shebang.
 sed -i '1{/^#!/d}' assets/hellwal-completion.bash
 install -Dpm0644 assets/hellwal-completion.bash %{buildroot}%{bash_completions_dir}/%{name}
 install -Dpm0644 assets/hellwal.fish %{buildroot}%{fish_completions_dir}/%{name}.fish

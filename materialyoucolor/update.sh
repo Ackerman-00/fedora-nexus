@@ -43,8 +43,6 @@ fi
 
 echo "  -> [UPDATE] $CURRENT_VERSION -> $LATEST_VERSION"
 
-# Source0 pins the hashed files.pythonhosted.org path, so a version bump must
-# rewrite the whole URL, not just the file name.
 TMP=$(mktemp)
 if ! curl -fsSL -o "$TMP" "$SDIST_URL"; then
     echo "  -> [ERROR] sdist download failed: $SDIST_URL"

@@ -1,4 +1,3 @@
-# No debuginfo: pure-Python wheel, no ELF binaries.
 %global debug_package %{nil}
 
 Name:           python-mprisify
@@ -8,11 +7,9 @@ Summary:        MPRIS D-Bus interface library for Python
 
 License:        LGPL-3.0-only
 URL:            https://gitlab.com/zehkira/mprisify
-# GitLab tag archive (no PyPI release published upstream)
 Source0:        https://gitlab.com/zehkira/mprisify/-/archive/v%{version}/mprisify-v%{version}.tar.gz
 Source1:        %{url}/-/raw/v%{version}/LICENSE
 
-# Aliased name expected by dependent specs.
 Provides:       python3-mprisify
 
 BuildRequires:  python3-devel
@@ -23,10 +20,8 @@ for media players. Packaged for the Nexus repository as a dependency
 of mixtapes.
 
 %prep
-# GitLab archive dir carries the commit SHA suffix; strip it.
 %setup -q -c -T
 tar xzf %{SOURCE0} --strip-components=1
-# Map StrEnum imports to the stdlib.
 sed -i '/^StrEnum==/d' source/requirements.txt
 sed -i 's/^from strenum import StrEnum$/from enum import StrEnum/' source/mprisify/base.py source/mprisify/mpris/metadata.py
 sed -i 's/^from strenum import LowercaseStrEnum, StrEnum$/from enum import StrEnum/' source/mprisify/enums.py
@@ -48,7 +43,6 @@ class LowercaseStrEnum(StrEnum):\
 %pyproject_install
 %pyproject_save_files mprisify
 
-# Upstream LGPL-3.0 license text (the sdist ships none)
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %files -f %{pyproject_files}

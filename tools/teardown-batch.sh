@@ -1,10 +1,4 @@
 #!/bin/bash
-# teardown-batch.sh <list-file> [jobs] [chroot] [--probes]
-# List lines: pkg|smoke|rpm-name (smoke may be empty for a files-only package).
-# --probes takes tools/probes.txt's order instead: pkg|dnf-name|smoke.
-# Runs tools/teardown-fresh.sh per line, N at a time, keeps every log under
-# --outdir, and prints one relay-ready token per package.
-# Jobs above the CPU count only makes docker thrash.
 set -u
 FORMAT=smoke-first
 _args=()
@@ -32,9 +26,6 @@ one() {
   else
     IFS='|' read -r pkg smoke rpmn <<< "$1"
   fi
-  # The two list orders are one flag apart; reading a file in the wrong order
-  # feeds the probe to rpm -V and reports a healthy package as an install
-  # failure. An rpm name is one token, so anything else is harness, not FAIL.
   if [[ "$rpmn" == *" "* || "$rpmn" == /* || "$rpmn" == *=* ]]; then
     echo "TEARDOWN_${pkg}_EXIT=harness"
     echo "docker-teardown: $pkg HARNESS_ERROR list-order (rpm-name field is a command: $rpmn)"
@@ -47,7 +38,6 @@ one() {
   local line fields
   line=$(grep -hF "TEARDOWN_$pkg=" "$OUT/$pkg.log" | tail -1)
   fields=${line#*=}
-  # Token copies the tool's per-stage verdicts: a files-only smoke SKIP is not PASS.
   if [ -z "$fields" ]; then
     fields="rpmbuild-bb FAIL install FAIL smoke FAIL"
   fi

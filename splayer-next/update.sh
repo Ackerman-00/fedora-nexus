@@ -56,10 +56,8 @@ fi
 
 sed -i -E "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
 sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
-# Provides: bundled() must name what the payload really carries
 sed -i -E "s/^%global electron_version .*/%global electron_version $BUNDLED_ELECTRON/" "$SPEC_FILE"
 sed -i -E "s/^%global better_sqlite3_version .*/%global better_sqlite3_version $BUNDLED_SQLITE/" "$SPEC_FILE"
-# A pin that lags the artifact is a false receipt
 sed -i -E "0,/^# sha256:.*/s//# sha256: $NEW_SHA/" "$SPEC_FILE"
 
 echo "  -> [NOTE] Re-verify the readelf NEEDED set in $SPEC_FILE against the new payload."
@@ -78,7 +76,6 @@ if ! grep -q "^Name:" "$SPEC_FILE"; then
     git checkout -- "$SPEC_FILE" 2>/dev/null || true
     exit 1
 fi
-# Never ship a spec whose pin or bundled Provides disagree with the artifact
 if ! grep -q "^# sha256: $NEW_SHA" "$SPEC_FILE" \
    || ! grep -q "^%global electron_version $BUNDLED_ELECTRON" "$SPEC_FILE" \
    || ! grep -q "^%global better_sqlite3_version $BUNDLED_SQLITE" "$SPEC_FILE"; then

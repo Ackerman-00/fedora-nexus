@@ -55,7 +55,7 @@ def spec_nvrs():
     if subprocess.run(["bash", "-lc", "command -v rpmspec"], capture_output=True).returncode == 0:
         out = run_host()
     if out.count("|") < 2 * len(glob.glob(os.path.join(ROOT, "*", "*.spec"))):
-        out = run_docker()  # host rpmspec without Fedora macros expands to nothing
+        out = run_docker()
     nv = {}
     for line in out.splitlines():
         if line.count("|") == 2:

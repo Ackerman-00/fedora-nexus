@@ -1,7 +1,6 @@
 %global debug_package %{nil}
 %global __os_install_post %{nil}
 
-# Bundled /opt libs must not leak into Provides.
 %global __provides_exclude_from ^/opt/openchamber/.*$
 %global __requires_exclude_from ^/opt/openchamber/.*$
 
@@ -14,18 +13,15 @@ License:        MIT
 URL:            https://github.com/openchamber/openchamber
 Source0:        %{url}/releases/download/v2.5.2/OpenChamber-2.5.2-linux-x86_64.AppImage
 # sha256: e9580f2a8e5cb67e69a4246d163bb09c7f2f2858504bd7086d4fa206554a5878
-# The AppImage carries no license text; the repo does at the same tag.
 Source1:        %{url}/raw/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
-# x86_64 only; aarch64 AppImage exists upstream.
 
 BuildRequires:  binutils
 BuildRequires:  squashfs-tools
 BuildRequires:  coreutils
 BuildRequires:  patchelf
 
-# Electron runtime deps (mirrors rootapp.spec, same Chromium base)
 Requires:       gtk3
 Requires:       nss
 Requires:       nspr
@@ -58,19 +54,16 @@ management and scheduled tasks, driven by local or remote models.
 %prep
 %setup -c -T
 
-# Extract the Type 2 AppImage (ELF section header offset method)
 OFFSET=$(LC_ALL=C readelf -h %{SOURCE0} | awk 'NR==13{e_shoff=$5} NR==18{e_shentsize=$5} NR==19{e_shnum=$5} END{print e_shoff+e_shentsize*e_shnum}')
 unsquashfs -q -d squashfs-root -o "$OFFSET" %{SOURCE0}
 chmod go-w squashfs-root
 
 %build
-# Nothing to compile.
 
 %install
 install -dm755 %{buildroot}/opt/openchamber
 cp -ar squashfs-root/* %{buildroot}/opt/openchamber/
 
-# Strip builder-machine RUNPATH from sherpa-onnx node.
 find %{buildroot}/opt/openchamber/resources -name '*.node' -print0 | \
     xargs -0 -r patchelf --remove-rpath 2>/dev/null || true
 
@@ -85,7 +78,6 @@ chmod 755 %{buildroot}%{_bindir}/openchamber
 install -Dm644 squashfs-root/usr/share/icons/hicolor/512x512/apps/openchamber.png \
     %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/openchamber.png
 
-# Desktop entry uses the wrapper with SUID sandbox.
 install -dm755 %{buildroot}%{_datadir}/applications/
 cat > %{buildroot}%{_datadir}/applications/openchamber.desktop <<DESKTOP_EOF
 [Desktop Entry]
@@ -101,7 +93,6 @@ DESKTOP_EOF
 
 desktop-file-validate %{buildroot}%{_datadir}/applications/openchamber.desktop || true
 
-# Upstream MIT license text (the AppImage ships none)
 install -Dm644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %files
@@ -110,7 +101,6 @@ install -Dm644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 /opt/openchamber/
 %{_datadir}/applications/openchamber.desktop
 %{_datadir}/icons/hicolor/512x512/apps/openchamber.png
-# Chromium SUID sandbox must stay setuid root.
 %attr(4755, root, root) /opt/openchamber/chrome-sandbox
 
 %changelog

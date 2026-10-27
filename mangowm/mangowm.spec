@@ -8,19 +8,15 @@ URL:            https://github.com/mangowm/mango
 Source:         %{url}/archive/%{version}.tar.gz
 
 BuildRequires:  meson
-# meson.build:104 requires find_program('find') unconditionally.
 BuildRequires:  findutils
 BuildRequires:  ninja-build
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-icccm)
-# xwayland on by default; xcb-randr needs a BR.
 BuildRequires:  pkgconfig(xcb-randr)
-# Staging XMLs need a recent wayland-protocols.
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.41
 BuildRequires:  pkgconfig(wayland-server) >= 1.23.1
-# Codegen uses find_program; needs explicit wayland-scanner BR.
 BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.0
 BuildRequires:  pkgconfig(xkbcommon)
@@ -31,7 +27,6 @@ BuildRequires:  pkgconfig(libcjson)
 BuildRequires:  pkgconfig(pangocairo)
 BuildRequires:  pkgconfig(pixman-1)
 BuildRequires:  pkgconfig(libdrm)
-# scenefx floor must use pkgconfig() form (NVR 0.5-2).
 BuildRequires:  pkgconfig(scenefx-0.5) >= 0.5.0
 
 Requires:       xorg-x11-server-Xwayland
@@ -41,7 +36,6 @@ Requires(post): gtk-update-icon-cache
 Requires(postun): gtk-update-icon-cache
 Recommends:     xdg-desktop-portal >= 1.18
 Recommends:     xdg-desktop-portal-gtk
-# mango-portals.conf routes ScreenCast/Screenshot to the wlr backend.
 Recommends:     xdg-desktop-portal-wlr
 
 %global mangowc_ver 0.12.5-1
@@ -58,7 +52,6 @@ dwl — crafted for speed, flexibility, and a customizable desktop experience.
 %prep
 %autosetup -n mango-%{version}
 
-# Strip -U_FORTIFY_SOURCE so Fedora hardening applies.
 sed -i "s/'-U_FORTIFY_SOURCE',//g" meson.build
 
 %build
@@ -67,7 +60,6 @@ sed -i "s/'-U_FORTIFY_SOURCE',//g" meson.build
 
 %install
 %meson_install
-# mango.desktop ships Icon=mango; upstream never installs the SVG.
 install -Dpm0644 assets/mango.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/mango.svg
 
 %post
@@ -98,7 +90,6 @@ esac
 %{_datadir}/wayland-sessions/mango.desktop
 %{_datadir}/icons/hicolor/scalable/apps/mango.svg
 %config(noreplace) %{_datadir}/xdg-desktop-portal/mango-portals.conf
-# Mango activates it itself; see set_activation_env() in src/main.c
 %{_userunitdir}/mango-session.target
 
 %changelog

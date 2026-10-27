@@ -29,7 +29,6 @@ Requires:       python3-imageio
 Requires:       (ffmpeg or ffmpeg-free)
 Requires:       gobject-introspection
 Requires:       gtk3
-# Shells out to pgrep/pkill and killall for backends.
 Requires:       procps-ng
 Requires:       psmisc
 
@@ -51,7 +50,6 @@ tar -xzf %{SOURCE2} --strip-components=1 imageio_ffmpeg-0.6.0/imageio_ffmpeg
 
 %install
 %pyproject_install
-# Strip vendored deps from wheel metadata.
 for f in %{buildroot}%{python3_sitelib}/waypaper-*.dist-info/METADATA; do
   [ -f "$f" ] && sed -i '/^Requires-Dist: screeninfo$/d' "$f" && sed -i '/^Requires-Dist: imageio-ffmpeg$/d' "$f" || true
 done

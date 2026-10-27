@@ -1,14 +1,10 @@
-# Disable debuginfo extraction since we are repackaging pre-compiled binaries
 %global debug_package %{nil}
 
-# Ubuntu binary has Ubuntu-only RUNPATH and unversioned lib.
 %global __brp_check_rpaths %{nil}
 
-# Unversioned lib must not become Provide/Require.
 %global __requires_exclude ^libgtk4-layer-shell\.so.*$
 %global __provides_exclude ^libgtk4-layer-shell\.so.*$
 
-# Upstream Ghostty version (drives RPM Version)
 %global ghostty_version 1.3.1
 %global ppatag 1.3.1-0-ppa2
 %global debver 1.3.1-0.ppa2
@@ -21,21 +17,17 @@ Summary:        A fast, feature-rich, and cross-platform terminal emulator
 License:        MIT
 URL:            https://github.com/mkasberg/ghostty-ubuntu
 Source0:        %{url}/releases/download/%{ppatag}/ghostty_%{debver}_amd64_24.04.deb
-# The PPA deb carries no license text; upstream ghostty does at the same version.
 Source1:        https://raw.githubusercontent.com/ghostty-org/ghostty/v%{ghostty_version}/LICENSE
 
 ExclusiveArch:  x86_64
 
-# Required to unpack the upstream DEB natively
 BuildRequires:  binutils
 BuildRequires:  tar
 BuildRequires:  xz
 BuildRequires:  zstd
 
-# systemd-rpm-macros defines the user unit dir.
 BuildRequires:  systemd-rpm-macros
 
-# Runtime dependencies mapped from the upstream DEB's Depends field
 Requires:           hicolor-icon-theme
 Requires:       libadwaita
 Requires:       glibc
@@ -55,9 +47,7 @@ UIs. Ghostty provides all three.
 
 %prep
 %setup -c -T
-# Rip open the upstream DEB natively
 ar x %{SOURCE0}
-# Detect whichever data archive the .deb actually contains and extract it
 for data_archive in data.tar.zst data.tar.xz data.tar.gz; do
     if [ -f "$data_archive" ]; then
         tar xf "$data_archive"
@@ -66,22 +56,18 @@ for data_archive in data.tar.zst data.tar.xz data.tar.gz; do
 done
 
 %build
-# No compilation required for pre-built binaries
 
 %install
 
-# 1. Install the main binary
 install -d -m 0755 %{buildroot}%{_bindir}
 cp -a usr/bin/ghostty %{buildroot}%{_bindir}/ghostty
 
-# libgtk4-layer-shell has no soname; keep unversioned name.
 install -d -m 0755 %{buildroot}%{_libdir}
 cp -a usr/lib/libgtk4-layer-shell.so %{buildroot}%{_libdir}/libgtk4-layer-shell.so
 cp -a usr/lib/libghostty-vt.so.0.1.0 %{buildroot}%{_libdir}/libghostty-vt.so.0.1.0
 ln -s libghostty-vt.so.0.1.0 %{buildroot}%{_libdir}/libghostty-vt.so.0
 ln -s libghostty-vt.so.0.1.0 %{buildroot}%{_libdir}/libghostty-vt.so
 
-# 3. Install the per-user systemd unit (single-instance D-Bus service host)
 install -d -m 0755 %{buildroot}%{_userunitdir}
 cp -a usr/lib/systemd/user/app-com.mitchellh.ghostty.service %{buildroot}%{_userunitdir}/
 
@@ -89,7 +75,6 @@ install -d -m 0755 %{buildroot}%{_datadir}
 cp -a usr/share/* %{buildroot}%{_datadir}/
 rm -rf %{buildroot}%{_datadir}/doc
 
-# 5. Upstream MIT license text (the deb ships none)
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %files

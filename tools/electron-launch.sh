@@ -1,8 +1,4 @@
 #!/bin/bash
-# electron-launch.sh <list> [jobs] [chroot]
-# List lines: pkg|binary ("auto" picks the first shipped /usr/bin ELF).
-# AGENTS.md chrome-sandbox rule: non-root xvfb launch under
-# seccomp=unconfined; PASS = rc 0/124 and zero setuid_sandbox_host lines.
 set -u
 LIST=${1:?usage: electron-launch.sh <list> [jobs] [chroot]}
 JOBS=${2:-2}

@@ -28,7 +28,6 @@ Requires:       libva
 Requires:       mesa-libEGL
 Requires:       pipewire-libs
 Requires:       xdg-desktop-portal
-# Weak dep: ignored on repos without mpv (RPMFusion-only), suggested where present.
 Recommends:     mpv
 
 %description
@@ -38,11 +37,9 @@ previews in the terminal.
 
 %prep
 %setup -q -n %{crate}-%{version}
-# concord pins rust-version 1.99, F45 ships rustc 1.98.1 - compiles clean on 1.98
 sed -i 's/rust-version = "1.99"/rust-version = "1.98"/' Cargo.toml
 
 %build
-# Plain --release keeps Cargo no-debuginfo; debug_package nil.
 export CARGO_NET_OFFLINE=false
 export RUSTFLAGS="%{build_rustflags}"
 cargo build --release --locked

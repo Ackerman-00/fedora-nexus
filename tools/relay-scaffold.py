@@ -59,7 +59,6 @@ def install_table(rows_path):
     rows.txt is the sweep's own log: pkg|chroot|nvr|smoke|verdict|why. The build
     id comes from COPR so a row can be traced to the build users download.
     """
-    # newest_builds: name -> (nvr, built_id, state, newest_id)
     builds = {name: v[3] for name, v in H.newest_builds().items()}
     out = ["| package | COPR build | chroot | installed NVR | verdict |",
            "| --- | --- | --- | --- | --- |"]

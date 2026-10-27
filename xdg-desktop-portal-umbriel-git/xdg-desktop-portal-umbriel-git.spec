@@ -1,4 +1,3 @@
-# These will be automatically populated by update.sh
 %global commit          e24762d9c75e294f89dbe7a0e3fd55c5cdc3ff0a
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20261027145449
@@ -22,7 +21,6 @@ BuildRequires:  pkgconfig(sdbus-c++) >= 2.0.0
 BuildRequires:  pkgconfig(libpipewire-0.3)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.39
-# Codegen uses find_program; needs explicit wayland-scanner BR.
 BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  pkgconfig(gbm)
@@ -34,7 +32,6 @@ BuildRequires:  pkgconfig(gtk4) >= 4.12
 BuildRequires:  pkgconfig(libei-1.0) >= 1.3
 
 Requires:       xdg-desktop-portal
-# Color picker is a weak dep (slurp); optional.
 Recommends:     slurp
 
 Provides:       xdg-desktop-portal-umbriel = %{version}-%{release}
@@ -49,17 +46,14 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %prep
 %autosetup -n xdg-desktop-portal-umbriel-%{commit}
 
-# Upstream uses system nlohmann/json; no header rewrite.
 
 %build
-# -Dpicker=enabled states release intent explicitly.
 %meson -Db_lto=true -Dpicker=enabled
 %meson_build
 
 %install
 %meson_install
 
-# Upstream ships tests=true; run the registered test.
 %check
 %meson_test
 

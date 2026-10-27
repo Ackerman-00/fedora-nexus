@@ -1,12 +1,9 @@
-# These will be automatically populated by update.sh
 %global commit          be548562464e1a6bd69bd3a64675822e83b97c5d
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20260811125152
 
-# Dist-info is named after %{pyver}, not the rpm %{version}
 %global pyver           2.0.0
 
-# MangoWM only; does not work with Hyprland.
 
 Name:           caelestia-cli-mango
 Version:        %{pyver}^%{gitdate}git%{shortcommit}
@@ -24,32 +21,22 @@ BuildRequires:  pyproject-rpm-macros
 BuildRequires:  python3-hatchling
 BuildRequires:  python3-pip
 
-# Compositor (MangoWM only!)
 Requires:       mangowm
-# Shell (caelestia-shell IPC for picker/shell/emojis)
 Requires:       caelestia-shell-mango >= 2.0.0
-# Notifications
 Requires:       libnotify
 Requires:       glib2
-# File-manager reveal (subcommands/record.py: dbus-send org.freedesktop.FileManager1)
 Requires:       dbus-tools
-# Screenshots
 Requires:       swappy
 Requires:       grim
 Requires:       slurp
-# Clipboard
 Requires:       wl-clipboard
 Requires:       cliphist
 Requires:       fuzzel
-# Launcher
 Requires:       app2unit
-# Screen recording
 Requires:       gpu-screen-recorder
-# Theme/process helpers
 Requires:       procps-ng
 Requires:       psmisc
 Requires:       dconf
-# Python deps
 Requires:       python3-pillow
 Requires:       python3-materialyoucolor
 
@@ -65,7 +52,6 @@ Tracks the main branch of https://github.com/Ackerman-00/caelestia-cli-mango.
 %autosetup -n caelestia-cli-mango-%{commit}
 
 %build
-# Replace qs config call with system shell wrapper (mirrors nix patchPhase)
 sed -i 's/"qs", "-c", "caelestia"/"caelestia-shell"/' src/caelestia/subcommands/shell.py
 sed -i 's/"qs", "-c", "caelestia", "ipc"/"caelestia-shell", "ipc"/' src/caelestia/subcommands/screenshot.py
 sed -i 's/\["todoist"\]/["todoist.desktop"]/' src/caelestia/subcommands/toggle.py

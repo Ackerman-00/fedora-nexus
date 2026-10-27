@@ -1,4 +1,3 @@
-# Disable debuginfo extraction (Go builds don't cooperate with the debugsource capture)
 %global debug_package %{nil}
 
 Name:           cliphist
@@ -33,7 +32,6 @@ install -d %{buildroot}%{_bindir}
 install -m 0755 cliphist %{buildroot}%{_bindir}/cliphist
 
 %check
-# Do not run tests as root (uid 0).
 export GO111MODULE=on
 if [ "$(id -u)" -eq 0 ]; then
   useradd -r -m -d /tmp/cliphist-check cliphist-check

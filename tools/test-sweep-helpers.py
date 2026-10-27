@@ -22,7 +22,6 @@ ts = importlib.util.module_from_spec(spec)
 sys.modules["ts"] = ts
 spec.loader.exec_module(ts)
 
-# (pinned, repology_upstream, expected_is_upstream_newer, why)
 CASES = [
     ("0.9.145", "0.9.144", False, "rootapp: we ship AHEAD of repology's AUR lineage"),
     ("0.9.144", "0.9.145", True, "genuine newer upstream"),
@@ -66,7 +65,6 @@ def test_redirect_version_parsing():
         if m != want:
             failures += 1
         print(f"{status}: version_from_url({url!r}) -> {m!r} (want {want!r})")
-    # Read expectation from spec, never hardcode
     spec_ver = None
     spec = os.path.join(os.path.dirname(ts.__file__ if hasattr(ts, "__file__")
                                        else "."),
@@ -80,7 +78,6 @@ def test_redirect_version_parsing():
     except OSError:
         spec_ver = None
     if spec_ver is None:
-        # Package removed; parsing cases still cover the helper
         print("SKIP: photon-studio no longer packaged - live channel check skipped")
         return failures
     ver, src = ts.redirect_channel_version("photon-studio", [], None)
@@ -175,16 +172,12 @@ def test_strings_version():
     import tempfile
     failures = 0
     cases = [
-        # (distname, file body, want_version)
         ("OpenCADStudio-v2026.40.1-linux-x86_64.AppImage",
          b"\x7fELF noise OpenCADStudio/2026.40.1 more noise", "2026.40.1"),
-        # stale artifact: report body, not the pin
         ("OpenCADStudio-v2026.40.1-linux-x86_64.AppImage",
          b"OpenCADStudio/2026.39.0", "2026.39.0"),
-        # no anchored token: give up, do not guess
         ("OpenCADStudio-v2026.40.1-linux-x86_64.AppImage",
          b"unrelated version 1.2.3 of some embedded lib", None),
-        # version-only filename: no token can match
         ("v2026.40.1-linux-x86_64.AppImage", b"v2026.40.1", None),
     ]
     for distname, body, want in cases:

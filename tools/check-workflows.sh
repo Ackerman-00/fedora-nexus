@@ -1,12 +1,4 @@
 #!/usr/bin/env bash
-# check-workflows.sh - validate .github/workflows/*.yml before pushing them.
-#
-# A workflow file that GitHub rejects kills every run of it: the push creates
-# a failed run with no jobs and the schedule dies silently. That happened on
-# 2026-09-09 (commit ad69ca3 added the invalid scope `workflows: write`) and
-# again on 2026-10-20 (the scopes `code-quality` and `vulnerability-alerts` are
-# NOT valid in a permissions block, even though the docs table lists them).
-# actionlint is the authority on the accepted scope list, not the docs prose.
 set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit 2
 FAIL=0
@@ -24,8 +16,6 @@ for f in sorted(glob.glob(".github/workflows/*.yml")):
 PY
 
 echo "== actionlint =="
-# -shellcheck= disables shellcheck integration: its style infos are not
-# workflow validity and would otherwise fail a valid file.
 if command -v actionlint >/dev/null 2>&1; then
   actionlint -shellcheck= -no-color .github/workflows/*.yml && echo "OK   actionlint clean" || FAIL=1
 else
@@ -98,8 +88,6 @@ for pat in (r"^[[:space:]]*defects-found:[[:space:]]*[0-9]+",
               % (pat, in_gate, in_ver))
         bad = 1
 
-# The EXTERNAL rule is compared textually: both files name the variable
-# $ext_pkg, so a one-sided edit shows up as a difference.
 gap_pat = r"GAP: external.*$ext_pkg"
 in_gate = norm(gap_pat) in gp
 in_ver = norm(gap_pat) in vp
@@ -110,8 +98,6 @@ else:
           % (in_gate, in_ver))
     bad = 1
 
-# The install-test table may be named in prose or only by its header; both
-# files must accept the same thing, or a run passes one and fails the other.
 g_tbl = set(norm(p) for p in gp if "install-test table" in p or "COPR build" in p)
 v_tbl = set(norm(p) for p in vp if "install-test table" in p or "COPR build" in p)
 if not g_tbl or not v_tbl:
@@ -125,10 +111,6 @@ elif g_tbl != v_tbl:
 else:
     print("OK   install-test table rule identical in gate and verifier")
 
-# The prompt and the machine must speak the same verdict vocabulary: the gate
-# accepts a row when a cell reads PASS/FAIL/EXTERNAL (or the older
-# installable/fixed/broken-*/blocked-*), so the prompt has to name those words
-# or a run writes a table the gate cannot read.
 import yaml as _yaml
 try:
     _wf = _yaml.safe_load(open(".github/workflows/opencode-schedule.yml", encoding="utf-8"))

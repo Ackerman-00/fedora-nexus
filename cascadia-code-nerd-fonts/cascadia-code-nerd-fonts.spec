@@ -15,7 +15,6 @@ Cascadia Code font patched with Nerd Fonts glyphs for terminal and editor use.
 %autosetup -c
 
 %build
-# Nothing to build
 
 %install
 install -m 0755 -d %{buildroot}%{_datadir}/fonts/%{name}

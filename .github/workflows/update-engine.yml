@@ -34,10 +34,6 @@ jobs:
       - name: Restore a workflow file that main cannot run
         shell: bash
         run: |
-          # A workflow file GitHub rejects kills every run of it, and the agent
-          # that would fix it cannot run either. This step is the backstop: it
-          # lives in a file that stays valid, and it restores the last version
-          # of a broken workflow file that was valid.
           set -u
           git config user.name "opencode-agent[bot]"
           git config user.email "41898282+opencode-agent[bot]@users.noreply.github.com"
@@ -165,9 +161,7 @@ jobs:
                               print(f"  -> [OK] {current_ver}")
 
                       if changed:
-                          # A new upstream version restarts the release counter
                           new_content = re.sub(r'(^Release:\s+)\d+.*', r'\g<1>1%{?dist}', new_content, flags=re.MULTILINE)
-                          # Every bump ships its own %changelog entry.
                           date = datetime.datetime.now(datetime.timezone.utc).strftime('%a %b %d %Y')
                           entry = (f'* {date} Nexus Auto-Updater <bot@github.com> - {new_ver}-1\n'
                                    f'- Update to version {new_ver}\n\n')
@@ -193,7 +187,6 @@ jobs:
                && [ "$(printf '%s\n%s\n' "$old_v" "$new_v" | sort -V | tail -1)" = "$old_v" ]; then
               why="Version $old_v -> $new_v"
             fi
-            # Tag-driven specs (Version is a macro, e.g. protonplus %{fileref}).
             if [ -z "$why" ] && [ -n "$old_t" ] && [ -n "$new_t" ] \
                && [ "$old_t" != "$new_t" ] \
                && [[ "$old_t" != *%* && "$new_t" != *%* ]] \
@@ -212,7 +205,6 @@ jobs:
 
       - name: Verify changed spec sources resolve
         run: |
-          # A bump whose Source0 404s dies at the SRPM stage and ships nothing.
           bash tools/source-url-check.sh --revert
 
       - name: Check for Changes

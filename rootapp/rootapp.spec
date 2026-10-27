@@ -21,80 +21,59 @@ BuildRequires:  binutils
 BuildRequires:  squashfs-tools
 BuildRequires:  coreutils
 
-# Core GUI toolkit
-Requires:       gtk3
-Requires:       nss
-Requires:       alsa-lib
-Requires:       libnotify
-Requires:       xdg-utils
 Requires:       at-spi2-core
 Requires:       hicolor-icon-theme
-Requires:       zlib-ng-compat
-Requires:       glib2
-
-# X11 libraries (DotNetBrowser/Chromium needs these)
-Requires:       libXScrnSaver
-Requires:       libXtst
-Requires:       libX11
-Requires:       libXi
-Requires:       libXt
-Requires:       libXinerama
-Requires:       libXrandr
-Requires:       libXcursor
-Requires:       libXcomposite
-Requires:       libXdamage
-Requires:       libXrender
-Requires:       libXext
-Requires:       libXfixes
-Requires:       libxcb
-
-# Wayland support
-Requires:       libxkbcommon
-Requires:       mesa-libgbm
-Requires:       libwayland-client
-Requires:       libwayland-cursor
-Requires:       libwayland-egl
-Requires:       libdrm
-
-# OpenGL/rendering (DotNetBrowser GPU acceleration)
-Requires:       libglvnd
-Requires:       mesa-libGL
-Requires:       mesa-libEGL
-
-# Font/text rendering
-Requires:       fontconfig
-Requires:       freetype
-Requires:       cairo
-Requires:       pango
-Requires:       harfbuzz
-Requires:       icu
-Requires:       expat
-
-# Image handling
-Requires:       gdk-pixbuf2
-
-# Audio/printing
-Requires:       cups-libs
-Requires:       pulseaudio-libs
-
-# Security/crypto
-Requires:       openssl-libs
-Requires:       vulkan-loader
 Requires:       nspr
-
-# D-Bus
-Requires:       dbus-libs
-
-# Secret storage
-Requires:       libsecret
-
-# Accessibility
-Requires:       at-spi2-atk
-
-# System
-Requires:       systemd-libs
-Requires:       libatomic
-
+Requires:       nss
+Requires:       xdg-utils
+# --- sonames: DT_NEEDED union (see above) -------------------------------
+Requires:       libX11.so.6()(64bit)
+Requires:       libXcomposite.so.1()(64bit)
+Requires:       libXdamage.so.1()(64bit)
+Requires:       libXext.so.6()(64bit)
+Requires:       libXfixes.so.3()(64bit)
+Requires:       libXinerama.so.1()(64bit)
+Requires:       libXrandr.so.2()(64bit)
+Requires:       libXt.so.6()(64bit)
+Requires:       libXtst.so.6()(64bit)
+Requires:       libasound.so.2()(64bit)
+Requires:       libatk-1.0.so.0()(64bit)
+Requires:       libatk-bridge-2.0.so.0()(64bit)
+Requires:       libatspi.so.0()(64bit)
+Requires:       libcairo.so.2()(64bit)
+Requires:       libcups.so.2()(64bit)
+Requires:       libdbus-1.so.3()(64bit)
+Requires:       libexpat.so.1()(64bit)
+Requires:       libfontconfig.so.1()(64bit)
+Requires:       libgbm.so.1()(64bit)
+Requires:       libgcc_s.so.1()(64bit)
+Requires:       libgdk-3.so.0()(64bit)
+Requires:       libgio-2.0.so.0()(64bit)
+Requires:       libglib-2.0.so.0()(64bit)
+Requires:       libgobject-2.0.so.0()(64bit)
+Requires:       libgtk-3.so.0()(64bit)
+Requires:       libpango-1.0.so.0()(64bit)
+Requires:       libstdc++.so.6()(64bit)
+Requires:       libudev.so.1()(64bit)
+Requires:       libxcb.so.1()(64bit)
+Requires:       libxkbcommon.so.0()(64bit)
+# --- sonames: loaded by name at runtime (dlopen / .NET probe table) -----
+Requires:       libEGL.so.1()(64bit)
+Requires:       libGL.so.1()(64bit)
+Requires:       libICE.so.6()(64bit)
+Requires:       libSM.so.6()(64bit)
+Requires:       libX11-xcb.so.1()(64bit)
+Requires:       libXcursor.so.1()(64bit)
+Requires:       libXi.so.6()(64bit)
+Requires:       libXss.so.1()(64bit)
+Requires:       libgssapi_krb5.so.2()(64bit)
+Requires:       libpipewire-0.3.so.0()(64bit)
+Requires:       libpulse.so.0()(64bit)
+Requires:       libssl.so.3()(64bit)
+Requires:       libva-drm.so.2()(64bit)
+Requires:       libva.so.2()(64bit)
+Requires:       libvulkan.so.1()(64bit)
+Requires:       libwayland-client.so.0()(64bit)
 Provides:       rootapp = %{version}-%{release}
 Provides:       root-app = %{version}-%{release}
 Conflicts:      root-app
@@ -106,13 +85,11 @@ large online groups.
 %prep
 %setup -c -T
 
-# Extract the Type 2 AppImage (Nix method using ELF section header offset)
 OFFSET=$(LC_ALL=C readelf -h %{SOURCE0} | awk 'NR==13{e_shoff=$5} NR==18{e_shentsize=$5} NR==19{e_shnum=$5} END{print e_shoff+e_shentsize*e_shnum}')
 unsquashfs -q -d squashfs-root -o "$OFFSET" %{SOURCE0}
 chmod go-w squashfs-root
 
 %build
-# Nothing to compile.
 
 %install
 install -dm755 %{buildroot}/opt/rootapp
@@ -126,10 +103,11 @@ exec /opt/rootapp/AppRun "$@"
 WRAPPER_EOF
 chmod 755 %{buildroot}%{_bindir}/rootapp
 
-install -Dm644 squashfs-root/Root.png %{buildroot}%{_datadir}/pixmaps/rootapp.png
-install -Dm644 squashfs-root/Root.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/rootapp.png
+rm -f %{buildroot}/opt/rootapp/usr/bin/Root.dbg
 
-# Drop chrome-sandbox SUID; bundled Chromium sandbox handles it.
+install -Dm644 squashfs-root/Root.png %{buildroot}%{_datadir}/pixmaps/rootapp.png
+install -Dm644 squashfs-root/Root.png %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/rootapp.png
+
 if [ -f %{buildroot}/opt/rootapp/chrome-sandbox ]; then
     rm -f %{buildroot}/opt/rootapp/chrome-sandbox
 fi

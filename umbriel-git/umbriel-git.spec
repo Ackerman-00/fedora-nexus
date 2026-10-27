@@ -1,9 +1,7 @@
-# These will be automatically populated by update.sh
 %global commit          814d761e4a753cc6a8b214749dc49349daa445f4
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20261027145535
 
-# Fedora LTO flags break linking; keep escape hatch.
 %global _lto_cflags %{nil}
 
 Name:           umbriel-git
@@ -22,10 +20,8 @@ BuildRequires:  git
 BuildRequires:  meson >= 1.3
 BuildRequires:  ninja-build
 BuildRequires:  systemd-rpm-macros
-# Pin localed=enabled; default auto fails silently.
 BuildRequires:  pkgconfig(libsystemd) >= 243
 BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.1
-# wlroots pinned to 0.20.x for umbrielfx layouts.
 BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(wayland-server) >= 1.24
 BuildRequires:  pkgconfig(wayland-client)
@@ -34,7 +30,6 @@ BuildRequires:  pkgconfig(xkbcommon) >= 1.10.0
 BuildRequires:  pkgconfig(libinput) >= 1.27
 BuildRequires:  pkgconfig(libeis-1.0) >= 1.3
 BuildRequires:  pkgconfig(pixman-1) >= 0.43.0
-# libdisplay-info: upstream floor, F43 needs relaxation.
 %if 0%{?fedora} >= 44
 BuildRequires:  pkgconfig(libdisplay-info) >= 0.3.0
 %else
@@ -54,21 +49,16 @@ BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-shape)
 BuildRequires:  pkgconfig(xcb-icccm)
 BuildRequires:  pkgconfig(xcb-ewmh)
-# Native DRM policy optional; off breaks [drm] config.
 BuildRequires:  pkgconfig(libudev)
 
-# Needs Xwayland on PATH; xwayland-satellite dropped.
 Requires:       xorg-x11-server-Xwayland%{?_isa}
 Requires:       xdg-desktop-portal-umbriel-git
 Requires:       mesa-dri-drivers
 Requires:       mesa-libEGL
-# Portal framework - xdg-desktop-portal-umbriel-git is the Umbriel backend
 Requires:       xdg-desktop-portal
-# start-umbriel needs systemctl and dbus helpers.
 Requires:       systemd
 Requires:       dbus-daemon
 Requires:       dbus-tools
-# PACKAGING.md runtime table: "a usable font stack" for overlays/diagnostics.
 Recommends:     liberation-fonts
 
 Provides:       umbriel = %{version}-%{release}
@@ -86,13 +76,11 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 
 %prep
 %autosetup -n umbriel-%{commit}
-# F43: relax libdisplay-info floor; remove at EOL.
 %if 0%{?fedora} == 43
 sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdisplay-info', version: '>=0.2.0')/" meson.build
 %endif
 
 %build
-# -Dtests=disabled states release intent explicitly.
 %meson -Db_lto=true -Dtests=disabled -Dtest_ipc=disabled -Dlocaled=enabled \
     -Dtracy=disabled
 %meson_build

@@ -1,4 +1,3 @@
-# No debuginfo: prebuilt binary is already stripped.
 %global debug_package %{nil}
 
 Name:           rustypipe-botguard
@@ -11,7 +10,6 @@ URL:            https://codeberg.org/ThetaDev/rustypipe-botguard
 
 # sha256: 4f2ec561e8f9fadece7deadc6ce0624fbdedd852222c3eb194c22153b1323129
 Source0:        https://codeberg.org/ThetaDev/rustypipe-botguard/releases/download/v%{version}/rustypipe-botguard-v%{version}-x86_64-unknown-linux-gnu.tar.xz
-# The release tarball carries no license text; the repo does at the tag.
 Source1:        %{url}/raw/tag/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
@@ -27,7 +25,6 @@ binary for mixtapes (expected on PATH by yt-dlp-get-pot-rustypipe).
 tar xJf %{SOURCE0}
 
 %build
-# No compilation - prebuilt upstream binary
 
 %install
 install -Dpm0755 rustypipe-botguard -t %{buildroot}%{_bindir}

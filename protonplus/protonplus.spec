@@ -34,7 +34,6 @@ BuildRequires:  pkgconfig(sdl3) >= 3.2.0
 
 Requires:       hicolor-icon-theme
 Requires:       which
-# libGLESv2 is dlopened; missing it aborts startup.
 Requires:       mesa-libGLES
 
 %description

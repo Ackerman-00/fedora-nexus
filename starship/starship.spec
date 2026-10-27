@@ -8,7 +8,6 @@ Summary:        Minimal, blazing-fast, and customizable prompt for any shell (Ne
 License:        ISC
 URL:            https://github.com/starship/starship
 Source0:        %{url}/releases/download/v%{version}/starship-x86_64-unknown-linux-gnu.tar.gz
-# Tarball lacks license text; fetch from the tag.
 Source1:        %{url}/raw/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
@@ -22,14 +21,11 @@ Packaged exclusively for the Nexus repository via automated GitHub release track
 tar xf %{SOURCE0}
 
 %build
-# Pre-built binary, no compilation needed
 
 %install
 
-# Install the core binary
 install -Dpm0755 starship -t %{buildroot}%{_bindir}/
 
-# Install shell completions using native Fedora macros
 install -d -m 0755 %{buildroot}%{bash_completions_dir}
 install -d -m 0755 %{buildroot}%{zsh_completions_dir}
 install -d -m 0755 %{buildroot}%{fish_completions_dir}
@@ -38,7 +34,6 @@ install -d -m 0755 %{buildroot}%{fish_completions_dir}
 %{buildroot}%{_bindir}/starship completions zsh > %{buildroot}%{zsh_completions_dir}/_starship
 %{buildroot}%{_bindir}/starship completions fish > %{buildroot}%{fish_completions_dir}/starship.fish
 
-# License text from the upstream source tree (ISC, same tag as Source0)
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %files

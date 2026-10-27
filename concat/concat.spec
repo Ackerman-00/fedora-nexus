@@ -1,16 +1,10 @@
 %global debug_package %{nil}
 
-# Concat ships its own FFmpeg + onnxruntime under /opt/concat/lib with
-# DT_RPATH $ORIGIN/lib (see upstream assets/linux/nfpm.yaml). Those bundled
-# libraries must not be advertised as system-wide Provides, nor become
-# system Requires; the genuine system deps below are declared explicitly.
 %global __provides_exclude_from ^/opt/concat/.*$
 %global __requires_exclude_from ^/opt/concat/.*$
 
 Name:           concat
 Version:        0.2.8
-# Release history: 2 = %license/%doc path fix, 3 = restore libxkbcommon-x11 Requires + desktop-file-utils BuildRequires
-# COPR published 0.2.5-2 - a same-version fix must exceed it
 Release:        1%{?dist}
 Summary:        Free and open source video editor (CapCut alternative)
 
@@ -20,21 +14,13 @@ Source0:        %{url}/releases/download/v0.2.8/Concat-0.2.8-linux-x86_64.rpm
 # sha256: 890d377c531d216f93f4888eff4f356ef9e54f70a858e8255328da7af8ea286d
 
 ExclusiveArch:  x86_64
-# aarch64 asset exists upstream (Concat-0.2.5-linux-aarch64.rpm) but this repo
-# only enables x86_64 COPR chroots; extend with a %ifarch Source0 if that changes.
 
 BuildRequires:  desktop-file-utils
 
-# System libraries the binary loads outside its own lib/ — the exact set from
-# upstream assets/linux/nfpm.yaml (rpm.depends), names already Fedora-style.
 Requires:       gtk3
 Requires:       fontconfig
 Requires:       freetype
 Requires:       libxkbcommon
-# X11 keyboard init: xkbcommon-dl dlopens libxkbcommon-x11.so.0 at startup and
-# the app panics without it under X11/Xvfb (proven 2026-10-03 teardown); gtk3
-# only pulls libxkbcommon.so.0 (dnf repoquery --requires gtk3), so this must be
-# an explicit Requires.
 Requires:       libxkbcommon-x11
 Requires:       mesa-libGL
 Requires:       alsa-lib

@@ -115,7 +115,6 @@ jobs:
         shell: bash
         run: |
           export PATH="$HOME/.opencode/bin:$PATH"
-          # Cascade derived from the live catalog; order in tools/model-rank.txt
           mapfile -t CASCADE < <(bash tools/model-cascade.sh 2>/dev/null)
           if [ "${#CASCADE[@]}" -eq 0 ]; then
             CASCADE=(opencode/minimax-m3.1-flash-free opencode/mimo-v2.6-flash-free)

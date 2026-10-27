@@ -16,14 +16,11 @@ echo "Checking for rootapp updates..."
 TMPDIR=$(mktemp -d)
 trap "rm -rf $TMPDIR" EXIT
 
-# Cheap pre-check: the AppImage is ~450 MB, so a HEAD request decides whether
-# anything moved before the download starts. Length + mtime unchanged means the
-# file is the same one the recorded sha256 was taken from.
 HEADERS=$(curl -sIL --max-time 60 "$APPIMAGE_URL")
 NEW_LEN=$(printf '%s' "$HEADERS" | grep -i '^content-length:' | tail -1 | tr -d '\r' | awk '{print $2}')
 NEW_MOD=$(printf '%s' "$HEADERS" | grep -i '^last-modified:' | tail -1 | tr -d '\r' | cut -d' ' -f2-)
 CURRENT_LEN=$(grep -E "^# content-length:" "$SPEC_FILE" | awk '{print $3}')
-CURRENT_MOD=$(grep -E "^# last-modified:" "$SPEC_FILE" | awk '{print $3}')
+CURRENT_MOD=$(grep -E "^# last-modified:" "$SPEC_FILE" | cut -d' ' -f3-)
 if [ -n "$CURRENT_LEN" ] && [ -n "$CURRENT_MOD" ] && [ "$NEW_LEN" = "$CURRENT_LEN" ] && [ "$NEW_MOD" = "$CURRENT_MOD" ]; then
     echo "Package is up to date (content-length $NEW_LEN and last-modified unchanged)."
     exit 0

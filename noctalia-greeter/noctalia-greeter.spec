@@ -1,4 +1,3 @@
-# These will be automatically populated by update.sh
 %global commit          dbace1c834a9e0f2e1b5d4ef186db8ec3b422a49
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20261025021409
@@ -8,7 +7,6 @@ Version:        1.7.0^%{gitdate}git%{shortcommit}
 Release:        2%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
-# SPDX: MIT AND Apache-2.0 (vendored Wuffs).
 License:        MIT AND Apache-2.0
 URL:            https://github.com/noctalia-dev/noctalia-greeter
 Source0:        %{url}/archive/%{commit}/%{name}-%{commit}.tar.gz
@@ -23,15 +21,11 @@ BuildRequires:  gcc-c++
 BuildRequires:  greetd
 BuildRequires:  dbus
 BuildRequires:  polkit
-# %check's apply-appearance test invokes cmp.
 BuildRequires:  diffutils
 BuildRequires:  stb_image_resize2-devel
 BuildRequires:  libinput-devel
-# wlroots 0.20 layout is ABI-critical; pin the series.
 BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20
-# Codegen uses find_program; needs explicit wayland-scanner BR.
 BuildRequires:  pkgconfig(wayland-scanner)
-# Use pkgconfig(egl); libEGL-devel was a duplicate.
 BuildRequires:  mesa-libGLES-devel
 BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(cairo-ft)
@@ -58,7 +52,6 @@ BuildRequires:  pkgconfig(wayland-server)
 BuildRequires:  pkgconfig(xkbcommon)
 
 Requires:       dbus
-# The session script execs dbus-run-session when present (dbus-daemon).
 Requires:       /usr/bin/dbus-run-session
 Requires:       greetd
 Requires:       wlroots >= 0.20
@@ -77,7 +70,6 @@ automated Git snapshot.
 
 %install
 %meson_install
-# Delete the unneeded tmpfiles.d fallback configuration
 rm -f %{buildroot}%{_tmpfilesdir}/noctalia-greeter.conf
 install -d %{buildroot}%{_licensedir}/%{name}/third_party
 install -d %{buildroot}%{_licensedir}/%{name}/third_party/wuffs
@@ -106,7 +98,6 @@ done
 %{_datadir}/polkit-1/actions/org.noctalia.greeter.apply-appearance.policy
 
 %post
-# One-time enable instructions on fresh installs (not on upgrades)
 if [ "$1" -eq 1 ]; then
     echo
     echo "================================================================"
