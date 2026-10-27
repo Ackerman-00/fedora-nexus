@@ -1,9 +1,8 @@
-%global debug_package %{nil}
 %global crate matugen
 
 Name:           matugen
 Version:        4.2.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Material You color generation tool (Nexus Optimized)
 
 # Full license audit of vendors and core logic
@@ -40,6 +39,9 @@ install -Dpm0755 target/release/matugen -t %{buildroot}%{_bindir}/
 %{_bindir}/matugen
 
 %changelog
+* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 4.2.0-4
+- Ship debuginfo: this is a source build (cargo), so the debug_package
+  override was discarding symbols the build already produces
 * Tue Sep 08 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 4.2.0-3
 - Wrap the package description to 80 columns (fixes rpmlint description-line-too-long)
 
