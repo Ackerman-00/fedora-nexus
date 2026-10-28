@@ -67,7 +67,7 @@ install -dm755 %{buildroot}%{_bindir}
 ln -sf /opt/logseq/logseq %{buildroot}%{_bindir}/logseq
 
 install -dm755 %{buildroot}%{_datadir}/applications
-cat > %{buildroot}%{_datadir}/applications/logseq.desktop <<'EOF'
+cat > %{buildroot}%{_datadir}/applications/logseq-app.desktop <<'EOF'
 [Desktop Entry]
 Name=Logseq
 Comment=A privacy-first, local-first knowledge base
@@ -92,7 +92,7 @@ install -Dpm 0644 %{SOURCE2} %{buildroot}%{_licensedir}/%{name}/LICENSE.md
 %{_bindir}/logseq
 /opt/logseq/
 %attr(4755, root, root) /opt/logseq/chrome-sandbox
-%{_datadir}/applications/logseq.desktop
+%{_datadir}/applications/logseq-app.desktop
 %{_datadir}/icons/hicolor/512x512/apps/logseq.png
 
 %changelog
