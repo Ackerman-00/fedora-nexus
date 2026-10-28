@@ -7,10 +7,29 @@ agent may do only after it ran a same-run container teardown.
 """
 import argparse
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import hunt as H  # noqa: E402
+
+
+def changelog_version(sp):
+    """The version this spec last shipped, read from its newest NVR.
+
+    A Version field built from shell or forge macros (%{fileref}) does not
+    expand outside rpmbuild, and a half-expanded cell reads as a wrong
+    version. The changelog NVR is the value the repo authored and COPR built.
+    """
+    txt = open(sp, encoding="utf-8", errors="replace").read()
+    m = re.search(r"^%changelog\s*\n\s*\*\s+\w+\s+\w+\s+\d+\s+\d{4}\s+.+?\s+-\s+(\S+)\s*$",
+                  txt, re.M)
+    if not m:
+        return None
+    nvr = m.group(1)
+    if "%{" in nvr:
+        return None
+    return re.sub(r"-\d+$", "", nvr)
 
 
 def version_table():
@@ -18,7 +37,8 @@ def version_table():
             "| --- | --- | --- | --- |"]
     for sp in H.specs():
         pkg = os.path.basename(os.path.dirname(sp))
-        ver = H.strip_packaging(H.resolve_version(sp, H.spec_field(sp, "Version")).lstrip("v"))
+        ver = changelog_version(sp) or H.strip_packaging(
+            H.resolve_version(sp, H.spec_field(sp, "Version")).lstrip("v"))
         _p, ref, ok, _cmd, err = H.probe_upstream(sp)
         if ok is None:
             rows.append("| %s | %s | unprobed (%s) | needs-build |" % (pkg, ver, err))
