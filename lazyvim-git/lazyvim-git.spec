@@ -1,6 +1,6 @@
-%global commit          999700997f72227187d49d8b92667183dc7fc809
+%global commit          301a3f71007c4aa5da5dab82f1a7a08389091224
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260908200953
+%global gitdate         20261028082036
 
 Name:           lazyvim-git
 Epoch:          1
@@ -51,5 +51,5 @@ fi
 %{_datadir}/lazyvim/
 
 %changelog
-* Tue Sep 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1^20260908200953git9997009-1
-- Sync with upstream main branch (Commit: 9997009)
+* Wed Oct 28 2026 Ackerman-00 <quietcraft@gmail.com> - 1:0.1^20261028082036git301a3f7-1
+- Sync with upstream main branch (Commit: 301a3f7)
