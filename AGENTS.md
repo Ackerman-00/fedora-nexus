@@ -132,7 +132,9 @@ If the agent skips the dependency table, the job fails and the next run retries 
   in the container instead (`dnf copr enable ackerman/nexus && dnf install
   <pkg>`), which also proves the published repodata carries the NVR. Direct
   results paths that do not end in `.rpm` (build.info, results.json, logs)
-  still serve normally.
+  still serve normally. The one `.rpm` exception, verified 2026-10-28:
+  `results/ackerman/nexus/srpm-builds/<buildid>/<pkg>-<NVR>.src.rpm` answers
+  200, so a published spec can be diffed against git (`rpm2cpio | cpio -idm`).
 
 ### OSV.dev query gotchas (found 2026-10-04, both produce false "clean")
 
