@@ -23,6 +23,11 @@ one() {
   if [ "$FORMAT" = probes ]; then
     IFS='|' read -r pkg _rpmn smoke <<< "$1"
     rpmn=$_rpmn
+    if [ -z "$_rpmn" ] || [ -z "$smoke" ]; then
+      echo "docker-teardown: $pkg HARNESS_ERROR list-not-probes-format (need pkg|dnf-name|smoke)"
+      echo "$pkg rc=harness list-format" >> "$OUT/tokens.txt"
+      return 6
+    fi
   else
     IFS='|' read -r pkg smoke rpmn <<< "$1"
   fi
