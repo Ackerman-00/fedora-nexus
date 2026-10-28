@@ -5,7 +5,7 @@
 
 Name:           rootapp
 Version:        0.9.156
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Root App is a new Discord alternative, designed for gaming communities and large online groups
 
 License:        LicenseRef-Proprietary
@@ -134,5 +134,9 @@ DESKTOP_EOF
 %{_datadir}/pixmaps/rootapp.png
 
 %changelog
+* Wed Oct 28 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.9.156-2
+- Ship the desktop entry as rootapp-app.desktop. The rename was pushed
+  without a Release bump, so 0.9.156-1 holders never received it.
+
 * Wed Oct 28 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.156-1
 - Auto-update to 0.9.156 via update.sh

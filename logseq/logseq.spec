@@ -2,7 +2,7 @@
 
 Name:           logseq
 Version:        2.0.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A privacy-first, local-first platform for knowledge management and collaboration
 
 License:        AGPL-3.0-only
@@ -96,6 +96,10 @@ install -Dpm 0644 %{SOURCE2} %{buildroot}%{_licensedir}/%{name}/LICENSE.md
 %{_datadir}/icons/hicolor/512x512/apps/logseq.png
 
 %changelog
+* Wed Oct 28 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.0.2-3
+- Ship the desktop entry as logseq-app.desktop. The rename was pushed
+  without a Release bump, so 2.0.2-2 holders never received it.
+
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.0.2-2
 - Ship the upstream AGPL-3.0 LICENSE.md (Source2, same 2.0.2 tag); the
   release zip only bundles Electron/Chromium third-party notices.
