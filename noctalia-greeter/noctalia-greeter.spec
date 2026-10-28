@@ -1,16 +1,16 @@
-%global commit          dbace1c834a9e0f2e1b5d4ef186db8ec3b422a49
+%global commit          c1aab5cfca23e1a61a51338c8a1b25e85a7108cd
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261025021409
+%global gitdate         20261028014117
 
 Name:           noctalia-greeter
 Version:        1.7.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 License:        MIT AND Apache-2.0
 URL:            https://github.com/noctalia-dev/noctalia-greeter
 Source0:        %{url}/archive/%{commit}/%{name}-%{commit}.tar.gz
-# sha256: 3fae5d0c4ec5043a60c4e66ed13d8dad6ea32340fee9c3ba2321288ab48e1cd4
+# sha256: 4f397e164a3fe185707225fa62b680f10b86c3b735989572066759c209fa7ad4
 Source1:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-APACHE
 # sha256: 0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594
 Source2:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-MIT
@@ -120,9 +120,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Sun Oct 25 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261025021409gitdbace1c-2
-- Declare diffutils for the %check test that calls cmp
-- Require the dbus-run-session provider the session script execs
-
-* Sun Oct 25 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261025021409gitdbace1c-1
-- Nightly sync with upstream main branch (Commit: dbace1c)
+* Wed Oct 28 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261028014117gitc1aab5c-1
+- Nightly sync with upstream main branch (Commit: c1aab5c)
