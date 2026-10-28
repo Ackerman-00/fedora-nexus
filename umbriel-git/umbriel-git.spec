@@ -1,12 +1,12 @@
-%global commit          b456dc29610dff3e92a1cc42a489e3b6d86cbf01
+%global commit          2958d582953a9eb623d945f50ffd5cc1a921ee18
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261028025250
+%global gitdate         20261028170431
 
 %global _lto_cflags %{nil}
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -111,9 +111,5 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Wed Oct 28 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.1.0^20261028025250gitb456dc2-2
-- Declare upstream's libinput floor of 1.29 (meson.build:120) instead of
-  1.27, so a lagging chroot cannot build against an older libinput.
-
-* Wed Oct 28 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261028025250gitb456dc2-1
-- Nightly sync with upstream main branch (Commit: b456dc2)
+* Wed Oct 28 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261028170431git2958d58-1
+- Nightly sync with upstream main branch (Commit: 2958d58)
