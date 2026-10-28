@@ -5,7 +5,7 @@
 
 Name:           opencode-desktop
 Version:        2.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        AI coding agent desktop app
 
 License:        MIT
@@ -77,11 +77,21 @@ exit 127
 CLI_EOF
 chmod 0755 %{buildroot}/opt/OpenCode/resources/opencode-cli
 
+# entry point name moved between releases; resolve it, never hardcode
+launcher=""
+for c in ai.opencode ai.opencode.desktop; do
+    if [ -x "%{buildroot}/opt/OpenCode/$c" ]; then
+        launcher=$c
+        break
+    fi
+done
+[ -n "$launcher" ] || { echo "ERROR: no Electron entry point under /opt/OpenCode" >&2; exit 1; }
+
 install -dm755 %{buildroot}%{_bindir}
-cat > %{buildroot}%{_bindir}/opencode-desktop <<'WRAPPER_EOF'
+cat > %{buildroot}%{_bindir}/opencode-desktop <<WRAPPER_EOF
 #!/bin/sh
 export OPENCODE_DISABLE_AUTOUPDATE=1
-exec /opt/OpenCode/ai.opencode.desktop "$@"
+exec /opt/OpenCode/$launcher "\$@"
 WRAPPER_EOF
 chmod 755 %{buildroot}%{_bindir}/opencode-desktop
 
@@ -126,5 +136,9 @@ sed -i -e 's|<launchable type="desktop-id">ai.opencode.desktop.desktop</launchab
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
+* Wed Oct 28 2026 Ackerman-00 <quietcraft@gmail.com> - 2.2.0-2
+- Resolve the Electron entry point at build time: 2.2.0 renamed the binary from
+  `ai.opencode.desktop` to `ai.opencode`, so the launcher wrapper exited 127 and
+  the app could not start. The build now fails loudly if neither name exists.
 * Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 2.2.0-1
 - Auto-update to upstream release 2.2.0

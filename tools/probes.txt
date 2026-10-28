@@ -40,7 +40,7 @@ nwg-look|nwg-look|test -x /usr/bin/nwg-look
 obsidian|obsidian|test -f /opt/Obsidian/resources/app.asar
 opencad-studio|opencad-studio|test -x /usr/bin/opencad-studio
 openchamber|openchamber|test -f /opt/openchamber/resources/app.asar
-opencode-desktop|opencode-desktop|test -f /opt/OpenCode/resources/app.asar
+opencode-desktop|opencode-desktop|test -f /opt/OpenCode/resources/app.asar && test -x "$(awk '/^exec /{print $2; exit}' /usr/bin/opencode-desktop)"
 protonplus|protonplus|test -x /usr/bin/protonplus
 python-mprisify|python-mprisify|python3 -c 'import mprisify'
 python-yt-dlp-ejs|python-yt-dlp-ejs|python3 -c "import yt_dlp_ejs"

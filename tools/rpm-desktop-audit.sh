@@ -49,7 +49,16 @@ for d in $(rpm -ql "$name" | grep "\.desktop$"); do
     fi
   fi
   case "$exe" in
-    /*) if [ -x "$exe" ]; then echo "EXEC_OK: $d Exec=$exe"
+    /*) if [ -x "$exe" ]; then
+          echo "EXEC_OK: $d Exec=$exe"
+          if head -1 "$exe" 2>/dev/null | grep -q '^#!'; then
+            for t in $(sed -n 's/^exec \([^ ]*\).*/\1/p' "$exe" 2>/dev/null); do
+              case "$t" in
+                /*) if [ -e "$t" ]; then echo "WRAPPER_TARGET_OK: $exe -> $t"
+                    else echo "WRAPPER_TARGET_MISSING: $exe -> $t"; rc=1; fi ;;
+              esac
+            done
+          fi
         else echo "EXEC_MISSING: $d Exec=$exe"; rc=1; fi ;;
     "") : ;;
     *) if command -v "$exe" >/dev/null 2>&1; then echo "EXEC_OK: $d Exec=$exe -> $(command -v "$exe")"
