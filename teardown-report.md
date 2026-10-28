@@ -28,7 +28,7 @@ Repo type: **fedora**. Sweep of **63** packages. Exit code is the verdict; this 
 | freebuff | LICENSE | 0.2.34 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | ghostty | ghostty_1.3.1-0.ppa2_amd64_24.04.deb | 1.3.1 | 1.3.1-0~ppa2 | **OK** | deb pkg=ghostty (control control.tar.zst) \| pinned 1.3.1 \| internal 1.3.1-0~ppa2 |
 | ghostty | LICENSE | 1.3.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| gpu-screen-recorder | gpu-screen-recorder.git.6.1.5.tar.gz | 6.1.5 | 6.1.5 | **SOURCE-OK** | tar meson.build=6.1.5 (meson.build) \| hash no-checksum-pinned \| weak internal evidence 6.1.5 (not authoritative) |
+| gpu-screen-recorder | gpu-screen-recorder.git.6.1.6.tar.gz | 6.1.6 | 6.1.6 | **SOURCE-OK** | tar meson.build=6.1.6 (meson.build) \| hash no-checksum-pinned \| weak internal evidence 6.1.6 (not authoritative) |
 | helium-browser | helium-0.20.1.1-x86_64_linux.tar.xz | 0.20.1.1 | 0.20.1.1 | **OK** | tar runtime probe chrome --version: Helium 0.20.1.1 (Chromium 156.0.8078.47) \| pinned 0.20.1.1 \| internal 0.20.1.1 |
 | helium-browser | net.imput.helium.metainfo.xml | 0.20.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | helium-browser | LICENSE | 0.20.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
@@ -36,7 +36,7 @@ Repo type: **fedora**. Sweep of **63** packages. Exit code is the verdict; this 
 | hellwal | hellwal-1.0.9.tar.gz | 1.0.9 | $(shell | **SOURCE-OK** | tar Makefile=$(shell (hellwal-1.0.9/Makefile) \| hash no-checksum-pinned \| weak internal evidence $(shell (not authoritative) |
 | heroic-games-launcher | Heroic-2.22.4-linux-x86_64.rpm | 2.22.4 | 2.22.4 | **OK** | rpm header heroic=2.22.4-1 (tags NAME/VERSION/RELEASE) \| pinned 2.22.4 \| internal 2.22.4 |
 | heroic-games-launcher | COPYING | 2.22.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| lazyvim-git | live LazyVim/LazyVim | 999700997f72 | 999700997f72 | **OK** | live LazyVim/LazyVim pin 999700997f72 vs upstream 999700997f72 |
+| lazyvim-git | live LazyVim/LazyVim | 301a3f71007c | 301a3f71007c | **OK** | live LazyVim/LazyVim pin 301a3f71007c vs upstream 301a3f71007c |
 | libcava | 1.0.0.tar.gz | 1.0.0 | $(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) | **SOURCE-OK** | tar Makefile.am=$(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) (cava-1.0.0/Makefile.am) \| hash no-checksum-pinned \| weak internal evidence $(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) (not authoritative) |
 | localsend | LocalSend-1.18.2-linux-x86-64.deb | 1.18.2 | 1.18.2+64 | **OK** | deb pkg=localsend (control control.tar.zst) \| pinned 1.18.2 \| internal 1.18.2+64 |
 | localsend | LICENSE | 1.18.2 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
@@ -49,14 +49,14 @@ Repo type: **fedora**. Sweep of **63** packages. Exit code is the verdict; this 
 | matugen | matugen-4.2.0.crate | 4.2.0 |  | **SOURCE-OK** | crate (cargo package tarball), source by construction \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | mixtapes | live m-obeid/Mixtapes | 618c24c3abfb | 618c24c3abfb | **OK** | live m-obeid/Mixtapes pin 618c24c3abfb vs upstream 618c24c3abfb |
 | mpvpaper | 1.9.tar.gz | 1.9 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
-| noctalia-greeter | live noctalia-dev/noctalia-greeter | dbace1c834a9 | dbace1c834a9 | **OK** | live noctalia-dev/noctalia-greeter pin dbace1c834a9 vs upstream dbace1c834a9 |
+| noctalia-greeter | live noctalia-dev/noctalia-greeter | c1aab5cfca23 | c1aab5cfca23 | **OK** | live noctalia-dev/noctalia-greeter pin c1aab5cfca23 vs upstream c1aab5cfca23 |
 | nwg-look | v1.2.1.tar.gz | 1.2.1 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | obsidian | obsidian_1.14.5_amd64.deb | 1.14.5 | 1.14.5 | **OK** | deb pkg=obsidian (control control.tar.xz) \| pinned 1.14.5 \| internal 1.14.5 |
 | opencad-studio | OpenCADStudio-v2026.43-linux-x86_64.AppImage | 2026.43 | 2026.43 | **OK** | AppImage strings 2026.43 (AppRun) \| pinned 2026.43 \| internal 2026.43 |
 | opencad-studio | LICENSE | 2026.43 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | openchamber | OpenChamber-2.5.2-linux-x86_64.AppImage | 2.5.2 | 2.5.2 | **OK** | AppImage 2.5.2 (resources/app.asar) \| pinned 2.5.2 \| internal 2.5.2 |
 | openchamber | LICENSE | 2.5.2 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| opencode-desktop | opencode-desktop-linux-amd64.deb | 2.1.4 | 2.1.4 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.1.4 \| internal 2.1.4 |
+| opencode-desktop | opencode-desktop-linux-amd64.deb | 2.2.0 | 2.2.0 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.2.0 \| internal 2.2.0 |
 | protonplus | ProtonPlus-v0.6.8.tar.gz | 0.6.8 | >= 1.0.0 | **SOURCE-OK** | tar meson.build=>= 1.0.0 (ProtonPlus-0.6.8/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 1.0.0 (not authoritative) |
 | python-mprisify | mprisify-v1.0.1.tar.gz | 1.0.1 | 1.0.1 | **SOURCE-OK** | tar changelog=1.0.1 (mprisify-v1.0.1/CHANGELOG.md) \| hash no-checksum-pinned \| weak internal evidence 1.0.1 (not authoritative) |
 | python-mprisify | LICENSE | 1.0.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
@@ -65,12 +65,12 @@ Repo type: **fedora**. Sweep of **63** packages. Exit code is the verdict; this 
 | python-yt-dlp-get-pot-rustypipe | yt_dlp_get_pot_rustypipe-0.2.0.tar.gz | 0.2.0 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | python-yt-dlp-get-pot-rustypipe | LICENSE | 0.2.0 |  | **OK** | hash hash-OK \| license/doc/aux asset, not an artifact |
 | python-ytmusicapi | ytmusicapi-1.12.3.tar.gz | 1.12.3 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
-| rootapp | Root.AppImage | 0.9.155 | 0.9.155 | **OK** | AppImage 0.9.155 (Root.desktop) \| pinned 0.9.155 \| internal 0.9.155 |
+| rootapp | Root.AppImage | 0.9.156 | 0.9.156 | **OK** | AppImage 0.9.156 (Root.desktop) \| pinned 0.9.156 \| internal 0.9.156 |
 | rustypipe-botguard | rustypipe-botguard-v0.1.2-x86_64-unknown-linux-gnu.tar.xz | 0.1.2 | 0.1.2 | **OK** | tar runtime probe rustypipe-botguard --version: rustypipe-botguard 0.1.2
 rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | rustypipe-botguard | LICENSE | 0.1.2 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | scenefx | 0.5.tar.gz | 0.5 | >=1.3 | **SOURCE-OK** | tar meson.build=>=1.3 (scenefx-0.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3 (not authoritative) |
-| sonora | v0.44.2.tar.gz | 0.44.2 | @VERSION@ | **SOURCE-OK** | tar Info.plist=@VERSION@ (sonora-0.44.2/assets/macos/Info.plist) \| hash no-checksum-pinned \| weak internal evidence @VERSION@ (not authoritative) |
+| sonora | v0.45.0.tar.gz | 0.45.0 | @PKGVER@ | **SOURCE-OK** | tar PKGBUILD=@PKGVER@ (sonora-0.45.0/aur/sonora-nightly-bin/PKGBUILD) \| hash no-checksum-pinned \| weak internal evidence @PKGVER@ (not authoritative) |
 | splayer-next | splayer-next-1.2.0-x86_64.rpm | 1.2.0 | 1.2.0 | **OK** | rpm header splayer-next=1.2.0-1 (tags NAME/VERSION/RELEASE) \| pinned 1.2.0 \| internal 1.2.0 |
 | splayer-next | LICENSE | 1.2.0 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | starship | starship-x86_64-unknown-linux-gnu.tar.gz | 1.27.0 | 1.27.0 | **OK** | tar runtime probe starship --version: starship 1.27.0
@@ -84,7 +84,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | LICENSE | 1.5.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| umbriel-git | live noctalia-dev/umbriel | 366739955d39 | 366739955d39 | **OK** | live noctalia-dev/umbriel pin 366739955d39 vs upstream 366739955d39 |
+| umbriel-git | live noctalia-dev/umbriel | b456dc29610d | b456dc29610d | **OK** | live noctalia-dev/umbriel pin b456dc29610d vs upstream b456dc29610d |
 | vesktop | vesktop-1.6.8.x86_64.rpm | 1.6.8 | 1.6.8 | **OK** | rpm header vesktop=1.6.8-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.8 \| internal 1.6.8 |
 | vesktop | LICENSE | 1.6.8 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
@@ -92,7 +92,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | waypaper | imageio_ffmpeg-0.6.0.tar.gz | 2.9 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | wlroots | wlroots-0.20.2.tar.gz | 0.20.2 | >=1.3 | **SOURCE-OK** | tar meson.build=>=1.3 (wlroots-0.20.2/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3 (not authoritative) |
 | xcur2png | xcur2png-0.7.1.tar.gz | 0.7.1 | 0.7.1 | **SOURCE-OK** | tar configure.ac=0.7.1 (xcur2png-0.7.1/configure.ac) \| hash hash-OK \| weak internal evidence 0.7.1 (not authoritative) |
-| xdg-desktop-portal-umbriel-git | live noctalia-dev/xdg-desktop-portal-umbriel | e69d6f72122a | e69d6f72122a | **OK** | live noctalia-dev/xdg-desktop-portal-umbriel pin e69d6f72122a vs upstream e69d6f72122a |
+| xdg-desktop-portal-umbriel-git | live noctalia-dev/xdg-desktop-portal-umbriel | e24762d9c75e | e24762d9c75e | **OK** | live noctalia-dev/xdg-desktop-portal-umbriel pin e24762d9c75e vs upstream e24762d9c75e |
 | zen-browser | zen.linux-x86_64.tar.xz | 1.23.4b | 1.23.4b | **OK** | tar application.ini=1.23.4b (zen/application.ini) \| pinned 1.23.4b \| internal 1.23.4b |
 | zen-browser | zen-browser.desktop | 1.23.4b |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | zen-browser | policies.json | 1.23.4b |  | **OK** | bundled aux/doc asset in repo, no download needed |
@@ -128,7 +128,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | python-yt-dlp-get-pot-rustypipe | upstream codeberg.org/ThetaDev/rustypipe-botguard | 0.2.0 | yt-dlp-get-pot-rustypipe/v0.2.0 | **OK** | at upstream latest yt-dlp-get-pot-rustypipe/v0.2.0 in tag namespace 'yt-dlp-get-pot-rustypipe' [pinned yt-dlp-get-pot-rustypipe/v0.2.0] |
 | rustypipe-botguard | upstream codeberg.org/ThetaDev/rustypipe-botguard | 0.1.2 | v0.1.2 | **OK** | at upstream latest v0.1.2 [ls-remote] |
 | scenefx | upstream github.com/wlrfx/scenefx | 0.5 | 0.5 | **OK** | at upstream latest 0.5 [releases/latest] |
-| sonora | upstream github.com/sonorahq/sonora | 0.44.2 | v0.44.2 | **OK** | at upstream latest v0.44.2 [releases/latest] |
+| sonora | upstream github.com/sonorahq/sonora | 0.45.0 | v0.45.0 | **OK** | at upstream latest v0.45.0 [releases/latest] |
 | splayer-next | upstream github.com/SPlayer-Dev/SPlayer-Next | 1.2.0 | v1.2.0 | **OK** | at upstream latest v1.2.0 [releases/latest] |
 | starship | upstream github.com/starship/starship | 1.27.0 | v1.27.0 | **OK** | at upstream latest v1.27.0 [releases/latest] |
 | stoat-desktop | upstream github.com/stoatchat/for-desktop | 1.5.4 | v1.5.4 | **OK** | at upstream latest v1.5.4 [releases/latest] |
@@ -141,8 +141,8 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | python-yt-dlp-ejs | pypi:yt-dlp-ejs | 0.8.0 | 0.8.0 | **OK** | upstream 0.8.0 == pinned 0.8.0 [freshness via pypi:yt-dlp-ejs; repology has no entry] |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology has no entry] |
 | python-ytmusicapi | pypi:ytmusicapi | 1.12.3 | 1.12.3 | **OK** | upstream 1.12.3 == pinned 1.12.3 [freshness via pypi:ytmusicapi; repology has no entry] |
-| rootapp | aur | 0.9.155 | 0.9.155 | **OK** | pinned 0.9.155 >= repology 0.9.155 (aur); tracker behind |
+| rootapp | aur | 0.9.156 | 0.9.156 | **OK** | pinned 0.9.156 >= repology 0.9.156 (aur); tracker behind |
 | zig0.17 | ziglang.org/download/index.json | 0.17.0 | 0.17.0 | **OK** | upstream 0.17.0 == pinned 0.17.0 [freshness via ziglang.org/download/index.json; repology has no entry] |
-| LIBYEAR | freshness | 0.05 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
+| LIBYEAR | freshness | 0.07 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
 
 **Verdict: PASS** (0 failure(s))
