@@ -1,6 +1,6 @@
 Name:           mangowm
-Version:        0.18.3
-Release:        2%{?dist}
+Version:        0.18.4
+Release:        1%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <quietcraft@gmail.com>
@@ -93,9 +93,5 @@ esac
 %{_userunitdir}/mango-session.target
 
 %changelog
-* Sun Oct 25 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.3-2
-- Install the mango session icon so Icon=mango resolves
-- Recommend xdg-desktop-portal-wlr for the wlr ScreenCast/Screenshot backend
-
-* Sat Oct 24 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.3-1
-- Auto-update to version 0.18.3
+* Thu Oct 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.4-1
+- Auto-update to version 0.18.4

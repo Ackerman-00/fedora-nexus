@@ -2,14 +2,14 @@
 %global __strip /bin/true
 
 Name:           freebuff
-Version:        0.2.34
+Version:        0.2.35
 Release:        1%{?dist}
 Summary:        The free coding agent for your desktop
 
 License:        MIT
 URL:            https://freebuff.com/desktop
 Source0:        https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v%{version}/freebuff-linux-x64.tar.gz
-# sha256: 5d9f18b5a56ac80e457547ca3859766a28fd8ddd32c396492f2cdb28b92507e2
+# sha256: 41b1e82659cd5c9185ebb201b1e4ddaff0a2fc1c68e14a2d18577b0de6e29335
 Source1:        https://raw.githubusercontent.com/CodebuffAI/codebuff-community/freebuff-v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
@@ -60,6 +60,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/freebuff.desktop
 %{_datadir}/applications/freebuff.desktop
 
 %changelog
+* Thu Oct 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.35-1
+- Auto-updated to 0.2.35 via update.sh
 * Thu Oct 22 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.34-1
 - Auto-updated to 0.2.34 via update.sh
 * Wed Oct 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.33-1
