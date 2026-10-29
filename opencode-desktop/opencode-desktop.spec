@@ -4,14 +4,14 @@
 %global __requires_exclude_from ^/opt/OpenCode/.*$
 
 Name:           opencode-desktop
-Version:        2.2.0
-Release:        2%{?dist}
+Version:        2.2.1
+Release:        1%{?dist}
 Summary:        AI coding agent desktop app
 
 License:        MIT
 URL:            https://opencode.ai
 Source0:        https://opencode.ai/files/bin/%{version}/opencode-desktop-linux-amd64.deb
-# sha256: 0825bae71f87a5ab6e2c1fe362c17441fe3381e3c65c8ccd3e6fd35386d74b62
+# sha256: 5177091fd34d883438e84c4d33c4edae2f00a862d1d5236743c005332e0f9da6
 
 ExclusiveArch:  x86_64
 
@@ -136,9 +136,5 @@ sed -i -e 's|<launchable type="desktop-id">ai.opencode.desktop.desktop</launchab
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
-* Wed Oct 28 2026 Ackerman-00 <quietcraft@gmail.com> - 2.2.0-2
-- Resolve the Electron entry point at build time: 2.2.0 renamed the binary from
-  `ai.opencode.desktop` to `ai.opencode`, so the launcher wrapper exited 127 and
-  the app could not start. The build now fails loudly if neither name exists.
-* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 2.2.0-1
-- Auto-update to upstream release 2.2.0
+* Thu Oct 29 2026 Ackerman-00 <quietcraft@gmail.com> - 2.2.1-1
+- Auto-update to upstream release 2.2.1
