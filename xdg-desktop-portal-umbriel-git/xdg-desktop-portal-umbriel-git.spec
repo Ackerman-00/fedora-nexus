@@ -1,10 +1,10 @@
-%global commit          e24762d9c75e294f89dbe7a0e3fd55c5cdc3ff0a
+%global commit          17739df892537e4c9a89eb60dd8a1f1eadf750e5
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261027145449
+%global gitdate         20261030114808
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        XDG Desktop Portal backend for Umbriel
 
 License:        MIT
@@ -68,8 +68,5 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %config(noreplace) %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
-* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261027145449gite24762d-2
-- Add BuildRequires pkgconfig(libei-1.0) >= 1.3: upstream tests=true links
-  tests/input_capture_client.cpp against libei, which broke the build
-* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261027145449gite24762d-1
-- Nightly sync with upstream main branch (Commit: e24762d)
+* Fri Oct 30 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261030114808git17739df-1
+- Nightly sync with upstream main branch (Commit: 17739df)
