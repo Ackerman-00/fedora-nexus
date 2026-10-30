@@ -4,8 +4,8 @@
 %global __provides_exclude_from ^/opt/rootapp/.*$
 
 Name:           rootapp
-Version:        0.9.156
-Release:        2%{?dist}
+Version:        0.9.157
+Release:        1%{?dist}
 Summary:        Root App is a new Discord alternative, designed for gaming communities and large online groups
 
 License:        LicenseRef-Proprietary
@@ -13,9 +13,9 @@ URL:            https://www.rootapp.com
 ExclusiveArch:  x86_64
 
 Source0:        https://installer.rootapp.com/installer/Linux/X64/Root.AppImage
-# sha256: 827f991a6b4b94c3c07dc7403b7dd6fbceff353e787e4c5967772a30021cdcb0
-# content-length: 496790008
-# last-modified: Tue, 27 Oct 2026 23:24:03 GMT
+# sha256: 573f7bbb18ae5ebe9ae8bfcbda4ce93c35f404c9066c62bb716eb5d3115ba2cb
+# content-length: 500234744
+# last-modified: Fri, 30 Oct 2026 00:05:08 GMT
 
 BuildRequires:  binutils
 BuildRequires:  squashfs-tools
@@ -137,9 +137,5 @@ DESKTOP_EOF
 %{_datadir}/pixmaps/rootapp.png
 
 %changelog
-* Wed Oct 28 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.9.156-2
-- Ship the desktop entry as rootapp-app.desktop. The rename was pushed
-  without a Release bump, so 0.9.156-1 holders never received it.
-
-* Wed Oct 28 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.156-1
-- Auto-update to 0.9.156 via update.sh
+* Fri Oct 30 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.157-1
+- Auto-update to 0.9.157 via update.sh
