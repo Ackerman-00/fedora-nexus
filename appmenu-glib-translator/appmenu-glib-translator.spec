@@ -1,6 +1,6 @@
-%global commit          8281a2534ef4b0e0f69a0eeb5a812d2cb69beddc
+%global commit          637cfdb7b317e4f6b98d02324cd4a447856109bd
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261012202807
+%global gitdate         20261030233349
 
 %global _vpath_srcdir subprojects/appmenu-glib-translator
 
@@ -55,5 +55,5 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
-* Mon Oct 12 2026 Ackerman-00 <quietcraft@gmail.com> - 25.04^20261012202807git8281a25-1
-- Nightly sync with upstream main branch (Commit: 8281a25)
+* Sat Oct 31 2026 Ackerman-00 <quietcraft@gmail.com> - 25.04^20261030233349git637cfdb-1
+- Nightly sync with upstream main branch (Commit: 637cfdb)

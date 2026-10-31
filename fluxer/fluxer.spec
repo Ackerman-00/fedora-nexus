@@ -5,14 +5,14 @@
 %global __urlhelper_localopts --http1.1 --retry 5 --retry-all-errors --retry-delay 5
 
 Name:           fluxer
-Version:        2026.1026.24218
-Release:        3%{?dist}
+Version:        2026.1030.232443
+Release:        1%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND 0BSD AND LGPL-2.1-or-later AND Apache-2.0 AND IJG AND MIT AND GPL-2.0-or-later AND ISC AND OpenSSL AND (MPL-1.1 OR GPL-2.0-only OR LGPL-2.0-only)
 URL:            https://fluxer.app
 Source0:        https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm
-# sha256: fb9d36c243bd5e8be24fa0e57b856b5415c1dc62d2d432fa74b767978823e41a
+# sha256: 6671cece78c30130beed2be502bb8de52ef0bc79e2bf9fd8098f540ee4c4ef45
 
 Requires:           hicolor-icon-theme
 Requires:       at-spi2-core
@@ -98,11 +98,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/app.fluxer.FluxerDesk
 %attr(4755, root, root) %{_libdir}/%{name}/chrome-sandbox
 
 %changelog
-* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1026.24218-3
-- Retry the source fetch: the CDN cut the 121MB transfer short (curl 18)
-
-* Mon Oct 26 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1026.24218-2
-- Force the source fetch over HTTP/1.1; the CDN drops HTTP/2 streams
-
-* Mon Oct 26 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1026.24218-1
-- Update to version 2026.1026.24218
+* Sat Oct 31 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1030.232443-1
+- Update to version 2026.1030.232443
