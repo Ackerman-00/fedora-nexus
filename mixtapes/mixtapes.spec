@@ -1,7 +1,7 @@
 
 %global debug_package %{nil}
-%global commit          618c24c3abfb12266825a4373155f26e9abbff36
-%global gitdate         20261019181359
+%global commit          a50a75d4d74c3355e7398f35097da47b05df572f
+%global gitdate         20261031223600
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           mixtapes
@@ -96,6 +96,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/com.pocoguy.Muse.desk
 %{_datadir}/icons/hicolor/scalable/apps/com.pocoguy.Muse*.svg
 
 %changelog
+* Sun Nov 01 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261031223600gita50a75d-1
+- Nightly sync with upstream main branch (Commit: a50a75d)
+
 * Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261019181359git618c24c-1
 - Nightly sync with upstream main branch (Commit: 618c24c)
 
