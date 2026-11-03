@@ -1,12 +1,12 @@
 %global debug_package %{nil}
 
 Name:           zig0.17
-Version:        0.17.0
+Version:        0.17.1
 Release:        1%{?dist}
 Summary:        Zig compiler and toolchain, 0.17 series
 License:        MIT
 URL:            https://ziglang.org/
-# sha256: 1cbe9df9f27e6b78d14ccbca43b6703a404ef79ef1c463de901d7f088d4e2026
+# sha256: 3581863e3cbcfd0fce0efc682ce7e9e93da96668a977791d356a26d2a7e9b17a
 Source0:        %{url}download/%{version}/zig-x86_64-linux-%{version}.tar.xz
 
 ExclusiveArch:  x86_64
@@ -39,6 +39,6 @@ chmod 0755 %{buildroot}%{_bindir}/%{name}
 %{_libdir}/zig/%{version}
 
 %changelog
-* Wed Oct 21 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.17.0-1
-- Package the 0.17 series side by side with the distro zig so ly 1.5.0 can
-  build; upstream tarball pinned by sha256 from ziglang.org/download/index.json.
+* Tue Nov 03 2026 Nexus Auto-Updater <bot@github.com> - 0.17.1-1
+- Update to the 0.17.1 Zig toolchain release
+  (sha256: 3581863e3cbcfd0fce0efc682ce7e9e93da96668a977791d356a26d2a7e9b17a)

@@ -1,5 +1,5 @@
 Name:           gpu-screen-recorder
-Version:        6.1.6
+Version:        6.1.7
 Release:        1%{?dist}
 Summary:        A shadowplay-like screen recorder for Linux. The fastest screen recorder for Linux
 
@@ -83,7 +83,5 @@ on both X11 and Wayland.
 /usr/lib/modprobe.d/gsr-nvidia.conf
 
 %changelog
-* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 6.1.6-1
-- Update to version 6.1.6
-- Drop unused BuildRequires (gcc-c++, libglvnd, vulkan.pc): the tree is C only
-  and loads libvulkan/libEGL/libGL with dlopen, so only vulkan-headers is needed
+* Tue Nov 03 2026 Ackerman-00 <quietcraft@gmail.com> - 6.1.7-1
+- Update to version 6.1.7
