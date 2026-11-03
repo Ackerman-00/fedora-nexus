@@ -2,7 +2,7 @@
 %global debug_package %{nil}
 
 Name:           obsidian
-Version:        1.14.5
+Version:        1.15.0
 Release:        1%{?dist}
 Summary:        A powerful knowledge base that works on top of a local folder of plain text Markdown files
 
@@ -78,6 +78,5 @@ ln -sf /opt/Obsidian/obsidian %{buildroot}%{_bindir}/obsidian
 %doc %{_datadir}/doc/obsidian/
 
 %changelog
-* Thu Oct 22 2026 Ackerman-00 <quietcraft@gmail.com> - 1.14.5-1
-- Auto-updated to 1.14.5 via update.sh
-- Track upstream deb Recommends with Recommends: libappindicator-gtk3
+* Tue Nov 03 2026 Ackerman-00 <quietcraft@gmail.com> - 1.15.0-1
+- Auto-updated to 1.15.0 via update.sh
