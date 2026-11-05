@@ -4,7 +4,7 @@
 %global __provides_exclude_from ^/opt/Vesktop/.*$
 
 Name:           vesktop
-Version:        1.6.8
+Version:        1.6.9
 Release:        1%{?dist}
 Summary:        Custom Discord desktop client with Vencord preinstalled (Nexus Optimized)
 
@@ -81,6 +81,9 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %attr(4755, root, root) /opt/Vesktop/chrome-sandbox
 
 %changelog
+* Thu Nov 05 2026 Nexus Auto-Updater <bot@github.com> - 1.6.9-1
+- Update to version 1.6.9
+
 * Thu Oct 22 2026 Nexus Auto-Updater <bot@github.com> - 1.6.8-1
 - Update to version 1.6.8
 
