@@ -6,7 +6,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -49,6 +49,7 @@ BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-shape)
 BuildRequires:  pkgconfig(xcb-icccm)
 BuildRequires:  pkgconfig(xcb-ewmh)
+BuildRequires:  pkgconfig(xcb-randr)
 BuildRequires:  pkgconfig(libudev)
 
 Requires:       xorg-x11-server-Xwayland%{?_isa}
@@ -81,7 +82,7 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %endif
 
 %build
-%meson -Db_lto=true -Dtests=disabled -Dtest_ipc=disabled -Dlocaled=enabled \
+%meson -Db_lto=true -Dtests=disabled -Dlocaled=enabled \
     -Dtracy=disabled
 %meson_build
 
@@ -111,5 +112,8 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261106003224gitaa3b6b3-2
+- Drop removed upstream test_ipc meson option; add xcb-randr BuildRequires
+
 * Fri Nov 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261106003224gitaa3b6b3-1
 - Nightly sync with upstream main branch (Commit: aa3b6b3)

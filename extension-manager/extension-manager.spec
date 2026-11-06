@@ -2,7 +2,7 @@
 
 Name:           extension-manager
 Version:        0.7.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A native tool for browsing, installing, and managing GNOME Shell Extensions
 
 License:        GPL-3.0-or-later
@@ -23,6 +23,9 @@ BuildRequires:  pkgconfig(libadwaita-1) >= 1.8
 BuildRequires:  pkgconfig(libsoup-3.0)
 BuildRequires:  pkgconfig(json-glib-1.0)
 BuildRequires:  pkgconfig(libxml-2.0)
+# glycin: sandboxed image loading, new in 0.7.0
+BuildRequires:  pkgconfig(glycin-2)
+BuildRequires:  pkgconfig(glycin-gtk4-2)
 
 Requires:           hicolor-icon-theme
 Requires:       vulkan-loader
@@ -64,5 +67,8 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{uuid}.desktop
 %{_datadir}/icons/hicolor/*/*/*.svg
 
 %changelog
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.0-2
+- Add glycin-2 and glycin-gtk4-2 BuildRequires (new upstream deps in 0.7.0)
+
 * Fri Nov 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.0-1
 - Auto-update to version 0.7.0

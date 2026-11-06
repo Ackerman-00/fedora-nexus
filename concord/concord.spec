@@ -3,7 +3,7 @@
 
 Name:           concord
 Version:        2.7.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Feature-rich TUI client for Discord
 License:        GPL-3.0-only
 URL:            https://github.com/chojs23/concord
@@ -15,6 +15,8 @@ BuildRequires:  cargo
 BuildRequires:  rust
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
+# btls-sys: git apply on vendored BoringSSL
+BuildRequires:  git-core
 BuildRequires:  clang-devel
 BuildRequires:  cmake
 BuildRequires:  nasm
@@ -56,5 +58,8 @@ install -Dm755 target/release/concord %{buildroot}%{_bindir}/concord
 %{_bindir}/concord
 
 %changelog
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 2.7.0-2
+- Add git-core BuildRequires: wreq -> tokio-btls -> btls-sys applies BoringSSL patches with git
+
 * Thu Nov 05 2026 Ackerman-00 <quietcraft@gmail.com> - 2.7.0-1
 - Auto-update to upstream stable release v2.7.0
