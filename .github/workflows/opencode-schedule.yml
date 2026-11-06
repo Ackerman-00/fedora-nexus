@@ -212,7 +212,8 @@ jobs:
             echo "=== opencode run attempt with $model ==="
             exit_code=0
             for attempt_n in 1 2 3; do
-              if timeout --signal=TERM --kill-after=60s 250m opencode run --standalone --model "$model" --agent build "$PROMPT"; then
+              # stdin, not argv: PROMPT > 128KiB MAX_ARG_STRLEN (E2BIG)
+              if printf '%s' "$PROMPT" | timeout --signal=TERM --kill-after=60s 250m opencode run --standalone --model "$model" --agent build; then
                 exit_code=0
                 break
               else
