@@ -2,7 +2,7 @@
 
 Name:           extension-manager
 Version:        0.7.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A native tool for browsing, installing, and managing GNOME Shell Extensions
 
 License:        GPL-3.0-or-later
@@ -64,9 +64,14 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{uuid}.desktop
 %{_datadir}/metainfo/%{uuid}.metainfo.xml
 %{_datadir}/applications/%{uuid}.desktop
 %{_datadir}/glib-2.0/schemas/%{uuid}.gschema.xml
+%{_datadir}/dbus-1/services/%{uuid}.service
+%{_datadir}/gnome-shell/search-providers/%{uuid}.search-provider.ini
 %{_datadir}/icons/hicolor/*/*/*.svg
 
 %changelog
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.0-3
+- Package new GNOME search-provider ini and D-Bus service files (0.7.0 install set)
+
 * Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.0-2
 - Add glycin-2 and glycin-gtk4-2 BuildRequires (new upstream deps in 0.7.0)
 
