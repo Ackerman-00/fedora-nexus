@@ -1,8 +1,8 @@
 %global uuid com.mattjakeman.ExtensionManager
 
 Name:           extension-manager
-Version:        0.6.5
-Release:        3%{?dist}
+Version:        0.7.0
+Release:        1%{?dist}
 Summary:        A native tool for browsing, installing, and managing GNOME Shell Extensions
 
 License:        GPL-3.0-or-later
@@ -64,16 +64,5 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{uuid}.desktop
 %{_datadir}/icons/hicolor/*/*/*.svg
 
 %changelog
-* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.5-3
-- Pin the upstream libadwaita-1 >= 1.8 floor (src/meson.build asks for
-  1.8.alpha; F43 ships 1.8.8 and F44 1.9.4)
-
-* Tue Aug 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.5-2
-- Add missing runtime dependency: vulkan-loader (libvulkan.so.1)
-
-* Wed Apr 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.5-1
-- Baseline setup based on official Arch PKGBUILD
-- Added glib2, gobject-introspection, and libxml2 dependencies
-- Injected custom distributor Meson flags
-- Enabled meson test suite in check phase
-- Fixed directory manifest error
+* Fri Nov 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.0-1
+- Auto-update to version 0.7.0
