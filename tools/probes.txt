@@ -16,7 +16,6 @@ cascadia-code-nerd-fonts|cascadia-code-nerd-fonts|files-only
 cliphist|cliphist|test -x /usr/bin/cliphist
 concat|concat|concat --version
 concord|concord|test -x /usr/bin/concord
-craft-launcher|craft-launcher|test -x /usr/bin/artcraft-launcher
 extension-manager|extension-manager|test -x /usr/bin/extension-manager
 fluxer|fluxer|test -f /usr/lib64/fluxer/resources/app.asar
 freebuff|freebuff|freebuff --version

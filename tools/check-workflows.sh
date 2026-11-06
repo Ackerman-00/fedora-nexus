@@ -113,15 +113,9 @@ else:
 
 import yaml as _yaml
 try:
-    _wf = _yaml.safe_load(open(".github/workflows/opencode-schedule.yml", encoding="utf-8"))
-    _prompt = ""
-    for _job in (_wf.get("jobs") or {}).values():
-        for _st in _job.get("steps", []):
-            _env = _st.get("env") or {}
-            if "PROMPT" in _env:
-                _prompt = _env["PROMPT"]
-    if not _prompt:
-        print("FAIL: the scheduler PROMPT was not found in the workflow")
+    _prompt = open("tools/sweep-prompt.md", encoding="utf-8").read()
+    if not _prompt.strip():
+        print("FAIL: tools/sweep-prompt.md is empty")
         bad = 1
     else:
         for word in ("PASS", "FAIL", "EXTERNAL"):
@@ -130,6 +124,18 @@ try:
                 bad = 1
             else:
                 print("OK   the PROMPT names the verdict word %r" % word)
+    _wf = _yaml.safe_load(open(".github/workflows/opencode-schedule.yml", encoding="utf-8"))
+    _oversize = []
+    for _job in (_wf.get("jobs") or {}).values():
+        for _st in _job.get("steps", []):
+            for _k, _v in (_st.get("env") or {}).items():
+                if isinstance(_v, str) and len(_v.encode()) > 131072:
+                    _oversize.append(_k)
+    if _oversize:
+        print("FAIL: env strings over 128KiB MAX_ARG_STRLEN (E2BIG at spawn): %s" % ", ".join(_oversize))
+        bad = 1
+    else:
+        print("OK   no scheduler env string exceeds 128KiB MAX_ARG_STRLEN")
 except Exception as exc:
     print("FAIL: could not read the scheduler PROMPT: %s" % exc)
     bad = 1
