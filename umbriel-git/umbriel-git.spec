@@ -1,12 +1,12 @@
-%global commit          aa3b6b3e7b33cd40f33f83b6db2d5a7ef50096d6
+%global commit          c6ad18d5ed7e3f928e546e24a4a17719e0522ff6
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261106003224
+%global gitdate         20261106151730
 
 %global _lto_cflags %{nil}
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -112,8 +112,5 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261106003224gitaa3b6b3-2
-- Drop removed upstream test_ipc meson option; add xcb-randr BuildRequires
-
-* Fri Nov 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261106003224gitaa3b6b3-1
-- Nightly sync with upstream main branch (Commit: aa3b6b3)
+* Fri Nov 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261106151730gitc6ad18d-1
+- Nightly sync with upstream main branch (Commit: c6ad18d)
