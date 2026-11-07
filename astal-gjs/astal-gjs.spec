@@ -1,13 +1,13 @@
-%global commit          cbcd9f49dd6b9638dc5623b56cc6e1e0a60b593e
+%global commit          ab2ab64f79c571bb5fef5c03bdb4d8afe642e758
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20260923200029
+%global gitdate         20261106224639
 
 %global debug_package %{nil}
 %global _vpath_srcdir lang/gjs
 
 Name:           astal-gjs
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Astal GJS package
 
 License:        LGPL-2.1-only
@@ -53,10 +53,5 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
-* Fri Oct 02 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260923200029gitcbcd9f4-2
-- Pin the silent-optional GTK4 backend on at build time: upstream
-  lang/gjs/meson.build probes astal-4-4.0 with required:false but installs
-  the gtk4 binding tree unconditionally, so the shipped gtk4 sources were
-  built against nothing. Adds BuildRequires: pkgconfig(astal-4-4.0).
-* Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20260923200029gitcbcd9f4-1
-- Nightly sync with upstream main branch (Commit: cbcd9f4)
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261106224639gitab2ab64-1
+- Nightly sync with upstream main branch (Commit: ab2ab64)
