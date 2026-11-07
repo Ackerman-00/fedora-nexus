@@ -1025,20 +1025,31 @@ def main():
             print(row)
         return
     only = [a.replace("_", "-") for a in sys.argv[1:]] or None
+    alias = {"upstream": "upstream-versions"}
+    matched = 0
     for fn in HUNTS:
-        name = fn.__name__.replace("hunt_", "").replace("_", "-")
-        if only and name not in only:
+        slug = fn.__name__.replace("hunt_", "").replace("_", "-")
+        if only and slug not in only and alias.get(slug, slug) not in only:
             continue
         try:
             cat, summary, note, findings = fn()
         except Exception as exc:
-            print("hunt: %s - UNAVAILABLE (%s: %s)" % (name, type(exc).__name__, exc))
+            print("hunt: %s - UNAVAILABLE (%s: %s)" % (slug, type(exc).__name__, exc))
+            matched += 1
             continue
+        if only and cat not in only and slug not in only:
+            continue
+        matched += 1
         print("hunt: %s - %s" % (cat, summary))
         if note:
             print("    %s" % note)
         for f in findings:
             print("    FINDING %s: %s" % (f[0], " | ".join(str(x) for x in f[1:])))
+    if only and matched == 0:
+        valid = sorted(fn.__name__.replace("hunt_", "").replace("_", "-") for fn in HUNTS)
+        print("hunt: no category matched %r; valid slugs: %s" %
+              (" ".join(only), ", ".join(valid)), file=sys.stderr)
+        sys.exit(2)
 
 
 if __name__ == "__main__":
