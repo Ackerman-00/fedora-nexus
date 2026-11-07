@@ -50,7 +50,7 @@ Ladybird browser built from the git master branch (unstable).
 %autosetup -n ladybird-master -p1
 
 %build
-python3 Meta/ladybird.py build --preset Release -j2
+python3 Meta/ladybird.py build --preset Release
 
 %install
 python3 Meta/ladybird.py install --preset Release
