@@ -1,4 +1,5 @@
 %global debug_package %{nil}
+%global commit         1d07e318d8bcf51ca3f8b75980fbea15c0edb37c
 
 Name:           ladybird-unstable
 Version:        0.0.0
@@ -6,7 +7,7 @@ Release:        1.20261107git1d07e31%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
-Source0:        https://github.com/LadybirdBrowser/ladybird/archive/master.tar.gz
+Source0:        https://github.com/LadybirdBrowser/ladybird/archive/%{commit}.tar.gz
 
 BuildRequires:  autoconf-archive
 BuildRequires:  autoconf
@@ -47,7 +48,7 @@ BuildRequires:  cargo
 Ladybird browser built from the git master branch (unstable).
 
 %prep
-%autosetup -n ladybird-master -p1
+%autosetup -n ladybird-%{commit}
 
 %build
 python3 Meta/ladybird.py build --preset Release
@@ -56,6 +57,7 @@ python3 Meta/ladybird.py build --preset Release
 python3 Meta/ladybird.py install --preset Release
 
 %files
+%license LICENSE
 %{_bindir}/Ladybird
 %dir %{_datadir}/ladybird
 %{_datadir}/ladybird/*
@@ -64,5 +66,5 @@ python3 Meta/ladybird.py install --preset Release
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
-* Sat Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-1.20261107git1d07e31
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-1.20261107git1d07e31
 - Initial import
