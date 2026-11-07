@@ -23,6 +23,13 @@ fi
 SHORT_COMMIT=${LATEST_COMMIT:0:7}
 BASE_VER="0"
 
+# upstream deleted lang/lua (9b67eb5): sync only while it exists
+code=$(curl -s -o /dev/null -w '%{http_code}' -L "https://api.github.com/repos/$GITHUB_REPO/contents/lang/lua?ref=$LATEST_COMMIT" ${GITHUB_TOKEN:+-H "Authorization: token $GITHUB_TOKEN"})
+if [ "$code" != "200" ]; then
+    echo "lang/lua not present upstream at $SHORT_COMMIT (HTTP $code) - holding pinned commit (bindings deprecated)."
+    exit 0
+fi
+
 CURRENT_COMMIT=$(grep -E "^%global commit" "$SPEC_FILE" | awk '{print $3}')
 
 if [ "$CURRENT_COMMIT" == "$LATEST_COMMIT" ]; then

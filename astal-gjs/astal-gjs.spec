@@ -1,6 +1,7 @@
-%global commit          ab2ab64f79c571bb5fef5c03bdb4d8afe642e758
+# pinned: upstream deleted lang/gjs in 9b67eb5
+%global commit          7b4d37603c11d2f84338a5da35b1f0676935eb57
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261106224639
+%global gitdate         20261101003451
 
 %global debug_package %{nil}
 %global _vpath_srcdir lang/gjs
@@ -53,5 +54,5 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261106224639gitab2ab64-1
-- Nightly sync with upstream main branch (Commit: ab2ab64)
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261101003451git7b4d376-1
+- Pin to 7b4d376: upstream deprecated and deleted the GJS bindings in 9b67eb5; update.sh holds this pin
