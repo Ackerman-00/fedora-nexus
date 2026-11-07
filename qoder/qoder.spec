@@ -147,7 +147,6 @@ fi
 %changelog
 * Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.6-2
 - Exclude the 811MB /opt bundle from __brp_mangle_shebangs: the payload ships minified single-line JS that made the shebang pass unbounded (~25 min CPU per build), and brp removes exec bits from text files without shebangs
-%changelog
 * Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.6-1
 - Ship LICENSE.electron.txt and LICENSES.chromium.html as %license (they were declared then excluded); drop the contradictory chrome-sandbox %attr line (the helper is deliberately not shipped); rewrite update.sh in the repo pattern.
 * Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.6-0

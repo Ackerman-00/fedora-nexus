@@ -97,7 +97,6 @@ ln -sf /opt/Freebuff/freebuff %{buildroot}%{_bindir}/freebuff
 %changelog
 * Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.201-2
 - Exclude the /opt bundle from __brp_mangle_shebangs: upstream Electron bundle owns its file modes; brp removes exec bits from text files without shebangs
-%changelog
 * Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.201-1
 - Ship chrome-sandbox with %attr(4755, root, root) (it ships 0755 upstream; non-root users hit the SUID preflight abort) and LICENSE.electron.txt as %license; rewrite update.sh in the repo pattern.
 * Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.201-0

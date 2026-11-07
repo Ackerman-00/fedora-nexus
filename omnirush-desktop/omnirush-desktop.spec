@@ -114,7 +114,6 @@ fi
 %changelog
 * Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 3.8.2-2
 - Exclude the /opt bundle from __brp_mangle_shebangs: upstream Electron bundle owns its file modes; brp removes exec bits from text files without shebangs
-%changelog
 * Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 3.8.2-1
 - Ship chrome-sandbox with %attr(4755, root, root) (shipped 0755 upstream); apparmor profile install no longer expands the undefined apparmor_profilesdir macro to /omnirush at the filesystem root and now removes/reloads it correctly on removal; ship LICENSE.electron.txt as %license; rewrite update.sh in the repo pattern.
 * Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 3.8.2-0
