@@ -27,6 +27,11 @@ READMES = [
     ("> **Supported releases:** Fedora 44 and Rawhide (x86_64).\n>\n", ({44}, True)),
     ("> **Supported releases:** Fedora 43.\n>\n", ({43}, False)),
     ("no support line here\n", (None, None)),
+    ("> **Supported releases:** Fedora 43, 44, 45 and Rawhide (x86_64). Fedora 45 is\n"
+     "> current stable; Rawhide is Fedora 46 (`fedora-release-46-0.1`).\n>\n",
+     ({43, 44, 45}, True)),
+    ("> **Supported releases:** Fedora 44 and Rawhide (x86_64). Rawhide is Fedora 45.\n>\n",
+     ({44}, True)),
 ]
 for text, want in READMES:
     check("parse %r" % text[:40], hunt.supported_releases(text), want)

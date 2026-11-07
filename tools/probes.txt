@@ -65,3 +65,6 @@ xcur2png|xcur2png|test -x /usr/bin/xcur2png
 xdg-desktop-portal-umbriel-git|xdg-desktop-portal-umbriel-git|test -x /usr/libexec/xdg-desktop-portal-umbriel
 zen-browser|zen-browser|MOZ_HEADLESS=1 zen --version
 zig0.17|zig0.17|zig0.17 version
+hatter-icon-theme|hatter-icon-theme|files-only
+ladybird-unstable|ladybird-unstable|test -x /usr/bin/Ladybird
+whitesur-icon-theme|whitesur-icon-theme|files-only

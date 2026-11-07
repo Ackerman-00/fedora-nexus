@@ -312,6 +312,16 @@ def latest_release(forge, owner, repo):
 
 def vendor_version(pkg, txt):
     """Version from a vendor feed that exposes no git tag or release API."""
+    if pkg == "cline-desktop":
+        d = get_json("https://github.com/cline/cline/releases/download/desktop-latest/latest.json", 45) or {}
+        return d.get("version"), "desktop-latest/latest.json manifest"
+    if pkg == "freebuff-desktop":
+        r = subprocess.run(["curl", "-s", "-o", "/dev/null",
+                            "-w", "%{redirect_url}",
+                            "https://freebuff.com/api/desktop/download/linux"],
+                           capture_output=True, text=True, timeout=45)
+        m = re.search(r"freebuff-desktop-v?([0-9][0-9.]*)", r.stdout)
+        return (m.group(1) if m else None), "freebuff.com/api/desktop/download/linux (302)"
     if pkg == "opencode-desktop":
         d = get_json("https://opencode.ai/update/api/latest/desktop/opencode/", 45) or {}
         return d.get("version"), "update feed /update/api/latest/desktop/opencode/"
@@ -365,13 +375,13 @@ def probe_upstream(sp):
     pkg = os.path.basename(os.path.dirname(sp))
     txt = open(sp, encoding="utf-8", errors="replace").read()
     ver = strip_packaging(resolve_version(sp, spec_field(sp, "Version")).lstrip("v"))
+    vref, vcmd = vendor_version(pkg, txt)
+    if vref:
+        ok = not (re.search(r"\d", ver) and re.search(r"\d", vref) and not vge(ver, vref))
+        return pkg, vref, ok, vcmd, ""
     refs = list(upstream_refs(txt))
     if not refs:
-        ref, cmd = vendor_version(pkg, txt)
-        if not ref:
-            return pkg, "", None, "", "no upstream URL and no vendor feed"
-        ok = not (re.search(r"\d", ver) and re.search(r"\d", ref) and not vge(ver, ref))
-        return pkg, ref, ok, cmd, ""
+        return pkg, "", None, "", "no upstream URL and no vendor feed"
     forge, owner, repo = refs[0]
     commit = spec_macro(sp, "commit")
     if commit and forge in ("github", "codeberg"):
@@ -775,7 +785,11 @@ def supported_releases(readme_text):
     if not m:
         return (None, None)
     line = m.group(1).replace("\n> ", " ")
-    nums = set(int(x) for x in re.findall(r"\b(\d{2})\b", line) if 30 <= int(x) <= 60)
+    rawhide_nums = set()
+    for rm in re.finditer(r"rawhide[^.\n]*", line, re.I):
+        rawhide_nums.update(int(x) for x in re.findall(r"\b(\d{2})\b", rm.group(0)))
+    nums = set(int(x) for x in re.findall(r"\b(\d{2})\b", line)
+               if 30 <= int(x) <= 60 and int(x) not in rawhide_nums)
     return (nums, bool(re.search(r"rawhide", line, re.I)))
 
 
@@ -830,17 +844,23 @@ def hunt_chroot_docs():
 def hunt_fedora_releases():
     """Which Fedora is stable, and which is next - re-read, never remembered."""
     releases = re.findall(r'href="(\d+)/"', get_text("https://mirrors.kernel.org/fedora/releases/"))
-    development = re.findall(r'href="(\d+)/"', get_text("https://mirrors.kernel.org/fedora/development/"))
     rel = sorted(int(x) for x in releases)
-    dev = sorted(int(x) for x in development)
     if not rel:
         return ("fedora-releases", "unavailable (mirror unreachable)", "", [])
     stable = rel[-1]
-    beta = dev[-1] if dev else None
+    next_rel = None
+    rh = get_text("https://mirrors.kernel.org/fedora/development/rawhide/Everything/x86_64/os/Packages/f/")
+    m = re.search(r"fedora-release-(\d+)-", rh or "")
+    if m:
+        next_rel = int(m.group(1))
+    else:
+        development = re.findall(r'href="(\d+)/"', get_text("https://mirrors.kernel.org/fedora/development/"))
+        dev = sorted(int(x) for x in development)
+        next_rel = dev[-1] if dev else None
     findings = []
-    if beta and beta <= stable:
-        findings.append(("fedora", "development lists %d, not newer than stable %d" % (beta, stable)))
-    return ("fedora-releases", "stable F%d, next F%s" % (stable, beta if beta else "?"),
+    if next_rel and next_rel <= stable:
+        findings.append(("fedora", "rawhide carries %d, not newer than stable %d" % (next_rel, stable)))
+    return ("fedora-releases", "stable F%d, next F%s" % (stable, next_rel if next_rel else "?"),
             "mirrors.kernel.org/fedora", findings)
 
 
@@ -961,6 +981,8 @@ def hunt_sandbox():
         if re.search(r"%attr\(\s*4755", txt):
             continue
         if re.search(r"^[ \t]*rm[ \t].*chrome-sandbox", txt, re.M):
+            continue
+        if re.search(r"^[ \t]*%exclude[ \t].*chrome-sandbox", txt, re.M):
             continue
         findings.append((pkg, "chrome-sandbox without %attr(4755, root, root) and not removed"))
     return ("sandbox", "%d Electron specs, %d findings" % (n, len(findings)), "", findings)
