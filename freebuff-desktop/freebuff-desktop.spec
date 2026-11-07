@@ -4,7 +4,7 @@
 Name:           freebuff-desktop
 Version:        0.0.201
 # sha256:  53608271f8bcc7ef1a160f0581f5825b220fe6e205a2209e47be758e9276a285
-Release:        0
+Release:        1%{?dist}
 Summary:        Freebuff Desktop (Electron)
 License:        SUSE-Freeware
 Group:          Development/Tools/IDE
@@ -83,6 +83,8 @@ ln -sf /opt/Freebuff/freebuff %{buildroot}%{_bindir}/freebuff
 
 %files
 /opt/Freebuff/
+%license /opt/Freebuff/LICENSE.electron.txt
+%attr(4755, root, root) /opt/Freebuff/chrome-sandbox
 %{_bindir}/freebuff
 %{_datadir}/applications/*
 %{_datadir}/doc/freebuff/
@@ -92,3 +94,7 @@ ln -sf /opt/Freebuff/freebuff %{buildroot}%{_bindir}/freebuff
 %{_datadir}/icons/hicolor/*/*/freebuff.png
 
 %changelog
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.201-1
+- Ship chrome-sandbox with %attr(4755, root, root) (it ships 0755 upstream; non-root users hit the SUID preflight abort) and LICENSE.electron.txt as %license; rewrite update.sh in the repo pattern.
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.201-0
+- Initial package
