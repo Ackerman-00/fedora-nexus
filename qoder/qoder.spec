@@ -4,7 +4,7 @@
 Name:           qoder
 Version:        0.5.6
 # sha256: 0058d5ff97b71c1e97935595fdcb07613bd20e9d7ba7f672c9efc7b566fc40d4
-Release:        0
+Release:        1%{?dist}
 Epoch:          1
 Summary:        Agent workbench for human and AI software teams
 License:        SUSE-Freeware
@@ -141,9 +141,10 @@ fi
 %doc %{_docdir}/qoder/changelog.gz
 %dir /opt/Qoder
 %exclude /opt/Qoder/chrome-sandbox
-%exclude /opt/Qoder/LICENSE.electron.txt
-%exclude /opt/Qoder/LICENSES.chromium.html
-%attr(4755, root, root) /opt/Qoder/chrome-sandbox
 /opt/Qoder/*
 
 %changelog
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.6-1
+- Ship LICENSE.electron.txt and LICENSES.chromium.html as %license (they were declared then excluded); drop the contradictory chrome-sandbox %attr line (the helper is deliberately not shipped); rewrite update.sh in the repo pattern.
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.6-0
+- Initial package

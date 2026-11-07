@@ -1,99 +1,89 @@
 #!/bin/bash
-cd "$(dirname "$0")" || exit 1
+
+_update_sh_dir=$(cd "$(dirname "$0")" && pwd) || exit 1
+if [ "$(pwd)" != "$_update_sh_dir" ]; then
+    echo "FATAL: run update.sh from its package directory:" >&2
+    echo "  cd $_update_sh_dir && bash update.sh" >&2
+    exit 1
+fi
 
 SPEC_FILE="qoder.spec"
-CHANGES_FILE="qoder.changes"
-DSC_FILE="qoder.dsc"
-PACKAGER="Ackerman-00"
-PACKAGER_ADDR="Ackerman-00 <noreply@example.com>"
+PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
 FEED="https://download.qoder.com.cn/qoder-app/releases/latest-linux.yml"
 
-echo "Checking for Qoder updates..."
-YML=$(curl -fsSL --retry 3 --connect-timeout 30 --max-time 60 "$FEED" 2>/dev/null) || {
-  echo "Upstream feed unavailable."; exit 1; }
+echo "Checking for Qoder updates on $FEED..."
 
-FEED_VER=$(printf '%s\n' "$YML" | sed -n 's/^version: *//p' | head -1)
-DEB_URL=$(printf '%s\n' "$YML" | grep -E '^[[:space:]]*-? ?url: .*Qoder-linux-amd64\.deb' | head -1 \
-          | sed -E 's/.*url: *//; s/^"//; s/"$//')
-NEW_SHA=$(printf '%s\n' "$YML" | awk -v u="$DEB_URL" '
-  $0 ~ u {seen=1; next}
-  seen && /sha256:/ {print $2; exit}')
-[ -n "$FEED_VER" ] || { echo "Could not read version from feed."; exit 1; }
-[ -n "$DEB_URL" ] || { echo "Could not read the amd64 .deb URL from the feed."; exit 1; }
-NEW_VER="${FEED_VER#*:}"
-
-CURRENT_VER=$(grep -E '^Version:' "$SPEC_FILE" | awk '{print $2}')
-CURRENT_SHA=$(grep -E '^# sha256:' "$SPEC_FILE" | head -1 | awk '{print $3}')
-[ -n "$CURRENT_VER" ] || { echo "Could not read Version from $SPEC_FILE."; exit 1; }
-
-refresh_artifacts() {
-  local ver="$1" url="$2" tmpd got deb_ver
-  tmpd=$(mktemp -d)
-  curl -fsSL --retry 3 --connect-timeout 30 --max-time 900 "$url" -o "$tmpd/Qoder-linux-amd64.deb" || {
-    rm -rf "$tmpd"; echo "orig .deb download failed."; return 1; }
-  got=$(sha256sum "$tmpd/Qoder-linux-amd64.deb" | awk '{print $1}')
-  if [ -n "$NEW_SHA" ] && [ "$got" != "$NEW_SHA" ]; then
-    echo "checksum mismatch: feed says $NEW_SHA, download is $got"
-    rm -rf "$tmpd"; return 1
-  fi
-  deb_ver=$(dpkg-deb -f "$tmpd/Qoder-linux-amd64.deb" Version) || { rm -rf "$tmpd"; return 1; }
-  if [ "${deb_ver#*:}" != "$ver" ]; then
-    echo "version disagreement: feed says $ver, .deb control says $deb_ver"
-    rm -rf "$tmpd"; return 1
-  fi
-  cp "$tmpd/Qoder-linux-amd64.deb" qoder.deb
-  rm -rf "$tmpd"
-  tar -czf "qoder-$ver.tar.gz" qoder.deb || return 1
-  for old in qoder-*.tar.gz; do
-    [ "$old" = "qoder-$ver.tar.gz" ] || rm -f "$old"
-  done
-  ls -l "qoder-$ver.tar.gz"
-}
-
-if [ ! -f "qoder-$CURRENT_VER.tar.gz" ]; then
-  echo "Debtransform wrapper missing locally; rebuilding..."
-  CUR_URL=$(grep -E '^Source0:' "$SPEC_FILE" | awk '{print $2}')
-  refresh_artifacts "$CURRENT_VER" "$CUR_URL" || \
-    echo "WARNING: wrapper rebuild failed; continuing version check."
+if ! YML=$(curl -fsSL --retry 3 --connect-timeout 30 --max-time 60 "$FEED" 2>/dev/null); then
+    echo "Error: upstream feed unavailable."
+    exit 1
 fi
 
-if [ "$CURRENT_VER" = "$NEW_VER" ]; then
-  if [ -z "$CURRENT_SHA" ] || [ "$NEW_SHA" = "$CURRENT_SHA" ]; then
-    echo "Already up to date ($CURRENT_VER)."
-    if [ ! -f "qoder.deb" ] || [ ! -f "qoder-$CURRENT_VER.tar.gz" ]; then
-      refresh_artifacts "$CURRENT_VER" "$DEB_URL" || exit 1
+read -r NEW_VER DEB_URL NEW_SHA < <(printf '%s\n' "$YML" | python3 -c "
+import sys, re
+y = sys.stdin.read()
+ver = re.search(r'^version:\s*(\S+)', y, re.M)
+debs = re.findall(r'url:\s*(\S*Qoder-linux-amd64\.deb)', y)
+shas = re.findall(r'sha256:\s*([0-9a-f]{64})', y)
+ver = ver.group(1) if ver else ''
+deb = debs[0] if debs else ''
+deb_sha = ''
+for m in re.finditer(r'- url:\s*(\S+).*?sha256:\s*([0-9a-f]{64})', y, re.S):
+    if m.group(1) == deb:
+        deb_sha = m.group(2)
+        break
+print(ver or '-', deb or '-', deb_sha or '-')
+")
+
+if [ -z "$NEW_VER" ] || [ "$NEW_VER" = "-" ]; then echo "Error: no version in feed."; exit 1; fi
+if [ -z "$DEB_URL" ] || [ "$DEB_URL" = "-" ]; then echo "Error: no x86_64 .deb URL in feed."; exit 1; fi
+if [ -z "$NEW_SHA" ] || [ "$NEW_SHA" = "-" ]; then echo "Error: no sha256 for the x86_64 .deb in feed."; exit 1; fi
+
+CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
+
+if [ "$CURRENT_VERSION" = "$NEW_VER" ]; then
+    CURRENT_SHA=$(grep -E "^# sha256:" "$SPEC_FILE" | head -1 | awk '{print $3}')
+    if [ "$CURRENT_SHA" = "$NEW_SHA" ]; then
+        echo "Package is already at $NEW_VER. No update needed."
+        exit 0
+    fi
+    echo "Upstream respinned $CURRENT_VERSION (sha256 $CURRENT_SHA -> $NEW_SHA); re-pinning and bumping Release."
+    sed -i -E "s|^# sha256:.*|# sha256: $NEW_SHA|" "$SPEC_FILE"
+    OLD_REL=$(grep -E "^Release:" "$SPEC_FILE" | awk '{print $2}' | sed 's/%.*//')
+    NEW_REL=$((OLD_REL + 1))
+    sed -i -E "s|^Release:.*|Release:        ${NEW_REL}%{?dist}|" "$SPEC_FILE"
+    DATE=$(LC_ALL=C date +"%a %b %d %Y")
+    sed -i '/^%changelog/,$d' "$SPEC_FILE"
+    {
+        echo "%changelog"
+        echo "* $DATE $PACKAGER - $NEW_VER-$NEW_REL"
+        echo "- Re-pin .deb (upstream respinned the tag)"
+    } >> "$SPEC_FILE"
+    if ! grep -q "^Name:" "$SPEC_FILE"; then
+        echo "FATAL: $SPEC_FILE lost its Name: header; restoring" >&2
+        git checkout -- "$SPEC_FILE" 2>/dev/null || true
+        exit 1
     fi
     exit 0
-  fi
-  echo "Upstream respinned $CURRENT_VER (sha256 $CURRENT_SHA -> $NEW_SHA); re-pinning, no debian.changelog entry."
-  refresh_artifacts "$CURRENT_VER" "$DEB_URL" || exit 1
-  sed -i -E "s|^# sha256:.*|# sha256: $NEW_SHA|" "$SPEC_FILE"
-  C=$(LC_ALL=C date -u +"%a %b %d %T UTC %Y")
-  NEWENTRY="-------------------------------------------------------------------\n$C - $PACKAGER_ADDR\n\n- upstream respin of $CURRENT_VER (sha256 $CURRENT_SHA ->\n  $NEW_SHA), payload + Debtransform tarball refreshed, version unchanged\n\n"
-  [ -f "$CHANGES_FILE" ] && printf "%b%s" "$NEWENTRY" "$(cat "$CHANGES_FILE")" > "$CHANGES_FILE" || printf "%b" "$NEWENTRY" > "$CHANGES_FILE"
-  echo "Respinned $CURRENT_VER."
-  exit 0
 fi
 
-echo "Update $CURRENT_VER -> $NEW_VER"
-refresh_artifacts "$NEW_VER" "$DEB_URL" || exit 1
+echo "Update found: $CURRENT_VERSION -> $NEW_VER"
 
 sed -i -E "s/^Version:.*/Version:        $NEW_VER/" "$SPEC_FILE"
 sed -i -E "s|^Source0:.*|Source0:        $DEB_URL|" "$SPEC_FILE"
-grep -q '^# sha256:' "$SPEC_FILE" || sed -i -E "/^Version:/a # sha256: $NEW_SHA" "$SPEC_FILE"
 sed -i -E "s|^# sha256:.*|# sha256: $NEW_SHA|" "$SPEC_FILE"
 
-sed -i -E "s/^Version: .*/Version: $NEW_VER/" "$DSC_FILE"
-sed -i -E "s|^Debtransform-Tar:.*|Debtransform-Tar: qoder-$NEW_VER.tar.gz|" "$DSC_FILE"
+DATE=$(LC_ALL=C date +"%a %b %d %Y")
+sed -i '/^%changelog/,$d' "$SPEC_FILE"
+{
+    echo "%changelog"
+    echo "* $DATE $PACKAGER - $NEW_VER-0"
+    echo "- Update to upstream release $NEW_VER"
+} >> "$SPEC_FILE"
 
-D=$(date -R -u)
-printf 'qoder (%s-1) unstable; urgency=medium\n\n  * New upstream release %s.\n\n -- %s <noreply@example.com>  %s\n\n' \
-  "$NEW_VER" "$NEW_VER" "$PACKAGER" "$D" > /tmp/_qoder_cl.tmp
-[ -f debian.changelog ] && cat debian.changelog >> /tmp/_qoder_cl.tmp
-mv /tmp/_qoder_cl.tmp debian.changelog
+echo "Successfully patched $SPEC_FILE."
 
-C=$(LC_ALL=C date -u +"%a %b %d %T UTC %Y")
-NEWENTRY="-------------------------------------------------------------------\n$C - $PACKAGER_ADDR\n\n- version $NEW_VER-0\n- Update qoder to $NEW_VER\n\n"
-[ -f "$CHANGES_FILE" ] && printf "%b%s" "$NEWENTRY" "$(cat "$CHANGES_FILE")" > "$CHANGES_FILE" || printf "%b" "$NEWENTRY" > "$CHANGES_FILE"
-
-echo "Successfully updated to $NEW_VER."
+if ! grep -q "^Name:" "$SPEC_FILE"; then
+    echo "FATAL: $SPEC_FILE lost its Name: header; restoring" >&2
+    git checkout -- "$SPEC_FILE" 2>/dev/null || true
+    exit 1
+fi
