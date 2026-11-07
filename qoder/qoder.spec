@@ -1,10 +1,11 @@
 %global debug_package %{nil}
 %global __requires_exclude_from ^/opt/Qoder/.*$
 %global __provides_exclude_from ^/opt/Qoder/.*$
+%global __brp_mangle_shebangs_exclude_from ^/opt/Qoder/.*$
 Name:           qoder
 Version:        0.5.6
 # sha256: 0058d5ff97b71c1e97935595fdcb07613bd20e9d7ba7f672c9efc7b566fc40d4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        Agent workbench for human and AI software teams
 License:        SUSE-Freeware
@@ -143,6 +144,9 @@ fi
 %exclude /opt/Qoder/chrome-sandbox
 /opt/Qoder/*
 
+%changelog
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.6-2
+- Exclude the 811MB /opt bundle from __brp_mangle_shebangs: the payload ships minified single-line JS that made the shebang pass unbounded (~25 min CPU per build), and brp removes exec bits from text files without shebangs
 %changelog
 * Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.6-1
 - Ship LICENSE.electron.txt and LICENSES.chromium.html as %license (they were declared then excluded); drop the contradictory chrome-sandbox %attr line (the helper is deliberately not shipped); rewrite update.sh in the repo pattern.
