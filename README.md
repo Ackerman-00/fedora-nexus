@@ -49,7 +49,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 62 packages</summary>
+<summary>Click to expand — 65 packages</summary>
 
 <br />
 
@@ -75,6 +75,7 @@ sudo dnf install <package-name>
 | `extension-manager` | Native tool for browsing and managing GNOME Shell Extensions | Stable |
 | `fluxer` | Free and open source instant messaging and VoIP platform | Stable |
 | `freebuff` | The free coding agent for your desktop (parallel agents, private workspaces) | Stable |
+| `freebuff-desktop` | Electron coding agent desktop shell (deb-backed) | Stable |
 | `ghostty` | Fast, feature-rich, cross-platform terminal emulator (Deb repackage) | Stable |
 | `gpu-screen-recorder` | Shadowplay-like screen recorder for Linux (NVIDIA/AMD/Intel) | Stable |
 | `hellwal` | Pywal-like color palette generator, but faster and in C | Stable |
@@ -93,9 +94,11 @@ sudo dnf install <package-name>
 | `nwg-look` | GTK3 settings editor adapted for the wlroots environment | Stable |
 | `obsidian` | Knowledge base over a local folder of plain-text Markdown files | Stable |
 | `opencad-studio` | Open-source 2D/3D CAD with native DWG/DXF support | Stable |
+| `omnirush-desktop` | Electron desktop shell for omnirush.ai | Stable |
 | `openchamber` | AI coding agent workspace (Electron) | Stable |
 | `opencode-desktop` | AI coding agent desktop app | Stable |
 | `protonplus` | Modern compatibility tools manager | Stable |
+| `qoder` | Agent workbench for human and AI software teams (deb-backed) | Stable |
 | `materialyoucolor` | Material You color generation algorithms (pure Python + C++ quantizer); install as `python3-materialyoucolor` | Stable |
 | `python-mprisify` | MPRIS D-Bus interface library for Python | Stable |
 | `python-yt-dlp-ejs` | External JavaScript runtimes for yt-dlp | Stable |
