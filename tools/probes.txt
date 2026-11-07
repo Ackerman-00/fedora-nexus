@@ -13,12 +13,14 @@ bibata-cursor-theme|bibata-cursor-theme|files-only
 caelestia-cli-mango|caelestia-cli-mango|caelestia --help
 caelestia-shell-mango|caelestia-shell-mango|test -x /usr/bin/caelestia-shell
 cascadia-code-nerd-fonts|cascadia-code-nerd-fonts|files-only
+cline-desktop|cline-desktop|test -x /usr/bin/cline-app
 cliphist|cliphist|cliphist version
 concat|concat|concat --version
 concord|concord|test -x /usr/bin/concord
 extension-manager|extension-manager|test -x /usr/bin/extension-manager
 fluxer|fluxer|test -f /usr/lib64/fluxer/resources/app.asar
 freebuff|freebuff|freebuff --version
+freebuff-desktop|freebuff-desktop|test -x /usr/bin/freebuff
 ghostty|ghostty|ghostty --version
 gpu-screen-recorder|gpu-screen-recorder|test -x /usr/bin/gpu-screen-recorder
 helium-browser|helium-browser|helium --no-sandbox --headless --disable-gpu --version
@@ -37,6 +39,7 @@ mpvpaper|mpvpaper|test -x /usr/bin/mpvpaper
 noctalia-greeter|noctalia-greeter|noctalia-greeter --version
 nwg-look|nwg-look|test -x /usr/bin/nwg-look
 obsidian|obsidian|test -f /opt/Obsidian/resources/app.asar
+omnirush-desktop|omnirush-desktop|test -x /usr/bin/omnirush
 opencad-studio|opencad-studio|test -x /usr/bin/opencad-studio
 openchamber|openchamber|test -f /opt/openchamber/resources/app.asar
 opencode-desktop|opencode-desktop|test -f /opt/OpenCode/resources/app.asar && test -x "$(awk '/^exec /{print $2; exit}' /usr/bin/opencode-desktop)"
@@ -46,6 +49,7 @@ python-yt-dlp-ejs|python-yt-dlp-ejs|python3 -c "import yt_dlp_ejs"
 python-yt-dlp-get-pot|python-yt-dlp-get-pot|python3 -c 'import yt_dlp_plugins.extractor'
 python-yt-dlp-get-pot-rustypipe|python-yt-dlp-get-pot-rustypipe|python3 -c 'import yt_dlp_plugins.extractor'
 python-ytmusicapi|python-ytmusicapi|python3 -c 'import ytmusicapi'
+qoder|qoder|test -x /usr/bin/qoder
 rootapp|rootapp|test -x /usr/bin/rootapp
 rustypipe-botguard|rustypipe-botguard|rustypipe-botguard --version
 scenefx|scenefx|files-only
