@@ -1,0 +1,5 @@
+addFilter("unstripped-binary-or-object")
+addFilter("invalid-desktopfile")
+addFilter("branding-requires-unversioned")
+addFilter("position-independent-executable-suggested")
+addFilter("files-duplicate")

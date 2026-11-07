@@ -49,7 +49,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 65 packages</summary>
+<summary>Click to expand — 66 packages</summary>
 
 <br />
 
@@ -69,6 +69,7 @@ sudo dnf install <package-name>
 | `caelestia-cli-mango` | The main control script for the Caelestia dotfiles (MangoWM) | Git |
 | `caelestia-shell-mango` | Desktop shell for MangoWM | Git |
 | `cascadia-code-nerd-fonts` | Cascadia Code patched with Nerd Fonts icons | Stable |
+| `cline-desktop` | The agentic coding-capable IDE desktop app (Tauri) | Stable |
 | `cliphist` | Wayland clipboard manager with support for multimedia | Stable |
 | `concat` | Free and open source video editor (CapCut alternative) | Stable |
 | `concord` | Feature-rich TUI client for Discord | Stable |
