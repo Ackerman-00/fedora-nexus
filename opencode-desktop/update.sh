@@ -15,7 +15,7 @@ echo "Checking for upstream updates..."
 
 EFFECTIVE_URL=""
 for attempt in 1 2 3; do
-    EFFECTIVE_URL=$(curl -sIL -o /dev/null -w '%{url_effective}' --max-time 30 "$STABLE_URL")
+    EFFECTIVE_URL=$(curl -s -L -r 0-0 -o /dev/null -w '%{url_effective}' --max-time 30 "$STABLE_URL")
     LATEST_VERSION=$(echo "$EFFECTIVE_URL" | grep -oP 'files/bin/\K[0-9]+\.[0-9]+\.[0-9]+' | head -1)
     [ -n "$LATEST_VERSION" ] && break
     echo "  -> version lookup attempt $attempt failed (got: $EFFECTIVE_URL), retrying..."
