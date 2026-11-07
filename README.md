@@ -49,7 +49,7 @@ sudo dnf install <package-name>
 ## 📦 Packages
 
 <details>
-<summary>Click to expand — 66 packages</summary>
+<summary>Click to expand — 69 packages</summary>
 
 <br />
 
@@ -79,11 +79,13 @@ sudo dnf install <package-name>
 | `freebuff-desktop` | Electron coding agent desktop shell (deb-backed) | Stable |
 | `ghostty` | Fast, feature-rich, cross-platform terminal emulator (Deb repackage) | Stable |
 | `gpu-screen-recorder` | Shadowplay-like screen recorder for Linux (NVIDIA/AMD/Intel) | Stable |
+| `hatter-icon-theme` | Hatter icon theme (multi-color variants, V4.0) | Stable |
 | `hellwal` | Pywal-like color palette generator, but faster and in C | Stable |
 | `helium-browser` | Private, fast, and honest web browser | Stable |
 | `heroic-games-launcher` | Open source launcher for GOG, Epic, and Amazon Games | Stable |
 | `lazyvim-git` | Neovim setup for lazy people (Git Snapshot) | Git |
 | `libcava` | Fork of CAVA built as a shared library | Stable |
+| `ladybird-unstable` | Ladybird browser built from git master (unstable) | Git |
 | `localsend` | Open source cross-platform AirDrop alternative | Stable |
 | `logseq` | Privacy-first, local-first knowledge management and collaboration platform | Stable |
 | `mangowm` | Modern, lightweight, high-performance Wayland compositor built on dwl | Stable |
@@ -116,6 +118,7 @@ sudo dnf install <package-name>
 | `umbriel-git` | Wayland compositor with scrolling and dwindle layouts, built on wlroots + SceneFX (Git Snapshot) | Git |
 | `vesktop` | Custom Discord client with Vencord preinstalled | Stable |
 | `waypaper` | GUI wallpaper manager for Wayland and Xorg Linux systems | Stable |
+| `whitesur-icon-theme` | WhiteSur macOS-like icon theme | Stable |
 | `wlroots` | Modular Wayland compositor library | Stable |
 | `xcur2png` | Convert X cursor files into PNG images (hyprcursor-util extract helper) | Stable |
 | `xdg-desktop-portal-umbriel-git` | XDG Desktop Portal backend for Umbriel (Git Snapshot) | Git |
