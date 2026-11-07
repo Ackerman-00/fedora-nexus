@@ -51,6 +51,7 @@ Ladybird browser built from the git master branch (unstable).
 %autosetup -n ladybird-%{commit}
 
 %build
+export LDFLAGS="$LDFLAGS -lstdc++"
 python3 Meta/ladybird.py build --preset Release
 
 %install
@@ -67,4 +68,4 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
 * Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-1.20261107git1d07e31
-- Initial import
+- Initial import; link vcpkg ports against libstdc++ (RPM -fexceptions emits DW.ref.__gxx_personality_v0)
