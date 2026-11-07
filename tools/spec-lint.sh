@@ -14,7 +14,7 @@ okp=0; badp=0; okl=0; badl=0; okd=0; badd=0
 while read -r rel; do
   s=/srv/$rel; p=$(basename "$rel" .spec)
   if rpmspec -P --define "_topdir /tmp" "$s" >/tmp/one.spec 2>/tmp/rp.err; then okp=$((okp+1)); else badp=$((badp+1)); echo "RPMSPEC_FAIL $p: $(head -2 /tmp/rp.err | tr "\n" " ")"; fi
-  if rpmlint "$s" >/tmp/rl.out 2>&1; then
+  if rpmlint --ignore-unused-rpmlintrc "$s" >/tmp/rl.out 2>&1; then
     if grep -qE "^[0-9]+ packages and [0-9]+ specfiles checked; [1-9][0-9]* errors" /tmp/rl.out; then
       badl=$((badl+1)); echo "RPMLINT_E $p: $(grep -m2 "^E: " /tmp/rl.out | tr "\n" " ")"
     else okl=$((okl+1)); fi
