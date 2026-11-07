@@ -4,13 +4,14 @@
 Name:           cline-desktop
 Version:        0.0.49
 # sha256:  3e2c1f824fbdceaf67a8c01404e58218f8534f952318d1689807824b9ca2e2f6
-Release:        0
+Release:        1%{?dist}
 Summary:        The agentic coding-capable IDE desktop app (Tauri)
 License:        Apache-2.0
 Group:          Development/Tools/IDE
 URL:            https://cline.bot
 Source0:        https://github.com/cline/cline/releases/download/desktop-v0.0.49/Cline_0.0.49_amd64.deb
 Source1:        cline-desktop-rpmlintrc
+Source2:        https://raw.githubusercontent.com/cline/cline/desktop-v0.0.49/LICENSE
 BuildRequires:  binutils
 BuildRequires:  tar
 BuildRequires:  zstd
@@ -59,8 +60,10 @@ install -d %{buildroot}%{_datadir} %{buildroot}%{_prefix}/lib %{buildroot}%{_bin
 cp -a usr/share/* %{buildroot}%{_datadir}/
 if [ -d usr/lib/Cline ]; then cp -a usr/lib/Cline %{buildroot}%{_prefix}/lib/; fi
 for b in usr/bin/*; do install -m 0755 "$b" %{buildroot}%{_bindir}/; done
+install -Dm0644 %{SOURCE2} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %files
+%license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/cline-app
 %{_bindir}/cline-cli
 %{_prefix}/lib/Cline/
@@ -72,3 +75,7 @@ for b in usr/bin/*; do install -m 0755 "$b" %{buildroot}%{_bindir}/; done
 %{_datadir}/metainfo/*
 
 %changelog
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.49-1
+- Ship the upstream Apache-2.0 LICENSE (Source2) as %license; fix the update.sh OBS/debian machinery (stray artifacts, invented email) with the repo updater pattern.
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.49-0
+- Initial package
