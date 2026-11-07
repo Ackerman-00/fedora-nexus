@@ -50,15 +50,15 @@ Ladybird browser built from the git master branch (unstable).
 %autosetup -n ladybird-master -p1
 
 %build
-cmake --preset Release -B Build/release -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_DATADIR=%{_datadir} -DLAGOM_LINK_POOL_SIZE=2
-cmake --build --preset Release Build/release -j2
+python3 Meta/ladybird.py build --preset Release -j2
 
 %install
-DESTDIR=%{buildroot} cmake --install Build/release
+python3 Meta/ladybird.py install --preset Release
 
 %files
 %{_bindir}/Ladybird
-%{_datadir}/ladybird*/**
+%dir %{_datadir}/ladybird
+%{_datadir}/ladybird/*
 
 %post
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
