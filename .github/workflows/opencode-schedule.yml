@@ -73,6 +73,24 @@ jobs:
             *) echo "FATAL: could not parse opencode version from '$ver'" >&2; exit 1 ;;
           esac
 
+      - name: Import OpenCode account credentials
+        shell: bash
+        env:
+          OPENCODE_AUTH_JSON: ${{ secrets.OPENCODE_AUTH_JSON }}
+        run: |
+          export PATH="$HOME/.opencode/bin:$PATH"
+          if [ -n "$OPENCODE_AUTH_JSON" ]; then
+            printf '%s\n' "$OPENCODE_AUTH_JSON" > "$RUNNER_TEMP/opencode-auth.json"
+            if opencode auth import "$RUNNER_TEMP/opencode-auth.json"; then
+              echo "OpenCode account credentials imported (authenticated run)"
+            else
+              echo "WARN: opencode auth import failed - falling back to anonymous limits"
+            fi
+            rm -f "$RUNNER_TEMP/opencode-auth.json"
+          else
+            echo "OPENCODE_AUTH_JSON secret not set - running with anonymous free-tier limits"
+          fi
+
       - name: Run opencode
         shell: bash
         timeout-minutes: 300
