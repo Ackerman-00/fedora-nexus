@@ -6,14 +6,14 @@
 
 Name:           opencad-studio
 Version:        2026.44
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source 2D/3D CAD with native DWG/DXF support
 
 License:        GPL-3.0-only
 URL:            https://www.opencadstudio.com
 ExclusiveArch:  x86_64
 Source0:        https://github.com/HakanSeven12/OpenCADStudio/releases/download/v2026.44/OpenCADStudio-v2026.44-linux-x86_64.AppImage
-# sha256: 8721af79366d4ac05a30476803883e08f3c9def7372cf87e2a8f3fb6d6cf3940
+# sha256: 087e57c425e56737f9b9c5dce57269e38cede57a58dc2b220351ac2ce559f037
 Source1:        https://raw.githubusercontent.com/HakanSeven12/OpenCADStudio/v%{version}/LICENSE
 
 BuildRequires:  binutils
@@ -95,5 +95,7 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.44-2
+- Re-pin v2026.44 AppImage: upstream re-released the same tag on 2026-11-02
 * Sun Nov 01 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.44-1
 - Auto-update to upstream release v2026.44
