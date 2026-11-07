@@ -5,7 +5,7 @@
 Name:           qoder
 Version:        0.5.6
 # sha256: 0058d5ff97b71c1e97935595fdcb07613bd20e9d7ba7f672c9efc7b566fc40d4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          1
 Summary:        Agent workbench for human and AI software teams
 License:        SUSE-Freeware
@@ -96,8 +96,6 @@ cp -a usr/share/icons %{buildroot}%{_datadir}/
 install -d -m 0755 %{buildroot}%{_docdir}/qoder
 cp -a usr/share/doc/qoder/. %{buildroot}%{_docdir}/qoder/
 
-chmod 4755 %{buildroot}/opt/Qoder/chrome-sandbox
-
 desktop-file-validate %{buildroot}%{_datadir}/applications/qoder.desktop
 
 %post
@@ -145,6 +143,8 @@ fi
 /opt/Qoder/*
 
 %changelog
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.6-3
+- Drop the dead chmod on the excluded chrome-sandbox (the file is not shipped)
 * Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.6-2
 - Exclude the 811MB /opt bundle from __brp_mangle_shebangs: the payload ships minified single-line JS that made the shebang pass unbounded (~25 min CPU per build), and brp removes exec bits from text files without shebangs
 * Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.6-1
