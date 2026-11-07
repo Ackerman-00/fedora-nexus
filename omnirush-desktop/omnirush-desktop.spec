@@ -4,7 +4,7 @@
 Name:           omnirush-desktop
 Version:        3.8.2
 # sha256:  8d8c18962bfad2f43c588142ae014c4abb03e3fadd46f403045566621ce7a236
-Release:        0
+Release:        1%{?dist}
 Summary:        OmniRush.ai desktop shell (Electron)
 License:        SUSE-Freeware
 Group:          Productivity/Networking/Talk/Clients
@@ -78,6 +78,8 @@ ln -sf /opt/omnirush/omnirush %{buildroot}%{_bindir}/omnirush
 
 %files
 /opt/omnirush/
+%license /opt/omnirush/LICENSE.electron.txt
+%attr(4755, root, root) /opt/omnirush/chrome-sandbox
 %{_bindir}/omnirush
 %{_datadir}/applications/*
 %{_datadir}/doc/omnirush.ai/
@@ -87,19 +89,29 @@ ln -sf /opt/omnirush/omnirush %{buildroot}%{_bindir}/omnirush
 %{_datadir}/icons/hicolor/*/*/omnirush.png
 
 %post
-if ! { [ -L /proc/self/ns/user ] && unshare --user true; }; then
-  chmod 4755 /opt/omnirush/chrome-sandbox || true
-else
-  chmod 0755 /opt/omnirush/chrome-sandbox || true
-fi
 if command -v update-mime-database >/dev/null 2>&1; then update-mime-database %{_datadir}/mime >/dev/null 2>&1 || true; fi
 if command -v update-desktop-database >/dev/null 2>&1; then update-desktop-database %{_datadir}/applications >/dev/null 2>&1 || true; fi
-if command -v apparmor_status >/dev/null 2>&1 && apparmor_status --enabled >/dev/null 2>&1; then
-  if [ -f /opt/omnirush/resources/apparmor-profile ]; then
-    cp -f /opt/omnirush/resources/apparmor-profile %{apparmor_profilesdir}/omnirush
+if [ -d %{_sysconfdir}/apparmor.d ] && [ -x /sbin/apparmor_parser ] \
+   && [ -f /opt/omnirush/resources/apparmor-profile ]; then
+  if /sbin/apparmor_parser --skip-kernel-load --debug \
+       /opt/omnirush/resources/apparmor-profile >/dev/null 2>&1; then
+    install -m 0644 /opt/omnirush/resources/apparmor-profile \
+      %{_sysconfdir}/apparmor.d/omnirush
+    /sbin/apparmor_parser --replace --write-cache --skip-read-cache \
+      %{_sysconfdir}/apparmor.d/omnirush >/dev/null 2>&1 || true
   fi
 fi
 
 %postun
+if [ "$1" = 0 ] && [ -f %{_sysconfdir}/apparmor.d/omnirush ]; then
+  if [ -x /sbin/apparmor_parser ]; then
+    /sbin/apparmor_parser --remove %{_sysconfdir}/apparmor.d/omnirush >/dev/null 2>&1 || true
+  fi
+  rm -f %{_sysconfdir}/apparmor.d/omnirush
+fi
 
 %changelog
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 3.8.2-1
+- Ship chrome-sandbox with %attr(4755, root, root) (shipped 0755 upstream); apparmor profile install no longer expands the undefined apparmor_profilesdir macro to /omnirush at the filesystem root and now removes/reloads it correctly on removal; ship LICENSE.electron.txt as %license; rewrite update.sh in the repo pattern.
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 3.8.2-0
+- Initial package
