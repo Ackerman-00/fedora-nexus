@@ -13,7 +13,7 @@ bibata-cursor-theme|bibata-cursor-theme|files-only
 caelestia-cli-mango|caelestia-cli-mango|caelestia --help
 caelestia-shell-mango|caelestia-shell-mango|test -x /usr/bin/caelestia-shell
 cascadia-code-nerd-fonts|cascadia-code-nerd-fonts|files-only
-cliphist|cliphist|test -x /usr/bin/cliphist
+cliphist|cliphist|cliphist version
 concat|concat|concat --version
 concord|concord|test -x /usr/bin/concord
 extension-manager|extension-manager|test -x /usr/bin/extension-manager
