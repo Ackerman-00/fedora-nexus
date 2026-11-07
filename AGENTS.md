@@ -441,7 +441,9 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
   and print the relay tokens. Keeps every job slot full: a barrier between
   batches wastes half the run when one package builds slowly.
 - `bash tools/spec-lint.sh [chroot] [spec ...]` - `rpmspec -P`, `rpmlint`
-  and `dnf builddep --assumeno` for every spec in one container.
+  (`--ignore-unused-rpmlintrc` on the spec pass: RPM-only filters cannot match a
+  spec and would false-fail any package shipping a `<pkg>-rpmlintrc`) and
+  `dnf builddep --assumeno` for every spec in one container.
 - `bash tools/copr-install-check.sh <pkg> <rpm-name> <smoke-cmd> [chroot]` -
   install-test one published package from the live COPR repo.
 - `bash tools/install-sweep.sh <list> [jobs] [chroot]` - install-test the
