@@ -12,6 +12,7 @@ BuildArch:      noarch
 BuildRequires:  bash
 BuildRequires:  coreutils
 BuildRequires:  sed
+BuildRequires:  gtk-update-icon-cache
 
 %description
 WhiteSur macOS-like icon theme (2026-09-10 release), packaged from upstream git.
@@ -26,6 +27,7 @@ install -d -m 0755 %{buildroot}%{_datadir}/icons
 bash ./install.sh --dest %{buildroot}%{_datadir}/icons --theme all 2>&1 || bash ./install.sh --dest %{buildroot}%{_datadir}/icons 2>&1
 
 %files
+%license COPYING
 %{_datadir}/icons/WhiteSur*
 
 %post
@@ -34,5 +36,5 @@ gtk-update-icon-cache -q %{_datadir}/icons/WhiteSur 2>/dev/null || :
 for t in %{_datadir}/icons/WhiteSur*; do gtk-update-icon-cache -q "$t" 2>/dev/null || :; done
 
 %changelog
-* Sat Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.09.10-1
+* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.09.10-1
 - Initial import
