@@ -1,4 +1,5 @@
 # pinned: upstream deleted lang/gjs in 9b67eb5
+%global live_hold_reason upstream deleted lang/gjs in 9b67eb5; held at last good commit
 %global commit          7b4d37603c11d2f84338a5da35b1f0676935eb57
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20261101003451

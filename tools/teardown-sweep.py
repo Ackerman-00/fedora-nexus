@@ -26,6 +26,7 @@ import argparse
 import base64
 import hashlib
 import json
+import glob
 import os
 import re
 import subprocess
@@ -2039,6 +2040,18 @@ def check_deps_in_dir(pkg, root):
 
 
 
+def _live_hold_reason(pkg):
+    for spec in glob.glob(os.path.join(pkg, "*.spec")):
+        try:
+            m = re.search(r"^%global\s+live_hold_reason\s+(.+?)\s*$",
+                          open(spec, errors="ignore").read(), re.M)
+        except OSError:
+            continue
+        if m:
+            return m.group(1)
+    return None
+
+
 def check_live(pkg, live):
     repo, pin = live[0], live[1]
     head = upstream_head(repo)
@@ -2047,6 +2060,24 @@ def check_live(pkg, live):
                      "upstream HEAD unreachable (rate limit/network)"))
         log("[%s] %s : live, upstream unreachable" % (STATUS_SKIP, pkg))
         return True
+    held = _live_hold_reason(pkg)
+    if held is not None:
+        exists = _commit_exists(repo, pin)
+        if exists is True:
+            note = ("live %s held at %s on purpose: %s (pin verified upstream; "
+                    "upstream HEAD is %s)" % (repo, pin[:12], held, head[:12]))
+            rows.append((pkg, "live %s" % repo, pin[:12], head[:12],
+                         STATUS_OK, note))
+            UPSTREAM_VERDICT[pkg] = ("fresh", "live-hold", pin[:12])
+            log("[%s] %s : %s" % (STATUS_OK, pkg, note))
+            return True
+        note = ("live %s declares live_hold_reason (%s) but pin %s "
+                "could not be verified upstream" % (repo, held, pin[:12]))
+        rows.append((pkg, "live %s" % repo, pin[:12], head[:12],
+                     STATUS_STALE, note))
+        UPSTREAM_VERDICT[pkg] = ("stale", "live-hold", pin[:12])
+        log("[%s] %s : %s" % (STATUS_STALE, pkg, note))
+        return False
     ok = (normalize(pin[:12]) == normalize(head[:12]))
     status = STATUS_OK if ok else STATUS_STALE
     note = "live %s pin %s vs upstream %s" % (repo, pin[:12], head[:12])
