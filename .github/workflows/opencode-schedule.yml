@@ -208,9 +208,12 @@ jobs:
             CASCADE=(opencode/mimo-v2.6-flash-free opencode/deepseek-v4.1-flash-free)
           fi
           echo "=== free-model cascade: ${CASCADE[*]} ==="
+          quota_hits=0
+          region_hits=0
           for model in "${CASCADE[@]}"; do
             echo "=== opencode run attempt with $model ==="
             exit_code=0
+            model_skip=""
             for attempt_n in 1 2 3; do
               # prompt via file: env/argv strings > 128KiB hit MAX_ARG_STRLEN (E2BIG)
               OCLOG="$RUNNER_TEMP/opencode-out.txt"
@@ -219,10 +222,26 @@ jobs:
               else
                 exit_code=$?
               fi
-              # free quota is shared by every free model - retrying others cannot help
-              if grep -q 'Free usage limit reached' "$OCLOG"; then
-                echo "GAP: external - OpenCode free usage limit reached (account-wide, all free models); connect a provider, subscribe, or wait for the quota reset"
-                exit 1
+              if [ "$exit_code" -ne 0 ]; then
+                # region-blocked model (e.g. crouton-alpha-free outside its supported
+                # regions): retrying the same model cannot help - skip it, don't burn
+                # the 3-attempt budget. Runner regions are US, so this rarely fires.
+                if grep -qiE 'not available in (your|this) (country|region)|unavailable in (your|this) (country|region)|not supported in (your|this) (country|region)' "$OCLOG"; then
+                  echo "=== $model: not available in the runner region - skipping, no retry ==="
+                  region_hits=$((region_hits + 1))
+                  model_skip=region
+                  break
+                fi
+                # free quota: the same model cannot succeed on a retry, and older
+                # models shared one account-wide pool - but the current promo models
+                # (iceman/beam free-unlimited, crouton weekly) may carry their own
+                # quota, so move to the next model instead of killing the run here.
+                if grep -qi 'free usage limit reached' "$OCLOG"; then
+                  echo "=== $model: OpenCode free usage limit reached - moving to the next model ==="
+                  quota_hits=$((quota_hits + 1))
+                  model_skip=quota
+                  break
+                fi
               fi
               if [ "$exit_code" -eq 0 ]; then
                 break
@@ -233,6 +252,13 @@ jobs:
                 sleep "$delay"
               fi
             done
+            if [ "$model_skip" = "quota" ]; then
+              sleep 5
+              continue
+            fi
+            if [ "$model_skip" = "region" ]; then
+              continue
+            fi
             if [ "$exit_code" -eq 0 ]; then
               ok=0
               for attempt in $(seq 1 10); do
@@ -253,6 +279,11 @@ jobs:
             fi
             sleep 60
           done
+          if [ "$quota_hits" -ge "${#CASCADE[@]}" ]; then
+            echo "GAP: external - every free model in the cascade answered 'Free usage limit reached' (${CASCADE[*]}); connect a provider, subscribe, or wait for the quota reset"
+          else
+            echo "cascade ended: quota-blocked=$quota_hits region-blocked=$region_hits of ${#CASCADE[@]} models"
+          fi
           exit 1
         env:
           MODEL: opencode/deepseek-v4.1-flash-free
