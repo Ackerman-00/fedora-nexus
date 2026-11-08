@@ -3,20 +3,22 @@
 %global __requires_exclude_from ^/opt/HermesDesktop/.*$
 %global __provides_exclude_from ^/opt/HermesDesktop/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/HermesDesktop/.*$
-%global commit          2bd378ed1b8d6bf2192cb26e0a55ff3091e6bd19
+%global commit          3e82260ba041b75cf9eb20abf13bec937bb32e27
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261105195738
+%global gitdate         20261108143942
 
 Name:           hermes-agent-desktop
 Version:        0.23.0^%{gitdate}git%{shortcommit}
-Release:        5%{?dist}
+Release:        1%{?dist}
 Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
 Source0:        https://github.com/NousResearch/hermes-agent/archive/%{commit}.tar.gz
-Source1:        https://nodejs.org/download/release/v26.13.0/node-v26.13.0-linux-x64.tar.xz
-# sha256: d28a96af6c38596f6d9d97c0ee531c13d238d757742387d1928de822d959e997
-Source2:        hermes-agent-desktop-rpmlintrc
+# sha256: 6170b2d474e1c626f43cff3adc118df9fe3b573258a4fc3d850c8dbc6b079bbd
+Source1:        https://nodejs.org/download/release/v26.12.1/node-v26.12.1-linux-x64.tar.xz
+# sha256: 402f7045b1e0587acb1542f18d38afbccb6babf3c7451394e6fb3d9f0160c6ca
+Source2:        https://registry.npmjs.org/@pnpm/exe.linux-x64/-/exe.linux-x64-12.15.0.tgz
+Source3:        hermes-agent-desktop-rpmlintrc
 
 ExclusiveArch:  x86_64
 
@@ -60,17 +62,19 @@ This package is built from the current upstream git snapshot.
 
 %prep
 %autosetup -n hermes-agent-%{commit}
-mkdir -p .node26
-tar -xf %{SOURCE1} -C .node26 --strip-components=1
-export PATH="$PWD/.node26/bin:$PATH"
+mkdir -p .tools/node .tools/pnpm
+tar -xJf %{SOURCE1} -C .tools/node --strip-components=1
+tar -xzf %{SOURCE2} -C .tools/pnpm
+export PATH="$PWD/.tools/node/bin:$PWD/.tools/pnpm/package:$PATH"
 node --version
+pnpm --version
 
 %build
-export PATH="$PWD/.node26/bin:$PATH"
-npm ci
-npm run build --workspace apps/desktop
+export PATH="$PWD/.tools/node/bin:$PWD/.tools/pnpm/package:$PATH"
+pnpm install --frozen-lockfile
+pnpm --filter hermes run build
 cd apps/desktop
-npm run builder -- --dir --publish never
+node scripts/run-electron-builder.mjs --linux --x64 --dir --publish never
 cd ../..
 
 %install
@@ -126,6 +130,9 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261108143942git3e82260-1
+- Update to upstream snapshot 3e82260 (2026-11-08)
+- Build with pnpm 12.15.0 from upstream pm/lock.json (upstream refuses npm installs since 7062229); node 26.12.1 per pm/lock.json; desktop bundle via run-electron-builder.mjs --linux --x64 --dir
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261105195738git2bd378e-5
 - Exclude bundled /opt/HermesDesktop sonames from RPM autorequires (e4fae0c)
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261105195738git2bd378e-4
