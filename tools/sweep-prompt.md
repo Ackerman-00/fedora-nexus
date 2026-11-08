@@ -953,6 +953,13 @@ fix packages that do:
      LTO is the failure cause; then use the standard escape
      hatch `%global _lto_cflags %{nil}` with a .changes note
      explaining why (and try to fix the code instead).
+     Proven failure mode (ladybird 11285658, 11285927): a DSO on
+     the link line (mimalloc built by a vcpkg overlay port) whose
+     symbols are consumed only by -ffat-lto-objects ltrans
+     partitions is dropped by `-Wl,--as-needed`, so `/tmp/cc*.ltrans*.ltrans.o`
+     reports undefined refs to symbols the DSO exports as WEAK
+     DEFAULT; the link fails only under -flto. The repro of the
+     same link outside LTO passes - that is the signature.
   c. NO -march=native / -mtune=native / -march=<cpu> beyond the
      distro baseline. Binaries must run on ANY x86-64 machine
      (Fedora's baseline x86-64 generic; DO NOT assume
