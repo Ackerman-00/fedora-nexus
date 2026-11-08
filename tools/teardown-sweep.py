@@ -2270,7 +2270,7 @@ def sweep_package(pkg, pv, srcs, live, repo_type, workdir):
             if status in (STATUS_OK, STATUS_SOURCE_OK):
                 pkg_verified = True
             continue
-        if name.lower().endswith((".sig", ".asc", ".keyring", ".pem", ".pub", ".minisig")):
+        if name.lower().endswith((".sig", ".asc", ".keyring", ".pem", ".pub", ".minisig", ".gpg")):
             rows.append((pkg, name, pv, None, STATUS_OK,
                          "signature/keyring verification material, no teardown applicable"))
             log("[%s] %s : %s signature/keyring material" % (STATUS_OK, pkg, name))
