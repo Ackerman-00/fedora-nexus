@@ -5,7 +5,7 @@
 
 Name:           hermes-agent-desktop
 Version:        0.23.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
@@ -67,6 +67,7 @@ cd ../..
 
 %install
 install -d %{buildroot}/opt/HermesDesktop %{buildroot}%{_bindir}
+install -Dpm0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 if [ -d apps/desktop/release/linux-unpacked ]; then
     cp -a apps/desktop/release/linux-unpacked/* %{buildroot}/opt/HermesDesktop/
 else
@@ -111,11 +112,14 @@ esac
 %files
 /opt/HermesDesktop/
 %attr(4755, root, root) /opt/HermesDesktop/chrome-sandbox
+%license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/hermes-agent-desktop
 %{_datadir}/applications/hermes-agent-desktop.desktop
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261105195738git2bd378e-3
+- Ship the upstream MIT LICENSE under %license (hunt licenses finding); Release 2 -> 3, NVR change required for COPR to publish
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261105195738git2bd378e-2
 - Fix initial import build: nodejs.org v26.13.0 toolchain (no nodejs26 in Fedora GA, build 11285601 failed at dnf stage); wrapper execs Hermes (capital H); chrome-sandbox %attr(4755, root, root); ship 512x512 hicolor icon + icon-cache scriptlets; drop unresolvable Runtime nodejs Requires
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261105195738git2bd378e-1
