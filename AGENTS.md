@@ -157,6 +157,7 @@ If the agent skips the dependency table, the job fails and the next run retries 
   advisory's own `ranges` events (`introduced` / `fixed` / `last_affected`)
   from `v1/vulns/<id>` before calling a package affected, and confirm the name
   exists in the ecosystem's registry first so a typo cannot read as clean.
+- vcpkg strips `LDFLAGS` env but forwards triplet `VCPKG_C/CXX_LINK_FLAGS` and meson reads `CFLAGS/CXXFLAGS` env (found 2026-11-08). A spec `%build` `export LDFLAGS` never reaches a meson port; set the triplet link flags (ladybird `user-variables.cmake`) instead. A global `-fno-exceptions` dodge breaks cpptrace, which needs exceptions.
 
 ### Check criteria that produce false failures (found 2026-10-06)
 
