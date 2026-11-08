@@ -5,12 +5,12 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 |---|---|---|---|---|---|
 | app2unit | live Vladimir-csp/app2unit | 47e23ec6ab9e | 47e23ec6ab9e | **OK** | live Vladimir-csp/app2unit pin 47e23ec6ab9e vs upstream 47e23ec6ab9e |
 | appmenu-glib-translator | appmenu-glib-translator-d475cca.tar.gz | 25.04^20261102201706gitd475cca | >=1.3.0 | **SOURCE-OK** | tar meson.build=>=1.3.0 (vala-panel-appmenu-d475cca380e88b3b62bc8ecde9d861bc5e777c4e/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3.0 (not authoritative) |
-| astal | live Aylur/astal | c6b4d08dd671 | c6b4d08dd671 | **OK** | live Aylur/astal pin c6b4d08dd671 vs upstream c6b4d08dd671 |
-| astal-gjs | live Aylur/astal | 7b4d37603c11 | c6b4d08dd671 | **OK** | live Aylur/astal held at 7b4d37603c11 on purpose: upstream deleted lang/gjs in 9b67eb5; held at last good commit (pin verified upstream; upstream HEAD is c6b4d08dd671) |
-| astal-gtk4 | live Aylur/astal | c6b4d08dd671 | c6b4d08dd671 | **OK** | live Aylur/astal pin c6b4d08dd671 vs upstream c6b4d08dd671 |
-| astal-io | live Aylur/astal | c6b4d08dd671 | c6b4d08dd671 | **OK** | live Aylur/astal pin c6b4d08dd671 vs upstream c6b4d08dd671 |
-| astal-libs | live Aylur/astal | c6b4d08dd671 | c6b4d08dd671 | **OK** | live Aylur/astal pin c6b4d08dd671 vs upstream c6b4d08dd671 |
-| astal-lua | live Aylur/astal | 7b4d37603c11 | c6b4d08dd671 | **OK** | live Aylur/astal held at 7b4d37603c11 on purpose: upstream deleted lang/lua in 9b67eb5; held at last good commit (pin verified upstream; upstream HEAD is c6b4d08dd671) |
+| astal | live Aylur/astal | b7aaf4ce69eb | b7aaf4ce69eb | **OK** | live Aylur/astal pin b7aaf4ce69eb vs upstream b7aaf4ce69eb |
+| astal-gjs | live Aylur/astal | 7b4d37603c11 | b7aaf4ce69eb | **OK** | live Aylur/astal held at 7b4d37603c11 on purpose: upstream deleted lang/gjs in 9b67eb5; held at last good commit (pin verified upstream; upstream HEAD is b7aaf4ce69eb) |
+| astal-gtk4 | live Aylur/astal | b7aaf4ce69eb | b7aaf4ce69eb | **OK** | live Aylur/astal pin b7aaf4ce69eb vs upstream b7aaf4ce69eb |
+| astal-io | live Aylur/astal | b7aaf4ce69eb | b7aaf4ce69eb | **OK** | live Aylur/astal pin b7aaf4ce69eb vs upstream b7aaf4ce69eb |
+| astal-libs | live Aylur/astal | b7aaf4ce69eb | b7aaf4ce69eb | **OK** | live Aylur/astal pin b7aaf4ce69eb vs upstream b7aaf4ce69eb |
+| astal-lua | live Aylur/astal | 7b4d37603c11 | b7aaf4ce69eb | **OK** | live Aylur/astal held at 7b4d37603c11 on purpose: upstream deleted lang/lua in 9b67eb5; held at last good commit (pin verified upstream; upstream HEAD is b7aaf4ce69eb) |
 | awww | v0.12.1.tar.gz | 0.12.1 | 0.12.1 | **SOURCE-OK** | tar changelog=0.12.1 (awww/CHANGELOG.md) \| hash hash-OK \| weak internal evidence 0.12.1 (not authoritative) |
 | aylurs-gtk-shell | aylurs-gtk-shell-3.1.2.tar.gz | 3.1.2 | 3.1.2 | **SOURCE-OK** | tar package.json=3.1.2 (ags-3.1.2/package.json) \| hash no-checksum-pinned \| weak internal evidence 3.1.2 (not authoritative) |
 | aylurs-gtk-shell | gnim-1.9.1.tgz | 3.1.2 | 1.9.1 | **SOURCE-OK** | tar package.json=1.9.1 (package/package.json) \| hash no-checksum-pinned \| weak internal evidence 1.9.1 (not authoritative) |
@@ -39,7 +39,7 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | helium-browser | LICENSE | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | helium-browser | LICENSE.ungoogled_chromium | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | hellwal | hellwal-1.0.9.tar.gz | 1.0.9 | $(shell | **SOURCE-OK** | tar Makefile=$(shell (hellwal-1.0.9/Makefile) \| hash no-checksum-pinned \| weak internal evidence $(shell (not authoritative) |
-| hermes-agent-desktop | live NousResearch/hermes-agent | 2bd378ed1b8d | ee6db222660c | **STALE** | live NousResearch/hermes-agent pin 2bd378ed1b8d vs upstream ee6db222660c |
+| hermes-agent-desktop | live NousResearch/hermes-agent | 3e82260ba041 | 444f98086893 | **STALE** | live NousResearch/hermes-agent pin 3e82260ba041 vs upstream 444f98086893 |
 | heroic-games-launcher | Heroic-2.22.4-linux-x86_64.rpm | 2.22.4 | 2.22.4 | **OK** | rpm header heroic=2.22.4-1 (tags NAME/VERSION/RELEASE) \| pinned 2.22.4 \| internal 2.22.4 |
 | heroic-games-launcher | COPYING | 2.22.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | ladybird-unstable | 1d07e318d8bcf51ca3f8b75980fbea15c0edb37c.tar.gz | 0.0.0 | 0.1.0 | **SOURCE-OK** | tar Cargo.toml=0.1.0 (ladybird-1d07e318d8bcf51ca3f8b75980fbea15c0edb37c/AK/Rust/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 0.1.0 (not authoritative) |
@@ -86,7 +86,7 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | rustypipe-botguard | LICENSE | 0.1.2 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | scenefx | 0.5.tar.gz | 0.5 | >=1.3 | **SOURCE-OK** | tar meson.build=>=1.3 (scenefx-0.5/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3 (not authoritative) |
-| sonora | v0.48.0.tar.gz | 0.48.0 | @PKGVER@ | **SOURCE-OK** | tar PKGBUILD=@PKGVER@ (sonora-0.48.0/aur/sonora-bin/PKGBUILD) \| hash no-checksum-pinned \| weak internal evidence @PKGVER@ (not authoritative) |
+| sonora | v0.48.1.tar.gz | 0.48.1 | @PKGVER@ | **SOURCE-OK** | tar PKGBUILD=@PKGVER@ (sonora-0.48.1/aur/sonora-bin/PKGBUILD) \| hash no-checksum-pinned \| weak internal evidence @PKGVER@ (not authoritative) |
 | splayer-next | splayer-next-1.2.0-x86_64.rpm | 1.2.0 | 1.2.0 | **OK** | rpm header splayer-next=1.2.0-1 (tags NAME/VERSION/RELEASE) \| pinned 1.2.0 \| internal 1.2.0 |
 | splayer-next | LICENSE | 1.2.0 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | starship | starship-x86_64-unknown-linux-gnu.tar.gz | 1.27.0 | 1.27.0 | **OK** | tar runtime probe starship --version: starship 1.27.0
@@ -100,7 +100,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | LICENSE | 1.5.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| umbriel-git | live noctalia-dev/umbriel | 94ab5961dce3 | 94ab5961dce3 | **OK** | live noctalia-dev/umbriel pin 94ab5961dce3 vs upstream 94ab5961dce3 |
+| umbriel-git | live noctalia-dev/umbriel | 4c11989d3ade | c7dda0d8cb0b | **STALE** | live noctalia-dev/umbriel pin 4c11989d3ade vs upstream c7dda0d8cb0b |
 | vesktop | vesktop-1.6.9.x86_64.rpm | 1.6.9 | 1.6.9 | **OK** | rpm header vesktop=1.6.9-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.9 \| internal 1.6.9 |
 | vesktop | LICENSE | 1.6.9 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
@@ -149,7 +149,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | python-yt-dlp-get-pot-rustypipe | upstream codeberg.org/ThetaDev/rustypipe-botguard | 0.2.0 | yt-dlp-get-pot-rustypipe/v0.2.0 | **OK** | at upstream latest yt-dlp-get-pot-rustypipe/v0.2.0 in tag namespace 'yt-dlp-get-pot-rustypipe' [pinned yt-dlp-get-pot-rustypipe/v0.2.0] |
 | rustypipe-botguard | upstream codeberg.org/ThetaDev/rustypipe-botguard | 0.1.2 | v0.1.2 | **OK** | at upstream latest v0.1.2 [ls-remote] |
 | scenefx | upstream github.com/wlrfx/scenefx | 0.5 | 0.5 | **OK** | at upstream latest 0.5 [releases/latest] |
-| sonora | upstream github.com/sonorahq/sonora | 0.48.0 | v0.48.0 | **OK** | at upstream latest v0.48.0 [releases/latest] |
+| sonora | upstream github.com/sonorahq/sonora | 0.48.1 | v0.48.1 | **OK** | at upstream latest v0.48.1 [releases/latest] |
 | splayer-next | upstream github.com/SPlayer-Dev/SPlayer-Next | 1.2.0 | v1.2.0 | **OK** | at upstream latest v1.2.0 [releases/latest] |
 | starship | upstream github.com/starship/starship | 1.27.0 | v1.27.0 | **OK** | at upstream latest v1.27.0 [releases/latest] |
 | stoat-desktop | upstream github.com/stoatchat/for-desktop | 1.5.4 | v1.5.4 | **OK** | at upstream latest v1.5.4 [releases/latest] |
@@ -165,10 +165,9 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | python-yt-dlp-ejs | pypi:yt-dlp-ejs | 0.8.0 | 0.8.0 | **OK** | upstream 0.8.0 == pinned 0.8.0 [freshness via pypi:yt-dlp-ejs; repology has no entry] |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology has no entry] |
 | python-ytmusicapi | pypi:ytmusicapi | 1.12.3 | 1.12.3 | **OK** | upstream 1.12.3 == pinned 1.12.3 [freshness via pypi:ytmusicapi; repology has no entry] |
-| rootapp | aur | 0.9.162 | 0.9.161 | **OK** | pinned 0.9.162 >= repology 0.9.161 (aur); tracker behind |
-| sonora | aur | 0.48.0 | 0.47.0 | **OK** | pinned 0.48.0 >= repology 0.47.0 (aur); tracker behind |
+| rootapp | aur | 0.9.162 | 0.9.162 | **OK** | pinned 0.9.162 >= repology 0.9.162 (aur); tracker behind |
 | starship | starship | 1.27.0 |  | **VULN-UNVERIFIED** | advisory ranges do not cover 1.27.0: CGA-9hcg-f7h9-475c, CGA-gr74-x3cx-8xpc |
 | zig0.17 | ziglang.org/download/index.json | 0.17.1 | 0.17.1 | **OK** | upstream 0.17.1 == pinned 0.17.1 [freshness via ziglang.org/download/index.json; repology has no entry] |
 | LIBYEAR | freshness | 0.09 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
 
-**Verdict: FAIL** (2 failure(s))
+**Verdict: FAIL** (3 failure(s))
