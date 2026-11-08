@@ -1,6 +1,6 @@
-%global commit          ad46c7d14ca1f59f2874f3df74773f781fb39c80
+%global commit          94ab5961dce31cd53e5cdca76d2723d73fc2e189
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261107154243
+%global gitdate         20261108024851
 
 %global _lto_cflags %{nil}
 
@@ -112,5 +112,5 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261107154243gitad46c7d-1
-- Nightly sync with upstream main branch (Commit: ad46c7d)
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261108024851git94ab596-1
+- Nightly sync with upstream main branch (Commit: 94ab596)
