@@ -68,3 +68,4 @@ zig0.17|zig0.17|zig0.17 version
 hatter-icon-theme|hatter-icon-theme|files-only
 ladybird-unstable|ladybird-unstable|test -x /usr/bin/Ladybird
 whitesur-icon-theme|whitesur-icon-theme|files-only
+hermes-agent-desktop|hermes-agent-desktop|test -x /usr/bin/hermes-agent-desktop && test -d /opt/HermesDesktop && test -x /opt/HermesDesktop/Hermes

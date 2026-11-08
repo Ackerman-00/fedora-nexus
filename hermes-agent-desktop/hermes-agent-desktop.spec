@@ -5,12 +5,14 @@
 
 Name:           hermes-agent-desktop
 Version:        0.23.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
 Source0:        https://github.com/NousResearch/hermes-agent/archive/%{commit}.tar.gz
-Source1:        hermes-agent-desktop-rpmlintrc
+Source1:        https://nodejs.org/download/release/v26.13.0/node-v26.13.0-linux-x64.tar.xz
+# sha256: d28a96af6c38596f6d9d97c0ee531c13d238d757742387d1928de822d959e997
+Source2:        hermes-agent-desktop-rpmlintrc
 
 ExclusiveArch:  x86_64
 
@@ -19,9 +21,8 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  git
+BuildRequires:  libatomic
 BuildRequires:  make
-BuildRequires:  nodejs26
-BuildRequires:  nodejs26-npm
 BuildRequires:  python3
 BuildRequires:  tar
 BuildRequires:  xz
@@ -29,19 +30,20 @@ BuildRequires:  zstd
 
 Requires:       gtk3
 Requires:       nss
-Requires:       libXScrnSaver
-Requires:       libnotify
+Requires:       libXss.so.1()(64bit)
+Requires:       libnotify.so.4()(64bit)
 Requires:       at-spi2-core
 Requires:       xdg-utils
-Requires:       libXtst
-Requires:       libuuid
-Requires:       libsecret
-Requires:       alsa-lib
-Requires:       cups-libs
+Requires:       libXtst.so.6()(64bit)
+Requires:       libuuid.so.1()(64bit)
+Requires:       libsecret-1.so.0()(64bit)
+Requires:       libasound.so.2()(64bit)
+Requires:       libcups.so.2()(64bit)
 Requires:       mesa-libgbm
-Requires:       libdrm
+Requires:       libdrm.so.2()(64bit)
 Requires:       hicolor-icon-theme
-Requires:       nodejs >= 26
+Requires(post): gtk-update-icon-cache
+Requires(postun): gtk-update-icon-cache
 
 %description
 Hermes Agent desktop: chat sessions, background agent work, file browsing and
@@ -50,9 +52,13 @@ This package is built from the current upstream git snapshot.
 
 %prep
 %autosetup -n hermes-agent-%{commit}
+mkdir -p .node26
+tar -xf %{SOURCE1} -C .node26 --strip-components=1
+export PATH="$PWD/.node26/bin:$PATH"
+node --version
 
 %build
-export NPM_CONFIG_IGNORE_ENGINES=true
+export PATH="$PWD/.node26/bin:$PATH"
 npm ci
 npm run build --workspace apps/desktop
 cd apps/desktop
@@ -67,10 +73,11 @@ else
     echo "ERROR: electron-builder did not produce release/linux-unpacked" >&2
     exit 1
 fi
+install -Dpm0644 %{buildroot}/opt/HermesDesktop/resources/app.asar.unpacked/dist/hermes.png %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 cat > %{buildroot}%{_bindir}/hermes-agent-desktop <<'WRAPPER_EOF'
 #!/bin/sh
-exec /opt/HermesDesktop/hermes "$@"
+exec /opt/HermesDesktop/Hermes "$@"
 WRAPPER_EOF
 chmod 755 %{buildroot}%{_bindir}/hermes-agent-desktop
 
@@ -83,13 +90,33 @@ Comment=Native desktop shell for Hermes Agent
 Exec=hermes-agent-desktop %U
 Terminal=false
 Categories=Development;
+Icon=hermes-agent-desktop
 DESKTOP_EOF
+
+%post
+/bin/touch --no-create %{_datadir}/icons/hicolor >/dev/null 2>&1 || :
+/usr/bin/gtk-update-icon-cache -q %{_datadir}/icons/hicolor >/dev/null 2>&1 || :
+
+%postun
+case "$1" in
+    0)
+        /bin/touch --no-create %{_datadir}/icons/hicolor >/dev/null 2>&1
+        /usr/bin/gtk-update-icon-cache -q %{_datadir}/icons/hicolor >/dev/null 2>&1 || :
+        ;;
+esac
+
+%posttrans
+/usr/bin/gtk-update-icon-cache -q %{_datadir}/icons/hicolor >/dev/null 2>&1 || :
 
 %files
 /opt/HermesDesktop/
+%attr(4755, root, root) /opt/HermesDesktop/chrome-sandbox
 %{_bindir}/hermes-agent-desktop
 %{_datadir}/applications/hermes-agent-desktop.desktop
+%{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261105195738git2bd378e-2
+- Fix initial import build: nodejs.org v26.13.0 toolchain (no nodejs26 in Fedora GA, build 11285601 failed at dnf stage); wrapper execs Hermes (capital H); chrome-sandbox %attr(4755, root, root); ship 512x512 hicolor icon + icon-cache scriptlets; drop unresolvable Runtime nodejs Requires
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261105195738git2bd378e-1
 - Initial git snapshot build of hermes-agent-desktop from upstream main
