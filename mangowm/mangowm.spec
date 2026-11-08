@@ -1,6 +1,6 @@
 Name:           mangowm
 Version:        0.18.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <quietcraft@gmail.com>
@@ -11,11 +11,10 @@ BuildRequires:  meson
 BuildRequires:  findutils
 BuildRequires:  ninja-build
 BuildRequires:  gcc
-BuildRequires:  gcc-c++
 BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-icccm)
 BuildRequires:  pkgconfig(xcb-randr)
-BuildRequires:  pkgconfig(wayland-protocols) >= 1.41
+BuildRequires:  pkgconfig(wayland-protocols)
 BuildRequires:  pkgconfig(wayland-server) >= 1.23.1
 BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.0
@@ -25,12 +24,13 @@ BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(libpcre2-8)
 BuildRequires:  pkgconfig(libcjson)
 BuildRequires:  pkgconfig(pangocairo)
+BuildRequires:  pkgconfig(x11)
+BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(pixman-1)
 BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  pkgconfig(scenefx-0.5) >= 0.5.0
 
 Requires:       xorg-x11-server-Xwayland
-Requires:       vulkan-loader
 Requires:       hicolor-icon-theme
 Requires(post): gtk-update-icon-cache
 Requires(postun): gtk-update-icon-cache
@@ -93,5 +93,7 @@ esac
 %{_userunitdir}/mango-session.target
 
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.5-2
+- Drop unjustified wayland-protocols floor and vulkan-loader/gcc-c++; add pkgconfig(x11)/pkgconfig(glib-2.0) (Xwayland Xlib path and text-node GLib use, previously transitive-only)
 * Wed Nov 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.18.5-1
 - Auto-update to version 0.18.5
