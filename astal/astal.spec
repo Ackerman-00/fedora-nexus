@@ -1,6 +1,6 @@
-%global commit          ab2ab64f79c571bb5fef5c03bdb4d8afe642e758
+%global commit          c6b4d08dd671065757ed0571de5b777f236ca157
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261106224639
+%global gitdate         20261107231102
 
 %global _vpath_srcdir lib/astal/gtk3
 
@@ -62,5 +62,5 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/astal-3.0.pc
 
 %changelog
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261106224639gitab2ab64-1
-- Nightly sync with upstream main branch (Commit: ab2ab64)
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261107231102gitc6b4d08-1
+- Nightly sync with upstream main branch (Commit: c6b4d08)
