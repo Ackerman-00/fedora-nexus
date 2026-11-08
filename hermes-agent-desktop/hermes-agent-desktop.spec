@@ -1,13 +1,15 @@
 %global debug_package %{nil}
 # bundled sonames stay private
+%global __requires_exclude_from ^/opt/HermesDesktop/.*$
 %global __provides_exclude_from ^/opt/HermesDesktop/.*$
+%global __brp_mangle_shebangs_exclude_from ^/opt/HermesDesktop/.*$
 %global commit          2bd378ed1b8d6bf2192cb26e0a55ff3091e6bd19
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20261105195738
 
 Name:           hermes-agent-desktop
 Version:        0.23.0^%{gitdate}git%{shortcommit}
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
@@ -44,6 +46,10 @@ Requires:       libcups.so.2()(64bit)
 Requires:       mesa-libgbm
 Requires:       libdrm.so.2()(64bit)
 Requires:       hicolor-icon-theme
+# Optional system playback fallback, used by some Electron paths; RPM Fusion
+# or Fedora's ffmpeg may provide it.
+Recommends:     ffmpeg
+Recommends:     ffmpeg-libs
 Requires(post): gtk-update-icon-cache
 Requires(postun): gtk-update-icon-cache
 
