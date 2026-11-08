@@ -832,9 +832,9 @@ def hunt_chroot_docs():
     if releases:
         stable = max(int(x) for x in releases)
         for n in sorted(copr_nums):
-            if n < stable - 1:
-                findings.append(("docs", "F%d chroot is older than supported F%d/F%d"
-                                 % (n, stable - 1, stable)))
+            if n < stable - 2:
+                findings.append(("docs", "F%d chroot is past the N-2 support window (supported: F%d..F%d)"
+                                 % (n, stable - 2, stable)))
     summary = "%d chroots vs README [%s], %d findings" % (
         len(roots), ",".join(str(x) for x in sorted(doc_nums)) + ("+rawhide" if doc_rawhide else ""),
         len(findings))
