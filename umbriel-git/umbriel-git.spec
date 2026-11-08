@@ -111,7 +111,7 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^%{gitdate}git%{shortcommit}-2
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261108145135git4c11989-2
 - Drop duplicate unfloored pkgconfig(libdisplay-info) (kept the >= 0.3.0 floored line)
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261108145135git4c11989-1
 - Nightly sync with upstream main branch (Commit: 4c11989)
