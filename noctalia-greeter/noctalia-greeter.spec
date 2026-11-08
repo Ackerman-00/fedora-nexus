@@ -4,7 +4,7 @@
 
 Name:           noctalia-greeter
 Version:        1.7.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 License:        MIT AND Apache-2.0
@@ -18,15 +18,12 @@ Source2:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b27
 
 BuildRequires:  meson
 BuildRequires:  gcc-c++
-BuildRequires:  greetd
-BuildRequires:  dbus
-BuildRequires:  polkit
 BuildRequires:  diffutils
 BuildRequires:  stb_image_resize2-devel
 BuildRequires:  libinput-devel
 BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20
 BuildRequires:  pkgconfig(wayland-scanner)
-BuildRequires:  mesa-libGLES-devel
+BuildRequires:  pkgconfig(glesv2)
 BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(cairo-ft)
 BuildRequires:  pkgconfig(egl)
@@ -52,6 +49,7 @@ BuildRequires:  pkgconfig(wayland-server)
 BuildRequires:  pkgconfig(xkbcommon)
 
 Requires:       dbus
+Requires:       polkit
 Requires:       /usr/bin/dbus-run-session
 Requires:       greetd
 Requires:       wlroots >= 0.20
@@ -120,5 +118,7 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261108031608git74dd931-2
+- Drop unused BuildRequires greetd/dbus/polkit (no build- or check-time reference in meson.build or tests/); use pkgconfig(glesv2) instead of virtual mesa-libGLES-devel; add Requires: polkit (pkexec path for noctalia-greeter-apply-appearance via the shipped .policy)
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261108031608git74dd931-1
 - Nightly sync with upstream main branch (Commit: 74dd931)
