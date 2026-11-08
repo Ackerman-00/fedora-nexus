@@ -3,11 +3,16 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        3.20261107git1d07e31%{?dist}
+Release:        4.20261107git1d07e31%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
 Source0:        https://github.com/LadybirdBrowser/ladybird/archive/%{commit}.tar.gz
+Source1:        harfbuzz-overlay-portfile.cmake
+Source2:        harfbuzz-overlay-vcpkg.json
+Source3:        harfbuzz-overlay-fix-win32-build.patch
+Source4:        harfbuzz-overlay-config.cmake.in
+Source5:        harfbuzz-overlay-usage
 
 BuildRequires:  autoconf-archive
 BuildRequires:  autoconf
@@ -49,11 +54,15 @@ Ladybird browser built from the git master branch (unstable).
 
 %prep
 %autosetup -n ladybird-%{commit}
-# harfbuzz port links with C driver under RPM -fexceptions (DW.ref personality refs); link flags in triplet user-variables reach all vcpkg ports
-printf '%s\n' 'set(VCPKG_C_LINK_FLAGS "-lstdc++")' 'set(VCPKG_CXX_LINK_FLAGS "-lstdc++")' > Meta/CMake/vcpkg/user-variables.cmake
+# harfbuzz port: C driver link under -fexceptions needs libstdc++ (DW.ref personality); overlay adds -Dwith_libstdcxx=true
+mkdir -p Meta/CMake/vcpkg/overlay-ports/harfbuzz
+cp -p %{SOURCE1} Meta/CMake/vcpkg/overlay-ports/harfbuzz/portfile.cmake
+cp -p %{SOURCE2} Meta/CMake/vcpkg/overlay-ports/harfbuzz/vcpkg.json
+cp -p %{SOURCE3} Meta/CMake/vcpkg/overlay-ports/harfbuzz/fix-win32-build.patch
+cp -p %{SOURCE4} Meta/CMake/vcpkg/overlay-ports/harfbuzz/harfbuzzConfig.cmake.in
+cp -p %{SOURCE5} Meta/CMake/vcpkg/overlay-ports/harfbuzz/usage
 
 %build
-export LDFLAGS="$LDFLAGS -lstdc++"
 python3 Meta/ladybird.py build --preset Release
 
 %install
@@ -69,6 +78,8 @@ python3 Meta/ladybird.py install --preset Release
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-4.20261107git1d07e31
+- Overlay harfbuzz port: -Dwith_libstdcxx=true links the port's libharfbuzz with the C++ driver; triplet VCPKG_*_LINK_FLAGS never reached the port's meson link (11285527) and global -fno-exceptions breaks cpptrace (11285502)
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-3.20261107git1d07e31
 - Fix vcpkg harfbuzz link via triplet VCPKG_*_LINK_FLAGS (RPM -fexceptions DW.ref needs libstdc++; env LDFLAGS is stripped by vcpkg, triplet flags reach ports; global -fno-exceptions rejected, it breaks cpptrace)
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-2.20261107git1d07e31

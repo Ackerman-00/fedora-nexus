@@ -157,7 +157,7 @@ If the agent skips the dependency table, the job fails and the next run retries 
   advisory's own `ranges` events (`introduced` / `fixed` / `last_affected`)
   from `v1/vulns/<id>` before calling a package affected, and confirm the name
   exists in the ecosystem's registry first so a typo cannot read as clean.
-- vcpkg strips `LDFLAGS` env but forwards triplet `VCPKG_C/CXX_LINK_FLAGS` and meson reads `CFLAGS/CXXFLAGS` env (found 2026-11-08). A spec `%build` `export LDFLAGS` never reaches a meson port; set the triplet link flags (ladybird `user-variables.cmake`) instead. A global `-fno-exceptions` dodge breaks cpptrace, which needs exceptions.
+- vcpkg strips `LDFLAGS` env for ports. Triplet `VCPKG_C/CXX_LINK_FLAGS` do NOT reach a meson port's shared-library link either (ladybird harfbuzz failed at 11285527 with them); env CFLAGS/CXXFLAGS do reach the port's compile. A global `-fno-exceptions` breaks cpptrace, which needs exceptions. The proven fix for a port whose C++ TUs must link with the C++ driver under Fedora's `-fexceptions` is an overlay port passing `-Dwith_libstdcxx=true` (ladybird `ladybird-unstable/harfbuzz-overlay-portfile.cmake`, vcpkg builtin-baseline 20ceb8adbf override; verified 2026-11-08: libharfbuzz then links with NEEDED libstdc++.so.6).
 
 ### Check criteria that produce false failures (found 2026-10-06)
 
