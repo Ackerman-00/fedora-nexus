@@ -184,6 +184,7 @@ def normalize(v):
     v = re.sub(r"^[vV]", "", v)
     v = re.sub(r"\^.*$", "", v)
     v = re.sub(r"~.*$", "", v)
+    v = re.sub(r"^\d+:", "", v)
     v = re.sub(r"\+[a-zA-Z0-9._-]+$", "", v)
     v = re.sub(r"-([0-9]+)$", "", v)
     return v.lower()
@@ -3401,7 +3402,8 @@ def check_rpm_dependencies(root, repo_type):
                 br_missing.append("RPM323: Requires:%s looks like BuildRequires" % r)
         if ("chrome-sandbox" in txt
                 and not re.search(r"%attr\(\s*4755\s*,\s*root\s*,\s*root\s*\)[^\n]*chrome-sandbox", txt)
-                and not re.search(r"^\s*(?:rm|rm -f)\b[^\n]*chrome-sandbox", txt, re.M)):
+                and not re.search(r"^\s*(?:rm|rm -f)\b[^\n]*chrome-sandbox", txt, re.M)
+                and not re.search(r"^%exclude\b[^\n]*chrome-sandbox", txt, re.M)):
             br_missing.append("RPM-sandbox: chrome-sandbox installed without %attr(4755, root, root)")
         if not has_rpmspec:
             status = "deps-unverified (rpmspec not installed on runner)"
