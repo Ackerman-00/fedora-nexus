@@ -1,12 +1,12 @@
-%global commit          4c11989d3adef09e97645c5265265d0d2345e14e
+%global commit          d3bff0fb2458ede9726d0194554a159241cc856c
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261108145135
+%global gitdate         20261108194308
 
 %global _lto_cflags %{nil}
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -111,7 +111,5 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261108145135git4c11989-2
-- Drop duplicate unfloored pkgconfig(libdisplay-info) (kept the >= 0.3.0 floored line)
-* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261108145135git4c11989-1
-- Nightly sync with upstream main branch (Commit: 4c11989)
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261108194308gitd3bff0f-1
+- Nightly sync with upstream main branch (Commit: d3bff0f)
