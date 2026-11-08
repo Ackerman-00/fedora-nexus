@@ -4,7 +4,7 @@
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        XDG Desktop Portal backend for Umbriel
 
 License:        MIT
@@ -28,6 +28,8 @@ BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(tomlplusplus)
 BuildRequires:  pkgconfig(nlohmann_json)
 BuildRequires:  pkgconfig(gtk4) >= 4.12
+BuildRequires:  pkgconfig(glib-2.0)
+BuildRequires:  pkgconfig(gio-2.0)
 # tests=true links tests/input_capture_client.cpp against libei >= 1.3
 BuildRequires:  pkgconfig(libei-1.0) >= 1.3
 
@@ -68,5 +70,7 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %config(noreplace) %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^%{gitdate}git%{shortcommit}-2
+- Add explicit pkgconfig(glib-2.0)/pkgconfig(gio-2.0) BuildRequires (gnome.compile_resources and glib-unix.h)
 * Fri Nov 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261106143557git5695142-1
 - Nightly sync with upstream main branch (Commit: 5695142)
