@@ -1,0 +1,4 @@
+addFilter("W: no-documentation")
+addFilter("E: missing-dependency-on")
+addFilter("W: files-duplicate")
+addFilter("W: hardcoded-library-path")
