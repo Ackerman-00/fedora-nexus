@@ -3,7 +3,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        4.20261107git1d07e31%{?dist}
+Release:        5.20261107git1d07e31%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -78,6 +78,8 @@ python3 Meta/ladybird.py install --preset Release
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-5.20261107git1d07e31
+- Rebuild after 11285658 failed at the AK link (undefined mi_* refs); failure not reproducible in isolated repro (AK full link with exact flags+DSO order passes; vcpkg-installed libmimalloc-secure exports mi_heap_malloc/mi_malloc WEAK DEFAULT)
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-4.20261107git1d07e31
 - Overlay harfbuzz port: -Dwith_libstdcxx=true links the port's libharfbuzz with the C++ driver; triplet VCPKG_*_LINK_FLAGS never reached the port's meson link (11285527) and global -fno-exceptions breaks cpptrace (11285502)
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-3.20261107git1d07e31
