@@ -3,23 +3,27 @@
 
 Name:           wlroots
 Version:        0.20.2
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        A modular Wayland compositor library
 
 %global tag     %(v='%{version}'; echo "${v//'~'/-}")
 
 License:        MIT
 URL:            https://gitlab.freedesktop.org/wlroots/wlroots
-Source0:        %{url}/-/archive/%{tag}/%{name}-%{tag}.tar.gz
+Source0:        %{url}/-/releases/%{tag}/downloads/%{name}-%{tag}.tar.gz
+Source1:        %{url}/-/releases/%{tag}/downloads/%{name}-%{tag}.tar.gz.sig
+Source2:        https://emersion.fr/.well-known/openpgpkey/hu/dj3498u4hyyarh35rkjfnghbjxug6b19#/gpgkey-0FDE7BE0E88F5E48.gpg
+Source3:        examples.meson.build
 
 Patch:          Revert-layer-shell-error-on-0-dimension-without-anch.patch
 
 BuildRequires:  gcc
 BuildRequires:  glslang
+BuildRequires:  gnupg2
 BuildRequires:  meson >= 1.3
 
 BuildRequires:  (pkgconfig(libliftoff) >= %{liftoff_ver} with pkgconfig(libliftoff) < 0.6)
-BuildRequires:  pkgconfig(egl) >= 1.5
+BuildRequires:  pkgconfig(egl)
 BuildRequires:  pkgconfig(gbm) >= 21.1
 BuildRequires:  pkgconfig(glesv2)
 BuildRequires:  pkgconfig(hwdata)
@@ -59,11 +63,15 @@ Requires:       libliftoff%{?_isa} >= %{liftoff_ver}
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} == %{version}-%{release}
 Recommends:     pkgconfig(xcb-icccm)
+Suggests:       gcc
+Suggests:       meson >= 0.58.0
+Suggests:       pkgconfig(wayland-egl)
 
 %description    devel
 Development files for %{name}.
 
 %prep
+%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
 %autosetup -N -n %{name}-%{tag}
 %autopatch -p1 -M99
 
@@ -77,6 +85,8 @@ MESON_OPTIONS=(
 
 %install
 %{meson_install}
+install -pm0644 -Dt '%{buildroot}/%{_pkgdocdir}/examples' examples/*.[ch]
+install -pm0644 -D '%{SOURCE3}' '%{buildroot}/%{_pkgdocdir}/examples/meson.build'
 
 %check
 %{meson_test}
@@ -87,10 +97,13 @@ MESON_OPTIONS=(
 %{_libdir}/libwlroots-%{abi_ver}.so
 
 %files  devel
+%doc %{_pkgdocdir}/examples
 %{_includedir}/wlroots-%{abi_ver}/wlr
 %{_libdir}/pkgconfig/wlroots-%{abi_ver}.pc
 
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-10
+- Verify upstream signature: releases tarball + .sig + emersion key via %{gpgverify} (same trust model as Fedora dist-git). Examples sources shipped in -devel %doc; Suggests gcc/meson/wayland-egl for examples; drop unjustified pkgconfig(egl) >= 1.5 floor (only upstream's examples meson.build declares it; the build gate is the EGL_EGLEXT_VERSION header check)
 * Thu Oct 22 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-9
 - Floor pkgconfig(egl) at 1.5, the version meson.build declares
 * Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-8
