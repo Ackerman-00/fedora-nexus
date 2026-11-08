@@ -9,12 +9,13 @@
 
 Name:           heroic-games-launcher
 Version:        2.22.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Open source launcher for GOG, Epic, and Amazon Games (Nexus Optimized)
 
 License:        GPL-3.0-only AND MIT AND BSD-3-Clause
 URL:            https://github.com/Heroic-Games-Launcher/HeroicGamesLauncher
 
+# sha256: c346ce64b5f29a53367c8fd701d061b9a3a83a7b5d53135a31a81147a36951e4
 Source0:        %{url}/releases/download/v%{version}/Heroic-%{version}-linux-x86_64.rpm
 Source1:        %{url}/raw/v%{version}/COPYING
 
@@ -96,6 +97,8 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/COPYING
 %attr(4755, root, root) /opt/Heroic/chrome-sandbox
 
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.4-3
+- Pin Source0 sha256 (hunt pins finding); update.sh now recomputes it on bump and wipes %changelog on version bump per policy
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.22.4-2
 - Ship the upstream GPL-3.0 COPYING text (Source1, same v2.22.4 tag as
   Source0); the vendored upstream RPM carries no license file.
