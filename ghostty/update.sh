@@ -21,7 +21,6 @@ if [ -z "$LATEST_TAG" ]; then
 fi
 
 GHOSTTY_VERSION=$(echo "$LATEST_TAG" | cut -d- -f1)
-DEB_VER="${GHOSTTY_VERSION}-0.${LATEST_TAG##*-}"
 
 CURRENT_TAG=$(grep -E "^%global ppatag" "$SPEC_FILE" | awk '{print $3}')
 CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
@@ -33,10 +32,21 @@ fi
 
 echo "Update found: $CURRENT_TAG -> $LATEST_TAG"
 
-DEB_URL="https://github.com/$GITHUB_REPO/releases/download/$LATEST_TAG/ghostty_${DEB_VER}_amd64_24.04.deb"
-echo "  -> [CHECK] Verifying $DEB_URL"
-if ! curl --output /dev/null --silent --location --head --fail "$DEB_URL"; then
-    echo "  -> [SKIP] Release assets for $LATEST_TAG are not published (yet). Keeping $CURRENT_TAG."
+DEB_VER="${GHOSTTY_VERSION}-0.${LATEST_TAG##*-}"
+DEB_URL=""
+DEB_FILE=""
+for SUITE in 24.04 trixie forky 26.04 26.10; do
+    CAND="ghostty_${DEB_VER}_amd64_${SUITE}.deb"
+    URL="https://github.com/$GITHUB_REPO/releases/download/$LATEST_TAG/$CAND"
+    echo "  -> [CHECK] $URL"
+    if curl --output /dev/null --silent --location --head --fail "$URL"; then
+        DEB_URL="$URL"
+        DEB_FILE="$CAND"
+        break
+    fi
+done
+if [ -z "$DEB_URL" ]; then
+    echo "  -> [SKIP] No amd64 deb asset published for $LATEST_TAG yet. Keeping $CURRENT_TAG."
     exit 0
 fi
 
@@ -48,6 +58,19 @@ sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
 sed -i -E "s/^%global ppatag.*/%global ppatag $LATEST_TAG/" "$SPEC_FILE"
 sed -i -E "s/^%global debver.*/%global debver $DEB_VER/" "$SPEC_FILE"
+sed -i -E "s/^%global debfile.*/%global debfile $DEB_FILE/" "$SPEC_FILE"
+
+echo "  -> [FETCH] Downloading $DEB_FILE to hash it"
+DL_DIR=$(mktemp -d) || exit 1
+if ! curl -sL --fail -o "$DL_DIR/ghostty.deb" "$DEB_URL"; then
+    echo "FATAL: download of $DEB_URL failed"
+    rm -rf "$DL_DIR"
+    exit 1
+fi
+SHA256=$(sha256sum "$DL_DIR/ghostty.deb" | awk '{print $1}')
+rm -rf "$DL_DIR"
+sed -i -E "s/^# sha256: .*/# sha256: $SHA256/" "$SPEC_FILE"
+echo "  -> [PIN] $SHA256"
 
 DATE=$(LC_ALL=C date +"%a %b %d %Y")
 sed -i '/^%changelog/,$d' "$SPEC_FILE"

@@ -5,18 +5,20 @@
 %global __requires_exclude ^libgtk4-layer-shell\.so.*$
 %global __provides_exclude ^libgtk4-layer-shell\.so.*$
 
-%global ghostty_version 1.3.1
-%global ppatag 1.3.1-0-ppa2
-%global debver 1.3.1-0.ppa2
+%global ghostty_version 1.4.0
+%global ppatag 1.4.0-0-ppa2
+%global debver 1.4.0-0.ppa2
+%global debfile ghostty_1.4.0-0.ppa2_amd64_trixie.deb
 
 Name:           ghostty
 Version:        %{ghostty_version}
-Release:        4%{?dist}
+Release:        1%{?dist}
 Summary:        A fast, feature-rich, and cross-platform terminal emulator
 
 License:        MIT
 URL:            https://github.com/mkasberg/ghostty-ubuntu
-Source0:        %{url}/releases/download/%{ppatag}/ghostty_%{debver}_amd64_24.04.deb
+# sha256: 82cae2f554a6a666ac9a79095f32d1e9f100a000aa4ba5d45cfea22e1e16c2b6
+Source0:        %{url}/releases/download/%{ppatag}/%{debfile}
 Source1:        https://raw.githubusercontent.com/ghostty-org/ghostty/v%{ghostty_version}/LICENSE
 
 ExclusiveArch:  x86_64
@@ -36,6 +38,8 @@ Requires:       freetype
 Requires:       glib2
 Requires:       gtk4
 Requires:       harfbuzz
+Requires:       libglvnd-egl
+Requires:       libwayland-client
 Requires:       oniguruma
 Requires:       libX11
 
@@ -68,6 +72,10 @@ cp -a usr/lib/libghostty-vt.so.0.1.0 %{buildroot}%{_libdir}/libghostty-vt.so.0.1
 ln -s libghostty-vt.so.0.1.0 %{buildroot}%{_libdir}/libghostty-vt.so.0
 ln -s libghostty-vt.so.0.1.0 %{buildroot}%{_libdir}/libghostty-vt.so
 
+install -d -m 0755 %{buildroot}%{_includedir}
+cp -a usr/include/ghostty %{buildroot}%{_includedir}/ghostty
+cp -a usr/include/gtk4-layer-shell.h usr/include/gtk4-session-lock.h %{buildroot}%{_includedir}/
+
 install -d -m 0755 %{buildroot}%{_userunitdir}
 cp -a usr/lib/systemd/user/app-com.mitchellh.ghostty.service %{buildroot}%{_userunitdir}/
 
@@ -80,6 +88,9 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %files
 %license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/ghostty
+%{_includedir}/ghostty/
+%{_includedir}/gtk4-layer-shell.h
+%{_includedir}/gtk4-session-lock.h
 %{_libdir}/libgtk4-layer-shell.so
 %{_libdir}/libghostty-vt.so
 %{_libdir}/libghostty-vt.so.0
@@ -100,26 +111,14 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/nautilus-python/extensions/ghostty.py
 %{_datadir}/nvim/
 %{_datadir}/pkgconfig/libghostty-vt.pc
+%{_datadir}/pkgconfig/libghostty-vt-static.pc
 %{_datadir}/terminfo/
 %{_datadir}/vim/
 %{_datadir}/zsh/vendor-completions/_ghostty
 
 %changelog
-* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.3.1-4
-- Ship the upstream MIT LICENSE (Source1, pinned to ghostty v1.3.1); the
-  PPA deb payload carries no license text.
-
-* Sat Sep 05 2026 Ackerman-00 <quietcraft@gmail.com> - 1.3.1-3
-- Fix __provides_exclude for the bundled libgtk4-layer-shell.so: rpm matches
-  provides-filters against the decorated `libgtk4-layer-shell.so()(64bit)`
-  form, so `\.so$` never matched and the published RPM advertised a system
-  soname it must not own (same hijack class as helium-browser/libvulkan).
-  Same upstream .deb, spec-only fix.
-* Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 1.3.1-2
-- Fix COPR build (10850831): add BuildRequires: systemd-rpm-macros so
-  %{_userunitdir} expands, and create %{_datadir} before copying usr/share/*
-
-* Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 1.3.1-1
-- Initial packaging: repackage the official community-built Ubuntu .deb of
-  ghostty 1.3.1 (mkasberg/ghostty-ubuntu PPA release 1.3.1-0-ppa2, noble
-  build) for Fedora, following the repo's .deb repackaging pattern
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.0-1
+- Update to upstream 1.4.0 (PPA release 1.4.0-0-ppa2, trixie amd64 deb; the
+  24.04 asset is no longer published for 1.4.0); pin Source0 sha256; add
+  Requires: libglvnd-egl (libEGL.so.1) and libwayland-client (libwayland-client.so.0)
+  per readelf NEEDED of the shipped binary
