@@ -3,7 +3,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        2.20261107git1d07e31%{?dist}
+Release:        3.20261107git1d07e31%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -49,11 +49,10 @@ Ladybird browser built from the git master branch (unstable).
 
 %prep
 %autosetup -n ladybird-%{commit}
+# harfbuzz port links with C driver under RPM -fexceptions (DW.ref personality refs); link flags in triplet user-variables reach all vcpkg ports
+printf '%s\n' 'set(VCPKG_C_LINK_FLAGS "-lstdc++")' 'set(VCPKG_CXX_LINK_FLAGS "-lstdc++")' > Meta/CMake/vcpkg/user-variables.cmake
 
 %build
-# RPM -fexceptions emits DW.ref personality refs the vcpkg ports link with C driver (Fedora harfbuzz uses -fno-exceptions too)
-export CFLAGS="$CFLAGS -fno-exceptions"
-export CXXFLAGS="$CXXFLAGS -fno-exceptions"
 export LDFLAGS="$LDFLAGS -lstdc++"
 python3 Meta/ladybird.py build --preset Release
 
@@ -70,6 +69,8 @@ python3 Meta/ladybird.py install --preset Release
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-3.20261107git1d07e31
+- Fix vcpkg harfbuzz link via triplet VCPKG_*_LINK_FLAGS (RPM -fexceptions DW.ref needs libstdc++; env LDFLAGS is stripped by vcpkg, triplet flags reach ports; global -fno-exceptions rejected, it breaks cpptrace)
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-2.20261107git1d07e31
 - Build vcpkg ports with -fno-exceptions (RPM -fexceptions emits DW.ref.__gxx_personality_v0 the ports link fails on, same fix as Fedora harfbuzz)
 * Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-1.20261107git1d07e31
