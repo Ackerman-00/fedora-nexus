@@ -83,6 +83,7 @@ sudo dnf install <package-name>
 | `hellwal` | Pywal-like color palette generator, but faster and in C | Stable |
 | `helium-browser` | Private, fast, and honest web browser | Stable |
 | `heroic-games-launcher` | Open source launcher for GOG, Epic, and Amazon Games | Stable |
+| `hermes-agent-desktop` | Native desktop shell for Hermes Agent (Git snapshot) | Git |
 | `lazyvim-git` | Neovim setup for lazy people (Git Snapshot) | Git |
 | `libcava` | Fork of CAVA built as a shared library | Stable |
 | `ladybird-unstable` | Ladybird browser built from git master (unstable) | Git |
