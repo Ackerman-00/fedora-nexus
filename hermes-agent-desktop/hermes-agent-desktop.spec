@@ -1,11 +1,13 @@
 %global debug_package %{nil}
+# bundled sonames stay private
+%global __provides_exclude_from ^/opt/HermesDesktop/.*$
 %global commit          2bd378ed1b8d6bf2192cb26e0a55ff3091e6bd19
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 %global gitdate         20261105195738
 
 Name:           hermes-agent-desktop
 Version:        0.23.0^%{gitdate}git%{shortcommit}
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
@@ -118,6 +120,8 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261105195738git2bd378e-4
+- Exclude bundled /opt/HermesDesktop sonames (libvulkan.so.1 hijack of wlroots installs)
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261105195738git2bd378e-3
 - Ship the upstream MIT LICENSE under %license (hunt licenses finding); Release 2 -> 3, NVR change required for COPR to publish
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261105195738git2bd378e-2
