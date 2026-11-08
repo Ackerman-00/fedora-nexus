@@ -9,15 +9,16 @@
 
 Name:           hermes-agent-desktop
 Version:        0.23.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
 Source0:        https://github.com/NousResearch/hermes-agent/archive/%{commit}.tar.gz
-# sha256: 6170b2d474e1c626f43cff3adc118df9fe3b573258a4fc3d850c8dbc6b079bbd
+# sha256: 927f3f0e3496e03b5a10781e4555f696ff354d75595c668c622f1ea2e22d05fc
 Source1:        https://nodejs.org/download/release/v26.12.1/node-v26.12.1-linux-x64.tar.xz
-# sha256: 402f7045b1e0587acb1542f18d38afbccb6babf3c7451394e6fb3d9f0160c6ca
+# sha256: 6170b2d474e1c626f43cff3adc118df9fe3b573258a4fc3d850c8dbc6b079bbd
 Source2:        https://registry.npmjs.org/@pnpm/exe.linux-x64/-/exe.linux-x64-12.15.0.tgz
+# sha256: 402f7045b1e0587acb1542f18d38afbccb6babf3c7451394e6fb3d9f0160c6ca
 Source3:        hermes-agent-desktop-rpmlintrc
 
 ExclusiveArch:  x86_64
@@ -130,6 +131,8 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261108143942git3e82260-2
+- Fix shifted sha256 pins (Source0/1 were one row off; add Source2 pnpm pin)
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261108143942git3e82260-1
 - Update to upstream snapshot 3e82260 (2026-11-08)
 - Build with pnpm 12.15.0 from upstream pm/lock.json (upstream refuses npm installs since 7062229); node 26.12.1 per pm/lock.json; desktop bundle via run-electron-builder.mjs --linux --x64 --dir
