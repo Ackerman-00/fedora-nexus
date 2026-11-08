@@ -6,7 +6,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -33,7 +33,6 @@ BuildRequires:  pkgconfig(pixman-1) >= 0.43.0
 %if 0%{?fedora} >= 44
 BuildRequires:  pkgconfig(libdisplay-info) >= 0.3.0
 %else
-BuildRequires:  pkgconfig(libdisplay-info)
 %endif
 BuildRequires:  pkgconfig(libdrm) >= 2.4.129
 BuildRequires:  pkgconfig(cairo)
@@ -112,5 +111,7 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^%{gitdate}git%{shortcommit}-2
+- Drop duplicate unfloored pkgconfig(libdisplay-info) (kept the >= 0.3.0 floored line)
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261108145135git4c11989-1
 - Nightly sync with upstream main branch (Commit: 4c11989)
