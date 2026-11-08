@@ -1,6 +1,6 @@
-%global commit          c6b4d08dd671065757ed0571de5b777f236ca157
+%global commit          de0ddf0ce09e68e84f5b989d736f9d9f522ee8f5
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261107231102
+%global gitdate         20261108094636
 
 %global _lto_cflags %{nil}
 
@@ -208,5 +208,5 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_libdir}/pkgconfig/quarrel-0.1.pc
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261107231102gitc6b4d08-1
-- Nightly sync with upstream main branch (Commit: c6b4d08)
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261108094636gitde0ddf0-1
+- Nightly sync with upstream main branch (Commit: de0ddf0)
