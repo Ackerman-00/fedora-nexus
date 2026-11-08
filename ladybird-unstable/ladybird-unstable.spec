@@ -4,7 +4,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        6.20261107git1d07e31%{?dist}
+Release:        7.20261107git1d07e31%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -29,6 +29,7 @@ BuildRequires:  libdrm-devel
 BuildRequires:  liberation-sans-fonts
 BuildRequires:  libglvnd-devel
 BuildRequires:  libtool
+BuildRequires:  lld
 BuildRequires:  nasm
 BuildRequires:  ncurses-devel
 BuildRequires:  ninja-build
@@ -64,21 +65,36 @@ cp -p %{SOURCE4} Meta/CMake/vcpkg/overlay-ports/harfbuzz/harfbuzzConfig.cmake.in
 cp -p %{SOURCE5} Meta/CMake/vcpkg/overlay-ports/harfbuzz/usage
 
 %build
-python3 Meta/ladybird.py build --preset Release
+python3 Meta/ladybird.py vcpkg --preset Release
+cmake --preset Release -S . -B Build/release -DBUILD_TESTING=OFF -DENABLE_INSTALL_FREEDESKTOP_FILES=OFF -DCMAKE_INSTALL_PREFIX=/opt/ladybird -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=OFF
+cmake --build Build/release --parallel %{?_smp_build_ncpus}
 
 %install
-python3 Meta/ladybird.py install --preset Release
+DESTDIR=%{buildroot} cmake --install Build/release --component ladybird_Runtime
+DESTDIR=%{buildroot} cmake --install Build/release --component Lagom_Runtime
+DESTDIR=%{buildroot} cmake --install Build/release --component ladybird_SystemIntegration
+find Build/release/vcpkg_installed/*-linux-dynamic/lib -maxdepth 1 -name '*.so*' -exec cp -a {} %{buildroot}/opt/ladybird/lib/ \;
+chmod -R u+w %{buildroot}/opt/ladybird
 
 %files
 %license LICENSE
-%{_bindir}/Ladybird
-%dir %{_datadir}/ladybird
-%{_datadir}/ladybird/*
+/opt/ladybird
+%{_bindir}/ladybird
+%{_datadir}/applications/org.ladybird.Ladybird.desktop
+%{_datadir}/dbus-1/services/org.ladybird.Ladybird.service
+%{_datadir}/icons/hicolor/scalable/apps/org.ladybird.Ladybird.svg
+%{_metainfodir}/org.ladybird.Ladybird.metainfo.xml
 
 %post
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
+%postun
+gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
+
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-7.20261107git1d07e31
+- Fix COPR timeout (18000s, build 11287677 died at 3536/3536): build with -DBUILD_TESTING=OFF so test targets are never built, install upstream's Linux package layout (prefix /opt/ladybird, ladybird_Runtime+Lagom_Runtime+ladybird_SystemIntegration components), bundle the vcpkg shared libraries into /opt/ladybird/lib, and set -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=OFF so installed RUNPATHs are $ORIGIN-based; add lld (picked automatically by ladybird next to gcc for faster links)
+- Spec previously installed to the cmake default prefix (/usr/local) with no DESTDIR and shipped only /usr/bin/Ladybird and share/ladybird; the real layout is /opt/ladybird plus /usr/bin/ladybird and freedesktop files (found by reading UI/cmake/InstallRules.cmake in Source0)
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-6.20261107git1d07e31
 - Drop LTO (_lto_cflags %{nil}): AK final link fails in COPR mock with undefined mi_heap_malloc/mi_malloc in ltrans partitions; deterministic across two builds (11285658, 11285927) while the same link passes in an isolated repro - partition-assignment-dependent weak-DSO resolution under LTO
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-5.20261107git1d07e31
