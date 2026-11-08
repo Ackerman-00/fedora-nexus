@@ -1,23 +1,23 @@
 # free-model cascade ranking - strongest first, in tiers
 # authority: opencode curated list > live catalog > changelog > published scores
 
-# tier 1 - user-selected leaders (2026-11-07): best published capability first
+# tier 1 - user-selected leader (checked 2026-11-08)
 inkling-2-small-free
+
+# tier 2 - proven incumbents and strong families (checked 2026-11-08)
 crouton-alpha-free
 iceman-free
+deepseek-v4.1-flash-free
 flint-40b-free
 
-# tier 2 - proven fallbacks (long track record in this repo)
-deepseek-v4.1-flash-free
+# tier 3 - unscored free models (checked 2026-11-08)
 mimo-v2.6-flash-free
-
-# tier 3 - curated free models
 beam-free
 big-pickle
-nemotron-3.5-super-vl-free
 
-# tier 4 - last resort
+# tier 4 - limited data (checked 2026-11-08)
+nemotron-3.5-super-vl-free
 nemotron-3.5-lightning-free
 
-# vetoed: glm-5.3-flash-free, jev-1.13-free
-# retired: minimax-m3.1-flash-free
+# vetoed by owner (relay 2026-10-22: "stay owner-vetoed in EXCLUDE"): glm-5.3-flash-free (published coding 71.5, howmanytoken 2026-11-07), jev-1.13-free (probabilistic classifier, not a coding model)
+# retired 2026-10-20+: minimax-m3.1-flash-free, Pulse Alpha Free (deprecated 2026-11-06)
