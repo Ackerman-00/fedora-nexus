@@ -1,9 +1,10 @@
 %global debug_package %{nil}
+%global _lto_cflags %{nil}
 %global commit         1d07e318d8bcf51ca3f8b75980fbea15c0edb37c
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        5.20261107git1d07e31%{?dist}
+Release:        6.20261107git1d07e31%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -78,6 +79,8 @@ python3 Meta/ladybird.py install --preset Release
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-6.20261107git1d07e31
+- Drop LTO (_lto_cflags %{nil}): AK final link fails in COPR mock with undefined mi_heap_malloc/mi_malloc in ltrans partitions; deterministic across two builds (11285658, 11285927) while the same link passes in an isolated repro - partition-assignment-dependent weak-DSO resolution under LTO
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-5.20261107git1d07e31
 - Rebuild after 11285658 failed at the AK link (undefined mi_* refs); failure not reproducible in isolated repro (AK full link with exact flags+DSO order passes; vcpkg-installed libmimalloc-secure exports mi_heap_malloc/mi_malloc WEAK DEFAULT)
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-4.20261107git1d07e31
