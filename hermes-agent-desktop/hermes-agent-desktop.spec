@@ -126,6 +126,8 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
+* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261105195738git2bd378e-5
+- Exclude bundled /opt/HermesDesktop sonames from RPM autorequires (e4fae0c)
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261105195738git2bd378e-4
 - Exclude bundled /opt/HermesDesktop sonames (libvulkan.so.1 hijack of wlroots installs)
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261105195738git2bd378e-3
