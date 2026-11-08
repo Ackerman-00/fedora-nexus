@@ -30,8 +30,8 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | freebuff | LICENSE | 0.2.36 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | freebuff-desktop | Freebuff-0.0.201-linux-amd64.deb | 0.0.201 | 0.0.201 | **OK** | deb pkg=freebuff (control control.tar.gz) \| pinned 0.0.201 \| internal 0.0.201 |
 | freebuff-desktop | freebuff-desktop-rpmlintrc | 0.0.201 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| ghostty | ghostty_1.3.1-0.ppa2_amd64_24.04.deb | 1.3.1 | 1.3.1-0~ppa2 | **OK** | deb pkg=ghostty (control control.tar.zst) \| pinned 1.3.1 \| internal 1.3.1-0~ppa2 |
-| ghostty | LICENSE | 1.3.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
+| ghostty | ghostty_1.4.0-0.ppa2_amd64_trixie.deb | 1.4.0 | 1.4.0-0~ppa2 | **OK** | deb pkg=ghostty (control control.tar.xz) \| pinned 1.4.0 \| internal 1.4.0-0~ppa2 |
+| ghostty | LICENSE | 1.4.0 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | gpu-screen-recorder | gpu-screen-recorder.git.6.1.7.tar.gz | 6.1.7 | 6.1.7 | **SOURCE-OK** | tar meson.build=6.1.7 (meson.build) \| hash no-checksum-pinned \| weak internal evidence 6.1.7 (not authoritative) |
 | hatter-icon-theme | V4.0.tar.gz | 4.0 | 1.1 | **SOURCE-OK** | tar changelog=1.1 (Hatter-4.0/Building-blocks/Hatter-kde/actions/symbolic/newspaper-symbolic.svg) \| hash no-checksum-pinned \| weak internal evidence 1.1 (not authoritative) |
 | helium-browser | helium-0.21.1.1-x86_64_linux.tar.xz | 0.21.1.1 | 0.21.1.1 | **OK** | tar runtime probe chrome --version: Helium 0.21.1.1 (Chromium 157.0.8103.38) \| pinned 0.21.1.1 \| internal 0.21.1.1 |
@@ -39,7 +39,7 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | helium-browser | LICENSE | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | helium-browser | LICENSE.ungoogled_chromium | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | hellwal | hellwal-1.0.9.tar.gz | 1.0.9 | $(shell | **SOURCE-OK** | tar Makefile=$(shell (hellwal-1.0.9/Makefile) \| hash no-checksum-pinned \| weak internal evidence $(shell (not authoritative) |
-| hermes-agent-desktop | live NousResearch/hermes-agent | 3e82260ba041 | 444f98086893 | **STALE** | live NousResearch/hermes-agent pin 3e82260ba041 vs upstream 444f98086893 |
+| hermes-agent-desktop | live NousResearch/hermes-agent | 856e75808d1d | 856e75808d1d | **OK** | live NousResearch/hermes-agent pin 856e75808d1d vs upstream 856e75808d1d |
 | heroic-games-launcher | Heroic-2.22.4-linux-x86_64.rpm | 2.22.4 | 2.22.4 | **OK** | rpm header heroic=2.22.4-1 (tags NAME/VERSION/RELEASE) \| pinned 2.22.4 \| internal 2.22.4 |
 | heroic-games-launcher | COPYING | 2.22.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | ladybird-unstable | 1d07e318d8bcf51ca3f8b75980fbea15c0edb37c.tar.gz | 0.0.0 | 0.1.0 | **SOURCE-OK** | tar Cargo.toml=0.1.0 (ladybird-1d07e318d8bcf51ca3f8b75980fbea15c0edb37c/AK/Rust/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 0.1.0 (not authoritative) |
@@ -48,7 +48,7 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | ladybird-unstable | harfbuzz-overlay-fix-win32-build.patch | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | ladybird-unstable | harfbuzz-overlay-config.cmake.in | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | ladybird-unstable | harfbuzz-overlay-usage | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| lazyvim-git | live LazyVim/LazyVim | f653596f0aee | f653596f0aee | **OK** | live LazyVim/LazyVim pin f653596f0aee vs upstream f653596f0aee |
+| lazyvim-git | live LazyVim/LazyVim | 5c26fac21fd3 | 5c26fac21fd3 | **OK** | live LazyVim/LazyVim pin 5c26fac21fd3 vs upstream 5c26fac21fd3 |
 | libcava | 1.0.0.tar.gz | 1.0.0 | $(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) | **SOURCE-OK** | tar Makefile.am=$(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) (cava-1.0.0/Makefile.am) \| hash no-checksum-pinned \| weak internal evidence $(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) (not authoritative) |
 | localsend | LocalSend-1.18.2-linux-x86-64.deb | 1.18.2 | 1.18.2+64 | **OK** | deb pkg=localsend (control control.tar.zst) \| pinned 1.18.2 \| internal 1.18.2+64 |
 | localsend | LICENSE | 1.18.2 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
@@ -66,8 +66,8 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | obsidian | obsidian_1.15.0_amd64.deb | 1.15.0 | 1.15.0 | **OK** | deb pkg=obsidian (control control.tar.xz) \| pinned 1.15.0 \| internal 1.15.0 |
 | omnirush-desktop | omnirush-linux-amd64-3.8.2.deb | 3.8.2 | 3.8.2 | **OK** | deb pkg=omnirush.ai (control control.tar.xz) \| pinned 3.8.2 \| internal 3.8.2 |
 | omnirush-desktop | omnirush-desktop-rpmlintrc | 3.8.2 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| opencad-studio | OpenCADStudio-v2026.44-linux-x86_64.AppImage | 2026.44 | 2026.44 | **OK** | AppImage strings 2026.44 (AppRun) \| pinned 2026.44 \| internal 2026.44 |
-| opencad-studio | LICENSE | 2026.44 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
+| opencad-studio | OpenCADStudio-v2026.45-linux-x86_64.AppImage | 2026.45 | 2026.45 | **OK** | AppImage strings 2026.45 (AppRun) \| pinned 2026.45 \| internal 2026.45 |
+| opencad-studio | LICENSE | 2026.45 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | openchamber | OpenChamber-2.7.0-linux-x86_64.AppImage | 2.7.0 | 2.7.0 | **OK** | AppImage 2.7.0 (resources/app.asar) \| pinned 2.7.0 \| internal 2.7.0 |
 | openchamber | LICENSE | 2.7.0 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | opencode-desktop | opencode-desktop-linux-amd64.deb | 2.2.6 | 2.2.6 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.2.6 \| internal 2.2.6 |
@@ -100,7 +100,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | LICENSE | 1.5.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| umbriel-git | live noctalia-dev/umbriel | 4c11989d3ade | c7dda0d8cb0b | **STALE** | live noctalia-dev/umbriel pin 4c11989d3ade vs upstream c7dda0d8cb0b |
+| umbriel-git | live noctalia-dev/umbriel | d3bff0fb2458 | d3bff0fb2458 | **OK** | live noctalia-dev/umbriel pin d3bff0fb2458 vs upstream d3bff0fb2458 |
 | vesktop | vesktop-1.6.9.x86_64.rpm | 1.6.9 | 1.6.9 | **OK** | rpm header vesktop=1.6.9-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.9 \| internal 1.6.9 |
 | vesktop | LICENSE | 1.6.9 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
@@ -108,6 +108,9 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | waypaper | imageio_ffmpeg-0.6.0.tar.gz | 2.9 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | whitesur-icon-theme | 2026-09-10.tar.gz | 2026.09.10 | 1.1 | **SOURCE-OK** | tar changelog=1.1 (WhiteSur-icon-theme-2026-09-10/src/actions/symbolic/newspaper-symbolic.svg) \| hash no-checksum-pinned \| weak internal evidence 1.1 (not authoritative) |
 | wlroots | wlroots-0.20.2.tar.gz | 0.20.2 | >=1.3 | **SOURCE-OK** | tar meson.build=>=1.3 (wlroots-0.20.2/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3 (not authoritative) |
+| wlroots | wlroots-0.20.2.tar.gz.sig | 0.20.2 |  | **OK** | signature/keyring verification material, no teardown applicable |
+| wlroots | gpgkey-0FDE7BE0E88F5E48.gpg | 0.20.2 |  | **OK** | signature/keyring verification material, no teardown applicable |
+| wlroots | examples.meson.build | 0.20.2 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | xcur2png | xcur2png-0.7.1.tar.gz | 0.7.1 | 0.7.1 | **SOURCE-OK** | tar configure.ac=0.7.1 (xcur2png-0.7.1/configure.ac) \| hash hash-OK \| weak internal evidence 0.7.1 (not authoritative) |
 | xdg-desktop-portal-umbriel-git | live noctalia-dev/xdg-desktop-portal-umbriel | 56951426eb99 | 56951426eb99 | **OK** | live noctalia-dev/xdg-desktop-portal-umbriel pin 56951426eb99 vs upstream 56951426eb99 |
 | zen-browser | zen.linux-x86_64.tar.xz | 1.24.1b | 1.24.1b | **OK** | tar application.ini=1.24.1b (zen/application.ini) \| pinned 1.24.1b \| internal 1.24.1b |
@@ -128,7 +131,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | extension-manager | upstream github.com/mjakeman/extension-manager | 0.7.0 | v0.7.0 | **OK** | at upstream latest v0.7.0 [releases/latest] |
 | freebuff | upstream github.com/CodebuffAI/codebuff-community | 0.2.36 | freebuff-v0.2.36 | **OK** | at upstream latest freebuff-v0.2.36 [releases/latest] |
 | freebuff-desktop | upstream github.com/CodebuffAI/codebuff-community | 0.0.201 | freebuff-v0.2.36 | **OK** | at upstream latest freebuff-v0.2.36 [releases/latest] |
-| ghostty | upstream github.com/mkasberg/ghostty-ubuntu | 1.3.1 | 1.4.0-0-ppa2 | **OK** | at upstream latest 1.4.0-0-ppa2 [releases/latest] |
+| ghostty | upstream github.com/mkasberg/ghostty-ubuntu | 1.4.0 | 1.4.0-0-ppa2 | **OK** | at upstream latest 1.4.0-0-ppa2 [releases/latest] |
 | hatter-icon-theme | upstream github.com/Mibea/Hatter | 4.0 | V4.0 | **OK** | at upstream latest V4.0 [releases/latest] |
 | helium-browser | upstream github.com/imputnet/helium-linux | 0.21.1.1 | 0.21.1.1 | **OK** | at upstream latest 0.21.1.1 [releases/latest] |
 | hellwal | upstream github.com/danihek/hellwal | 1.0.9 | v1.0.9 | **OK** | at upstream latest v1.0.9 [releases/latest] |
@@ -142,7 +145,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | nwg-look | upstream github.com/nwg-piotr/nwg-look | 1.2.1 | v1.2.1 | **OK** | at upstream latest v1.2.1 [releases/latest] |
 | obsidian | upstream github.com/obsidianmd/obsidian-releases | 1.15.0 | v1.15.0 | **OK** | at upstream latest v1.15.0 [releases/latest] |
 | omnirush-desktop | upstream github.com/omnirush-ai/omnirush-gui | 3.8.2 | v3.8.2 | **OK** | at upstream latest v3.8.2 [releases/latest] |
-| opencad-studio | upstream github.com/HakanSeven12/OpenCADStudio | 2026.44 | v2026.44 | **OK** | at upstream latest v2026.44 [releases/latest] |
+| opencad-studio | upstream github.com/HakanSeven12/OpenCADStudio | 2026.45 | v2026.45 | **OK** | at upstream latest v2026.45 [releases/latest] |
 | openchamber | upstream github.com/openchamber/openchamber | 2.7.0 | v2.7.0 | **OK** | at upstream latest v2.7.0 [releases/latest] |
 | protonplus | upstream github.com/vysp3r/ProtonPlus | 0.6.8 | v0.6.8 | **OK** | at upstream latest v0.6.8 [releases/latest] |
 | python-mprisify | upstream gitlab.com/zehkira/mprisify | 1.0.1 | v1.0.1 | **OK** | at upstream latest v1.0.1 [ls-remote] |
@@ -170,4 +173,4 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | zig0.17 | ziglang.org/download/index.json | 0.17.1 | 0.17.1 | **OK** | upstream 0.17.1 == pinned 0.17.1 [freshness via ziglang.org/download/index.json; repology has no entry] |
 | LIBYEAR | freshness | 0.09 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
 
-**Verdict: FAIL** (3 failure(s))
+**Verdict: FAIL** (1 failure(s))
