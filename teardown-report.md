@@ -39,7 +39,7 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | helium-browser | LICENSE | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | helium-browser | LICENSE.ungoogled_chromium | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | hellwal | hellwal-1.0.9.tar.gz | 1.0.9 | $(shell | **SOURCE-OK** | tar Makefile=$(shell (hellwal-1.0.9/Makefile) \| hash no-checksum-pinned \| weak internal evidence $(shell (not authoritative) |
-| hermes-agent-desktop | live NousResearch/hermes-agent | bddb076ee348 | bddb076ee348 | **OK** | live NousResearch/hermes-agent pin bddb076ee348 vs upstream bddb076ee348 |
+| hermes-agent-desktop | live NousResearch/hermes-agent | bddb076ee348 | 109fd8161a50 | **STALE** | live NousResearch/hermes-agent pin bddb076ee348 vs upstream 109fd8161a50 |
 | heroic-games-launcher | Heroic-2.22.4-linux-x86_64.rpm | 2.22.4 | 2.22.4 | **OK** | rpm header heroic=2.22.4-1 (tags NAME/VERSION/RELEASE) \| pinned 2.22.4 \| internal 2.22.4 |
 | heroic-games-launcher | COPYING | 2.22.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | ladybird-unstable | 1d07e318d8bcf51ca3f8b75980fbea15c0edb37c.tar.gz | 0.0.0 | 0.1.0 | **SOURCE-OK** | tar Cargo.toml=0.1.0 (ladybird-1d07e318d8bcf51ca3f8b75980fbea15c0edb37c/AK/Rust/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 0.1.0 (not authoritative) |
@@ -168,9 +168,9 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | python-yt-dlp-ejs | pypi:yt-dlp-ejs | 0.8.0 | 0.8.0 | **OK** | upstream 0.8.0 == pinned 0.8.0 [freshness via pypi:yt-dlp-ejs; repology has no entry] |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology has no entry] |
 | python-ytmusicapi | pypi:ytmusicapi | 1.12.3 | 1.12.3 | **OK** | upstream 1.12.3 == pinned 1.12.3 [freshness via pypi:ytmusicapi; repology has no entry] |
-| rootapp | aur | 0.9.163 | 0.9.162 | **OK** | pinned 0.9.163 >= repology 0.9.162 (aur); tracker behind |
+| rootapp | aur | 0.9.163 | 0.9.163 | **OK** | pinned 0.9.163 >= repology 0.9.163 (aur); tracker behind |
 | starship | starship | 1.27.0 |  | **VULN-UNVERIFIED** | advisory ranges do not cover 1.27.0: CGA-9hcg-f7h9-475c, CGA-gr74-x3cx-8xpc |
 | zig0.17 | ziglang.org/download/index.json | 0.17.1 | 0.17.1 | **OK** | upstream 0.17.1 == pinned 0.17.1 [freshness via ziglang.org/download/index.json; repology has no entry] |
 | LIBYEAR | freshness | 0.09 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
 
-**Verdict: FAIL** (1 failure(s))
+**Verdict: FAIL** (2 failure(s))
