@@ -170,6 +170,11 @@ def spec_field(path, key):
     return m.group(1).strip() if m else ""
 
 
+def live_hold_reason(txt):
+    m = re.search(r"(?im)^%global\s+live_hold_reason[ \t]+(.+?)\s*$", txt)
+    return m.group(1).strip() if m else None
+
+
 def spec_macro(path, name):
     try:
         txt = open(path, encoding="utf-8", errors="replace").read()
@@ -177,6 +182,7 @@ def spec_macro(path, name):
         return ""
     m = re.search(r"^%%global\s+%s\s+(\S+)" % re.escape(name), txt, re.M)
     return m.group(1).strip() if m else ""
+
 
 
 def github_repo(url):
@@ -390,7 +396,12 @@ def probe_upstream(sp):
                              capture_output=True, text=True, timeout=60).stdout.split()
         if not out:
             return pkg, "", None, "git ls-remote %s/%s HEAD" % (owner, repo), "HEAD unreadable"
-        return (pkg, out[0][:7], out[0] == commit,
+        head = out[0]
+        held = live_hold_reason(txt)
+        if head != commit and held:
+            return (pkg, head[:7], "held",
+                    "git ls-remote %s/%s HEAD (hold: %s)" % (owner, repo, held.group(1).strip()), "")
+        return (pkg, head[:7], head == commit,
                 "git ls-remote %s/%s HEAD" % (owner, repo), "")
     tag = latest_release(forge, owner, repo)
     if not tag:
@@ -402,7 +413,7 @@ def probe_upstream(sp):
 
 def hunt_upstream():
     """Spec pin vs upstream HEAD (git pins) or latest release (tag pins)."""
-    findings, checked, skipped = [], 0, []
+    findings, checked, skipped, held_rows = [], 0, [], []
     for sp in specs():
         pkg, ref, ok, cmd, err = probe_upstream(sp)
         if ok is None:
@@ -410,11 +421,18 @@ def hunt_upstream():
             if err and err != "no upstream URL and no vendor feed":
                 findings.append((pkg, "unprobed: " + err))
             continue
+        if ok == "held":
+            checked += 1
+            held_rows.append(pkg)
+            continue
         checked += 1
         if not ok:
             findings.append((pkg, "behind upstream %s" % ref))
+    note = "skipped (no upstream URL found): %s" % (", ".join(skipped) or "none")
+    if held_rows:
+        note += "\n    held (live_hold_reason, deliberate): %s" % ", ".join(sorted(held_rows))
     return ("upstream-versions", "%d packages checked, %d behind" % (checked, len(findings)),
-            "skipped (no upstream URL found): %s" % (", ".join(skipped) or "none"), findings)
+            note, findings)
 
 
 def upstream_rows():
@@ -426,6 +444,8 @@ def upstream_rows():
         ver = strip_packaging(resolve_version(sp, spec_field(sp, "Version")).lstrip("v"))
         if ok is None:
             rows.append("upstream: %s UNPROBED-%s | %s | %s" % (pkg, err.replace(" ", "-"), cmd or "-", date))
+        elif ok == "held":
+            rows.append("upstream: %s %s != spec (hold declared) | %s | %s" % (pkg, ref, cmd, date))
         else:
             rows.append("upstream: %s %s %s spec | %s | %s"
                         % (pkg, ref, "==" if ok else "!= (pinned %s)" % ver, cmd, date))

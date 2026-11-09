@@ -47,6 +47,10 @@ check("rawhide drift",
       [f[1] for f in hunt.chroot_doc_findings({44}, False, {44}, True)],
       ["rawhide chroot=False, README rawhide=True"])
 
+check("hold detected", hunt.live_hold_reason("%global live_hold_reason upstream deleted lang/gjs in 9b67eb5\n"), "upstream deleted lang/gjs in 9b67eb5")
+check("hold absent", hunt.live_hold_reason("%global commit abc\n"), None)
+check("hold case-insensitive-flag, spaced", hunt.live_hold_reason("%GLOBAL  live_hold_reason   spaced out reason  \n"), "spaced out reason")
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)
