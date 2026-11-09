@@ -2151,3 +2151,18 @@ now reads the cells. Write what you observed.
   you closed, which PRs you merged/rejected, which COPR builds you verified
   and their result, and what remains. Include the pre-completion gate
   checklist with PASS/FAIL + evidence per item.
+## RPM FUSION / SYSTEM FALLBACK COMPATIBILITY (MANDATORY)
+- Packaged Electron/WebKit/GStreamer binaries often bring bundled FFmpeg
+  libraries (`libffmpeg.so`, `libavcodec-ladybird.so`, etc.). Those bundled
+  sonames must never become hard RPM `Requires`, especially when they hide
+  conflicting custom names.
+- Exclude the entire bundled `/opt/<package>/` tree from autorequires,
+  autoprov, and BRP shebang handling in the spec.
+- Add optional playback support only as `Recommends` (for example `ffmpeg`
+  and `ffmpeg-libs`) so RPM Fusion systems and plain system-ffmpeg setups can
+  satisfy it without forcing one source or breaking `dnf update`.
+- Verify against both paths: a system with RPM Fusion enabled, and a system with
+  only normal Fedora packages installed. A solver error on either side (for
+  example "nothing provides `libffmpeg.so()(64bit)`") means the spec is wrong.
+- Repeat this compatibility check for Fedora 43, 44, 45, and Rawhide before
+  pushing a repack.

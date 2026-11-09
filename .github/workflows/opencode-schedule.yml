@@ -1,5 +1,8 @@
 # Maintainer privacy: Ackerman-00 must never be published with a real email.
 # Use `Ackerman-00 <no-reply>` everywhere; scrub any email-like value before committing.
+# Compatibility: every repack must build/install cleanly with and without RPM Fusion.
+# Bundled FFmpeg libraries stay private in /opt, use soft Recommends: ffmpeg/ffmpeg-libs,
+# and provide a system-ffmpeg fallback for Fedora 43/44/45/Rawhide.
 name: opencode-schedule
 
 on:
