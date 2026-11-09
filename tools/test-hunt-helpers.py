@@ -51,6 +51,12 @@ check("hold detected", hunt.live_hold_reason("%global live_hold_reason upstream 
 check("hold absent", hunt.live_hold_reason("%global commit abc\n"), None)
 check("hold case-insensitive-flag, spaced", hunt.live_hold_reason("%GLOBAL  live_hold_reason   spaced out reason  \n"), "spaced out reason")
 
+check("feed url", hunt.feed_url_from_update_sh('FEED="https://download.example/x/latest-linux.yml"\n'),
+      "https://download.example/x/latest-linux.yml")
+check("feed unquoted", hunt.feed_url_from_update_sh("FEED=https://a/b/latest.yaml\n"), "https://a/b/latest.yaml")
+check("feed non-yml", hunt.feed_url_from_update_sh('FEED="https://a/b.json"\n'), None)
+check("feed absent", hunt.feed_url_from_update_sh("SPEC_FILE=x.spec\n"), None)
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)

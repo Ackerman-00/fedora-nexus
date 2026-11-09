@@ -316,8 +316,26 @@ def latest_release(forge, owner, repo):
     return None
 
 
+def feed_url_from_update_sh(text):
+    """The vendor yml feed an update.sh declares, if any."""
+    m = re.search(r'^\s*FEED="?(https?://[^"\s]+)"?', text, re.M)
+    if not m or not m.group(1).endswith((".yml", ".yaml")):
+        return None
+    return m.group(1)
+
+
 def vendor_version(pkg, txt):
     """Version from a vendor feed that exposes no git tag or release API."""
+    try:
+        upd = open(os.path.join(ROOT, pkg, "update.sh"), encoding="utf-8", errors="replace").read()
+    except OSError:
+        upd = ""
+    feed = feed_url_from_update_sh(upd)
+    if feed:
+        body = get_text(feed) or ""
+        m = re.search(r"^version:\s*(\S+)", body, re.M)
+        if m:
+            return m.group(1), "%s version:" % feed.split("//", 1)[1]
     if pkg == "cline-desktop":
         d = get_json("https://github.com/cline/cline/releases/download/desktop-latest/latest.json", 45) or {}
         return d.get("version"), "desktop-latest/latest.json manifest"
