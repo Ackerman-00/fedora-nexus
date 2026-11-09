@@ -9,7 +9,7 @@
 
 Name:           hermes-agent-desktop
 Version:        0.23.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
@@ -28,6 +28,8 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  git
+BuildRequires:  libX11-devel
+BuildRequires:  libXi-devel
 BuildRequires:  libatomic
 BuildRequires:  make
 BuildRequires:  python3
@@ -132,6 +134,10 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
+* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109181414gitcacad95-3
+- Build the X11 HUD modifier helper: without libX11-devel and libXi-devel the
+  upstream build script printed '[hud-modifier] unavailable' and shipped the
+  desktop without the modifier-tap helper (auto-detected feature, no error)
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109181414gitcacad95-2
 - Prepare the locked Electron runtime (upstream electron-runtime step) before electron-builder
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109181414gitcacad95-1
