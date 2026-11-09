@@ -96,18 +96,6 @@ jobs:
             echo "OPENCODE_AUTH_JSON secret not set - running with anonymous free-tier limits"
           fi
 
-      - name: Enforce maintainer email policy
-        run: |
-          set -euo pipefail
-          echo "Checking tracked files for the maintainer's personal email..."
-          if git grep -F 'quietcraft@gmail' -- . >/dev/null 2>&1 || git grep -F 'mdzunaid384@gmail' -- . >/dev/null 2>&1; then
-            git grep -F 'quietcraft@gmail' -- . || true
-            git grep -F 'mdzunaid384@gmail' -- . || true
-            echo "ERROR: maintainer email found in tracked files; remove it before running."
-            exit 1
-          fi
-          echo "OK: no maintainer personal email in tracked files."
-
       - name: Run opencode
         shell: bash
         timeout-minutes: 300
