@@ -282,6 +282,19 @@ as a bug to be repaired.)
 - Done 2026-10-05: repair step removed from `update-engine.yml`,
   `tools/changelog-repair.py` + `tools/test-changelog-repair.py` deleted.
 
+## Electron /opt native helpers (added 2026-11-09, real incident)
+
+Upstream helper builds that "only warn" (hermes-agent-desktop's
+stage-native-deps printed `[hud-modifier] unavailable: native build needs
+a C compiler, libx11-dev and libxi-dev` and shipped without the helper)
+must be made explicit in BuildRequires, and their runtime sonames declared:
+the `/opt/<pkg>/` tree is excluded from autorequires, so rpm never sees
+them - Release 3 built the helper, Release 4 declared `libX11.so.6` /
+`libXi.so.6` soname Requires. RULE for any spec excluding /opt/<pkg> from
+autorequires: every ELF shipped inside must have its sonames declared by
+hand or be proven unused (ldd on the installed files; `rpm -q --requires`
+on the built RPM must name them).
+
 ## Electron chrome-sandbox rule (added 2026-10-02, real incident)
 
 Five Electron packages (fluxer, obsidian, logseq, heroic-games-launcher,
