@@ -4,7 +4,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        7.20261107git1d07e31%{?dist}
+Release:        8.20261107git1d07e31%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -73,7 +73,10 @@ cmake --build Build/release --parallel %{?_smp_build_ncpus}
 DESTDIR=%{buildroot} cmake --install Build/release --component ladybird_Runtime
 DESTDIR=%{buildroot} cmake --install Build/release --component Lagom_Runtime
 DESTDIR=%{buildroot} cmake --install Build/release --component ladybird_SystemIntegration
-find Build/release/vcpkg_installed/*-linux-dynamic/lib -maxdepth 1 -name '*.so*' -exec cp -a {} %{buildroot}/opt/ladybird/lib/ \;
+mkdir -p %{buildroot}/opt/ladybird/lib64
+VCPKG_LIBS=$(find Build/release/vcpkg_installed/*-linux-dynamic/lib -maxdepth 1 -name '*.so*' -print)
+[ -n "$VCPKG_LIBS" ] || { echo "FATAL: no vcpkg shared libraries found to bundle" >&2; exit 1; }
+cp -a $VCPKG_LIBS %{buildroot}/opt/ladybird/lib64/
 chmod -R u+w %{buildroot}/opt/ladybird
 
 %files
@@ -92,6 +95,8 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Mon Nov 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-8.20261107git1d07e31
+- Bundle the vcpkg shared libraries into /opt/ladybird/lib64 (RUNPATH says ../lib64); the previous cp into /opt/ladybird/lib/ failed silently against a nonexistent directory ("Not a directory", rpmbuild exit 0), so 0.0.0-7 shipped without libskia/libzmij/libavcodec-ladybird and dnf refused to install it
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-7.20261107git1d07e31
 - Fix COPR timeout (18000s, build 11287677 died at 3536/3536): build with -DBUILD_TESTING=OFF so test targets are never built, install upstream's Linux package layout (prefix /opt/ladybird, ladybird_Runtime+Lagom_Runtime+ladybird_SystemIntegration components), bundle the vcpkg shared libraries into /opt/ladybird/lib, and set -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=OFF so installed RUNPATHs are $ORIGIN-based; add lld (picked automatically by ladybird next to gcc for faster links)
 - Spec previously installed to the cmake default prefix (/usr/local) with no DESTDIR and shipped only /usr/bin/Ladybird and share/ladybird; the real layout is /opt/ladybird plus /usr/bin/ladybird and freedesktop files (found by reading UI/cmake/InstallRules.cmake in Source0)
