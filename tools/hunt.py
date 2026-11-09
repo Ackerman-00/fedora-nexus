@@ -400,7 +400,7 @@ def probe_upstream(sp):
         held = live_hold_reason(txt)
         if head != commit and held:
             return (pkg, head[:7], "held",
-                    "git ls-remote %s/%s HEAD (hold: %s)" % (owner, repo, held.group(1).strip()), "")
+                    "git ls-remote %s/%s HEAD (hold: %s)" % (owner, repo, held), "")
         return (pkg, head[:7], head == commit,
                 "git ls-remote %s/%s HEAD" % (owner, repo), "")
     tag = latest_release(forge, owner, repo)
