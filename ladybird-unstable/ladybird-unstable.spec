@@ -4,11 +4,11 @@
 %global __requires_exclude_from ^/opt/ladybird/.*$
 %global __provides_exclude_from ^/opt/ladybird/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/ladybird/.*$
-%global commit         1d07e318d8bcf51ca3f8b75980fbea15c0edb37c
+%global commit         03ada6df57bf783747e774f93c30b5e3873b2068
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        11.20261109git1d07e31%{?dist}
+Release:        12.20261109git03ada6d%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -118,6 +118,8 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.0.0-12.20261109git03ada6d
+- Refresh snapshot 1d07e31 -> 03ada6d (426 commits upstream to 2026-11-09T14:56Z; vcpkg.json and top-level CMakeLists byte-identical to 1d07e31, builtin-baseline unchanged at 20ceb8adb, so the harfbuzz overlay and LTO escape hatch carry over unchanged)
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.0.0-11.20261109git1d07e31
 - Declare the runtime system Dependencies the bundled tree cannot carry (/opt/ladybird is excluded from autorequires): Qt6 core/gui/positioning/widgets, glib2, libdrm, pulseaudio-libs, ncurses, vulkan-loader, libwayland-client, xcb + icccm
 - Recommend qt6-qtwayland (wayland platform plugin, this repo's compositor stack) and mesa-vulkan-drivers (software Vulkan, headless/CI)
