@@ -3,9 +3,9 @@
 %global __requires_exclude_from ^/opt/HermesDesktop/.*$
 %global __provides_exclude_from ^/opt/HermesDesktop/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/HermesDesktop/.*$
-%global commit          bddb076ee3480c62db9e9728d3981cfd7cc67b97
+%global commit          109fd8161a509db5a00942152ba48882e446e8b0
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261109062051
+%global gitdate         20261109074725
 
 Name:           hermes-agent-desktop
 Version:        0.23.0^%{gitdate}git%{shortcommit}
@@ -131,5 +131,7 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
+* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109074725git109fd81-1
+- Refresh snapshot bddb076 -> 109fd81 (35 commits upstream, 2026-11-09; no build-system files touched: compare API lists only .py/.yaml/.md/tests/locales)
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109062051gitbddb076-1
 - Update to upstream snapshot bddb076 (2026-11-09 06:20Z); 258 commits since 856e758, backend/agent/desktop fixes (rich-message blocks, album retry, proxy-credential redaction, /model picker); no build-system or packaging changes
