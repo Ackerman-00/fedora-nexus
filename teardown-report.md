@@ -39,7 +39,7 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | helium-browser | LICENSE | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | helium-browser | LICENSE.ungoogled_chromium | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | hellwal | hellwal-1.0.9.tar.gz | 1.0.9 | $(shell | **SOURCE-OK** | tar Makefile=$(shell (hellwal-1.0.9/Makefile) \| hash no-checksum-pinned \| weak internal evidence $(shell (not authoritative) |
-| hermes-agent-desktop | live NousResearch/hermes-agent | bddb076ee348 | 109fd8161a50 | **STALE** | live NousResearch/hermes-agent pin bddb076ee348 vs upstream 109fd8161a50 |
+| hermes-agent-desktop | live NousResearch/hermes-agent | 109fd8161a50 | adebd646a94a | **STALE** | live NousResearch/hermes-agent pin 109fd8161a50 vs upstream adebd646a94a |
 | heroic-games-launcher | Heroic-2.22.4-linux-x86_64.rpm | 2.22.4 | 2.22.4 | **OK** | rpm header heroic=2.22.4-1 (tags NAME/VERSION/RELEASE) \| pinned 2.22.4 \| internal 2.22.4 |
 | heroic-games-launcher | COPYING | 2.22.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | ladybird-unstable | 1d07e318d8bcf51ca3f8b75980fbea15c0edb37c.tar.gz | 0.0.0 | 0.1.0 | **SOURCE-OK** | tar Cargo.toml=0.1.0 (ladybird-1d07e318d8bcf51ca3f8b75980fbea15c0edb37c/AK/Rust/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 0.1.0 (not authoritative) |
