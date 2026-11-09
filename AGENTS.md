@@ -422,7 +422,8 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
   (every `# sha256:` comment hashed against the artifact it names - a pin
   that lags the version it ships is a false receipt), readme
   (every package has a row in the README table), chroot-docs (the README's
-  supported releases are exactly the chroots COPR builds), published-nvr (the newest
+  supported releases are exactly the chroots COPR builds; upstream-versions honors
+  `%global live_hold_reason` - held pins report as held, never as behind), published-nvr (the newest
   changelog NVR is what COPR built and what every chroot's repodata serves -
   catches a spec change that never reached users), fedora-releases (which
   Fedora is stable, re-read from the mirror). It prints the relay-ready
