@@ -66,19 +66,30 @@ jobs:
         run: |
           echo "==> Running Custom Modules (update.sh)..."
           failed=0
+          : > "$RUNNER_TEMP/failed-updaters.txt"
           for script in $(find . -mindepth 2 -name "update.sh" -type f); do
             dir=$(dirname "$script")
             pkg=$(basename "$dir")
+            out=$(mktemp)
             echo ""
             echo "--- Updating $pkg ---"
             pushd "$dir" > /dev/null
-            if bash update.sh; then
+            if bash update.sh >"$out" 2>&1; then
+              cat "$out"
               echo "  -> OK"
             else
-              echo "  -> FAILED (exit $?)"
+              rc=$?
+              cat "$out"
+              echo "  -> FAILED (exit $rc)"
               failed=$((failed + 1))
+              {
+                echo "[$pkg] exit $rc"
+                tail -n 8 "$out"
+                echo ""
+              } >> "$RUNNER_TEMP/failed-updaters.txt"
             fi
             popd > /dev/null
+            rm -f "$out"
           done
           echo ""
           if [ "$failed" -gt 0 ]; then
@@ -257,11 +268,15 @@ jobs:
         run: |
           n="${{ steps.updater.outputs.failed }}"
           title="auto-updater: $n update.sh failed"
+          details=""
+          [ -s "$RUNNER_TEMP/failed-updaters.txt" ] && details=$(cat "$RUNNER_TEMP/failed-updaters.txt")
+          body=$(printf 'update-engine run %s: %s update.sh script(s) failed. The scan and version bumps still ran. Fix the scripts.\n\nFailing updaters (tail of output):\n\n```\n%s\n```\n' "$GITHUB_RUN_ID" "$n" "$details")
           exists=$(gh api "repos/${GITHUB_REPOSITORY}/issues?state=open&per_page=100" --jq "[.[] | select(.title == \"$title\")] | length")
           if [ "$exists" -eq 0 ]; then
-            gh api repos/${GITHUB_REPOSITORY}/issues -f title="$title" -f body="update-engine run $GITHUB_RUN_ID: $n update.sh script(s) failed. The scan and version bumps still ran. Fix the scripts; see the run logs." \
+            gh api repos/${GITHUB_REPOSITORY}/issues -f title="$title" -f body="$body" \
               || echo "::warning::could not open the tracking issue (API refused); failing updaters are listed in the run log"
           else
-            echo "issue already open - skipping"
+            num=$(gh api "repos/${GITHUB_REPOSITORY}/issues?state=open&per_page=100" --jq "[.[] | select(.title == \"$title\")][0].number")
+            gh issue comment "$num" --body "$body" || echo "::warning::could not comment on the tracking issue"
           fi
           echo "::error::$n update.sh script(s) failed in run $GITHUB_RUN_ID"
