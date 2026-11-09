@@ -101,6 +101,8 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.0.0-10.20261109git1d07e31
+- Restore the missing %changelog entry for the fleet-rebuild Release; no upstream change (pin still 1d07e31)
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.0.0-9.20261107git1d07e31
 - VCPKG_FORCE_SYSTEM_BINARIES=1: vcpkg insisted on downloading its pinned cmake 4.4.3 from github.com (Kitware/CMake releases) and COPR's network path got 504/504 on it (build 11290048; the same github.com flakiness hit two other downloads this run); Fedora ships cmake 4.3.0, so use the system toolchain (cmake/ninja-build/git/patch; patch added to BuildRequires) instead of a per-build ~50MB download that can hard-fail the whole browser
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.0.0-8.20261107git1d07e31
