@@ -4,7 +4,7 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | Package | Distfile | Pinned | Internal | Status | Note |
 |---|---|---|---|---|---|
 | app2unit | live Vladimir-csp/app2unit | 47e23ec6ab9e | 47e23ec6ab9e | **OK** | live Vladimir-csp/app2unit pin 47e23ec6ab9e vs upstream 47e23ec6ab9e |
-| appmenu-glib-translator | appmenu-glib-translator-d475cca.tar.gz | 25.04^20261102201706gitd475cca | >=1.3.0 | **SOURCE-OK** | tar meson.build=>=1.3.0 (vala-panel-appmenu-d475cca380e88b3b62bc8ecde9d861bc5e777c4e/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3.0 (not authoritative) |
+| appmenu-glib-translator | appmenu-glib-translator-3d42ca0.tar.gz | 25.04^20261109154809git3d42ca0 | >=1.3.0 | **SOURCE-OK** | tar meson.build=>=1.3.0 (vala-panel-appmenu-3d42ca002fc5dbb15f9ba32bb3ff00caf8046686/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3.0 (not authoritative) |
 | astal | live Aylur/astal | b7aaf4ce69eb | b7aaf4ce69eb | **OK** | live Aylur/astal pin b7aaf4ce69eb vs upstream b7aaf4ce69eb |
 | astal-gjs | live Aylur/astal | 7b4d37603c11 | b7aaf4ce69eb | **OK** | live Aylur/astal held at 7b4d37603c11 on purpose: upstream deleted lang/gjs in 9b67eb5; held at last good commit (pin verified upstream; upstream HEAD is b7aaf4ce69eb) |
 | astal-gtk4 | live Aylur/astal | b7aaf4ce69eb | b7aaf4ce69eb | **OK** | live Aylur/astal pin b7aaf4ce69eb vs upstream b7aaf4ce69eb |
@@ -39,15 +39,16 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | helium-browser | LICENSE | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | helium-browser | LICENSE.ungoogled_chromium | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | hellwal | hellwal-1.0.9.tar.gz | 1.0.9 | $(shell | **SOURCE-OK** | tar Makefile=$(shell (hellwal-1.0.9/Makefile) \| hash no-checksum-pinned \| weak internal evidence $(shell (not authoritative) |
-| hermes-agent-desktop | live NousResearch/hermes-agent | 109fd8161a50 | adebd646a94a | **STALE** | live NousResearch/hermes-agent pin 109fd8161a50 vs upstream adebd646a94a |
+| hermes-agent-desktop | live NousResearch/hermes-agent | cacad9510e16 | 84f30c73bf17 | **STALE** | live NousResearch/hermes-agent pin cacad9510e16 vs upstream 84f30c73bf17 |
 | heroic-games-launcher | Heroic-2.22.4-linux-x86_64.rpm | 2.22.4 | 2.22.4 | **OK** | rpm header heroic=2.22.4-1 (tags NAME/VERSION/RELEASE) \| pinned 2.22.4 \| internal 2.22.4 |
 | heroic-games-launcher | COPYING | 2.22.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| ladybird-unstable | 1d07e318d8bcf51ca3f8b75980fbea15c0edb37c.tar.gz | 0.0.0 | 0.1.0 | **SOURCE-OK** | tar Cargo.toml=0.1.0 (ladybird-1d07e318d8bcf51ca3f8b75980fbea15c0edb37c/AK/Rust/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 0.1.0 (not authoritative) |
+| ladybird-unstable | 03ada6df57bf783747e774f93c30b5e3873b2068.tar.gz | 0.0.0 | 0.1.0 | **SOURCE-OK** | tar Cargo.toml=0.1.0 (ladybird-03ada6df57bf783747e774f93c30b5e3873b2068/AK/Rust/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 0.1.0 (not authoritative) |
 | ladybird-unstable | harfbuzz-overlay-portfile.cmake | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | ladybird-unstable | harfbuzz-overlay-vcpkg.json | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | ladybird-unstable | harfbuzz-overlay-fix-win32-build.patch | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | ladybird-unstable | harfbuzz-overlay-config.cmake.in | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | ladybird-unstable | harfbuzz-overlay-usage | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
+| ladybird-unstable | repair-bundled-libs.py | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | lazyvim-git | live LazyVim/LazyVim | 5c26fac21fd3 | 5c26fac21fd3 | **OK** | live LazyVim/LazyVim pin 5c26fac21fd3 vs upstream 5c26fac21fd3 |
 | libcava | 1.0.0.tar.gz | 1.0.0 | $(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) | **SOURCE-OK** | tar Makefile.am=$(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) (cava-1.0.0/Makefile.am) \| hash no-checksum-pinned \| weak internal evidence $(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) (not authoritative) |
 | localsend | LocalSend-1.18.2-linux-x86-64.deb | 1.18.2 | 1.18.2+64 | **OK** | deb pkg=localsend (control control.tar.zst) \| pinned 1.18.2 \| internal 1.18.2+64 |
@@ -100,7 +101,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | LICENSE | 1.5.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| umbriel-git | live noctalia-dev/umbriel | d01481035b09 | d01481035b09 | **OK** | live noctalia-dev/umbriel pin d01481035b09 vs upstream d01481035b09 |
+| umbriel-git | live noctalia-dev/umbriel | 0a22bd2431b8 | 0a22bd2431b8 | **OK** | live noctalia-dev/umbriel pin 0a22bd2431b8 vs upstream 0a22bd2431b8 |
 | vesktop | vesktop-1.6.9.x86_64.rpm | 1.6.9 | 1.6.9 | **OK** | rpm header vesktop=1.6.9-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.9 \| internal 1.6.9 |
 | vesktop | LICENSE | 1.6.9 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
@@ -119,7 +120,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | zen-browser | zen-browser | 1.24.1b |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | zen-browser | LICENSE | 1.24.1b |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | zig0.17 | zig-x86_64-linux-0.17.1.tar.xz | 0.17.1 | 0.0.0 | **SOURCE-OK** | tar build.zig.zon=0.0.0 (zig-x86_64-linux-0.17.1/lib/init/build.zig.zon) \| hash no-checksum-pinned \| weak internal evidence 0.0.0 (not authoritative) |
-| appmenu-glib-translator | upstream github.com/rilian-la-te/vala-panel-appmenu | 25.04^20261102201706gitd475cca | 0.6.1 | **OK** | at upstream latest 0.6.1 [releases/latest] |
+| appmenu-glib-translator | upstream github.com/rilian-la-te/vala-panel-appmenu | 25.04^20261109154809git3d42ca0 | 0.6.1 | **OK** | at upstream latest 0.6.1 [releases/latest] |
 | awww | upstream codeberg.org/LGFae/awww | 0.12.1 | v0.12.1 | **OK** | at upstream latest v0.12.1 [ls-remote] |
 | aylurs-gtk-shell | upstream github.com/Aylur/ags | 3.1.2 | v3.1.2 | **OK** | at upstream latest v3.1.2 [releases/latest] |
 | bibata-cursor-theme | upstream github.com/ful1e5/Bibata_Cursor | 2.0.7 | v2.0.7 | **OK** | at upstream latest v2.0.7 [releases/latest] |
