@@ -9,7 +9,7 @@
 
 Name:           hermes-agent-desktop
 Version:        0.23.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
@@ -74,6 +74,7 @@ pnpm --version
 export PATH="$PWD/.tools/node/bin:$PWD/.tools/pnpm/package:$PATH"
 pnpm install --frozen-lockfile
 pnpm --filter hermes run build
+node scripts/build/electron-runtime.mjs --source .
 cd apps/desktop
 node scripts/run-electron-builder.mjs --linux --x64 --dir --publish never
 cd ../..
@@ -131,5 +132,7 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
+* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109181414gitcacad95-2
+- Prepare the locked Electron runtime (upstream electron-runtime step) before electron-builder
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109181414gitcacad95-1
 - Nightly sync with upstream main branch (Commit: cacad95)
