@@ -219,6 +219,7 @@ jobs:
             [ "$d_fixed" -ge "$d_found" ] || [ $(( d_fixed + g_decl )) -ge "$d_found" ] || return 1
             hunt_cats=$(grep -oE '^[[:space:]]*hunt: [a-z0-9-]+' <<< "$content" | sort -u | wc -l || true)
             [ "$hunt_cats" -ge 5 ] || return 1
+            grep -qE "^[[:space:]]*model-rank: .*$today" <<< "$content" || return 1
             return 0
           }
           sleep $((RANDOM % 180))
@@ -226,6 +227,20 @@ jobs:
           DEADLINE_UTC=$(date -u -d @$DEADLINE_EPOCH +%Y-%m-%dT%H:%MZ)
           echo "RUN_DEADLINE_UTC=$DEADLINE_UTC" >> $GITHUB_ENV
           echo "DEADLINE_EPOCH=$DEADLINE_EPOCH" >> $GITHUB_ENV
+          # ranking turn: the scheduler decides the leader from today's web, before the sweep runs
+          RANK_LOG="$RUNNER_TEMP/rank-out.txt"
+          rank_leader=$(bash tools/model-cascade.sh 2>/dev/null | head -1 | sed 's|^opencode/||')
+          if [ -n "$rank_leader" ] && timeout --signal=TERM --kill-after=30s 12m opencode run --standalone --auto --archived --agent build --model "opencode/$rank_leader" < tools/rank-prompt.md 2>&1 | tee "$RANK_LOG"; then
+            echo "=== ranking turn completed on $rank_leader"
+          else
+            echo "=== ranking turn did not complete - the committed order stands"
+          fi
+          rank_line=$(grep -m1 -E '^[[:space:]]*model-rank:' "$RANK_LOG" | sed 's/^[[:space:]]*//' || true)
+          if [ -z "$rank_line" ]; then
+            rank_line="model-rank: $(bash tools/model-cascade.sh 2>/dev/null | head -1 | sed 's|^opencode/||') first - catalog only (ranking turn returned no line), checked $(date -u +%F)"
+          fi
+          echo "MODEL_RANK_LINE=$rank_line" >> $GITHUB_ENV
+          echo "=== $rank_line"
           mapfile -t CASCADE < <(bash tools/model-cascade.sh 2>/dev/null)
           if [ "${#CASCADE[@]}" -eq 0 ]; then
             CASCADE=(opencode/deepseek-v4.1-flash-free opencode/inkling-2-small-free opencode/mimo-v2.6-flash-free)

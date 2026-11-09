@@ -2055,34 +2055,26 @@ HARD RULES:
   watching this repo - see OWNERSHIP AND AUTHORITY. There is nobody
   to hand it to.
 - VERIFICATION LOOP (MANDATORY - battle-tested 2026: pre-completion checklist + external verifier, agentpatterns.ai 2026-07-19 / contextOS 2026-08-14 / digitalapplied.com 2026-08-11): Before declaring `status: complete`, you MUST run `bash tools/verify-fedora.sh` and paste its `----- VERIFICATION REPORT -----` output. It checks numerical completion (one row per STEP A inventory package with `deps-verified`/`deps-fixed`/`version-checked` -- derive the expected count from `ls */*.spec`, post-grep count must reach it, not 0), evidence strings (`rpmspec -P` / `dnf builddep` / `rpmlint` from 2026 h. checks), and install-test table. Exit 1 = NOT COMPLETE -- keep working, fix the listed gaps, re-run verifier until exit 0. Do NOT write `status: complete` if verifier fails. Prompt alone achieves 70-90% compliance; external verifier + gate achieves near-100%. This is the check that prevents "looks done" vs "is done". Exact greppable contract (the verifier AND the workflow gate check the same strings, case-insensitive): every audit row carries its `unproven:` token; a `teardown-slice:` ledger line names this run's rotating slice plus `next-start`; all nine mains (umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter wlroots - the list is tools/verify-fedora.sh --print-mains, the authority) carry `docker-teardown: <pkg> ... PASS` tokens AND fresh `upstream: <pkg> ... <today-UTC-date>` live-check lines, and every extra slice-named package carries one (`version-checked` is accepted by the inline gate and the verifier only with a same-run `upstream:` evidence row; a `deps-verified` row for any of the nine mains with no same-run `docker-teardown: <pkg> ... PASS` token fails the gate); each of `rpmspec -P`, `dnf builddep`, `rpmlint` must share its relay line with `PASS` (e.g. `rpmlint PASS: <pkgs> (0 errors)`); the version-table header `| package | packaged version |` and an install-test table must be present. A tool named only inside a 'not verified' gap does NOT satisfy its evidence line -- an unsatisfiable line means the run is NOT complete (relay stays `unfinished` + handoff), never `complete`-with-gap. Self-claiming verifier PASS without pasting the report is a gate failure.
-MODEL REFRESH (your job, every run): the CI cascade is derived from
-the live free-model catalog by tools/model-cascade.sh and the ORDER
-lives in tools/model-rank.txt. The free catalog churns daily - on
-2026-10-20 OpenCode added Step 5 Preview Free and retired Fledge
-Alpha Free, and Space Bunny Free left the catalog within a day of
-being added. When the cascade prints "NEW FREE MODELS (not ranked
-yet...)" on stderr, or the catalog and the rank file disagree, you
-MUST re-rank it yourself, from these sources in this order:
-  1. OpenCode's own curated list - the model/provider combinations
-     they benchmarked for coding agents:
-     https://opencode.ai/v2/docs/console/models/
-  2. The live catalog - what can be called right now:
-     https://opencode.ai/inference/v1/models
-  3. The changelog - what was added and what was retired:
-     https://opencode.ai/changelog
-  4. For the ORDER inside that set, the published coding score of
-     the model or of its paid twin
-     (https://howmanytoken.com/plans/opencode-zen/).
-Then rewrite tools/model-rank.txt: the ids in strength order, grouped
-into tiers, one id per line, each preceded by a `#` line giving the
-score, the source and the date you checked. A model the catalog no
-longer serves leaves the file; a model that enters gets a tier and a
-citation. Add the new id to the provider map in opencode.json so the
-CLI can resolve it, and commit both. The strongest free model goes
-FIRST - a cascade that starts a weak model spends the run filling
-in tables instead of fixing the repo. If the ranking did not change,
-say so in the relay and change nothing. The next run reads the file
-you wrote, so the ranking you commit is the ranking that runs.
+MODEL RANKING (the scheduler decides, every run): before this sweep the
+workflow ran a ranking turn over today's web and exported the verdict as
+MODEL_RANK_LINE. Your first relay line must be that line verbatim:
+
+  model-rank: <leader> first - <sources>, checked <YYYY-MM-DD>
+
+If MODEL_RANK_LINE is empty or the ranking turn failed, you do the web check
+yourself and write that line: search the web for today's strongest free
+coding models on OpenCode Zen (e.g. "opencode zen free coding models <month>
+<year>", "artificial analysis coding index <month> <year>"), cross-check the
+live catalog (https://opencode.ai/inference/v1/models) and the changelog
+(https://opencode.ai/changelog), then rewrite tools/model-rank.txt - one id
+per line, tiers, a single `#` label per model with score, source and date -
+with the strongest free model first. Keep the owner veto in
+tools/model-cascade.sh EXCLUDE out of the file, give every new free id a
+tier, drop ids the catalog no longer serves, and add new ids to opencode.json.
+Either way, commit the ranking turn's tools/model-rank.txt edit with this
+run's changes. The gate and tools/verify-fedora.sh fail the run when the line
+is missing or carries a stale date, so an unchanged ranking still needs the
+line with today's date. The next run reads the file you leave behind.
 TRUTH CONTRACT (the machine checks these, not your prose):
 A verdict is a transcript of a command you ran, never a summary of
 what you believe. On 2026-10-20 a run published an install table

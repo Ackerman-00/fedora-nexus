@@ -78,6 +78,7 @@ gp, vp = grep_patterns(gate), grep_patterns(ver)
 for pat in (r"^[[:space:]]*defects-found:[[:space:]]*[0-9]+",
             r"^[[:space:]]*defects-fixed:[[:space:]]*[0-9]+",
             r"^[[:space:]]*changed:",
+            r"^[[:space:]]*model-rank: .*$today",
             r"^[[:space:]]*hunt: [a-z0-9-]+"):
     in_gate = norm(pat) in gp
     in_ver = norm(pat) in vp

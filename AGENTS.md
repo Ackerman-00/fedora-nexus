@@ -475,7 +475,10 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
   verifier parse the contract the same way. Run it before pushing any workflow
   change.
 - `bash tools/model-cascade.sh` - the free-model chain for this run, derived
-  from the live catalog; `tools/model-rank.txt` holds the strength order.
+  from the live catalog; `tools/model-rank.txt` holds the strength order,
+  rewritten each run by the ranking turn (`tools/rank-prompt.md`, executed by
+  opencode-schedule.yml before the sweep) and enforced by a `model-rank:` relay
+  line that the gate and `tools/verify-fedora.sh` require with today's date.
 - `bash tools/verify-fedora.sh` - the external completion verifier. Exit 1
   means the run is not done; fix what it names and re-run it.
 

@@ -282,6 +282,20 @@ else
   echo "PASS: hunt categories $hunt_cats >= 5"
 fi
 
+rank_ok=0; today="$TODAY"
+grep -qE "^[[:space:]]*model-rank: .*$today" <<< "$scope" && rank_ok=1
+if [[ "$rank_ok" -eq 0 ]]; then
+  if grep -qE '^[[:space:]]*model-rank:' <<< "$scope"; then
+    echo "FAIL: NOT COMPLETE -- the model-rank: line is stale, today is $TODAY:"
+    grep -m1 -E '^[[:space:]]*model-rank:' <<< "$scope" | sed 's/^/  /'
+  else
+    echo "FAIL: NOT COMPLETE -- no model-rank: line; the relay must carry \$MODEL_RANK_LINE from the ranking turn"
+  fi
+  FAIL=1
+else
+  echo "PASS: model ranking re-checked this run ($(grep -m1 -E '^[[:space:]]*model-rank:' <<< "$scope" | sed 's/^[[:space:]]*//'))"
+fi
+
 if [[ "$FAIL" -ne 0 ]]; then
   echo "FAIL: NOT COMPLETE -- agent must continue, repair gaps, and rerun verification"
   exit 1

@@ -1,25 +1,34 @@
 # free-model cascade ranking - strongest first, in tiers
-# authority: opencode curated list > live catalog > changelog > published scores
+# authority: opencode curated list > live catalog > published independent scores > vendor claims
+# order is rewritten by the per-run ranking turn (tools/rank-prompt.md), not by hand
 
-# tier 1 - owner-selected leader (2026-11-09)
+# tier 1 - independently scored leaders (checked 2026-11-09)
+# AA Index v5.0 32.6; DeepSWE 74.3 independent - sources: Artificial Analysis, Fireworks - 2026-11-09
 deepseek-v4.1-flash-free
-
-# tier 2 - proven incumbents and strong families (checked 2026-11-08)
+# AA Index v5.0 30.6; Vals 56.1%; 76% Bito independent - sources: Artificial Analysis, Vals AI, Bito - 2026-11-09
 inkling-2-small-free
-crouton-alpha-free
-iceman-free
-flint-40b-free
-
-# tier 3 - new, not yet proven in this fleet (checked 2026-11-09)
-# longcat: 1M ctx, vendor benchmarks only, free window ~2026-11-23
-longcat-2.5-free
+# AA Index 26.7; Vals 54.8%; 64.7/90 AI Coding Daily - sources: Artificial Analysis, Vals AI, AI Coding Daily - 2026-11-09
 mimo-v2.6-flash-free
-beam-free
-big-pickle
-
-# tier 4 - limited data (checked 2026-11-08)
-nemotron-3.5-super-vl-free
+# AA Coding Index 26.8 - source: Artificial Analysis via llmbenchmark.ai - 2026-11-09
 nemotron-3.5-lightning-free
 
-# vetoed by owner (relay 2026-10-22: "stay owner-vetoed in EXCLUDE"): glm-5.3-flash-free (AA coding 41.8, the highest free score - vetoed anyway), jev-1.13-free (probabilistic classifier, not a coding model)
+# tier 2 - limited or estimated independent data (checked 2026-11-09)
+# AA Coding Index 48.3 estimated, medium confidence; SWE-bench Verified 74.2 vendor - source: Benchgap - 2026-11-09
+flint-40b-free
+# AA Intelligence 30; Terminal-Bench 4.0 3.0% independent - source: Artificial Analysis via Ridge - 2026-11-09
+beam-free
+
+# tier 3 - no independent coding score (checked 2026-11-09)
+# no independent score; DeepSWE 64.6, Terminal-Bench 4.0 38.5 vendor - source: Meituan launch evals - 2026-11-09
+longcat-2.5-free
+# no independent coding score; vision-language model - source: OpenCode Zen catalog - 2026-11-09
+nemotron-3.5-super-vl-free
+# no independent score; stealth model, 1M context - source: OpenCode Zen catalog - 2026-11-09
+crouton-alpha-free
+# no independent score; stealth model - source: OpenCode Zen catalog - 2026-11-09
+iceman-free
+# no independent score; stealth model - source: OpenCode Zen catalog - 2026-11-09
+big-pickle
+
+# vetoed by owner (2026-10-22): glm-5.3-flash-free, jev-1.13-free (probabilistic classifier, not a coding model)
 # retired 2026-10-20+: minimax-m3.1-flash-free, Pulse Alpha Free (deprecated 2026-11-06)
