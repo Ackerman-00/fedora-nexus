@@ -8,7 +8,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        13.20261109git03ada6d%{?dist}
+Release:        14.20261110git03ada6d%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -91,7 +91,12 @@ cp -p %{SOURCE5} Meta/CMake/vcpkg/overlay-ports/harfbuzz/usage
 %build
 export VCPKG_FORCE_SYSTEM_BINARIES=1
 python3 Meta/ladybird.py vcpkg --preset Release
-cmake --preset Release -S . -B Build/release -DBUILD_TESTING=OFF -DENABLE_INSTALL_FREEDESKTOP_FILES=OFF -DCMAKE_INSTALL_PREFIX=/opt/ladybird -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=OFF
+# x86-64-v2: upstream defaults to -march=native, which bakes the builder's AVX-512 into published code
+cmake --preset Release -S . -B Build/release -DBUILD_TESTING=OFF -DENABLE_INSTALL_FREEDESKTOP_FILES=OFF -DCMAKE_INSTALL_PREFIX=/opt/ladybird -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=OFF -DENABLE_CI_BASELINE_CPU=ON
+if grep -q -- '-march=native' Build/release/build.ninja; then
+  echo 'ERROR: -march=native leaked into the build' >&2
+  exit 1
+fi
 cmake --build Build/release --parallel %{?_smp_build_ncpus}
 
 %install
@@ -122,6 +127,8 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.0.0-14.20261110git03ada6d
+- Build for x86-64-v2 (upstream's ENABLE_CI_BASELINE_CPU) instead of -march=native, and fail the build if native leaks back in: the COPR builder has AVX-512, so the published libraries carried vrndscalesd and every launch died with SIGILL (ILL_ILLOPN) inside __llvm_libc_ladybird::math::pow during liblagom-gfx's static initializers, before main(), on any CPU without AVX-512 (Ryzen 5 5600G repro)
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.0.0-13.20261109git03ada6d
 - Rebuild the bundled libicudata from its own icudt78_dat blob and fail the build on any bundled library the loader cannot open: vcpkg's rpath rewrite left libicudata's PT_DYNAMIC one program header out of step, so every helper (RequestServer, WebContent, ...) segfaulted in ld.so before main() and the browser died with "Failed to connect to RequestServer"
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.0.0-12.20261109git03ada6d

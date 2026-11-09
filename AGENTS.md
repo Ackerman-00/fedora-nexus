@@ -159,6 +159,18 @@ If the agent skips the dependency table, the job fails and the next run retries 
   exists in the ecosystem's registry first so a typo cannot read as clean.
 - vcpkg strips `LDFLAGS` env for ports. Triplet `VCPKG_C/CXX_LINK_FLAGS` do NOT reach a meson port's shared-library link either (ladybird harfbuzz failed at 11285527 with them); env CFLAGS/CXXFLAGS do reach the port's compile. A global `-fno-exceptions` breaks cpptrace, which needs exceptions. The proven fix for a port whose C++ TUs must link with the C++ driver under Fedora's `-fexceptions` is an overlay port passing `-Dwith_libstdcxx=true` (ladybird `ladybird-unstable/harfbuzz-overlay-portfile.cmake`, vcpkg builtin-baseline 20ceb8adbf override; verified 2026-11-08: libharfbuzz then links with NEEDED libstdc++.so.6).
 
+### COPR builders are not the user's CPU: `-march=native` means SIGILL (found 2026-11-10)
+
+ladybird-unstable shipped code for the builder's CPU, not yours: upstream
+`Meta/CMake/compile_options.cmake` adds `-march=native` (and `-Ctarget-cpu=native`
+for Rust) unless `ENABLE_CI_BASELINE_CPU` is ON, so COPR's AVX-512 host baked
+`vrndscalesd` into `__llvm_libc_ladybird::math::pow`, and every launch on a CPU
+without AVX-512 died with SIGILL (`ILL_ILLOPN`) in a static initializer before
+`main()`. vcpkg ports are not affected - their triplets carry no `-march`
+(`libharfbuzz`/`libicu`/`libjpeg`: 0 AVX-512 instructions; `liblagom-ak`: 2138).
+RULE: any upstream build that can pick the host ISA is pinned to the distro
+baseline and the spec fails if native leaks back (see the build.ninja grep).
+
 ### Check criteria that produce false failures (found 2026-10-06)
 
 - `dnf builddep --assumeno <spec>` EXITS 1 whenever a transaction would run, which is the
