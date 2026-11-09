@@ -1,13 +1,13 @@
 # free-model cascade ranking - strongest first, in tiers
 # authority: opencode curated list > live catalog > changelog > published scores
 
-# tier 1 - user-selected leader (checked 2026-11-08)
-inkling-2-small-free
+# tier 1 - owner-selected leader (2026-11-09)
+deepseek-v4.1-flash-free
 
 # tier 2 - proven incumbents and strong families (checked 2026-11-08)
+inkling-2-small-free
 crouton-alpha-free
 iceman-free
-deepseek-v4.1-flash-free
 flint-40b-free
 
 # tier 3 - unscored free models (checked 2026-11-08)

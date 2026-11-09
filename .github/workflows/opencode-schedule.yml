@@ -228,7 +228,7 @@ jobs:
           echo "DEADLINE_EPOCH=$DEADLINE_EPOCH" >> $GITHUB_ENV
           mapfile -t CASCADE < <(bash tools/model-cascade.sh 2>/dev/null)
           if [ "${#CASCADE[@]}" -eq 0 ]; then
-            CASCADE=(opencode/mimo-v2.6-flash-free opencode/deepseek-v4.1-flash-free)
+            CASCADE=(opencode/deepseek-v4.1-flash-free opencode/inkling-2-small-free opencode/mimo-v2.6-flash-free)
           fi
           echo "=== free-model cascade: ${CASCADE[*]} ==="
           quota_hits=0
