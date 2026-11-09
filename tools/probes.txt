@@ -66,6 +66,6 @@ xdg-desktop-portal-umbriel-git|xdg-desktop-portal-umbriel-git|test -x /usr/libex
 zen-browser|zen-browser|MOZ_HEADLESS=1 zen --version
 zig0.17|zig0.17|zig0.17 version
 hatter-icon-theme|hatter-icon-theme|files-only
-ladybird-unstable|ladybird-unstable|test -x /usr/bin/ladybird && test -x /opt/ladybird/libexec/RequestServer && { timeout 60 /usr/bin/ladybird --version >/dev/null 2>&1; test $? -lt 128; } && { timeout 30 /opt/ladybird/libexec/RequestServer >/dev/null 2>&1; test $? -lt 128; }
+ladybird-unstable|ladybird-unstable|test -x /usr/bin/ladybird && test -x /opt/ladybird/libexec/RequestServer && QT_QPA_PLATFORM=offscreen timeout 60 /usr/bin/ladybird --version 2>/dev/null | grep -q '^Version' && { timeout 30 /opt/ladybird/libexec/RequestServer >/dev/null 2>&1; test $? -lt 128; }
 whitesur-icon-theme|whitesur-icon-theme|files-only
 hermes-agent-desktop|hermes-agent-desktop|test -x /usr/bin/hermes-agent-desktop && test -d /opt/HermesDesktop && test -x /opt/HermesDesktop/Hermes
