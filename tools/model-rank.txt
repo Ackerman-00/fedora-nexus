@@ -10,7 +10,9 @@ crouton-alpha-free
 iceman-free
 flint-40b-free
 
-# tier 3 - unscored free models (checked 2026-11-08)
+# tier 3 - new, not yet proven in this fleet (checked 2026-11-09)
+# longcat: 1M ctx, vendor benchmarks only, free window ~2026-11-23
+longcat-2.5-free
 mimo-v2.6-flash-free
 beam-free
 big-pickle
@@ -19,5 +21,5 @@ big-pickle
 nemotron-3.5-super-vl-free
 nemotron-3.5-lightning-free
 
-# vetoed by owner (relay 2026-10-22: "stay owner-vetoed in EXCLUDE"): glm-5.3-flash-free (published coding 71.5, howmanytoken 2026-11-07), jev-1.13-free (probabilistic classifier, not a coding model)
+# vetoed by owner (relay 2026-10-22: "stay owner-vetoed in EXCLUDE"): glm-5.3-flash-free (AA coding 41.8, the highest free score - vetoed anyway), jev-1.13-free (probabilistic classifier, not a coding model)
 # retired 2026-10-20+: minimax-m3.1-flash-free, Pulse Alpha Free (deprecated 2026-11-06)
