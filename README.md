@@ -32,7 +32,7 @@ sudo dnf install <package-name>
 
 > **Supported releases:** Fedora 43, 44, 45 and Rawhide (x86_64), exactly the
 > four chroots this COPR builds (project API `chroot_repos`, checked
-> 2026-11-07). Fedora 45 is the current stable release (GA 2026-10-28);
+> 2026-11-09). Fedora 45 is the current stable release (GA 2026-10-28);
 > Rawhide is Fedora 46 (`fedora-release-46-0.1`). Fedora 44 and 43 remain
 > supported; Fedora 43 reaches end-of-life on 2026-12-09, after which its
 > chroot will be disabled. If you are on F43, plan an upgrade to F44 or F45.
