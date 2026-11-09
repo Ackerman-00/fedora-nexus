@@ -1,6 +1,6 @@
 # free-model cascade ranking - strongest first, in tiers
 # authority: opencode curated list > live catalog > published independent scores > vendor claims
-# order is rewritten by the per-run ranking turn (tools/rank-prompt.md), not by hand
+# order is set by the per-run web check in tools/sweep-prompt.md, not by hand
 
 # tier 1 - independently scored leaders (checked 2026-11-09)
 # AA Index v5.0 32.6; DeepSWE 74.3 independent - sources: Artificial Analysis, Fireworks - 2026-11-09
