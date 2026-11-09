@@ -8,7 +8,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        12.20261109git03ada6d%{?dist}
+Release:        13.20261109git03ada6d%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -18,6 +18,7 @@ Source2:        harfbuzz-overlay-vcpkg.json
 Source3:        harfbuzz-overlay-fix-win32-build.patch
 Source4:        harfbuzz-overlay-config.cmake.in
 Source5:        harfbuzz-overlay-usage
+Source6:        repair-bundled-libs.py
 
 Requires:       libQt6Core.so.6()(64bit)
 Requires:       libQt6Gui.so.6()(64bit)
@@ -39,6 +40,7 @@ Recommends:     mesa-vulkan-drivers
 BuildRequires:  autoconf-archive
 BuildRequires:  autoconf
 BuildRequires:  automake
+BuildRequires:  binutils
 BuildRequires:  ccache
 BuildRequires:  cmake
 BuildRequires:  curl
@@ -101,6 +103,8 @@ VCPKG_LIBS=$(find Build/release/vcpkg_installed/*-linux-dynamic/lib -maxdepth 1 
 [ -n "$VCPKG_LIBS" ] || { echo "FATAL: no vcpkg shared libraries found to bundle" >&2; exit 1; }
 cp -a $VCPKG_LIBS %{buildroot}/opt/ladybird/lib64/
 chmod -R u+w %{buildroot}/opt/ladybird
+# vcpkg's rpath rewrite leaves libicudata's ELF headers one program header out of step (helpers died in ld.so)
+python3 %{SOURCE6} %{buildroot}/opt/ladybird/lib64
 
 %files
 %license LICENSE
@@ -118,6 +122,8 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.0.0-13.20261109git03ada6d
+- Rebuild the bundled libicudata from its own icudt78_dat blob and fail the build on any bundled library the loader cannot open: vcpkg's rpath rewrite left libicudata's PT_DYNAMIC one program header out of step, so every helper (RequestServer, WebContent, ...) segfaulted in ld.so before main() and the browser died with "Failed to connect to RequestServer"
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.0.0-12.20261109git03ada6d
 - Refresh snapshot 1d07e31 -> 03ada6d (426 commits upstream to 2026-11-09T14:56Z; vcpkg.json and top-level CMakeLists byte-identical to 1d07e31, builtin-baseline unchanged at 20ceb8adb, so the harfbuzz overlay and LTO escape hatch carry over unchanged)
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.0.0-11.20261109git1d07e31
