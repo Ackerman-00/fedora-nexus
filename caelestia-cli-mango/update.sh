@@ -9,7 +9,7 @@ fi
 
 SPEC_FILE="caelestia-cli-mango.spec"
 GITHUB_REPO="Ackerman-00/caelestia-cli-mango"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 

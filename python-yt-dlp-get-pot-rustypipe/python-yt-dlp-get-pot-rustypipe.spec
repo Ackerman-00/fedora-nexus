@@ -40,7 +40,7 @@ cp -p %{SOURCE1} LICENSE
 %license LICENSE
 
 %changelog
-* Tue Oct 20 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-5
+* Tue Oct 20 2026 Ackerman-00 <no-reply> - 0.2.0-5
 - Ship the MIT license text: the sdist carries none, but the plugin lives in
   the rustypipe-botguard repo and its tag yt-dlp-get-pot-rustypipe/v0.2.0
   ships the LICENSE (Copyright (c) 2025 ThetaDev), so %license now has text
@@ -54,5 +54,5 @@ cp -p %{SOURCE1} LICENSE
 * Sun Sep 06 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.2.0-2
 - Add missing %prep/%autosetup so %generate_buildrequires finds the
   sources (same failure as pydbus 10955044 / ytmusicapi 10955049).
-* Sun Sep 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.0-1
+* Sun Sep 06 2026 Ackerman-00 <no-reply> - 0.2.0-1
 - Initial package (dependency of mixtapes). Debuginfo disabled (pure-Python, no ELF).

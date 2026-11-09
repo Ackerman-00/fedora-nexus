@@ -96,14 +96,14 @@ install -Dpm 0644 %{SOURCE4} %{buildroot}%{_licensedir}/%{name}/LICENSE
 * Fri Aug 21 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.5.3-3
 - Rebuild for COPR (spec validation fix)
 
-* Tue Aug 18 2026 Ackerman-00 <quietcraft@gmail.com> - 1.5.2-3
+* Tue Aug 18 2026 Ackerman-00 <no-reply> - 1.5.2-3
 - Fix build: disable check-rpaths for bundled prebuilt native module
   (node-pipewire index.node carries Nix-store RUNPATH; all NEEDED libs
   resolve from the system).
 - Add Requires: pipewire-libs (needed by bundled node-pipewire voice module).
 
-* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.2-2
+* Thu Aug 06 2026 Ackerman-00 <no-reply> - 1.4.2-2
 - Fix %install: use install -Dpm for desktop/metainfo to create parent dirs
 
-* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.2-1
+* Wed Aug 05 2026 Ackerman-00 <no-reply> - 1.4.2-1
 - Initial package# Re-triggered rebuild for COPR SRPM-import outage on 2026-08-18 (spec unchanged).

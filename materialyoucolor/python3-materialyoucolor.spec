@@ -40,5 +40,5 @@ pybind11 extension for speed, with a pure-Python fallback.
 %license LICENSE
 
 %changelog
-* Sat Aug 08 2026 Ackerman-00 <quietcraft@gmail.com> - 3.0.4-1
+* Sat Aug 08 2026 Ackerman-00 <no-reply> - 3.0.4-1
 - Initial package (builds the C++ quantizer via pybind11)

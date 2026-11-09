@@ -8,7 +8,7 @@ if [ "$(pwd)" != "$_update_sh_dir" ]; then
 fi
 
 SPEC_FILE="cline-desktop.spec"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 MANIFEST_URL="https://github.com/cline/cline/releases/download/desktop-latest/latest.json"
 
 echo "Checking for Cline desktop updates..."

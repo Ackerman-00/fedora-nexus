@@ -104,5 +104,5 @@ install -Dm644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %attr(4755, root, root) /opt/openchamber/chrome-sandbox
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.7.0-1
+* Sun Nov 08 2026 Ackerman-00 <no-reply> - 2.7.0-1
 - Auto-update to upstream release v2.7.0

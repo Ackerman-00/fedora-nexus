@@ -36,5 +36,5 @@ gtk-update-icon-cache -q %{_datadir}/icons/WhiteSur 2>/dev/null || :
 for t in %{_datadir}/icons/WhiteSur*; do gtk-update-icon-cache -q "$t" 2>/dev/null || :; done
 
 %changelog
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.09.10-1
+* Sat Nov 07 2026 Ackerman-00 <no-reply> - 2026.09.10-1
 - Initial import

@@ -118,5 +118,5 @@ esac
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.48.1-1
+* Sun Nov 08 2026 Ackerman-00 <no-reply> - 0.48.1-1
 - Auto-update to upstream stable release v0.48.1

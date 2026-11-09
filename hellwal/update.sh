@@ -9,7 +9,7 @@ fi
 
 SPEC_FILE="hellwal.spec"
 GITHUB_REPO="danihek/hellwal"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 

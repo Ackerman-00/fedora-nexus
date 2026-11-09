@@ -56,5 +56,5 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/astal-io-0.1.pc
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261108102027gitb7aaf4c-1
+* Sun Nov 08 2026 Ackerman-00 <no-reply> - 0^20261108102027gitb7aaf4c-1
 - Nightly sync with upstream main branch (Commit: b7aaf4c)

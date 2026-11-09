@@ -118,7 +118,7 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261108031608git74dd931-2
+* Sun Nov 08 2026 Ackerman-00 <no-reply> - 1.7.0^20261108031608git74dd931-2
 - Drop unused BuildRequires greetd/dbus/polkit (no build- or check-time reference in meson.build or tests/); use pkgconfig(glesv2) instead of virtual mesa-libGLES-devel; add Requires: polkit (pkexec path for noctalia-greeter-apply-appearance via the shipped .policy)
-* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 1.7.0^20261108031608git74dd931-1
+* Sun Nov 08 2026 Ackerman-00 <no-reply> - 1.7.0^20261108031608git74dd931-1
 - Nightly sync with upstream main branch (Commit: 74dd931)

@@ -9,7 +9,7 @@ fi
 
 SPEC_FILE="python3-materialyoucolor.spec"
 PYPI_NAME="materialyoucolor"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 
 echo "Checking PyPI for $PYPI_NAME updates..."
 

@@ -37,7 +37,7 @@ install -Dpm0755 target/release/matugen -t %{buildroot}%{_bindir}/
 %{_bindir}/matugen
 
 %changelog
-* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 4.2.0-4
+* Tue Oct 27 2026 Ackerman-00 <no-reply> - 4.2.0-4
 - Ship debuginfo: this is a source build (cargo), so the debug_package
   override was discarding symbols the build already produces
 * Tue Sep 08 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 4.2.0-3
@@ -47,11 +47,11 @@ install -Dpm0755 target/release/matugen -t %{buildroot}%{_bindir}/
 - Add missing changelog entry for the 4.2.0 version bump (NVR unchanged,
   already built in COPR; spec-metadata fix only)
 
-* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 4.1.0-2
+* Sun Aug 02 2026 Ackerman-00 <no-reply> - 4.1.0-2
 - Drop dead BuildRequires pkgconfig(openssl) (no openssl crate in Cargo.lock;
   matugen uses rustls for TLS)
 
-* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 4.1.0-1
+* Sun Aug 02 2026 Ackerman-00 <no-reply> - 4.1.0-1
 - Update to version 4.1.0
 
 * Wed Apr 15 2026 Nexus Bot <bot@github.com> - 2.4.1-1

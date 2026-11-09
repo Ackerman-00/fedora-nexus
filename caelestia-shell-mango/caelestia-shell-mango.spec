@@ -141,16 +141,16 @@ fi
 %{_datadir}/caelestia-shell/utils/
 
 %changelog
-* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.0^20260811081721gitcae55ed-3
+* Sat Oct 03 2026 Ackerman-00 <no-reply> - 2.1.0^20260811081721gitcae55ed-3
 - Fix stale -DVERSION hardcode: the built version binary reported 2.0.0
   while the pinned commit cae55ed is the upstream v2.1.0 tag. Derive
   -DVERSION from a %global basever macro so Version and the CMake version
   can no longer diverge, and teach update.sh to resolve basever from the
   upstream tag pointing at HEAD
 
-* Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.0^20260811081721gitcae55ed-2
+* Wed Aug 12 2026 Ackerman-00 <no-reply> - 2.1.0^20260811081721gitcae55ed-2
 - Require brightnessctl: Brightness.qml falls back to brightnessctl for
   displays that present a backlight interface (ddcutil covers DDC-only panels)
 
-* Tue Aug 11 2026 Ackerman-00 <quietcraft@gmail.com> - 2.1.0^20260811081721gitcae55ed-1
+* Tue Aug 11 2026 Ackerman-00 <no-reply> - 2.1.0^20260811081721gitcae55ed-1
 - Nightly sync with upstream main branch (Commit: cae55ed)

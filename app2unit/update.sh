@@ -9,7 +9,7 @@ fi
 
 SPEC_FILE="app2unit.spec"
 GITHUB_REPO="Vladimir-csp/app2unit"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 

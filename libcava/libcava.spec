@@ -58,5 +58,5 @@ Headers and pkg-config file for developing with libcava.
 %{_libdir}/pkgconfig/libcava.pc
 
 %changelog
-* Mon Jul 20 2026 Ackerman-00 <quietcraft@gmail.com> - 1.0.0-1
+* Mon Jul 20 2026 Ackerman-00 <no-reply> - 1.0.0-1
 - Update to 1.0.0

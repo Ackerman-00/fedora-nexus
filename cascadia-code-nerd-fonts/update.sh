@@ -9,7 +9,7 @@ fi
 
 SPEC_FILE="cascadia-code-nerd-fonts.spec"
 GITHUB_REPO="ryanoasis/nerd-fonts"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 

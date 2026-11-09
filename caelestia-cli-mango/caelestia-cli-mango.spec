@@ -71,9 +71,9 @@ install -Dpm 0644 completions/caelestia.fish %{buildroot}%{_datadir}/fish/vendor
 %license LICENSE
 
 %changelog
-* Wed Aug 12 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260811125152gitbe54856-2
+* Wed Aug 12 2026 Ackerman-00 <no-reply> - 2.0.0^20260811125152gitbe54856-2
 - Require dbus-tools: subcommands/record.py invokes dbus-send to reveal
   files in the file manager (org.freedesktop.FileManager1)
 
-* Tue Aug 11 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.0^20260811125152gitbe54856-1
+* Tue Aug 11 2026 Ackerman-00 <no-reply> - 2.0.0^20260811125152gitbe54856-1
 - Nightly sync with upstream main branch (Commit: be54856)

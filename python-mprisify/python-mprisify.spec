@@ -59,5 +59,5 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 * Sun Sep 06 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.0.1-2
 - Map StrEnum backport imports to stdlib enum.StrEnum (not in Fedora;
   COPR 10955043 failed on python3dist(strenum)).
-* Sun Sep 06 2026 Ackerman-00 <quietcraft@gmail.com> - 1.0.1-1
+* Sun Sep 06 2026 Ackerman-00 <no-reply> - 1.0.1-1
 - Initial package (dependency of mixtapes). Debuginfo disabled (pure-Python, no ELF).

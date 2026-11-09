@@ -143,11 +143,11 @@ fi
 /opt/Qoder/*
 
 %changelog
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.6-3
+* Sat Nov 07 2026 Ackerman-00 <no-reply> - 0.5.6-3
 - Drop the dead chmod on the excluded chrome-sandbox (the file is not shipped)
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.6-2
+* Sat Nov 07 2026 Ackerman-00 <no-reply> - 0.5.6-2
 - Exclude the 811MB /opt bundle from __brp_mangle_shebangs: the payload ships minified single-line JS that made the shebang pass unbounded (~25 min CPU per build), and brp removes exec bits from text files without shebangs
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.6-1
+* Sat Nov 07 2026 Ackerman-00 <no-reply> - 0.5.6-1
 - Ship LICENSE.electron.txt and LICENSES.chromium.html as %license (they were declared then excluded); drop the contradictory chrome-sandbox %attr line (the helper is deliberately not shipped); rewrite update.sh in the repo pattern.
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.5.6-0
+* Sat Nov 07 2026 Ackerman-00 <no-reply> - 0.5.6-0
 - Initial package

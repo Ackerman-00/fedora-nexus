@@ -73,12 +73,12 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
 * Fri Oct 09 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.6.8-4
 - Drop unused libappstream-glib BuildRequires (no in-spec consumer; upstream
   meson needs only the freedesktop appstream library). Same upstream v0.6.8.
-* Sun Sep 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.8-3
+* Sun Sep 27 2026 Ackerman-00 <no-reply> - 0.6.8-3
 - Wrap %description to fix rpmlint E: description-line-too-long
 
-* Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.8-2
+* Wed Sep 23 2026 Ackerman-00 <no-reply> - 0.6.8-2
 - Add missing BuildRequires: python3 (tests/meson.build uses
   python.find_installation for scripts_test.py run in %check)
 
-* Thu Sep 10 2026 Ackerman-00 <quietcraft@gmail.com> - 0.6.8-1
+* Thu Sep 10 2026 Ackerman-00 <no-reply> - 0.6.8-1
 - Update to version 0.6.8

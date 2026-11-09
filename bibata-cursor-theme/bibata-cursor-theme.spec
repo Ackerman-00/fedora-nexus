@@ -29,5 +29,5 @@ mv Bibata-* %{buildroot}%{_datadir}/icons/
 %{_datadir}/icons/Bibata-*
 
 %changelog
-* Wed Jul 29 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.7-1
+* Wed Jul 29 2026 Ackerman-00 <no-reply> - 2.0.7-1
 - Initial package

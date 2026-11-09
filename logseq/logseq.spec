@@ -104,5 +104,5 @@ install -Dpm 0644 %{SOURCE2} %{buildroot}%{_licensedir}/%{name}/LICENSE.md
 - Ship the upstream AGPL-3.0 LICENSE.md (Source2, same 2.0.2 tag); the
   release zip only bundles Electron/Chromium third-party notices.
 
-* Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 2.0.2-1
+* Wed Oct 07 2026 Ackerman-00 <no-reply> - 2.0.2-1
 - Auto-updated to 2.0.2 via update.sh

@@ -36,5 +36,5 @@ install -Dpm 0644 %{SOURCE3} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/fonts/%{name}
 
 %changelog
-* Fri Oct 23 2026 Ackerman-00 <quietcraft@gmail.com> - 4.0.0^20261023021843git10ecc14-1
+* Fri Oct 23 2026 Ackerman-00 <no-reply> - 4.0.0^20261023021843git10ecc14-1
 - Nightly sync with upstream master branch (Commit: 10ecc14)

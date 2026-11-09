@@ -61,5 +61,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/concat.desktop || tru
 %{_datadir}/icons/hicolor/256x256/apps/concat.png
 
 %changelog
-* Thu Nov 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.9-1
+* Thu Nov 05 2026 Ackerman-00 <no-reply> - 0.2.9-1
 - Auto-update to upstream release v0.2.9

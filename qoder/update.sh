@@ -8,7 +8,7 @@ if [ "$(pwd)" != "$_update_sh_dir" ]; then
 fi
 
 SPEC_FILE="qoder.spec"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 FEED="https://download.qoder.com.cn/qoder-app/releases/latest-linux.yml"
 
 echo "Checking for Qoder updates on $FEED..."

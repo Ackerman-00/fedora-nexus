@@ -70,7 +70,7 @@ Compiled specifically for the Nexus repository via automated Git snapshot.
 %config(noreplace) %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261106143557git5695142-2
+* Sun Nov 08 2026 Ackerman-00 <no-reply> - 0.1.0^20261106143557git5695142-2
 - Add explicit pkgconfig(glib-2.0)/pkgconfig(gio-2.0) BuildRequires (gnome.compile_resources and glib-unix.h)
-* Fri Nov 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261106143557git5695142-1
+* Fri Nov 06 2026 Ackerman-00 <no-reply> - 0.1.0^20261106143557git5695142-1
 - Nightly sync with upstream main branch (Commit: 5695142)

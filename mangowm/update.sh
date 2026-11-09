@@ -9,7 +9,7 @@ fi
 
 SPEC_FILE="mangowm.spec"
 GITHUB_REPO="mangowm/mango"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 
 echo "Checking for upstream updates on $GITHUB_REPO..."
 

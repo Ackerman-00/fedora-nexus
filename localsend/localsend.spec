@@ -94,7 +94,7 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
   libflutter_linux_gtk.so links libepoxy, which opens both at startup. A clean
   fedora:44 container install aborted (rc 134, "Couldn't open libEGL.so.1",
   then libGLESv2.so.2) until libglvnd-egl and libglvnd-gles were present.
-* Fri Aug 21 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.2-1
+* Fri Aug 21 2026 Ackerman-00 <no-reply> - 1.18.2-1
 - Update to upstream v1.18.2 (full desktop assets; 1.18.1 was Android-only)
-* Tue Aug 11 2026 Ackerman-00 <quietcraft@gmail.com> - 1.18.0-2
+* Tue Aug 11 2026 Ackerman-00 <no-reply> - 1.18.0-2
 - Fix %%prep: upstream switched DEB data archive from data.tar.xz to data.tar.zst in v1.18.0; detect format dynamically

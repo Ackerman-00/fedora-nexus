@@ -54,5 +54,5 @@ for t in %{_datadir}/icons/Hatter*/; do
 done
 
 %changelog
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 4.0-1
+* Sat Nov 07 2026 Ackerman-00 <no-reply> - 4.0-1
 - Initial import

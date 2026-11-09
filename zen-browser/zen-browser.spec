@@ -87,5 +87,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
-* Fri Nov 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2:1.24.1b-1
+* Fri Nov 06 2026 Ackerman-00 <no-reply> - 2:1.24.1b-1
 - Auto-update to upstream release 1.24.1b

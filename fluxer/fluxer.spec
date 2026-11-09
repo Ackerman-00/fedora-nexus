@@ -98,5 +98,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/app.fluxer.FluxerDesk
 %attr(4755, root, root) %{_libdir}/%{name}/chrome-sandbox
 
 %changelog
-* Mon Nov 09 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.1109.42917-1
+* Mon Nov 09 2026 Ackerman-00 <no-reply> - 2026.1109.42917-1
 - Update to version 2026.1109.42917

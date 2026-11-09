@@ -47,5 +47,5 @@ system stored on an SSD, overhead can be as short as ~0.03s.
 %{_mandir}/man1/app2unit.1*
 
 %changelog
-* Sat Aug 01 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.4^20260801195144git47e23ec-1
+* Sat Aug 01 2026 Ackerman-00 <no-reply> - 1.4.4^20260801195144git47e23ec-1
 - Nightly sync with upstream master branch (Commit: 47e23ec)

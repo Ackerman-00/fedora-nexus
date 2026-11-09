@@ -8,7 +8,7 @@ if [ "$(pwd)" != "$_update_sh_dir" ]; then
 fi
 
 SPEC_FILE="rootapp.spec"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 APPIMAGE_URL="https://installer.rootapp.com/installer/Linux/X64/Root.AppImage"
 
 echo "Checking for rootapp updates..."

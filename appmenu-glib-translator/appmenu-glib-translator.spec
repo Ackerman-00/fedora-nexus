@@ -56,8 +56,8 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 25.04^20261102201706gitd475cca-2
+* Sat Nov 07 2026 Ackerman-00 <no-reply> - 25.04^20261102201706gitd475cca-2
 - Package new upstream debug.h public header (unpackaged file build failure)
 
-* Tue Nov 03 2026 Ackerman-00 <quietcraft@gmail.com> - 25.04^20261102201706gitd475cca-1
+* Tue Nov 03 2026 Ackerman-00 <no-reply> - 25.04^20261102201706gitd475cca-1
 - Nightly sync with upstream main branch (Commit: d475cca)

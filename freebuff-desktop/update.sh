@@ -8,7 +8,7 @@ if [ "$(pwd)" != "$_update_sh_dir" ]; then
 fi
 
 SPEC_FILE="freebuff-desktop.spec"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 API_URL="https://freebuff.com/api/desktop/download/linux"
 
 echo "Checking for Freebuff desktop updates..."

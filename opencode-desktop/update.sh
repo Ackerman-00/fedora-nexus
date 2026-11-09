@@ -8,7 +8,7 @@ if [ "$(pwd)" != "$_update_sh_dir" ]; then
 fi
 
 SPEC_FILE="opencode-desktop.spec"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 STABLE_URL="https://opencode.ai/download/stable/linux-x64-deb"
 
 echo "Checking for upstream updates..."

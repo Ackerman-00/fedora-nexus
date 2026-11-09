@@ -39,5 +39,5 @@ install -Dpm0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 - Ship the upstream MIT LICENSE (Source1, same v0.1.2 tag); the release
   tarball contains only the binary.
 
-* Sun Sep 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.2-1
+* Sun Sep 06 2026 Ackerman-00 <no-reply> - 0.1.2-1
 - Initial package (PO-token helper for mixtapes). Debuginfo disabled (prebuilt stripped binary).

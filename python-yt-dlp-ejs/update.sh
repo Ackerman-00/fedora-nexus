@@ -9,7 +9,7 @@ fi
 
 SPEC_FILE="python-yt-dlp-ejs.spec"
 PYPI_NAME="yt-dlp-ejs"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 
 echo "Checking PyPI for $PYPI_NAME updates..."
 

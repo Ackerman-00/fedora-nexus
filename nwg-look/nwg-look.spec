@@ -50,7 +50,7 @@ make build
 %{_datadir}/pixmaps/nwg-look.svg
 
 %changelog
-* Thu Oct 22 2026 Ackerman-00 <quietcraft@gmail.com> - 1.2.1-2
+* Thu Oct 22 2026 Ackerman-00 <no-reply> - 1.2.1-2
 - Floor golang at 1.26, the version go.mod declares
 * Wed Oct 14 2026 Nexus Auto-Updater <bot@github.com> - 1.2.1-1
 - Update to version 1.2.1
@@ -64,10 +64,10 @@ make build
 * Tue Sep 01 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.1.1-3
 - Fix build: restore %gometa macro removed in error (SRPM build failed)
 
-* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1.1.1-2
+* Sun Aug 02 2026 Ackerman-00 <no-reply> - 1.1.1-2
 - Drop dead Recommends on xcur2png, which is not packaged in Fedora
 
-* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1.1.1-1
+* Sun Aug 02 2026 Ackerman-00 <no-reply> - 1.1.1-1
 - Update to version 1.1.1
 
 * Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.0.6-1

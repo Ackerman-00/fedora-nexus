@@ -8,7 +8,7 @@ if [ "$(pwd)" != "$_update_sh_dir" ]; then
 fi
 
 SPEC_FILE="awww.spec"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 UPSTREAM_URL="https://codeberg.org/LGFae/awww"
 
 echo "Checking for upstream updates on codeberg.org/LGFae/awww..."

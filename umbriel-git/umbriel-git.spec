@@ -111,5 +111,5 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Mon Nov 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.1.0^20261109044319gitd014810-1
+* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.1.0^20261109044319gitd014810-1
 - Nightly sync with upstream main branch (Commit: d014810)

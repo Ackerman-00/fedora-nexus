@@ -10,7 +10,7 @@ fi
 SPEC_FILE="rustypipe-botguard.spec"
 CODEBERG_REPO="ThetaDev/rustypipe-botguard"
 ASSET="rustypipe-botguard-x86_64-unknown-linux-gnu.tar.xz"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 
 echo "Checking Codeberg releases for $CODEBERG_REPO..."
 

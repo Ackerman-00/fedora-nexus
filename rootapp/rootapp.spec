@@ -137,5 +137,5 @@ DESKTOP_EOF
 %{_datadir}/pixmaps/rootapp.png
 
 %changelog
-* Mon Nov 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.9.163-1
+* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.9.163-1
 - Auto-update to 0.9.163 via update.sh

@@ -96,33 +96,33 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/com.pocoguy.Muse.desk
 %{_datadir}/icons/hicolor/scalable/apps/com.pocoguy.Muse*.svg
 
 %changelog
-* Sun Nov 01 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261031223600gita50a75d-1
+* Sun Nov 01 2026 Ackerman-00 <no-reply> - 0^20261031223600gita50a75d-1
 - Nightly sync with upstream main branch (Commit: a50a75d)
 
-* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261019181359git618c24c-1
+* Mon Oct 19 2026 Ackerman-00 <no-reply> - 0^20261019181359git618c24c-1
 - Nightly sync with upstream main branch (Commit: 618c24c)
 
-* Sun Oct 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261011192142git1b5f1e8-1
+* Sun Oct 11 2026 Ackerman-00 <no-reply> - 0^20261011192142git1b5f1e8-1
 - Nightly sync with upstream main branch (Commit: 1b5f1e8)
 
-* Sun Oct 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261011154526gitd8cfa4e-1
+* Sun Oct 11 2026 Ackerman-00 <no-reply> - 0^20261011154526gitd8cfa4e-1
 - Nightly sync with upstream main branch (Commit: d8cfa4e)
 
-* Thu Oct 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261007233409git790bd83-2
+* Thu Oct 08 2026 Ackerman-00 <no-reply> - 0^20261007233409git790bd83-2
 - Refresh the stale verification header: Source0 url and sha256 now match
   pin 790bd83 (the header still named the 2026-10-03 pin e95c9e9).
 - Teach update.sh to refresh both lines on every future pin change.
 
-* Thu Oct 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261007233409git790bd83-1
+* Thu Oct 08 2026 Ackerman-00 <no-reply> - 0^20261007233409git790bd83-1
 - Nightly sync with upstream main branch (Commit: 790bd83)
 
-* Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261007001719git38c175f-1
+* Wed Oct 07 2026 Ackerman-00 <no-reply> - 0^20261007001719git38c175f-1
 - Nightly sync with upstream main branch (Commit: 38c175f)
 
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261006195339gite95c9e9-1
+* Tue Oct 06 2026 Ackerman-00 <no-reply> - 0^20261006195339gite95c9e9-1
 - Nightly sync with upstream main branch (Commit: e95c9e9)
 
-* Sat Oct 03 2026 Ackerman-00 <quietcraft@gmail.com> - 0^20261003010509git285ba7d-1
+* Sat Oct 03 2026 Ackerman-00 <no-reply> - 0^20261003010509git285ba7d-1
 - Nightly sync with upstream main branch (Commit: 285ba7d)
 
 * Fri Oct 02 2026 Fedora Nexus Bot <no-reply@fedoraproject.org> - 0^20261003010509git285ba7d-1

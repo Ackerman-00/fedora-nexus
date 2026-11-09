@@ -8,7 +8,7 @@ if [ "$(pwd)" != "$_update_sh_dir" ]; then
 fi
 
 SPEC_FILE="gpu-screen-recorder.spec"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 GIT_URL="https://git.dec05eba.com/gpu-screen-recorder/"
 
 echo "Checking for upstream updates..."

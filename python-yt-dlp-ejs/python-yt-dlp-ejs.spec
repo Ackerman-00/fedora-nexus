@@ -43,7 +43,7 @@ install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 %license %{_licensedir}/%{name}/LICENSE
 
 %changelog
-* Tue Oct 27 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.0-6
+* Tue Oct 27 2026 Ackerman-00 <no-reply> - 0.8.0-6
 - Recommend nodejs: the package ships a JavaScript bundle that only runs on
   an external JS runtime, so without one the plugin is silently inert
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.8.0-5
@@ -60,5 +60,5 @@ install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 * Sun Sep 06 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.8.0-2
 - Add missing %prep/%autosetup so %generate_buildrequires finds the
   sources (same failure as pydbus 10955044 / ytmusicapi 10955049).
-* Sun Sep 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.8.0-1
+* Sun Sep 06 2026 Ackerman-00 <no-reply> - 0.8.0-1
 - Initial package (dependency of mixtapes). Debuginfo disabled (pure-Python, no ELF).

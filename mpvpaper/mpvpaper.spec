@@ -47,7 +47,7 @@ install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
   GPL-3.0-only AND MIT but installed no license text; the MIT half is the
   bundled inc/KHR/khrplatform.h (Khronos), whose notice stays in that header.
 
-* Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 1.9-2
+* Fri Aug 07 2026 Ackerman-00 <no-reply> - 1.9-2
 - Add Requires: procps-ng. mpvpaper calls `pidof` via system() in
   check_watch_list (src/main.c:317) and check_paper_processes
   (src/main.c:1368) to implement --pause-list/--stop-list and to warn about
@@ -55,5 +55,5 @@ install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
   install, so every check printed "sh: line 1: pidof: command not found"
   and the watch lists silently never matched
 
-* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 1.9-1
+* Wed Aug 05 2026 Ackerman-00 <no-reply> - 1.9-1
 - Initial package

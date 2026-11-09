@@ -79,10 +79,10 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
   AND MIT AND BSD-2-Clause but installed no license text at all. The file
   comes from the Source0 sdist tarball (LICENSE at the 2.9 tag).
 
-* Sun Aug 30 2026 Ackerman-00 <quietcraft@gmail.com> - 2.9-1
+* Sun Aug 30 2026 Ackerman-00 <no-reply> - 2.9-1
 - Update to 2.9
 
-* Fri Aug 07 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-8
+* Fri Aug 07 2026 Ackerman-00 <no-reply> - 2.8-8
 - Add Requires: procps-ng and psmisc. waypaper invokes pgrep/pkill and
   killall to detect and stop running wallpaper backends
   (changer.py seek_and_destroy, options.py get_monitor_names_with_*,
@@ -90,34 +90,34 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
   a minimal Fedora install, so backend detection failed with
   "Exception: [Errno 2] No such file or directory: 'pgrep'"
 
-* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-7
+* Thu Aug 06 2026 Ackerman-00 <no-reply> - 2.8-7
 - Add Requires: gobject-introspection (provides xlib-2.0.typelib needed by
   python3-gobject's gi import of Gdk, fixing "Typelib file for namespace
   'xlib', version '2.0' not found" crash on launch)
 
-* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-6
+* Thu Aug 06 2026 Ackerman-00 <no-reply> - 2.8-6
 - Use boolean requires (ffmpeg or ffmpeg-free): installs on stock Fedora
   (ffmpeg-free) and on RPM Fusion systems (full ffmpeg) without conflicts
 
-* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-5
+* Thu Aug 06 2026 Ackerman-00 <no-reply> - 2.8-5
 - Fix pyproject-rpm-macros 1.22 compatibility: replace %pyproject_save_files
   with explicit file listings
 - Strip vendored screeninfo/imageio-ffmpeg from wheel METADATA to prevent
   RPM auto-generating unresolvable python3.14dist() requires
 
-* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-4
+* Thu Aug 06 2026 Ackerman-00 <no-reply> - 2.8-4
 - Fix imageio_ffmpeg sdist extraction: --strip-components=2 stripped the
   imageio_ffmpeg/ directory level, scattering the module files into the
   top-level build dir and breaking the %install copy
 
-* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-3
+* Thu Aug 06 2026 Ackerman-00 <no-reply> - 2.8-3
 - Add python3-pip BuildRequire: %pyproject_wheel imports pip to install
   build-system requires in its temp env
 
-* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-2
+* Thu Aug 06 2026 Ackerman-00 <no-reply> - 2.8-2
 - Fetch vendored screeninfo and imageio-ffmpeg from PyPI sdists via
   remote Source1/Source2 URLs (auto-downloaded by COPR) instead of
   local sources-directory copies of committed directories
 
-* Wed Aug 05 2026 Ackerman-00 <quietcraft@gmail.com> - 2.8-1
+* Wed Aug 05 2026 Ackerman-00 <no-reply> - 2.8-1
 - Initial package

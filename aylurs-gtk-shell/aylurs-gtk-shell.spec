@@ -51,12 +51,12 @@ tar -xzf %{SOURCE1} -C node_modules/gnim --strip=1
 %{_datadir}/ags/
 
 %changelog
-* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 3.1.2-2
+* Mon Oct 19 2026 Ackerman-00 <no-reply> - 3.1.2-2
 - Add the runtime Astal/libadwaita Requires the shipped JS imports: the gtk4
   entry point needs gi://Astal?version=4.0 (astal-gtk4) and gi://Adw
   (libadwaita), the gtk3 entry point needs gi://Astal?version=3.0 (astal),
   and the Astal service typelibs are in astal-libs (Recommends, imported
   inside suppress()). Also floor gjs at upstream's engines value >= 1.79.0.
-* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 3.1.2-1
+* Mon Aug 17 2026 Ackerman-00 <no-reply> - 3.1.2-1
 - Rebase to 3.1.2 (Go CLI, gtk4-layer-shell, bundled gnim)
 - Drop gvc subproject and TypeScript build (removed upstream in 3.0)

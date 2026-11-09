@@ -107,7 +107,7 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
   the auto-update left the pin and bundled(electron) at their 1.1.0 values
   (Electron 43.2.0 -> 44.9.0; better-sqlite3 13.0.3 unchanged).
 
-* Sat Oct 24 2026 Ackerman-00 <quietcraft@gmail.com> - 1.2.0-1
+* Sat Oct 24 2026 Ackerman-00 <no-reply> - 1.2.0-1
 - Auto-update to upstream release v1.2.0
 
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.1.0-3
@@ -117,7 +117,7 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 - Fix startup crash: ship chrome-sandbox as %attr(4755, root, root) so the
   Electron SUID sandbox helper is configured correctly (was 0755 ->
   FATAL abort for every non-root launch; verified under xvfb before/after).
-* Sun Sep 06 2026 Ackerman-00 <quietcraft@gmail.com> - 1.1.0-1
+* Sun Sep 06 2026 Ackerman-00 <no-reply> - 1.1.0-1
 - Initial package: natively repackaged upstream RPM (Electron 43.2.0,
   better-sqlite3 13.0.3, 4 Rust napi native modules). Runtime Requires
   derived from readelf NEEDED + upstream RPM Requires; Wayland wrapper

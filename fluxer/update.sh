@@ -8,7 +8,7 @@ if [ "$(pwd)" != "$_update_sh_dir" ]; then
 fi
 
 SPEC_FILE="fluxer.spec"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 API_URL="https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm"
 
 echo "Checking for upstream updates..."

@@ -48,28 +48,28 @@ install -Dpm 0644 contrib/systemd/awww-daemon.service %{buildroot}%{_userunitdir
 %{_userunitdir}/awww-daemon.service
 
 %changelog
-* Fri Oct 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.1-7
+* Fri Oct 23 2026 Ackerman-00 <no-reply> - 0.12.1-7
 - Point Source0 at the codeberg archive path that exists
   (archive/v%{version}.tar.gz); -6 used archive/v<ver>/<name>-<ver>.tar.gz
   and COPR build 11199746 died in rpkg srpm with curl 404
-* Fri Oct 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.1-6
+* Fri Oct 23 2026 Ackerman-00 <no-reply> - 0.12.1-6
 - Fetch Source0 from the codeberg tag archive (HTTP 200, sha256 pinned)
   instead of shipping the tarball in git; the archive is byte-identical
   to the committed tarball (diff -rq clean) and extracts to awww/
-* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.1-5
+* Mon Oct 19 2026 Ackerman-00 <no-reply> - 0.12.1-5
 - Ship the LICENSE and README.md the upstream tarball carries as
   %license/%doc; the package shipped binaries with no license text
-* Wed Oct 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.1-4
+* Wed Oct 14 2026 Ackerman-00 <no-reply> - 0.12.1-4
 - Replace lz4-devel with pkgconfig(liblz4) >= 1.8 to carry upstream's
   liblz4 1.8 minimum (common/build.rs pkg-config probe)
 
-* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.1-3
+* Thu Aug 06 2026 Ackerman-00 <no-reply> - 0.12.1-3
 - Fix autosetup: tarball extracts to awww-0.12.1/, not awww/
 
-* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.1-2
+* Thu Aug 06 2026 Ackerman-00 <no-reply> - 0.12.1-2
 - Add pkgconfig(wayland-protocols) BuildRequires: waybackend-scanner
   build-script needs pkg-config --variable=pkgdatadir wayland-protocols
 
-* Thu Aug 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.12.1-1
+* Thu Aug 06 2026 Ackerman-00 <no-reply> - 0.12.1-1
 - Use committed source tarball (codeberg archive endpoint down, HTTP 504/timeout)
 - Initial package

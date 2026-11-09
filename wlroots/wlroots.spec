@@ -102,33 +102,33 @@ install -pm0644 -D '%{SOURCE3}' '%{buildroot}/%{_pkgdocdir}/examples/meson.build
 %{_libdir}/pkgconfig/wlroots-%{abi_ver}.pc
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-10
+* Sun Nov 08 2026 Ackerman-00 <no-reply> - 0.20.2-10
 - Verify upstream signature: releases tarball + .sig + emersion key via %{gpgverify} (same trust model as Fedora dist-git). Examples sources shipped in -devel %doc; Suggests gcc/meson/wayland-egl for examples; drop unjustified pkgconfig(egl) >= 1.5 floor (only upstream's examples meson.build declares it; the build gate is the EGL_EGLEXT_VERSION header check)
-* Thu Oct 22 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-9
+* Thu Oct 22 2026 Ackerman-00 <no-reply> - 0.20.2-9
 - Floor pkgconfig(egl) at 1.5, the version meson.build declares
-* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-8
+* Mon Oct 19 2026 Ackerman-00 <no-reply> - 0.20.2-8
 - Carry upstream's wayland-client >= 1.24.0 floor (meson.build
   wayland_kwargs, shared with wayland-server which already had it)
 
-* Sat Oct 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-7
+* Sat Oct 17 2026 Ackerman-00 <no-reply> - 0.20.2-7
 - Pin pkgconfig(libseat) >= 0.2.0 to match upstream floor
   (backend/session/meson.build dependency('libseat', version: '>=0.2.0'))
 - Drop unused BuildRequires: pkgconfig(x11-xcb): no consumer anywhere in
   the wlroots 0.20.2 tree (zero x11-xcb/Xlib/libX11 references; the x11
   backend and xwayland need plain xcb-* and pkgconfig(xwayland), both kept)
-* Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-6
+* Wed Sep 23 2026 Ackerman-00 <no-reply> - 0.20.2-6
 - Restore a single BuildRequires: gcc: -6 keeps RPM320 satisfied (one atom
   only) while restoring the compiler — -5 removed BOTH duplicate gcc lines
   and failed all 4 COPR chroots (11027369: "Unknown compiler(s): gcc";
   minimal mock buildroot has no gcc)
-* Wed Sep 23 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-5
+* Wed Sep 23 2026 Ackerman-00 <no-reply> - 0.20.2-5
 - Drop duplicate BuildRequires: gcc (RPM320 duplicate-dependency-atom)
-* Mon Sep 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-4
+* Mon Sep 14 2026 Ackerman-00 <no-reply> - 0.20.2-4
 - Add explicit gcc BuildRequires (Fedora official parity; mock provides it today)
 - Document MIT licensing of scanner-processed protocols; devel Recommends xcb-icccm
-* Sun Aug 16 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-3
+* Sun Aug 16 2026 Ackerman-00 <no-reply> - 0.20.2-3
 - Use git archive endpoint for Source0 (releases/downloads endpoint 504s at COPR SRPM stage)
-* Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-2
+* Sat Jul 11 2026 Ackerman-00 <no-reply> - 0.20.2-2
 - Fixed patch for wlroots 0.20.2 API (layer_surface_role_client_commit)
-* Sat Jul 11 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.2-1
+* Sat Jul 11 2026 Ackerman-00 <no-reply> - 0.20.2-1
 - Initial package of wlroots 0.20.2 for Fedora 43

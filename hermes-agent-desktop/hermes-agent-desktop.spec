@@ -131,5 +131,5 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
-* Mon Nov 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.23.0^20261109062051gitbddb076-1
+* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109062051gitbddb076-1
 - Update to upstream snapshot bddb076 (2026-11-09 06:20Z); 258 commits since 856e758, backend/agent/desktop fixes (rich-message blocks, album retry, proxy-credential redaction, /model picker); no build-system or packaging changes

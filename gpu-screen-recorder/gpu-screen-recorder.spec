@@ -84,7 +84,7 @@ on both X11 and Wayland.
 /usr/lib/modprobe.d/gsr-nvidia.conf
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 6.1.7-2
+* Sun Nov 08 2026 Ackerman-00 <no-reply> - 6.1.7-2
 - Add vulkan-loader-devel BuildRequires: libavfilter-free 8.1.3 Requires libplacebo.so.360, whose build-time resolution under -Wl,--no-allow-shlib-undefined needs libvulkan.so.1 present; dnf builddep left it out and the link failed (undefined vkGetInstanceProcAddr)
-* Tue Nov 03 2026 Ackerman-00 <quietcraft@gmail.com> - 6.1.7-1
+* Tue Nov 03 2026 Ackerman-00 <no-reply> - 6.1.7-1
 - Update to version 6.1.7

@@ -75,7 +75,7 @@ install -Dm0644 %{SOURCE2} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/metainfo/*
 
 %changelog
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.49-1
+* Sat Nov 07 2026 Ackerman-00 <no-reply> - 0.0.49-1
 - Ship the upstream Apache-2.0 LICENSE (Source2) as %license; fix the update.sh OBS/debian machinery (stray artifacts, invented email) with the repo updater pattern.
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.49-0
+* Sat Nov 07 2026 Ackerman-00 <no-reply> - 0.0.49-0
 - Initial package

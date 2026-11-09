@@ -78,5 +78,5 @@ ln -sf /opt/Obsidian/obsidian %{buildroot}%{_bindir}/obsidian
 %doc %{_datadir}/doc/obsidian/
 
 %changelog
-* Tue Nov 03 2026 Ackerman-00 <quietcraft@gmail.com> - 1.15.0-1
+* Tue Nov 03 2026 Ackerman-00 <no-reply> - 1.15.0-1
 - Auto-updated to 1.15.0 via update.sh

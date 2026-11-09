@@ -136,5 +136,5 @@ sed -i -e 's|<launchable type="desktop-id">ai.opencode.desktop.desktop</launchab
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
 %changelog
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 2.2.6-1
+* Sat Nov 07 2026 Ackerman-00 <no-reply> - 2.2.6-1
 - Auto-update to upstream release 2.2.6

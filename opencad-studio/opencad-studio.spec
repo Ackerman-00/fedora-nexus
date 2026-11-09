@@ -95,5 +95,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2026.45-1
+* Sun Nov 08 2026 Ackerman-00 <no-reply> - 2026.45-1
 - Auto-update to upstream release v2026.45

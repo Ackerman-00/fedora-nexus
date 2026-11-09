@@ -50,7 +50,7 @@ fi
 %{_bindir}/cliphist
 
 %changelog
-* Fri Oct 02 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.0-3
+* Fri Oct 02 2026 Ackerman-00 <no-reply> - 0.7.0-3
 - Fix the check section in unprivileged builds. mock, and therefore COPR
   and koji, runs rpmbuild as the unprivileged "mockbuild" user, where the
   useradd plus su dance meant to step around the root-only no-permission
@@ -59,7 +59,7 @@ fi
 - Drop the go-rpm-macros build requirement again. It was only ever there to
   define %gotest, and the check section now invokes the go tool directly, so
   nothing in this spec references a go-rpm macro any more.
-* Fri Oct 02 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.0-2
+* Fri Oct 02 2026 Ackerman-00 <no-reply> - 0.7.0-2
 - Ship the upstream license and documentation: the LICENSE file under the
   license directory plus CHANGELOG.md, readme.md and version.txt as docs.
   The package declared "BSD-3-Clause AND GPL-3.0-only AND MIT" but shipped
@@ -68,5 +68,5 @@ fi
   the build step runs the go toolchain directly, so nothing invoked make.
 - Run the upstream test suite (cliphist_test.go with its testdata
   directory) in a check section, matching what Fedora's own cliphist does.
-* Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.0-1
+* Sun Aug 09 2026 Ackerman-00 <no-reply> - 0.7.0-1
 - Initial package

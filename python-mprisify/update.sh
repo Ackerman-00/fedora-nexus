@@ -9,7 +9,7 @@ fi
 
 SPEC_FILE="python-mprisify.spec"
 GITLAB_PROJECT="zehkira%2Fmprisify"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 
 echo "Checking GitLab tags for zehkira/mprisify..."
 

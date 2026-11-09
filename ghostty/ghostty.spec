@@ -117,7 +117,7 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/zsh/vendor-completions/_ghostty
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 1.4.0-1
+* Sun Nov 08 2026 Ackerman-00 <no-reply> - 1.4.0-1
 - Update to upstream 1.4.0 (PPA release 1.4.0-0-ppa2, trixie amd64 deb; the
   24.04 asset is no longer published for 1.4.0); pin Source0 sha256; add
   Requires: libglvnd-egl (libEGL.so.1) and libwayland-client (libwayland-client.so.0)

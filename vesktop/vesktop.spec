@@ -91,17 +91,17 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 - Ship the upstream GPL-3.0 license text as Source1 (same v1.6.7 tag as the
   RPM payload, which contains none).
 
-* Wed Sep 09 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.7-2
+* Wed Sep 09 2026 Ackerman-00 <no-reply> - 1.6.7-2
 - Add missing runtime Requires from ldd audit (cups-libs, libdrm, pango,
   libXcomposite, libXdamage, libXrandr)
 
 * Fri Aug 21 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.6.7-1
 - Update to 1.6.7
 
-* Mon Aug 17 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.6-1
+* Mon Aug 17 2026 Ackerman-00 <no-reply> - 1.6.6-1
 - Update to 1.6.6
 
-* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1.6.5-2
+* Sun Aug 02 2026 Ackerman-00 <no-reply> - 1.6.5-2
 - Replace util-linux-core with libuuid to match upstream RPM runtime Requires
 
 * Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.6.5-1

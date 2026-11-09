@@ -93,17 +93,17 @@ esac
 %{_datadir}/icons/hicolor/256x256/apps/helium.png
 
 %changelog
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.21.1.1-1
+* Sat Nov 07 2026 Ackerman-00 <no-reply> - 0.21.1.1-1
 - Update to upstream release 0.21.1.1 (Chromium 157.0.8103.38)
-* Thu Oct 22 2026 Ackerman-00 <quietcraft@gmail.com> - 0.20.1.1-1
+* Thu Oct 22 2026 Ackerman-00 <no-reply> - 0.20.1.1-1
 - Update to upstream release 0.20.1.1 (Chromium 156.0.8078.47)
-* Sat Oct 17 2026 Ackerman-00 <quietcraft@gmail.com> - 0.19.4.1-1
+* Sat Oct 17 2026 Ackerman-00 <no-reply> - 0.19.4.1-1
 - Update to upstream release 0.19.4.1 (Chromium 155.0.8059.84)
-* Wed Oct 14 2026 Ackerman-00 <quietcraft@gmail.com> - 0.19.3.1-1
+* Wed Oct 14 2026 Ackerman-00 <no-reply> - 0.19.3.1-1
 - Update to upstream release 0.19.3.1 (Chromium 155.0.8059.79)
-* Fri Oct 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.19.2.1-1
+* Fri Oct 09 2026 Ackerman-00 <no-reply> - 0.19.2.1-1
 - Update to upstream release 0.19.2.1 (Chromium 155.0.8059.39 revision 2:
   browser-level exceptions for Google services, DBSC flags restored)
 
-* Thu Oct 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.19.1.2-1
+* Thu Oct 08 2026 Ackerman-00 <no-reply> - 0.19.1.2-1
 - Update to upstream release 0.19.1.2 (Chromium 155.0.8059.39)

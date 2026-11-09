@@ -48,7 +48,7 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     DATE_STR=$(date +"%a %b %d %Y")
     ENTRY_TMP=$(mktemp)
     {
-        echo "* $DATE_STR Ackerman-00 <quietcraft@gmail.com> - $LATEST_VERSION-1"
+        echo "* $DATE_STR Ackerman-00 <no-reply> - $LATEST_VERSION-1"
         echo "- Auto-updated to $LATEST_VERSION via update.sh"
     } > "$ENTRY_TMP"
     sed -i "/^%changelog$/r $ENTRY_TMP" "$SPEC_FILE"

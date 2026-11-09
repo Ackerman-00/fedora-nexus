@@ -9,7 +9,7 @@ fi
 
 SPEC_FILE="python-ytmusicapi.spec"
 PYPI_NAME="ytmusicapi"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 
 echo "Checking PyPI for $PYPI_NAME updates..."
 

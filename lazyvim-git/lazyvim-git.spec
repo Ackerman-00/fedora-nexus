@@ -11,7 +11,7 @@ BuildArch:      noarch
 License:        Apache-2.0
 URL:            https://github.com/LazyVim/LazyVim
 Source0:        %{url}/archive/%{commit}/lazyvim-%{shortcommit}.tar.gz
-Packager:       Ackerman-00 <quietcraft@gmail.com>
+Packager:       Ackerman-00 <no-reply>
 
 Requires:       neovim >= 0.11.2
 Requires:       git
@@ -51,7 +51,7 @@ fi
 %{_datadir}/lazyvim/
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 1:0.1^20261108202129git5c26fac-1
+* Sun Nov 08 2026 Ackerman-00 <no-reply> - 1:0.1^20261108202129git5c26fac-1
 - Sync with upstream main branch (Commit: 5c26fac, release 16.0.2)
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 1:0.1^20261107153028gitf653596-1
+* Sat Nov 07 2026 Ackerman-00 <no-reply> - 1:0.1^20261107153028gitf653596-1
 - Sync with upstream main branch (Commit: f653596)

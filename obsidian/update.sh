@@ -42,7 +42,7 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     sed -i '/^%changelog/,$d' "$SPEC_FILE"
     {
         echo "%changelog"
-        echo "* $DATE_STR Ackerman-00 <quietcraft@gmail.com> - $LATEST_VERSION-1"
+        echo "* $DATE_STR Ackerman-00 <no-reply> - $LATEST_VERSION-1"
         echo "- Auto-updated to $LATEST_VERSION via update.sh"
     } >> "$SPEC_FILE"
     

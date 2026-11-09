@@ -58,8 +58,8 @@ install -Dm755 target/release/concord %{buildroot}%{_bindir}/concord
 %{_bindir}/concord
 
 %changelog
-* Sat Nov 07 2026 Ackerman-00 <quietcraft@gmail.com> - 2.7.0-2
+* Sat Nov 07 2026 Ackerman-00 <no-reply> - 2.7.0-2
 - Add git-core BuildRequires: wreq -> tokio-btls -> btls-sys applies BoringSSL patches with git
 
-* Thu Nov 05 2026 Ackerman-00 <quietcraft@gmail.com> - 2.7.0-1
+* Thu Nov 05 2026 Ackerman-00 <no-reply> - 2.7.0-1
 - Auto-update to upstream stable release v2.7.0

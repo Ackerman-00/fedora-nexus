@@ -8,7 +8,7 @@ if [ "$(pwd)" != "$_update_sh_dir" ]; then
 fi
 
 SPEC_FILE="omnirush-desktop.spec"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 REPO="omnirush-ai/omnirush-gui"
 
 echo "Checking for OmniRush updates on $REPO..."

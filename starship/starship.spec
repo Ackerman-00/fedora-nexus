@@ -51,7 +51,7 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 * Sat Oct 17 2026 Nexus Auto-Updater <bot@github.com> - 1.27.0-1
 - Update to version 1.27.0
 
-* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 1.26.0-1
+* Sun Aug 02 2026 Ackerman-00 <no-reply> - 1.26.0-1
 - Update to version 1.26.0
 
 * Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.24.2-1

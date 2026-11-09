@@ -97,41 +97,41 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/COPYING
 %attr(4755, root, root) /opt/Heroic/chrome-sandbox
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.4-3
+* Sun Nov 08 2026 Ackerman-00 <no-reply> - 2.22.4-3
 - Pin Source0 sha256 (hunt pins finding); update.sh now recomputes it on bump and wipes %changelog on version bump per policy
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.22.4-2
 - Ship the upstream GPL-3.0 COPYING text (Source1, same v2.22.4 tag as
   Source0); the vendored upstream RPM carries no license file.
 
-* Thu Oct 15 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.4-1
+* Thu Oct 15 2026 Ackerman-00 <no-reply> - 2.22.4-1
 - Auto-update to upstream release v2.22.4
 
 * Fri Oct 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.22.3-3
 - Fix startup crash: ship chrome-sandbox as %attr(4755, root, root) so the
   Electron SUID sandbox helper is configured correctly (was 0755 ->
   FATAL abort for every non-root launch; verified under xvfb before/after).
-* Sat Sep 19 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.3-2
+* Sat Sep 19 2026 Ackerman-00 <no-reply> - 2.22.3-2
 - Correct bundled(legendary) Provides to 0.21.1 (what the 2.22.3 artifact
   actually ships; verified via `legendary --version` inside the upstream RPM)
 
-* Wed Sep 16 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.3-1
+* Wed Sep 16 2026 Ackerman-00 <no-reply> - 2.22.3-1
 - Auto-update to upstream release v2.22.3
 
-* Tue Sep 15 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.2-1
+* Tue Sep 15 2026 Ackerman-00 <no-reply> - 2.22.2-1
 - Auto-update to upstream release v2.22.2
 
-* Sun Aug 09 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.1-4
+* Sun Aug 09 2026 Ackerman-00 <no-reply> - 2.22.1-4
 - Update to upstream 2.22.1 (the auto-updater bumped Version without a
   changelog entry; Release continues from the already-published 2.22.1-3
   so the upgrade path is not broken)
 - Refresh bundled() Provides to what the 2.22.1 artifact actually ships:
   legendary 0.21.0, gogdl 1.3.0, nile 1.2.0 (comet unchanged at 0.2.0)
 
-* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.0-3
+* Sun Aug 02 2026 Ackerman-00 <no-reply> - 2.22.0-3
 - Add missing runtime Requires declared by the upstream RPM (at-spi2-core,
   libnotify, libuuid, libXtst, xdg-utils)
 
-* Sun Aug 02 2026 Ackerman-00 <quietcraft@gmail.com> - 2.22.0-2
+* Sun Aug 02 2026 Ackerman-00 <no-reply> - 2.22.0-2
 - Drop nonexistent umu-launcher Recommends and replace nonexistent falcond with
   gamemode in the native gaming ecosystem Recommends
 

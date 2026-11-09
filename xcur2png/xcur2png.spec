@@ -6,7 +6,7 @@ License:        GPL-3.0-or-later
 URL:            https://github.com/eworm-de/xcur2png
 Source:         %{url}/releases/download/%{version}/%{name}-%{version}.tar.gz
 # sha256: bc6a062fdb48615a7159ed56ef3d2011168cd8a9decaf1d8a4e316d3064132c9
-Packager:       Ackerman-00 <quietcraft@gmail.com>
+Packager:       Ackerman-00 <no-reply>
 
 Patch:          c23-extern-int.patch
 
@@ -44,7 +44,7 @@ Not packaged in Fedora before this (packages.fedoraproject.org 404).
 %{_mandir}/man1/xcur2png.1*
 
 %changelog
-* Sat Sep 26 2026 Ackerman-00 <quietcraft@gmail.com> - 0.7.1-1
+* Sat Sep 26 2026 Ackerman-00 <no-reply> - 0.7.1-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)
 - Runtime helper for hyprcursor-util -x, which greps "xcur2png --help" for
   "xcursor" and refuses to extract XCursor themes when it is absent

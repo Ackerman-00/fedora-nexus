@@ -9,7 +9,7 @@ fi
 
 SPEC_FILE="libcava.spec"
 GITHUB_REPO="LukashonakV/cava"
-PACKAGER="Ackerman-00 <quietcraft@gmail.com>"
+PACKAGER="Ackerman-00 <no-reply>"
 
 echo "Checking for upstream releases on $GITHUB_REPO..."
 
