@@ -8,7 +8,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        10.20261109git1d07e31%{?dist}
+Release:        11.20261109git1d07e31%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -18,6 +18,23 @@ Source2:        harfbuzz-overlay-vcpkg.json
 Source3:        harfbuzz-overlay-fix-win32-build.patch
 Source4:        harfbuzz-overlay-config.cmake.in
 Source5:        harfbuzz-overlay-usage
+
+Requires:       libQt6Core.so.6()(64bit)
+Requires:       libQt6Gui.so.6()(64bit)
+Requires:       libQt6Positioning.so.6()(64bit)
+Requires:       libQt6Widgets.so.6()(64bit)
+Requires:       libdrm.so.2()(64bit)
+Requires:       libgio-2.0.so.0()(64bit)
+Requires:       libgobject-2.0.so.0()(64bit)
+Requires:       libncurses.so.6()(64bit)
+Requires:       libpulse.so.0()(64bit)
+Requires:       libtinfo.so.6()(64bit)
+Requires:       libvulkan.so.1()(64bit)
+Requires:       libwayland-client.so.0()(64bit)
+Requires:       libxcb-icccm.so.4()(64bit)
+Requires:       libxcb.so.1()(64bit)
+Recommends:     qt6-qtwayland
+Recommends:     mesa-vulkan-drivers
 
 BuildRequires:  autoconf-archive
 BuildRequires:  autoconf
@@ -101,6 +118,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.0.0-11.20261109git1d07e31
+- Declare the runtime system Dependencies the bundled tree cannot carry (/opt/ladybird is excluded from autorequires): Qt6 core/gui/positioning/widgets, glib2, libdrm, pulseaudio-libs, ncurses, vulkan-loader, libwayland-client, xcb + icccm
+- Recommend qt6-qtwayland (wayland platform plugin, this repo's compositor stack) and mesa-vulkan-drivers (software Vulkan, headless/CI)
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.0.0-10.20261109git1d07e31
 - Restore the missing %changelog entry for the fleet-rebuild Release; no upstream change (pin still 1d07e31)
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.0.0-9.20261107git1d07e31
