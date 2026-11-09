@@ -66,6 +66,6 @@ xdg-desktop-portal-umbriel-git|xdg-desktop-portal-umbriel-git|test -x /usr/libex
 zen-browser|zen-browser|MOZ_HEADLESS=1 zen --version
 zig0.17|zig0.17|zig0.17 version
 hatter-icon-theme|hatter-icon-theme|files-only
-ladybird-unstable|ladybird-unstable|test -x /usr/bin/Ladybird
+ladybird-unstable|ladybird-unstable|test -x /usr/bin/ladybird
 whitesur-icon-theme|whitesur-icon-theme|files-only
 hermes-agent-desktop|hermes-agent-desktop|test -x /usr/bin/hermes-agent-desktop && test -d /opt/HermesDesktop && test -x /opt/HermesDesktop/Hermes
