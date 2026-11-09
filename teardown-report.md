@@ -25,7 +25,7 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | concat | Concat-0.2.9-linux-x86_64.rpm | 0.2.9 | 0.2.9 | **OK** | rpm header concat=0.2.9-1 (tags NAME/VERSION/RELEASE) \| pinned 0.2.9 \| internal 0.2.9 |
 | concord | v2.7.0.tar.gz | 2.7.0 | 2.7.0 | **SOURCE-OK** | tar Cargo.toml=2.7.0 (concord-2.7.0/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 2.7.0 (not authoritative) |
 | extension-manager | extension-manager-0.7.0.tar.gz | 0.7.0 | >= 0.59.0 | **SOURCE-OK** | tar meson.build=>= 0.59.0 (extension-manager-0.7.0/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 0.59.0 (not authoritative) |
-| fluxer | rpm | 2026.1108.50402 | 2026.1108.50402 | **OK** | rpm header fluxer=2026.1108.50402-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1108.50402 \| internal 2026.1108.50402 |
+| fluxer | rpm | 2026.1109.42917 | 2026.1109.42917 | **OK** | rpm header fluxer=2026.1109.42917-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1109.42917 \| internal 2026.1109.42917 |
 | freebuff | freebuff-linux-x64.tar.gz | 0.2.36 | 0.2.36 | **OK** | tar runtime probe freebuff --version: 0.2.36 \| pinned 0.2.36 \| internal 0.2.36 |
 | freebuff | LICENSE | 0.2.36 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | freebuff-desktop | Freebuff-0.0.201-linux-amd64.deb | 0.0.201 | 0.0.201 | **OK** | deb pkg=freebuff (control control.tar.gz) \| pinned 0.0.201 \| internal 0.0.201 |
@@ -39,7 +39,7 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | helium-browser | LICENSE | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | helium-browser | LICENSE.ungoogled_chromium | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | hellwal | hellwal-1.0.9.tar.gz | 1.0.9 | $(shell | **SOURCE-OK** | tar Makefile=$(shell (hellwal-1.0.9/Makefile) \| hash no-checksum-pinned \| weak internal evidence $(shell (not authoritative) |
-| hermes-agent-desktop | live NousResearch/hermes-agent | 856e75808d1d | 856e75808d1d | **OK** | live NousResearch/hermes-agent pin 856e75808d1d vs upstream 856e75808d1d |
+| hermes-agent-desktop | live NousResearch/hermes-agent | bddb076ee348 | bddb076ee348 | **OK** | live NousResearch/hermes-agent pin bddb076ee348 vs upstream bddb076ee348 |
 | heroic-games-launcher | Heroic-2.22.4-linux-x86_64.rpm | 2.22.4 | 2.22.4 | **OK** | rpm header heroic=2.22.4-1 (tags NAME/VERSION/RELEASE) \| pinned 2.22.4 \| internal 2.22.4 |
 | heroic-games-launcher | COPYING | 2.22.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | ladybird-unstable | 1d07e318d8bcf51ca3f8b75980fbea15c0edb37c.tar.gz | 0.0.0 | 0.1.0 | **SOURCE-OK** | tar Cargo.toml=0.1.0 (ladybird-1d07e318d8bcf51ca3f8b75980fbea15c0edb37c/AK/Rust/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 0.1.0 (not authoritative) |
@@ -81,7 +81,7 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | python-ytmusicapi | ytmusicapi-1.12.3.tar.gz | 1.12.3 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | qoder | Qoder-linux-amd64.deb | 0.5.6 | 1:0.5.6 | **OK** | deb pkg=qoder (control control.tar.xz) \| pinned 0.5.6 \| internal 1:0.5.6 |
 | qoder | qoder-rpmlintrc | 0.5.6 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| rootapp | Root.AppImage | 0.9.162 | 0.9.162 | **OK** | AppImage 0.9.162 (Root.desktop) \| pinned 0.9.162 \| internal 0.9.162 |
+| rootapp | Root.AppImage | 0.9.163 | 0.9.163 | **OK** | AppImage 0.9.163 (Root.desktop) \| pinned 0.9.163 \| internal 0.9.163 |
 | rustypipe-botguard | rustypipe-botguard-v0.1.2-x86_64-unknown-linux-gnu.tar.xz | 0.1.2 | 0.1.2 | **OK** | tar runtime probe rustypipe-botguard --version: rustypipe-botguard 0.1.2
 rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | rustypipe-botguard | LICENSE | 0.1.2 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
@@ -100,7 +100,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | LICENSE | 1.5.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| umbriel-git | live noctalia-dev/umbriel | d3bff0fb2458 | d3bff0fb2458 | **OK** | live noctalia-dev/umbriel pin d3bff0fb2458 vs upstream d3bff0fb2458 |
+| umbriel-git | live noctalia-dev/umbriel | d01481035b09 | d01481035b09 | **OK** | live noctalia-dev/umbriel pin d01481035b09 vs upstream d01481035b09 |
 | vesktop | vesktop-1.6.9.x86_64.rpm | 1.6.9 | 1.6.9 | **OK** | rpm header vesktop=1.6.9-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.9 \| internal 1.6.9 |
 | vesktop | LICENSE | 1.6.9 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
@@ -168,7 +168,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | python-yt-dlp-ejs | pypi:yt-dlp-ejs | 0.8.0 | 0.8.0 | **OK** | upstream 0.8.0 == pinned 0.8.0 [freshness via pypi:yt-dlp-ejs; repology has no entry] |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology has no entry] |
 | python-ytmusicapi | pypi:ytmusicapi | 1.12.3 | 1.12.3 | **OK** | upstream 1.12.3 == pinned 1.12.3 [freshness via pypi:ytmusicapi; repology has no entry] |
-| rootapp | aur | 0.9.162 | 0.9.162 | **OK** | pinned 0.9.162 >= repology 0.9.162 (aur); tracker behind |
+| rootapp | aur | 0.9.163 | 0.9.162 | **OK** | pinned 0.9.163 >= repology 0.9.162 (aur); tracker behind |
 | starship | starship | 1.27.0 |  | **VULN-UNVERIFIED** | advisory ranges do not cover 1.27.0: CGA-9hcg-f7h9-475c, CGA-gr74-x3cx-8xpc |
 | zig0.17 | ziglang.org/download/index.json | 0.17.1 | 0.17.1 | **OK** | upstream 0.17.1 == pinned 0.17.1 [freshness via ziglang.org/download/index.json; repology has no entry] |
 | LIBYEAR | freshness | 0.09 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
