@@ -14,8 +14,13 @@ MANIFEST_URL="https://github.com/cline/cline/releases/download/desktop-latest/la
 echo "Checking for Cline desktop updates..."
 
 if ! LATEST_JSON=$(curl -fsSL --retry 3 --max-time 60 "$MANIFEST_URL"); then
-    echo "Error: manifest unavailable."
-    exit 1
+    # github release-asset direct URL 504s; fall back to the API asset endpoint
+    ASSET_ID=$(curl -fsSL --retry 3 --max-time 60 "https://api.github.com/repos/cline/cline/releases/tags/desktop-latest" | python3 -c "import json,sys
+print(next(a['id'] for a in json.load(sys.stdin)['assets'] if a['name']=='latest.json'))") || { echo "Error: manifest unavailable (API and direct both failed)."; exit 1; }
+    if ! LATEST_JSON=$(curl -fsSL --retry 3 --max-time 60 -H "Accept: application/octet-stream" "https://api.github.com/repos/cline/cline/releases/assets/$ASSET_ID"); then
+        echo "Error: manifest unavailable."
+        exit 1
+    fi
 fi
 
 read -r LATEST_VERSION DEB_URL < <(printf '%s' "$LATEST_JSON" | python3 -c "
