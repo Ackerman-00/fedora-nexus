@@ -2135,7 +2135,7 @@ now reads the cells. Write what you observed.
 ## PACKAGER/EMAIL POLICY (MANDATORY - added for maintainer privacy)
 - The maintainer identity is "Ackerman-00" and it must never be published with
   a real email address. Use `Ackerman-00 <no-reply>` in specs, update.sh,
-  changelogs, and relay notes. Do NOT use quietcraft@gmail.com, noreply-derived
+  changelogs, and relay notes. Do NOT use the old personal email, noreply-derived
   addresses, or any guessed noreply email.
 - If `git grep -nE '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+'` finds any email-like
   address in any tracked file, scrub it before committing: replace the address
