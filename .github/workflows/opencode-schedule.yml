@@ -1,3 +1,5 @@
+# Maintainer privacy: Ackerman-00 must never be published with a real email.
+# Use `Ackerman-00 <no-reply>` everywhere; scrub any email-like value before committing.
 name: opencode-schedule
 
 on:
@@ -90,6 +92,16 @@ jobs:
           else
             echo "OPENCODE_AUTH_JSON secret not set - running with anonymous free-tier limits"
           fi
+
+      - name: Enforce maintainer email policy
+        run: |
+          set -euo pipefail
+          echo "Checking tracked files for the maintainer's personal email..."
+          if git grep -n -E 'quietcraft|@gmail\.com' -- .; then
+            echo "ERROR: maintainer email found in tracked files; remove it before running."
+            exit 1
+          fi
+          echo "OK: no maintainer personal email in tracked files."
 
       - name: Run opencode
         shell: bash

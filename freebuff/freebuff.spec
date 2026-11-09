@@ -43,6 +43,7 @@ cat > %{buildroot}%{_datadir}/applications/freebuff.desktop <<'EOF'
 Name=Freebuff
 Comment=The free coding agent for your desktop
 Exec=freebuff %U
+Icon=utilities-terminal
 Terminal=false
 Type=Application
 StartupWMClass=Freebuff
@@ -60,15 +61,15 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/freebuff.desktop
 %{_datadir}/applications/freebuff.desktop
 
 %changelog
-* Tue Nov 03 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.36-1
+* Tue Nov 03 2026 Ackerman-00 <no-reply> - 0.2.36-1
 - Auto-updated to 0.2.36 via update.sh
-* Thu Oct 29 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.35-1
+* Thu Oct 29 2026 Ackerman-00 <no-reply> - 0.2.35-1
 - Auto-updated to 0.2.35 via update.sh
-* Thu Oct 22 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.34-1
+* Thu Oct 22 2026 Ackerman-00 <no-reply> - 0.2.34-1
 - Auto-updated to 0.2.34 via update.sh
-* Wed Oct 21 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.33-1
+* Wed Oct 21 2026 Ackerman-00 <no-reply> - 0.2.33-1
 - Auto-updated to 0.2.33 via update.sh
-* Tue Oct 20 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.32-1
+* Tue Oct 20 2026 Ackerman-00 <no-reply> - 0.2.32-1
 - Auto-updated to 0.2.32 via update.sh
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.2.30-3
 - Pin Source0's sha256 under Source0: the hash was written below Source1,
@@ -81,33 +82,33 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/freebuff.desktop
   the GitHub license API both report MIT, and no Apache-2.0 text exists in
   the artifact or the repository root.
 
-* Mon Oct 19 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.30-1
+* Mon Oct 19 2026 Ackerman-00 <no-reply> - 0.2.30-1
 - Auto-updated to 0.2.30 via update.sh
-* Thu Oct 15 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.29-1
+* Thu Oct 15 2026 Ackerman-00 <no-reply> - 0.2.29-1
 - Auto-updated to 0.2.29 via update.sh
-* Mon Oct 12 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.27-1
+* Mon Oct 12 2026 Ackerman-00 <no-reply> - 0.2.27-1
 - Auto-updated to 0.2.27 via update.sh
-* Thu Oct 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.26-1
+* Thu Oct 08 2026 Ackerman-00 <no-reply> - 0.2.26-1
 - Auto-updated to 0.2.26 via update.sh
-* Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.22-1
+* Wed Oct 07 2026 Ackerman-00 <no-reply> - 0.2.22-1
 - Auto-updated to 0.2.22 via update.sh
-* Wed Oct 07 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.21-1
+* Wed Oct 07 2026 Ackerman-00 <no-reply> - 0.2.21-1
 - Auto-updated to 0.2.21 via update.sh
-* Tue Oct 06 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.19-1
+* Tue Oct 06 2026 Ackerman-00 <no-reply> - 0.2.19-1
 - Auto-updated to 0.2.19 via update.sh
-* Mon Oct 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.16-1
+* Mon Oct 05 2026 Ackerman-00 <no-reply> - 0.2.16-1
 - Auto-updated to 0.2.16 via update.sh
-* Mon Oct 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.15-1
+* Mon Oct 05 2026 Ackerman-00 <no-reply> - 0.2.15-1
 - Auto-updated to 0.2.15 via update.sh
-* Mon Oct 05 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.14-1
+* Mon Oct 05 2026 Ackerman-00 <no-reply> - 0.2.14-1
 - Auto-updated to 0.2.14 via update.sh
-* Sun Oct 04 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.13-1
+* Sun Oct 04 2026 Ackerman-00 <no-reply> - 0.2.13-1
 - Auto-updated to 0.2.13 via update.sh
 
-* Fri Oct 02 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.12-2
+* Fri Oct 02 2026 Ackerman-00 <no-reply> - 0.2.12-2
 - Do not strip the prebuilt Bun binary: brp-strip flipped `freebuff --version`
   from 0.2.12 to the Bun runtime version 1.3.14; installed binary is now
   byte-identical to Source0 (sha256 124a45e0...)
 
-* Fri Oct 02 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.12-1
+* Fri Oct 02 2026 Ackerman-00 <no-reply> - 0.2.12-1
 - Auto-updated to 0.2.12 via update.sh

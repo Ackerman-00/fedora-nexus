@@ -2132,6 +2132,21 @@ now reads the cells. Write what you observed.
    container categories (deps, install-tests, spec-lint, smoke) are
    yours. The gate counts distinct categories and needs at least 5.
    A category you did not run is a category you did not check.
+## PACKAGER/EMAIL POLICY (MANDATORY - added for maintainer privacy)
+- The maintainer identity is "Ackerman-00" and it must never be published with
+  a real email address. Use `Ackerman-00 <no-reply>` in specs, update.sh,
+  changelogs, and relay notes. Do NOT use quietcraft@gmail.com, noreply-derived
+  addresses, or any guessed noreply email.
+- If `git grep -nE '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+'` finds any email-like
+  address in any tracked file, scrub it before committing: replace the address
+  with `no-reply` and keep the Ackerman identity. A repository that ships a real
+  maintainer email is a release defect, not a documentation preference.
+- The ONLY authorized automation identities are:
+    - `opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com>`
+    - `github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>`
+  Anything else containing "opencode", "Ackerman", or an invented `@` address
+  must be replaced/removed.
+
 - End every run with a concise final summary: what you fixed, which issues
   you closed, which PRs you merged/rejected, which COPR builds you verified
   and their result, and what remains. Include the pre-completion gate
