@@ -4,7 +4,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        8.20261107git1d07e31%{?dist}
+Release:        9.20261107git1d07e31%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -34,6 +34,7 @@ BuildRequires:  nasm
 BuildRequires:  ncurses-devel
 BuildRequires:  ninja-build
 BuildRequires:  patchelf
+BuildRequires:  patch
 BuildRequires:  perl-FindBin
 BuildRequires:  perl-IPC-Cmd
 BuildRequires:  perl-lib
@@ -65,6 +66,7 @@ cp -p %{SOURCE4} Meta/CMake/vcpkg/overlay-ports/harfbuzz/harfbuzzConfig.cmake.in
 cp -p %{SOURCE5} Meta/CMake/vcpkg/overlay-ports/harfbuzz/usage
 
 %build
+export VCPKG_FORCE_SYSTEM_BINARIES=1
 python3 Meta/ladybird.py vcpkg --preset Release
 cmake --preset Release -S . -B Build/release -DBUILD_TESTING=OFF -DENABLE_INSTALL_FREEDESKTOP_FILES=OFF -DCMAKE_INSTALL_PREFIX=/opt/ladybird -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=OFF
 cmake --build Build/release --parallel %{?_smp_build_ncpus}
@@ -95,6 +97,8 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Mon Nov 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-9.20261107git1d07e31
+- VCPKG_FORCE_SYSTEM_BINARIES=1: vcpkg insisted on downloading its pinned cmake 4.4.3 from github.com (Kitware/CMake releases) and COPR's network path got 504/504 on it (build 11290048; the same github.com flakiness hit two other downloads this run); Fedora ships cmake 4.3.0, so use the system toolchain (cmake/ninja-build/git/patch; patch added to BuildRequires) instead of a per-build ~50MB download that can hard-fail the whole browser
 * Mon Nov 09 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-8.20261107git1d07e31
 - Bundle the vcpkg shared libraries into /opt/ladybird/lib64 (RUNPATH says ../lib64); the previous cp into /opt/ladybird/lib/ failed silently against a nonexistent directory ("Not a directory", rpmbuild exit 0), so 0.0.0-7 shipped without libskia/libzmij/libavcodec-ladybird and dnf refused to install it
 * Sun Nov 08 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.0-7.20261107git1d07e31
