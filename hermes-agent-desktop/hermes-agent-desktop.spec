@@ -3,18 +3,18 @@
 %global __requires_exclude_from ^/opt/HermesDesktop/.*$
 %global __provides_exclude_from ^/opt/HermesDesktop/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/HermesDesktop/.*$
-%global commit          109fd8161a509db5a00942152ba48882e446e8b0
+%global commit          6cff782b8d081a0ed382eaf75c432d452cd452cc
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261109074725
+%global gitdate         20261109154108
 
 Name:           hermes-agent-desktop
 Version:        0.23.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
 Source0:        https://github.com/NousResearch/hermes-agent/archive/%{commit}.tar.gz
-# sha256: 88f9a4ff81b19f17024457c4db112eec54e8b6846d20019175341e242f7a27f8
+# sha256: 0b44eb522576ac0da55dbdd796554ba39bd0f82bfebe0b1d2316d7604c2c98eb
 Source1:        https://nodejs.org/download/release/v26.12.1/node-v26.12.1-linux-x64.tar.xz
 # sha256: 6170b2d474e1c626f43cff3adc118df9fe3b573258a4fc3d850c8dbc6b079bbd
 Source2:        https://registry.npmjs.org/@pnpm/exe.linux-x64/-/exe.linux-x64-12.15.0.tgz
@@ -131,9 +131,5 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
-* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109074725git109fd81-2
-- Correct the Source0 sha256 pin to match the 109fd81 tarball (88f9a4ff...); the previous value was the bddb076 pin carried over when the snapshot was bumped - caught by hunt pins after the push
-* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109074725git109fd81-1
-- Refresh snapshot bddb076 -> 109fd81 (35 commits upstream, 2026-11-09; no build-system files touched: compare API lists only .py/.yaml/.md/tests/locales)
-* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109062051gitbddb076-1
-- Update to upstream snapshot bddb076 (2026-11-09 06:20Z); 258 commits since 856e758, backend/agent/desktop fixes (rich-message blocks, album retry, proxy-credential redaction, /model picker); no build-system or packaging changes
+* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109154108git6cff782-1
+- Nightly sync with upstream main branch (Commit: 6cff782)
