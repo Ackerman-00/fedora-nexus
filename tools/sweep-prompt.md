@@ -2055,26 +2055,28 @@ HARD RULES:
   watching this repo - see OWNERSHIP AND AUTHORITY. There is nobody
   to hand it to.
 - VERIFICATION LOOP (MANDATORY - battle-tested 2026: pre-completion checklist + external verifier, agentpatterns.ai 2026-07-19 / contextOS 2026-08-14 / digitalapplied.com 2026-08-11): Before declaring `status: complete`, you MUST run `bash tools/verify-fedora.sh` and paste its `----- VERIFICATION REPORT -----` output. It checks numerical completion (one row per STEP A inventory package with `deps-verified`/`deps-fixed`/`version-checked` -- derive the expected count from `ls */*.spec`, post-grep count must reach it, not 0), evidence strings (`rpmspec -P` / `dnf builddep` / `rpmlint` from 2026 h. checks), and install-test table. Exit 1 = NOT COMPLETE -- keep working, fix the listed gaps, re-run verifier until exit 0. Do NOT write `status: complete` if verifier fails. Prompt alone achieves 70-90% compliance; external verifier + gate achieves near-100%. This is the check that prevents "looks done" vs "is done". Exact greppable contract (the verifier AND the workflow gate check the same strings, case-insensitive): every audit row carries its `unproven:` token; a `teardown-slice:` ledger line names this run's rotating slice plus `next-start`; all nine mains (umbriel-git xdg-desktop-portal-umbriel-git helium-browser zen-browser heroic-games-launcher protonplus mangowm noctalia-greeter wlroots - the list is tools/verify-fedora.sh --print-mains, the authority) carry `docker-teardown: <pkg> ... PASS` tokens AND fresh `upstream: <pkg> ... <today-UTC-date>` live-check lines, and every extra slice-named package carries one (`version-checked` is accepted by the inline gate and the verifier only with a same-run `upstream:` evidence row; a `deps-verified` row for any of the nine mains with no same-run `docker-teardown: <pkg> ... PASS` token fails the gate); each of `rpmspec -P`, `dnf builddep`, `rpmlint` must share its relay line with `PASS` (e.g. `rpmlint PASS: <pkgs> (0 errors)`); the version-table header `| package | packaged version |` and an install-test table must be present. A tool named only inside a 'not verified' gap does NOT satisfy its evidence line -- an unsatisfiable line means the run is NOT complete (relay stays `unfinished` + handoff), never `complete`-with-gap. Self-claiming verifier PASS without pasting the report is a gate failure.
-MODEL RANKING (the scheduler decides, every run): before this sweep the
-workflow ran a ranking turn over today's web and exported the verdict as
-MODEL_RANK_LINE. Your first relay line must be that line verbatim:
-
-  model-rank: <leader> first - <sources>, checked <YYYY-MM-DD>
-
-If MODEL_RANK_LINE is empty or the ranking turn failed, you do the web check
-yourself and write that line: search the web for today's strongest free
-coding models on OpenCode Zen (e.g. "opencode zen free coding models <month>
-<year>", "artificial analysis coding index <month> <year>"), cross-check the
-live catalog (https://opencode.ai/inference/v1/models) and the changelog
-(https://opencode.ai/changelog), then rewrite tools/model-rank.txt - one id
-per line, tiers, a single `#` label per model with score, source and date -
-with the strongest free model first. Keep the owner veto in
-tools/model-cascade.sh EXCLUDE out of the file, give every new free id a
-tier, drop ids the catalog no longer serves, and add new ids to opencode.json.
-Either way, commit the ranking turn's tools/model-rank.txt edit with this
-run's changes. The gate and tools/verify-fedora.sh fail the run when the line
-is missing or carries a stale date, so an unchanged ranking still needs the
-line with today's date. The next run reads the file you leave behind.
+MODEL RANKING (your job, every run - prompt only, nothing else checks it):
+tools/model-cascade.sh builds the CI cascade from the live free-model
+catalog and tools/model-rank.txt holds the order that decides which model
+leads. Do not trust yesterday's order: on EVERY run, check the web for the
+current strongest free coding models and put the best one first.
+  1. Search the web for today's free-model coding scores and rankings (the
+     AA coding index, Vals, Bito, vendor evals). Independent published
+     scores beat vendor claims; a model with no independent score ranks
+     below one that has a score.
+  2. Cross-check the live catalog
+     (https://opencode.ai/inference/v1/models) and the changelog
+     (https://opencode.ai/changelog) for ids that were added or retired.
+  3. Rewrite tools/model-rank.txt: strongest first, one id per line, grouped
+     in tiers, each model preceded by a single `#` line giving its score,
+     source and the date you checked. Keep the owner veto in
+     tools/model-cascade.sh EXCLUDE out of the file, drop ids the catalog no
+     longer serves, give every new free id a tier, and add new ids to
+     opencode.json so the CLI can resolve them.
+  4. Commit it and say one relay line: which model leads and why.
+The leader is whatever the web says today, not whatever the file said last
+run - a cascade that starts a weak model spends the run filling in tables
+instead of fixing the repo. The next run reads the file you wrote.
 TRUTH CONTRACT (the machine checks these, not your prose):
 A verdict is a transcript of a command you ran, never a summary of
 what you believe. On 2026-10-20 a run published an install table
