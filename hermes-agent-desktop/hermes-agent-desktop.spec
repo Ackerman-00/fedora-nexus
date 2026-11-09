@@ -9,12 +9,12 @@
 
 Name:           hermes-agent-desktop
 Version:        0.23.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
 Source0:        https://github.com/NousResearch/hermes-agent/archive/%{commit}.tar.gz
-# sha256: 46bcb394383aec5c55f5f9794ad140998a4a021a36bbf069c6681c27a48f821d
+# sha256: 88f9a4ff81b19f17024457c4db112eec54e8b6846d20019175341e242f7a27f8
 Source1:        https://nodejs.org/download/release/v26.12.1/node-v26.12.1-linux-x64.tar.xz
 # sha256: 6170b2d474e1c626f43cff3adc118df9fe3b573258a4fc3d850c8dbc6b079bbd
 Source2:        https://registry.npmjs.org/@pnpm/exe.linux-x64/-/exe.linux-x64-12.15.0.tgz
@@ -131,6 +131,8 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
+* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109074725git109fd81-2
+- Correct the Source0 sha256 pin to match the 109fd81 tarball (88f9a4ff...); the previous value was the bddb076 pin carried over when the snapshot was bumped - caught by hunt pins after the push
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109074725git109fd81-1
 - Refresh snapshot bddb076 -> 109fd81 (35 commits upstream, 2026-11-09; no build-system files touched: compare API lists only .py/.yaml/.md/tests/locales)
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109062051gitbddb076-1
