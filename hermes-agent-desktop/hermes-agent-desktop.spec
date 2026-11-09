@@ -9,7 +9,7 @@
 
 Name:           hermes-agent-desktop
 Version:        0.23.0^%{gitdate}git%{shortcommit}
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
@@ -39,6 +39,8 @@ BuildRequires:  zstd
 
 Requires:       gtk3
 Requires:       nss
+Requires:       libX11.so.6()(64bit)
+Requires:       libXi.so.6()(64bit)
 Requires:       libXss.so.1()(64bit)
 Requires:       libnotify.so.4()(64bit)
 Requires:       at-spi2-core
@@ -134,6 +136,9 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
+* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109181414gitcacad95-4
+- Require the X11 sonames the HUD modifier helper links (libX11, libXi); the
+  /opt tree is excluded from autorequires so they must be declared
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109181414gitcacad95-3
 - Build the X11 HUD modifier helper: without libX11-devel and libXi-devel the
   upstream build script printed '[hud-modifier] unavailable' and shipped the
