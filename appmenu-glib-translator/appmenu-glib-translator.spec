@@ -1,12 +1,12 @@
-%global commit          d475cca380e88b3b62bc8ecde9d861bc5e777c4e
+%global commit          3d42ca002fc5dbb15f9ba32bb3ff00caf8046686
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261102201706
+%global gitdate         20261109154809
 
 %global _vpath_srcdir subprojects/appmenu-glib-translator
 
 Name:           appmenu-glib-translator
 Version:        25.04^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        appmenu-glib-translator
 
 License:        LGPL-3.0-or-later
@@ -56,8 +56,5 @@ Development files for %{name}.
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
-* Sat Nov 07 2026 Ackerman-00 <no-reply> - 25.04^20261102201706gitd475cca-2
-- Package new upstream debug.h public header (unpackaged file build failure)
-
-* Tue Nov 03 2026 Ackerman-00 <no-reply> - 25.04^20261102201706gitd475cca-1
-- Nightly sync with upstream main branch (Commit: d475cca)
+* Mon Nov 09 2026 Ackerman-00 <no-reply> - 25.04^20261109154809git3d42ca0-1
+- Nightly sync with upstream main branch (Commit: 3d42ca0)
