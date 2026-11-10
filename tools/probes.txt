@@ -39,7 +39,7 @@ mpvpaper|mpvpaper|test -x /usr/bin/mpvpaper
 noctalia-greeter|noctalia-greeter|noctalia-greeter --version
 nwg-look|nwg-look|test -x /usr/bin/nwg-look
 obsidian|obsidian|test -f /opt/Obsidian/resources/app.asar
-omnirush-desktop|omnirush-desktop|test -x /usr/bin/omnirush
+omnirush-desktop|omnirush-desktop|test -x /usr/bin/omnirush && /opt/omnirush/resources/sidecars/opencode2-x86_64-unknown-linux-gnu --version | grep -q '^omnirush v'
 opencad-studio|opencad-studio|test -x /usr/bin/opencad-studio
 openchamber|openchamber|test -f /opt/openchamber/resources/app.asar
 opencode-desktop|opencode-desktop|test -f /opt/OpenCode/resources/app.asar && test -x "$(awk '/^exec /{print $2; exit}' /usr/bin/opencode-desktop)"
