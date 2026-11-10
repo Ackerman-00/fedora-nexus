@@ -39,7 +39,7 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | helium-browser | LICENSE | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | helium-browser | LICENSE.ungoogled_chromium | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | hellwal | hellwal-1.0.9.tar.gz | 1.0.9 | $(shell | **SOURCE-OK** | tar Makefile=$(shell (hellwal-1.0.9/Makefile) \| hash no-checksum-pinned \| weak internal evidence $(shell (not authoritative) |
-| hermes-agent-desktop | live NousResearch/hermes-agent | cacad9510e16 | 84f30c73bf17 | **STALE** | live NousResearch/hermes-agent pin cacad9510e16 vs upstream 84f30c73bf17 |
+| hermes-agent-desktop | live NousResearch/hermes-agent | d5250190a23c | 825322b16656 | **STALE** | live NousResearch/hermes-agent pin d5250190a23c vs upstream 825322b16656 |
 | heroic-games-launcher | Heroic-2.22.4-linux-x86_64.rpm | 2.22.4 | 2.22.4 | **OK** | rpm header heroic=2.22.4-1 (tags NAME/VERSION/RELEASE) \| pinned 2.22.4 \| internal 2.22.4 |
 | heroic-games-launcher | COPYING | 2.22.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | ladybird-unstable | 03ada6df57bf783747e774f93c30b5e3873b2068.tar.gz | 0.0.0 | 0.1.0 | **SOURCE-OK** | tar Cargo.toml=0.1.0 (ladybird-03ada6df57bf783747e774f93c30b5e3873b2068/AK/Rust/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 0.1.0 (not authoritative) |
@@ -48,7 +48,7 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | ladybird-unstable | harfbuzz-overlay-fix-win32-build.patch | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | ladybird-unstable | harfbuzz-overlay-config.cmake.in | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | ladybird-unstable | harfbuzz-overlay-usage | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
-| ladybird-unstable | repair-bundled-libs.py | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
+| ladybird-unstable | check-bundled-libs.py | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | lazyvim-git | live LazyVim/LazyVim | 5c26fac21fd3 | 5c26fac21fd3 | **OK** | live LazyVim/LazyVim pin 5c26fac21fd3 vs upstream 5c26fac21fd3 |
 | libcava | 1.0.0.tar.gz | 1.0.0 | $(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) | **SOURCE-OK** | tar Makefile.am=$(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) (cava-1.0.0/Makefile.am) \| hash no-checksum-pinned \| weak internal evidence $(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) (not authoritative) |
 | localsend | LocalSend-1.18.2-linux-x86-64.deb | 1.18.2 | 1.18.2+64 | **OK** | deb pkg=localsend (control control.tar.zst) \| pinned 1.18.2 \| internal 1.18.2+64 |
@@ -65,8 +65,8 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | noctalia-greeter | live noctalia-dev/noctalia-greeter | 74dd931bf9b8 | 74dd931bf9b8 | **OK** | live noctalia-dev/noctalia-greeter pin 74dd931bf9b8 vs upstream 74dd931bf9b8 |
 | nwg-look | v1.2.1.tar.gz | 1.2.1 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | obsidian | obsidian_1.15.0_amd64.deb | 1.15.0 | 1.15.0 | **OK** | deb pkg=obsidian (control control.tar.xz) \| pinned 1.15.0 \| internal 1.15.0 |
-| omnirush-desktop | omnirush-linux-amd64-3.8.2.deb | 3.8.2 | 3.8.2 | **OK** | deb pkg=omnirush.ai (control control.tar.xz) \| pinned 3.8.2 \| internal 3.8.2 |
-| omnirush-desktop | omnirush-desktop-rpmlintrc | 3.8.2 |  | **OK** | bundled aux/doc asset in repo, no download needed |
+| omnirush-desktop | omnirush-linux-amd64-3.8.3.deb | 3.8.3 | 3.8.3 | **OK** | deb pkg=omnirush.ai (control control.tar.xz) \| pinned 3.8.3 \| internal 3.8.3 |
+| omnirush-desktop | omnirush-desktop-rpmlintrc | 3.8.3 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | opencad-studio | OpenCADStudio-v2026.45-linux-x86_64.AppImage | 2026.45 | 2026.45 | **OK** | AppImage strings 2026.45 (AppRun) \| pinned 2026.45 \| internal 2026.45 |
 | opencad-studio | LICENSE | 2026.45 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | openchamber | OpenChamber-2.7.0-linux-x86_64.AppImage | 2.7.0 | 2.7.0 | **OK** | AppImage 2.7.0 (resources/app.asar) \| pinned 2.7.0 \| internal 2.7.0 |
@@ -90,18 +90,13 @@ rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | sonora | v0.48.1.tar.gz | 0.48.1 | @PKGVER@ | **SOURCE-OK** | tar PKGBUILD=@PKGVER@ (sonora-0.48.1/aur/sonora-bin/PKGBUILD) \| hash no-checksum-pinned \| weak internal evidence @PKGVER@ (not authoritative) |
 | splayer-next | splayer-next-1.2.0-x86_64.rpm | 1.2.0 | 1.2.0 | **OK** | rpm header splayer-next=1.2.0-1 (tags NAME/VERSION/RELEASE) \| pinned 1.2.0 \| internal 1.2.0 |
 | splayer-next | LICENSE | 1.2.0 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| starship | starship-x86_64-unknown-linux-gnu.tar.gz | 1.27.0 | 1.27.0 | **OK** | tar runtime probe starship --version: starship 1.27.0
-branch:main
-commit_hash:f8e4e21
-build_time:2026-10-17 09:19:34 +00:00
-build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
-| starship | LICENSE | 1.27.0 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
+| starship | v1.27.0.tar.gz | 1.27.0 | 1.27.0 | **SOURCE-OK** | tar Cargo.toml=1.27.0 (starship-1.27.0/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 1.27.0 (not authoritative) |
 | stoat-desktop | Stoat-linux-x64-1.5.4.zip | 1.5.4 | 1.5.4 | **OK** | zip asar=1.5.4 (Stoat-linux-x64/resources/app.asar) \| pinned 1.5.4 \| internal 1.5.4 |
 | stoat-desktop | stoat-desktop.desktop | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | LICENSE | 1.5.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| umbriel-git | live noctalia-dev/umbriel | 0a22bd2431b8 | 0a22bd2431b8 | **OK** | live noctalia-dev/umbriel pin 0a22bd2431b8 vs upstream 0a22bd2431b8 |
+| umbriel-git | live noctalia-dev/umbriel | 8e13926aeb74 | 8e13926aeb74 | **OK** | live noctalia-dev/umbriel pin 8e13926aeb74 vs upstream 8e13926aeb74 |
 | vesktop | vesktop-1.6.9.x86_64.rpm | 1.6.9 | 1.6.9 | **OK** | rpm header vesktop=1.6.9-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.9 \| internal 1.6.9 |
 | vesktop | LICENSE | 1.6.9 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
@@ -145,7 +140,7 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | mpvpaper | upstream github.com/GhostNaN/mpvpaper | 1.9 | 1.9 | **OK** | at upstream latest 1.9 [releases/latest] |
 | nwg-look | upstream github.com/nwg-piotr/nwg-look | 1.2.1 | v1.2.1 | **OK** | at upstream latest v1.2.1 [releases/latest] |
 | obsidian | upstream github.com/obsidianmd/obsidian-releases | 1.15.0 | v1.15.0 | **OK** | at upstream latest v1.15.0 [releases/latest] |
-| omnirush-desktop | upstream github.com/omnirush-ai/omnirush-gui | 3.8.2 | v3.8.2 | **OK** | at upstream latest v3.8.2 [releases/latest] |
+| omnirush-desktop | upstream github.com/omnirush-ai/omnirush-gui | 3.8.3 | v3.8.3 | **OK** | at upstream latest v3.8.3 [releases/latest] |
 | opencad-studio | upstream github.com/HakanSeven12/OpenCADStudio | 2026.45 | v2026.45 | **OK** | at upstream latest v2026.45 [releases/latest] |
 | openchamber | upstream github.com/openchamber/openchamber | 2.7.0 | v2.7.0 | **OK** | at upstream latest v2.7.0 [releases/latest] |
 | protonplus | upstream github.com/vysp3r/ProtonPlus | 0.6.8 | v0.6.8 | **OK** | at upstream latest v0.6.8 [releases/latest] |
@@ -172,6 +167,6 @@ build_env:rustc 1.99.1 (58cf8f9c3  \| pinned 1.27.0 \| internal 1.27.0 |
 | rootapp | aur | 0.9.163 | 0.9.163 | **OK** | pinned 0.9.163 >= repology 0.9.163 (aur); tracker behind |
 | starship | starship | 1.27.0 |  | **VULN-UNVERIFIED** | advisory ranges do not cover 1.27.0: CGA-9hcg-f7h9-475c, CGA-gr74-x3cx-8xpc |
 | zig0.17 | ziglang.org/download/index.json | 0.17.1 | 0.17.1 | **OK** | upstream 0.17.1 == pinned 0.17.1 [freshness via ziglang.org/download/index.json; repology has no entry] |
-| LIBYEAR | freshness | 0.09 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
+| LIBYEAR | freshness | 0.10 yr | 3 pkgs | **METRIC** | threshold=20 libyears |
 
 **Verdict: FAIL** (2 failure(s))
