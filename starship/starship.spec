@@ -1,6 +1,6 @@
 Name:           starship
 Version:        1.27.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Minimal, blazing-fast, and customizable prompt for any shell (Nexus Optimized)
 
 License:        ISC
@@ -48,6 +48,11 @@ install -d -m 0755 %{buildroot}%{fish_completions_dir}
 %{fish_completions_dir}/starship.fish
 
 %changelog
+* Tue Nov 10 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.27.0-4
+- Drop the zlib-sirocco feature: it pulls adler32furious, which does not
+  build on the F43 toolchain (AVX-512 VNNI intrinsic signature mismatch).
+  gix falls back to zlib-rs; the GHSA-q54r-jf2p-rfr2 fix is unchanged.
+
 * Tue Nov 10 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.27.0-3
 - Build from the v1.27.0 source tarball instead of repacking the prebuilt
   release binary, and backport upstream commit 86e1e7f0 (gix 0.90.0).

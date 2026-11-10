@@ -1,6 +1,8 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index d96db40..0fb82bb 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
-@@ -41,12 +41,13 @@
+@@ -41,8 +41,8 @@ clap_complete_nushell = "4.6.2"
  dirs = "7.0.0"
  dunce = "1.0.5"
  # default feature restriction addresses https://github.com/starship/starship/issues/4251
@@ -11,27 +13,10 @@
    "revision",
    "status",
    "sha1",
-   "sha256",
-+  "zlib-sirocco",
- ] }
- guess_host_triple = "0.1.5"
- home = "0.5.12"
+diff --git a/Cargo.lock b/Cargo.lock
 --- a/Cargo.lock
 +++ b/Cargo.lock
-@@ -3,6 +3,12 @@
- version = 4
- 
- [[package]]
-+name = "adler32furious"
-+version = "0.1.1"
-+source = "registry+https://github.com/rust-lang/crates.io-index"
-+checksum = "67753fa0e5e56fa79255f125be5bb94b2f3570537bd1c66e9b146858f53cd298"
-+
-+[[package]]
- name = "aho-corasick"
- version = "1.1.5"
- source = "registry+https://github.com/rust-lang/crates.io-index"
-@@ -1008,9 +1014,9 @@
+@@ -1008,9 +1008,9 @@
  
  [[package]]
  name = "gix"
@@ -43,7 +28,7 @@
  dependencies = [
   "gix-actor",
   "gix-attributes",
-@@ -1062,9 +1068,9 @@
+@@ -1062,9 +1062,9 @@
  
  [[package]]
  name = "gix-actor"
@@ -55,7 +40,7 @@
  dependencies = [
   "bstr",
   "gix-date",
-@@ -1073,9 +1079,9 @@
+@@ -1073,9 +1073,9 @@
  
  [[package]]
  name = "gix-attributes"
@@ -67,7 +52,7 @@
  dependencies = [
   "bstr",
   "gix-error",
-@@ -1090,27 +1096,27 @@
+@@ -1090,27 +1090,27 @@
  
  [[package]]
  name = "gix-bitmap"
@@ -101,7 +86,7 @@
  dependencies = [
   "bstr",
   "gix-error",
-@@ -1121,9 +1127,9 @@
+@@ -1121,9 +1121,9 @@
  
  [[package]]
  name = "gix-commitgraph"
@@ -113,7 +98,7 @@
  dependencies = [
   "bstr",
   "gix-chunk",
-@@ -1135,9 +1141,9 @@
+@@ -1135,9 +1135,9 @@
  
  [[package]]
  name = "gix-config"
@@ -125,7 +110,7 @@
  dependencies = [
   "bstr",
   "gix-config-value",
-@@ -1155,9 +1161,9 @@
+@@ -1155,9 +1155,9 @@
  
  [[package]]
  name = "gix-config-value"
@@ -137,7 +122,7 @@
  dependencies = [
   "bitflags 2.13.1",
   "bstr",
-@@ -1169,9 +1175,9 @@
+@@ -1169,9 +1169,9 @@
  
  [[package]]
  name = "gix-date"
@@ -149,7 +134,7 @@
  dependencies = [
   "bstr",
   "gix-error",
-@@ -1181,9 +1187,9 @@
+@@ -1181,9 +1181,9 @@
  
  [[package]]
  name = "gix-diff"
@@ -161,7 +146,7 @@
  dependencies = [
   "bstr",
   "gix-attributes",
-@@ -1205,9 +1211,9 @@
+@@ -1205,9 +1205,9 @@
  
  [[package]]
  name = "gix-dir"
@@ -173,7 +158,7 @@
  dependencies = [
   "bstr",
   "gix-discover",
-@@ -1225,9 +1231,9 @@
+@@ -1225,9 +1225,9 @@
  
  [[package]]
  name = "gix-discover"
@@ -185,7 +170,7 @@
  dependencies = [
   "bstr",
   "dunce",
-@@ -1240,18 +1246,18 @@
+@@ -1240,18 +1240,18 @@
  
  [[package]]
  name = "gix-error"
@@ -208,7 +193,7 @@
  dependencies = [
   "bstr",
   "encoding_rs",
-@@ -1270,9 +1276,9 @@
+@@ -1270,9 +1270,9 @@
  
  [[package]]
  name = "gix-fs"
@@ -220,7 +205,7 @@
  dependencies = [
   "bstr",
   "gix-error",
-@@ -1285,9 +1291,9 @@
+@@ -1285,9 +1285,9 @@
  
  [[package]]
  name = "gix-glob"
@@ -232,7 +217,7 @@
  dependencies = [
   "bitflags 2.13.1",
   "bstr",
-@@ -1299,9 +1305,9 @@
+@@ -1299,9 +1299,9 @@
  
  [[package]]
  name = "gix-hash"
@@ -244,7 +229,7 @@
  dependencies = [
   "faster-hex",
   "gix-error",
-@@ -1336,9 +1342,9 @@
+@@ -1336,9 +1336,9 @@
  
  [[package]]
  name = "gix-imara-diff"
@@ -256,7 +241,7 @@
  dependencies = [
   "bstr",
   "hashbrown 0.17.1",
-@@ -1346,9 +1352,9 @@
+@@ -1346,9 +1346,9 @@
  
  [[package]]
  name = "gix-index"
@@ -268,7 +253,7 @@
  dependencies = [
   "bitflags 2.13.1",
   "bstr",
-@@ -1398,9 +1404,9 @@
+@@ -1398,9 +1398,9 @@
  
  [[package]]
  name = "gix-note"
@@ -280,7 +265,7 @@
  dependencies = [
   "gix-error",
   "gix-hash",
-@@ -1409,9 +1415,9 @@
+@@ -1409,9 +1409,9 @@
  
  [[package]]
  name = "gix-object"
@@ -292,7 +277,7 @@
  dependencies = [
   "bstr",
   "gix-actor",
-@@ -1430,9 +1436,9 @@
+@@ -1430,9 +1430,9 @@
  
  [[package]]
  name = "gix-odb"
@@ -304,7 +289,7 @@
  dependencies = [
   "arc-swap",
   "crc32fast",
-@@ -1455,9 +1461,9 @@
+@@ -1455,9 +1455,9 @@
  
  [[package]]
  name = "gix-pack"
@@ -316,7 +301,7 @@
  dependencies = [
   "clru",
   "crc32fast",
-@@ -1479,9 +1485,9 @@
+@@ -1479,9 +1479,9 @@
  
  [[package]]
  name = "gix-packetline"
@@ -328,7 +313,7 @@
  dependencies = [
   "bstr",
   "faster-hex",
-@@ -1491,9 +1497,9 @@
+@@ -1491,9 +1491,9 @@
  
  [[package]]
  name = "gix-parallel"
@@ -340,7 +325,7 @@
  dependencies = [
   "crossbeam-channel",
   "gix-trace",
-@@ -1503,9 +1509,9 @@
+@@ -1503,9 +1503,9 @@
  
  [[package]]
  name = "gix-path"
@@ -352,7 +337,7 @@
  dependencies = [
   "bstr",
   "gix-error",
-@@ -1515,9 +1521,9 @@
+@@ -1515,9 +1515,9 @@
  
  [[package]]
  name = "gix-pathspec"
@@ -364,7 +349,7 @@
  dependencies = [
   "bitflags 2.13.1",
   "bstr",
-@@ -1530,9 +1536,9 @@
+@@ -1530,9 +1530,9 @@
  
  [[package]]
  name = "gix-protocol"
@@ -376,7 +361,7 @@
  dependencies = [
   "bstr",
   "gix-date",
-@@ -1548,9 +1554,9 @@
+@@ -1548,9 +1548,9 @@
  
  [[package]]
  name = "gix-quote"
@@ -388,7 +373,7 @@
  dependencies = [
   "bstr",
   "gix-error",
-@@ -1559,9 +1565,9 @@
+@@ -1559,9 +1559,9 @@
  
  [[package]]
  name = "gix-ref"
@@ -400,7 +385,7 @@
  dependencies = [
   "gix-actor",
   "gix-error",
-@@ -1579,9 +1585,9 @@
+@@ -1579,9 +1579,9 @@
  
  [[package]]
  name = "gix-refspec"
@@ -412,7 +397,7 @@
  dependencies = [
   "bstr",
   "gix-error",
-@@ -1592,9 +1598,9 @@
+@@ -1592,9 +1592,9 @@
  
  [[package]]
  name = "gix-revision"
@@ -424,7 +409,7 @@
  dependencies = [
   "bitflags 2.13.1",
   "bstr",
-@@ -1611,9 +1617,9 @@
+@@ -1611,9 +1611,9 @@
  
  [[package]]
  name = "gix-revwalk"
@@ -436,7 +421,7 @@
  dependencies = [
   "gix-commitgraph",
   "gix-date",
-@@ -1626,9 +1632,9 @@
+@@ -1626,9 +1626,9 @@
  
  [[package]]
  name = "gix-sec"
@@ -448,7 +433,7 @@
  dependencies = [
   "bitflags 2.13.1",
   "gix-path",
-@@ -1638,9 +1644,9 @@
+@@ -1638,9 +1638,9 @@
  
  [[package]]
  name = "gix-shallow"
@@ -460,7 +445,7 @@
  dependencies = [
   "bstr",
   "gix-error",
-@@ -1651,9 +1657,9 @@
+@@ -1651,9 +1651,9 @@
  
  [[package]]
  name = "gix-status"
@@ -472,7 +457,7 @@
  dependencies = [
   "bstr",
   "filetime",
-@@ -1673,14 +1679,13 @@
+@@ -1673,14 +1673,13 @@
   "gix-worktree",
   "hashbrown 0.16.1",
   "portable-atomic",
@@ -489,7 +474,7 @@
  dependencies = [
   "bstr",
   "gix-config",
-@@ -1707,15 +1712,15 @@
+@@ -1707,15 +1706,15 @@
  
  [[package]]
  name = "gix-trace"
@@ -509,7 +494,7 @@
  dependencies = [
   "bstr",
   "gix-command",
-@@ -1731,9 +1736,9 @@
+@@ -1731,9 +1730,9 @@
  
  [[package]]
  name = "gix-traverse"
@@ -521,7 +506,7 @@
  dependencies = [
   "bitflags 2.13.1",
   "gix-commitgraph",
-@@ -1748,9 +1753,9 @@
+@@ -1748,9 +1747,9 @@
  
  [[package]]
  name = "gix-url"
@@ -533,7 +518,7 @@
  dependencies = [
   "bstr",
   "gix-error",
-@@ -1761,9 +1766,9 @@
+@@ -1761,9 +1760,9 @@
  
  [[package]]
  name = "gix-utils"
@@ -545,7 +530,7 @@
  dependencies = [
   "bstr",
   "bytes",
-@@ -1776,9 +1781,9 @@
+@@ -1776,9 +1775,9 @@
  
  [[package]]
  name = "gix-validate"
@@ -557,7 +542,7 @@
  dependencies = [
   "bstr",
   "gix-error",
-@@ -1786,9 +1791,9 @@
+@@ -1786,9 +1785,9 @@
  
  [[package]]
  name = "gix-worktree"
@@ -569,7 +554,7 @@
  dependencies = [
   "bstr",
   "gix-attributes",
-@@ -1805,9 +1810,9 @@
+@@ -1805,9 +1804,9 @@
  
  [[package]]
  name = "gix-worktree-stream"
@@ -581,7 +566,7 @@
  dependencies = [
   "gix-attributes",
   "gix-error",
-@@ -1825,11 +1830,12 @@
+@@ -1825,9 +1824,9 @@
  
  [[package]]
  name = "gix-zlib"
@@ -592,24 +577,4 @@
 +checksum = "7c5b29808570149d86f417184605111ede9dda5aa06015e9ea6da07f0c3ca41e"
  dependencies = [
   "gix-error",
-+ "sirocco",
   "zlib-rs",
- ]
- 
-@@ -3325,6 +3331,16 @@
- checksum = "8ee5873ec9cce0195efcb7a4e9507a04cd49aec9c83d0389df45b1ef7ba2e649"
- 
- [[package]]
-+name = "sirocco"
-+version = "0.2.1"
-+source = "registry+https://github.com/rust-lang/crates.io-index"
-+checksum = "ca99e5dda21893832a60a036ae41060761867f71e944c491566b2388d36d7139"
-+dependencies = [
-+ "adler32furious",
-+ "crc32fast",
-+]
-+
-+[[package]]
- name = "slab"
- version = "0.4.12"
- source = "registry+https://github.com/rust-lang/crates.io-index"
