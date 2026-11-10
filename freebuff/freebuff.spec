@@ -3,7 +3,7 @@
 
 Name:           freebuff
 Version:        0.2.36
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The free coding agent for your terminal
 
 License:        MIT
@@ -57,7 +57,9 @@ printf '%s\n' "$smoke" | grep -q '^tree-sitter smoke ok'
 %{_libexecdir}/%{name}/tree-sitter.wasm
 
 %changelog
-* Tue Nov 10 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.36-2
+* Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.2.36-3
+- Drop a personal address from the prior changelog entries; metadata only, no payload change.
+* Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.2.36-2
 - Drop the hand-written freebuff.desktop: upstream's CLI tarball ships no desktop
   entry or icon, and the file collided with freebuff-desktop, which owns the real
   one. This package is terminal-only and no longer appears in the app menu.

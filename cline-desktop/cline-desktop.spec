@@ -5,7 +5,7 @@
 %global __provides_exclude_from ^%{_prefix}/lib/Cline/bin/remote-helpers/
 Name:           cline-desktop
 Version:        0.0.49
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The agentic coding-capable IDE desktop app (Tauri)
 License:        Apache-2.0
 Group:          Development/Tools/IDE
@@ -85,7 +85,9 @@ helper=%{buildroot}%{_prefix}/lib/Cline/bin/remote-helpers/cline-x86_64-unknown-
 %{_datadir}/metainfo/*
 
 %changelog
-* Tue Nov 10 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.49-2
+* Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.0.49-3
+- Drop a personal address from the prior changelog entries; metadata only, no payload change.
+* Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.0.49-2
 - Stop stripping the prebuilt Bun executables. brp-strip ran `strip -g` on
   cline-cli and the x86_64 remote helper, which removed their embedded
   entrypoint: cline-cli --version went from 3.0.74 to the Bun runtime's 1.4.2

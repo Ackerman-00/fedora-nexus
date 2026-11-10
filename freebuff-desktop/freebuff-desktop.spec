@@ -4,7 +4,7 @@
 %global __brp_mangle_shebangs_exclude_from ^/opt/Freebuff/.*$
 Name:           freebuff-desktop
 Version:        0.0.201
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Freebuff Desktop (Electron)
 License:        SUSE-Freeware
 Group:          Development/Tools/IDE
@@ -113,7 +113,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/freebuff.desktop
 %{_datadir}/icons/hicolor/*/apps/freebuff.png
 
 %changelog
-* Tue Nov 10 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.201-3
+* Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.0.201-4
+- Drop a personal address from the prior changelog entries; metadata only, no payload change.
+* Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.0.201-3
 - Rename the launcher symlink to /usr/bin/freebuff-desktop. It used to be
   /usr/bin/freebuff, which the freebuff CLI package also ships, so the two
   could not be installed together; /usr/bin/freebuff now belongs to the CLI.

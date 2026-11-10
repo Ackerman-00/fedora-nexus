@@ -6,7 +6,7 @@
 %global __brp_mangle_shebangs_exclude_from ^/opt/omnirush/.*$
 Name:           omnirush-desktop
 Version:        3.8.4
-Release:        1
+Release:        2
 Summary:        OmniRush.ai desktop shell (Electron)
 License:        SUSE-Freeware
 Group:          Productivity/Networking/Talk/Clients
@@ -123,7 +123,9 @@ if [ "$1" = 0 ] && [ -f %{_sysconfdir}/apparmor.d/omnirush ]; then
 fi
 
 %changelog
-* Tue Nov 10 2026 Ackerman-00 <quietcraft@gmail.com> - 3.8.4-1
+* Tue Nov 10 2026 Ackerman-00 <no-reply> - 3.8.4-2
+- Drop a personal address from the prior changelog entries; metadata only, no payload change.
+* Tue Nov 10 2026 Ackerman-00 <no-reply> - 3.8.4-1
 - Stop stripping the bundled Bun engine. brp-strip ran `strip -g` on
   resources/sidecars/opencode2-x86_64-unknown-linux-gnu, changing its sha256
   from the 9fc8e7a6... that the app's own versions.json expects to
