@@ -8,7 +8,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        15.20261110git03ada6d%{?dist}
+Release:        16.20261110git03ada6d%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -19,15 +19,22 @@ Source3:        harfbuzz-overlay-fix-win32-build.patch
 Source4:        harfbuzz-overlay-config.cmake.in
 Source5:        harfbuzz-overlay-usage
 Source6:        check-bundled-libs.py
+# F43/F44 carry libicu 77 only; a matched 78 build is bundled there (F45+ uses the distro one)
+%if 0%{?fedora} < 45
+# sha256: f06bcab72736ee9d55689033b8198a178562354128cf38edb2afc2e67e3fd931
+Source7:        https://github.com/unicode-org/icu/archive/refs/tags/release-78.3.tar.gz
+%endif
 
 Requires:       libQt6Core.so.6()(64bit)
 Requires:       libQt6Gui.so.6()(64bit)
 Requires:       libQt6Positioning.so.6()(64bit)
 Requires:       libQt6Widgets.so.6()(64bit)
 Requires:       libdrm.so.2()(64bit)
+%if 0%{?fedora} >= 45
 Requires:       libicudata.so.78()(64bit)
 Requires:       libicui18n.so.78()(64bit)
 Requires:       libicuuc.so.78()(64bit)
+%endif
 Requires:       libgio-2.0.so.0()(64bit)
 Requires:       libgobject-2.0.so.0()(64bit)
 Requires:       libncurses.so.6()(64bit)
@@ -76,12 +83,18 @@ BuildRequires:  xcb-util-wm-devel
 BuildRequires:  zip
 BuildRequires:  rust
 BuildRequires:  cargo
+%if 0%{?fedora} < 45
+BuildRequires:  make
+%endif
 
 %description
 Ladybird browser built from the git master branch (unstable).
 
 %prep
 %autosetup -n ladybird-%{commit}
+%if 0%{?fedora} < 45
+tar -xzf %{SOURCE7} && mv icu-release-78.3 icu
+%endif
 # harfbuzz port: C driver link under -fexceptions needs libstdc++ (DW.ref personality); overlay adds -Dwith_libstdcxx=true
 mkdir -p Meta/CMake/vcpkg/overlay-ports/harfbuzz
 cp -p %{SOURCE1} Meta/CMake/vcpkg/overlay-ports/harfbuzz/portfile.cmake
@@ -100,6 +113,13 @@ if grep -q -- '-march=native' Build/release/build.ninja; then
   exit 1
 fi
 cmake --build Build/release --parallel %{?_smp_build_ncpus}
+%if 0%{?fedora} < 45
+cd icu/icu4c/source
+export CFLAGS="%{optflags}" CXXFLAGS="%{optflags}"
+./runConfigureICU Linux --prefix=/opt/ladybird --libdir=/opt/ladybird/lib64 --disable-static --disable-tests --disable-samples
+make -j%{?_smp_build_ncpus}
+cd -
+%endif
 
 %install
 DESTDIR=%{buildroot} cmake --install Build/release --component ladybird_Runtime
@@ -110,12 +130,22 @@ VCPKG_LIBS=$(find Build/release/vcpkg_installed/*-linux-dynamic/lib -maxdepth 1 
 [ -n "$VCPKG_LIBS" ] || { echo "FATAL: no vcpkg shared libraries found to bundle" >&2; exit 1; }
 cp -a $VCPKG_LIBS %{buildroot}/opt/ladybird/lib64/
 chmod -R u+w %{buildroot}/opt/ladybird
+%if 0%{?fedora} < 45
+cp -a icu/icu4c/source/lib/libicudata.so.78.3 icu/icu4c/source/lib/libicuuc.so.78.3 icu/icu4c/source/lib/libicui18n.so.78.3 %{buildroot}/opt/ladybird/lib64/
+ln -sf libicudata.so.78.3 %{buildroot}/opt/ladybird/lib64/libicudata.so.78
+ln -sf libicuuc.so.78.3 %{buildroot}/opt/ladybird/lib64/libicuuc.so.78
+ln -sf libicui18n.so.78.3 %{buildroot}/opt/ladybird/lib64/libicui18n.so.78
+%else
 # system icu: vcpkg's patchelf step leaves libicudata with an empty dynamic section, and helpers re-exec without LD_LIBRARY_PATH
 rm -f %{buildroot}/opt/ladybird/lib64/libicu*.so*
+%endif
 python3 %{SOURCE6} %{buildroot}/opt/ladybird/lib64
 
 %files
 %license LICENSE
+%if 0%{?fedora} < 45
+%license icu/icu4c/LICENSE
+%endif
 /opt/ladybird
 %{_bindir}/ladybird
 %{_datadir}/applications/org.ladybird.Ladybird.desktop
@@ -130,6 +160,13 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.0.0-16.20261110git03ada6d
+- F43/F44 only: the Fedora libicu there is 77, so the system-icu Requires
+  made 0.0.0-15 uninstallable (dnf silently fell back to -14). Build Unicode
+  ICU 78.3 in the spec and bundle it in both chroots; F45+ keeps the distro
+  libicu 78. The bundled copy never sees vcpkg's patchelf, so the PT_DYNAMIC
+  corruption cannot reach it, and the PT_DYNAMIC gate still checks it.
+
 * Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.0.0-15.20261110git03ada6d
 - Use Fedora's icu instead of the bundled copy and gate every bundled library's PT_DYNAMIC: vcpkg's patchelf rewrite left libicudata's dynamic section 0x38 out of step with its PT_LOAD, so ld.so read DT_NULL there and the first process to relocate it died in elf_dynamic_do_Rela (Hub segfaulted, then "Failed to receive message_id: 2" / "Failed to connect to RequestServer" from every helper, which re-exec with a sanitised environment and so never saw the LD_LIBRARY_PATH workaround)
 * Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.0.0-14.20261110git03ada6d
