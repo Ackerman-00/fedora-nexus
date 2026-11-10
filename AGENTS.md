@@ -171,6 +171,22 @@ without AVX-512 died with SIGILL (`ILL_ILLOPN`) in a static initializer before
 RULE: any upstream build that can pick the host ISA is pinned to the distro
 baseline and the spec fails if native leaks back (see the build.ninja grep).
 
+### A dlopen probe cannot see a patchelf-damaged ELF (found 2026-11-10)
+
+vcpkg's rpath rewrite (`patchelf` 0.19.1) rewrites the whole file for the one
+object whose rpath does not fit and leaves `PT_DYNAMIC` 0x38 out of step with
+its `PT_LOAD` (`ladybird-unstable/libicudata.so.78.3`). ld.so then reads
+`DT_NULL` where the dynamic section starts, so the object has no relocations
+and no soname - and the first process that gets it relocated dies in
+`elf_dynamic_do_Rela`. The old guard dlopen'ed every bundled library and
+reported it fine while `LD_PRELOAD=<that file> /bin/true` exited 139 in the
+same tree, because dlopen of an object with an empty dynamic section returns
+successfully. RULE: check the headers the loader uses, not whether a library
+opens (`check-bundled-libs.py`: PT_DYNAMIC inside a PT_LOAD, offset and vaddr
+agree, first tag not DT_NULL). ladybird no longer bundles icu at all - Fedora's
+`libicu` 78.3 has the same sonames and `icudt78_dat`, and helpers re-exec with
+a sanitised environment, so an `LD_LIBRARY_PATH` workaround never reaches them.
+
 ### Check criteria that produce false failures (found 2026-10-06)
 
 - `dnf builddep --assumeno <spec>` EXITS 1 whenever a transaction would run, which is the

@@ -8,7 +8,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        14.20261110git03ada6d%{?dist}
+Release:        15.20261110git03ada6d%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -18,13 +18,16 @@ Source2:        harfbuzz-overlay-vcpkg.json
 Source3:        harfbuzz-overlay-fix-win32-build.patch
 Source4:        harfbuzz-overlay-config.cmake.in
 Source5:        harfbuzz-overlay-usage
-Source6:        repair-bundled-libs.py
+Source6:        check-bundled-libs.py
 
 Requires:       libQt6Core.so.6()(64bit)
 Requires:       libQt6Gui.so.6()(64bit)
 Requires:       libQt6Positioning.so.6()(64bit)
 Requires:       libQt6Widgets.so.6()(64bit)
 Requires:       libdrm.so.2()(64bit)
+Requires:       libicudata.so.78()(64bit)
+Requires:       libicui18n.so.78()(64bit)
+Requires:       libicuuc.so.78()(64bit)
 Requires:       libgio-2.0.so.0()(64bit)
 Requires:       libgobject-2.0.so.0()(64bit)
 Requires:       libncurses.so.6()(64bit)
@@ -40,7 +43,6 @@ Recommends:     mesa-vulkan-drivers
 BuildRequires:  autoconf-archive
 BuildRequires:  autoconf
 BuildRequires:  automake
-BuildRequires:  binutils
 BuildRequires:  ccache
 BuildRequires:  cmake
 BuildRequires:  curl
@@ -108,7 +110,8 @@ VCPKG_LIBS=$(find Build/release/vcpkg_installed/*-linux-dynamic/lib -maxdepth 1 
 [ -n "$VCPKG_LIBS" ] || { echo "FATAL: no vcpkg shared libraries found to bundle" >&2; exit 1; }
 cp -a $VCPKG_LIBS %{buildroot}/opt/ladybird/lib64/
 chmod -R u+w %{buildroot}/opt/ladybird
-# vcpkg's rpath rewrite leaves libicudata's ELF headers one program header out of step (helpers died in ld.so)
+# system icu: vcpkg's patchelf step leaves libicudata with an empty dynamic section, and helpers re-exec without LD_LIBRARY_PATH
+rm -f %{buildroot}/opt/ladybird/lib64/libicu*.so*
 python3 %{SOURCE6} %{buildroot}/opt/ladybird/lib64
 
 %files
@@ -127,6 +130,8 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.0.0-15.20261110git03ada6d
+- Use Fedora's icu instead of the bundled copy and gate every bundled library's PT_DYNAMIC: vcpkg's patchelf rewrite left libicudata's dynamic section 0x38 out of step with its PT_LOAD, so ld.so read DT_NULL there and the first process to relocate it died in elf_dynamic_do_Rela (Hub segfaulted, then "Failed to receive message_id: 2" / "Failed to connect to RequestServer" from every helper, which re-exec with a sanitised environment and so never saw the LD_LIBRARY_PATH workaround)
 * Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.0.0-14.20261110git03ada6d
 - Build for x86-64-v2 (upstream's ENABLE_CI_BASELINE_CPU) instead of -march=native, and fail the build if native leaks back in: the COPR builder has AVX-512, so the published libraries carried vrndscalesd and every launch died with SIGILL (ILL_ILLOPN) inside __llvm_libc_ladybird::math::pow during liblagom-gfx's static initializers, before main(), on any CPU without AVX-512 (Ryzen 5 5600G repro)
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.0.0-13.20261109git03ada6d
