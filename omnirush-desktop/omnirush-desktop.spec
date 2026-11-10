@@ -3,14 +3,14 @@
 %global __provides_exclude_from ^/opt/omnirush/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/omnirush/.*$
 Name:           omnirush-desktop
-Version:        3.8.2
-# sha256:  8d8c18962bfad2f43c588142ae014c4abb03e3fadd46f403045566621ce7a236
-Release:        2%{?dist}
+Version:        3.8.3
+# sha256:  ec3310dd71f2893e617888333799dda0ce3393dd865a42ebfc38b422d25838af
+Release:        0
 Summary:        OmniRush.ai desktop shell (Electron)
 License:        SUSE-Freeware
 Group:          Productivity/Networking/Talk/Clients
 URL:            https://omnirush.ai
-Source0:        https://github.com/omnirush-ai/omnirush-gui/releases/download/v3.8.2/omnirush-linux-amd64-3.8.2.deb
+Source0:        https://github.com/omnirush-ai/omnirush-gui/releases/download/v3.8.3/omnirush-linux-amd64-3.8.3.deb
 Source1:        omnirush-desktop-rpmlintrc
 BuildRequires:  binutils
 BuildRequires:  desktop-file-utils
@@ -112,9 +112,5 @@ if [ "$1" = 0 ] && [ -f %{_sysconfdir}/apparmor.d/omnirush ]; then
 fi
 
 %changelog
-* Sat Nov 07 2026 Ackerman-00 <no-reply> - 3.8.2-2
-- Exclude the /opt bundle from __brp_mangle_shebangs: upstream Electron bundle owns its file modes; brp removes exec bits from text files without shebangs
-* Sat Nov 07 2026 Ackerman-00 <no-reply> - 3.8.2-1
-- Ship chrome-sandbox with %attr(4755, root, root) (shipped 0755 upstream); apparmor profile install no longer expands the undefined apparmor_profilesdir macro to /omnirush at the filesystem root and now removes/reloads it correctly on removal; ship LICENSE.electron.txt as %license; rewrite update.sh in the repo pattern.
-* Sat Nov 07 2026 Ackerman-00 <no-reply> - 3.8.2-0
-- Initial package
+* Tue Nov 10 2026 Ackerman-00 <no-reply> - 3.8.3-0
+- Update to upstream release 3.8.3

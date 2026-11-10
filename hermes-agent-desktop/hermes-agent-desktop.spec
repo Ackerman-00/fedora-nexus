@@ -3,18 +3,18 @@
 %global __requires_exclude_from ^/opt/HermesDesktop/.*$
 %global __provides_exclude_from ^/opt/HermesDesktop/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/HermesDesktop/.*$
-%global commit          cacad9510e16ff0dc726ebf97d192033ed218b4c
+%global commit          672de7c205a965cc90f194f5089397b29b86bdd6
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261109181414
+%global gitdate         20261110064708
 
 Name:           hermes-agent-desktop
-Version:        0.23.0^%{gitdate}git%{shortcommit}
-Release:        4%{?dist}
+Version:        0.23.1^%{gitdate}git%{shortcommit}
+Release:        1%{?dist}
 Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
 Source0:        https://github.com/NousResearch/hermes-agent/archive/%{commit}.tar.gz
-# sha256:  bb4d828b6ed36b0cb4e6c0aebc937660688ec3c2d46356c0fdfe548d3a40b822
+# sha256:  acbaa44a60433be2a3f7b287bccdc4dcf0b93582cb2aec6169d0b94a19a310c1
 Source1:        https://nodejs.org/download/release/v26.12.1/node-v26.12.1-linux-x64.tar.xz
 # sha256: 6170b2d474e1c626f43cff3adc118df9fe3b573258a4fc3d850c8dbc6b079bbd
 Source2:        https://registry.npmjs.org/@pnpm/exe.linux-x64/-/exe.linux-x64-12.15.0.tgz
@@ -136,14 +136,5 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
-* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109181414gitcacad95-4
-- Require the X11 sonames the HUD modifier helper links (libX11, libXi); the
-  /opt tree is excluded from autorequires so they must be declared
-* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109181414gitcacad95-3
-- Build the X11 HUD modifier helper: without libX11-devel and libXi-devel the
-  upstream build script printed '[hud-modifier] unavailable' and shipped the
-  desktop without the modifier-tap helper (auto-detected feature, no error)
-* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109181414gitcacad95-2
-- Prepare the locked Electron runtime (upstream electron-runtime step) before electron-builder
-* Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.23.0^20261109181414gitcacad95-1
-- Nightly sync with upstream main branch (Commit: cacad95)
+* Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.23.1^20261110064708git672de7c-1
+- Nightly sync with upstream main branch (Commit: 672de7c)
