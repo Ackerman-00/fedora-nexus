@@ -2,7 +2,7 @@
 
 Name:           matugen
 Version:        4.2.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Material You color generation tool (Nexus Optimized)
 
 License:        GPL-2.0-or-later AND MIT AND Apache-2.0 AND Zlib
@@ -13,6 +13,7 @@ ExclusiveArch:  x86_64 aarch64
 
 BuildRequires:  cargo
 BuildRequires:  rust
+BuildRequires:  rust-srpm-macros
 BuildRequires:  gcc-c++
 
 %description
@@ -37,6 +38,10 @@ install -Dpm0755 target/release/matugen -t %{buildroot}%{_bindir}/
 %{_bindir}/matugen
 
 %changelog
+* Tue Nov 10 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 4.2.0-5
+- Declare BuildRequires: rust-srpm-macros: the spec uses %{build_rustflags},
+  which that package defines (it is not pulled in by cargo or rust).
+
 * Tue Oct 27 2026 Ackerman-00 <no-reply> - 4.2.0-4
 - Ship debuginfo: this is a source build (cargo), so the debug_package
   override was discarding symbols the build already produces

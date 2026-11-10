@@ -6,7 +6,7 @@
 
 Name:           mixtapes
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A cross-platform GTK4/Libadwaita YouTube Music client written in Rust
 
 License:        GPL-3.0-or-later
@@ -15,6 +15,7 @@ Source0:        %{url}/archive/%{commit}/mixtapes-%{shortcommit}.tar.gz
 
 BuildRequires:  cargo
 BuildRequires:  rust
+BuildRequires:  rust-srpm-macros
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  make
@@ -96,6 +97,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/com.pocoguy.Muse.desk
 %{_datadir}/icons/hicolor/scalable/apps/com.pocoguy.Muse*.svg
 
 %changelog
+* Tue Nov 10 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0^20261031223600gita50a75d-2
+- Declare BuildRequires: rust-srpm-macros: the spec uses %{build_rustflags},
+  which that package defines (it is not pulled in by cargo or rust).
+
 * Sun Nov 01 2026 Ackerman-00 <no-reply> - 0^20261031223600gita50a75d-1
 - Nightly sync with upstream main branch (Commit: a50a75d)
 

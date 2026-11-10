@@ -1,6 +1,6 @@
 Name:           awww
 Version:        0.12.1
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Efficient animated wallpaper daemon for Wayland, controlled at runtime
 
 License:        GPL-3.0-only AND MIT AND Apache-2.0 AND MPL-2.0 AND BSD-3-Clause AND ISC
@@ -12,6 +12,7 @@ ExclusiveArch:  x86_64 aarch64
 
 BuildRequires:  cargo
 BuildRequires:  rust
+BuildRequires:  rust-srpm-macros
 BuildRequires:  gcc-c++
 BuildRequires:  pkgconf
 BuildRequires:  pkgconfig(wayland-client)
@@ -48,6 +49,10 @@ install -Dpm 0644 contrib/systemd/awww-daemon.service %{buildroot}%{_userunitdir
 %{_userunitdir}/awww-daemon.service
 
 %changelog
+* Tue Nov 10 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.12.1-8
+- Declare BuildRequires: rust-srpm-macros: the spec uses %{build_rustflags},
+  which that package defines (it is not pulled in by cargo or rust).
+
 * Fri Oct 23 2026 Ackerman-00 <no-reply> - 0.12.1-7
 - Point Source0 at the codeberg archive path that exists
   (archive/v%{version}.tar.gz); -6 used archive/v<ver>/<name>-<ver>.tar.gz

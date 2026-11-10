@@ -3,7 +3,7 @@
 
 Name:           concord
 Version:        2.7.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Feature-rich TUI client for Discord
 License:        GPL-3.0-only
 URL:            https://github.com/chojs23/concord
@@ -13,6 +13,7 @@ ExclusiveArch:  x86_64
 
 BuildRequires:  cargo
 BuildRequires:  rust
+BuildRequires:  rust-srpm-macros
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 # btls-sys: git apply on vendored BoringSSL
@@ -58,6 +59,10 @@ install -Dm755 target/release/concord %{buildroot}%{_bindir}/concord
 %{_bindir}/concord
 
 %changelog
+* Tue Nov 10 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.7.0-3
+- Declare BuildRequires: rust-srpm-macros: the spec uses %{build_rustflags},
+  which that package defines (it is not pulled in by cargo or rust).
+
 * Sat Nov 07 2026 Ackerman-00 <no-reply> - 2.7.0-2
 - Add git-core BuildRequires: wreq -> tokio-btls -> btls-sys applies BoringSSL patches with git
 
