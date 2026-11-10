@@ -4,11 +4,11 @@
 %global __requires_exclude_from ^/opt/ladybird/.*$
 %global __provides_exclude_from ^/opt/ladybird/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/ladybird/.*$
-%global commit         03ada6df57bf783747e774f93c30b5e3873b2068
+%global commit         6a488f6931ff271d8fd035d8f5be09fe968d0536
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        16.20261110git03ada6d%{?dist}
+Release:        17.20261110git6a488f6%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -160,6 +160,11 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.0.0-17.20261110git6a488f6
+- Refresh snapshot 03ada6d -> 6a488f6 (115 commits upstream to 2026-11-10T16:21Z;
+  top-level CMakeLists and compile_options.cmake unchanged, vcpkg builtin-baseline
+  unchanged, only the vcpkg icu port moved 78.3#2 -> 78.3#3, so the harfbuzz
+  overlay, the system-icu split and the x86-64-v2 gate carry over unchanged)
 * Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.0.0-16.20261110git03ada6d
 - F43/F44 only: the Fedora libicu there is 77, so the system-icu Requires
   made 0.0.0-15 uninstallable (dnf silently fell back to -14). Build Unicode
