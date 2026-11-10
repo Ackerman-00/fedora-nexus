@@ -11,8 +11,9 @@ SPEC_FILE="freebuff.spec"
 GITHUB_REPO="CodebuffAI/codebuff-community"
 TAG_PREFIX="freebuff-v"
 
-echo "Checking for latest Freebuff Desktop release..."
+echo "Checking for latest Freebuff CLI release..."
 
+# CLI tags only
 LATEST_TAG=$(git ls-remote --tags https://github.com/$GITHUB_REPO.git 2>/dev/null | awk '{print $2}' | sed 's|refs/tags/||;s/\^{}//' | grep -E "^${TAG_PREFIX}[0-9]" | sort -uV | tail -1)
 LATEST_VERSION=$(echo "$LATEST_TAG" | sed "s/^${TAG_PREFIX}//")
 
@@ -23,43 +24,74 @@ fi
 
 CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 
-if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
-    echo "  -> [UPDATE] New version detected: $LATEST_VERSION (Current: $CURRENT_VERSION)"
+if [ "$LATEST_VERSION" = "$CURRENT_VERSION" ]; then
+    echo "  -> [OK] Freebuff CLI is already on latest ($CURRENT_VERSION)."
+    exit 0
+fi
 
-    ASSET_URL="https://github.com/$GITHUB_REPO/releases/download/${TAG_PREFIX}${LATEST_VERSION}/freebuff-linux-x64.tar.gz"
+echo "  -> [UPDATE] New version detected: $LATEST_VERSION (Current: $CURRENT_VERSION)"
 
-    echo "  -> [CHECK] Verifying download link..."
-    if ! curl -L --output /dev/null --silent --head --fail "$ASSET_URL"; then
-        echo "  -> [SKIP] tar.gz asset for $LATEST_VERSION is not yet available on GitHub yet. Keeping $CURRENT_VERSION."
-        exit 0
-    fi
+ASSET_URL="https://github.com/$GITHUB_REPO/releases/download/${TAG_PREFIX}${LATEST_VERSION}/freebuff-linux-x64.tar.gz"
 
-    echo "  -> [ACTION] Updating $SPEC_FILE..."
+echo "  -> [CHECK] Verifying download link..."
+if ! curl -L --output /dev/null --silent --head --fail "$ASSET_URL"; then
+    echo "  -> [SKIP] tar.gz asset for $LATEST_VERSION is not yet available on GitHub yet. Keeping $CURRENT_VERSION."
+    exit 0
+fi
 
-    sed -i "s/^Version:\s*.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
-    sed -i "s/^Release:\s*.*/Release:        1%{?dist}/" "$SPEC_FILE"
+WORKDIR=$(mktemp -d) || exit 1
+trap 'rm -rf "$WORKDIR"' EXIT
 
-    if ! SHA256=$(bash "$_update_sh_dir/../tools/fetch-sha256.sh" "$ASSET_URL"); then
-        echo "Error: could not download $ASSET_URL for hashing." >&2
+echo "  -> [FETCH] Downloading $ASSET_URL"
+if ! curl -fsSL --retry 3 --retry-all-errors --max-time 1800 -o "$WORKDIR/cli.tar.gz" "$ASSET_URL"; then
+    echo "  -> [ERROR] Could not download $ASSET_URL; keeping $CURRENT_VERSION." >&2
+    exit 1
+fi
+SHA256=$(sha256sum "$WORKDIR/cli.tar.gz" | awk '{print $1}')
+
+if ! tar tzf "$WORKDIR/cli.tar.gz" > "$WORKDIR/list.txt"; then
+    echo "  -> [ERROR] Release archive is not a readable tar.gz; keeping $CURRENT_VERSION." >&2
+    exit 1
+fi
+
+# required payload
+for member in freebuff tree-sitter.wasm; do
+    if ! grep -qx "$member" "$WORKDIR/list.txt"; then
+        echo "  -> [ERROR] $LATEST_VERSION no longer ships '$member'; %%install and %%files need re-deriving. Keeping $CURRENT_VERSION." >&2
         exit 1
     fi
-    sed -i "s/^# sha256:.*/# sha256: $SHA256/" "$SPEC_FILE"
+done
 
-    DATE_STR=$(date +"%a %b %d %Y")
-    ENTRY_TMP=$(mktemp)
-    {
-        echo "* $DATE_STR Ackerman-00 <no-reply> - $LATEST_VERSION-1"
-        echo "- Auto-updated to $LATEST_VERSION via update.sh"
-    } > "$ENTRY_TMP"
-    sed -i "/^%changelog$/r $ENTRY_TMP" "$SPEC_FILE"
-    rm -f "$ENTRY_TMP"
-
-    echo "  -> [DONE] $SPEC_FILE is ready for build."
-else
-    echo "  -> [OK] Freebuff Desktop is already on latest ($CURRENT_VERSION)."
+# CLI-only payload
+if grep -qE '\.desktop$|^usr/|^opt/' "$WORKDIR/list.txt"; then
+    echo "  -> [ERROR] $LATEST_VERSION ships desktop/system paths; this package is CLI-only. Re-derive the spec before bumping. Keeping $CURRENT_VERSION." >&2
+    exit 1
 fi
+
+echo "  -> [ACTION] Updating $SPEC_FILE..."
+
+sed -i "s/^Version:\s*.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
+sed -i "s/^Release:\s*.*/Release:        1%{?dist}/" "$SPEC_FILE"
+sed -i "s/^# sha256:.*/# sha256: $SHA256/" "$SPEC_FILE"
+
+DATE_STR=$(LC_ALL=C date +"%a %b %d %Y")
+ENTRY_TMP=$(mktemp)
+{
+    echo "* $DATE_STR Ackerman-00 <no-reply> - $LATEST_VERSION-1"
+    echo "- Auto-updated to $LATEST_VERSION via update.sh"
+} > "$ENTRY_TMP"
+sed -i "/^%changelog$/r $ENTRY_TMP" "$SPEC_FILE"
+rm -f "$ENTRY_TMP"
+
+echo "  -> [DONE] $SPEC_FILE is ready for build."
+
 if ! grep -q "^Name:" "$SPEC_FILE"; then
     echo "FATAL: $SPEC_FILE lost its Name: header during update; restoring" >&2
+    git checkout -- "$SPEC_FILE" 2>/dev/null || true
+    exit 1
+fi
+if ! grep -q "^# sha256: $SHA256" "$SPEC_FILE" || ! grep -qE "^Version:[[:space:]]+$LATEST_VERSION$" "$SPEC_FILE"; then
+    echo "FATAL: $SPEC_FILE does not carry the new version/pin; restoring" >&2
     git checkout -- "$SPEC_FILE" 2>/dev/null || true
     exit 1
 fi

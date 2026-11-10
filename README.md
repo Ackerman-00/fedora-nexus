@@ -75,8 +75,8 @@ sudo dnf install <package-name>
 | `concord` | Feature-rich TUI client for Discord | Stable |
 | `extension-manager` | Native tool for browsing and managing GNOME Shell Extensions | Stable |
 | `fluxer` | Free and open source instant messaging and VoIP platform | Stable |
-| `freebuff` | The free coding agent for your desktop (parallel agents, private workspaces) | Stable |
-| `freebuff-desktop` | Electron coding agent desktop shell (deb-backed) | Stable |
+| `freebuff` | Free ad-supported coding agent for the terminal (`freebuff`, no menu entry) | Stable |
+| `freebuff-desktop` | Freebuff Desktop, the graphical Electron agent (`freebuff-desktop`, owns the menu entry) | Stable |
 | `ghostty` | Fast, feature-rich, cross-platform terminal emulator (Deb repackage) | Stable |
 | `gpu-screen-recorder` | Shadowplay-like screen recorder for Linux (NVIDIA/AMD/Intel) | Stable |
 | `hatter-icon-theme` | Hatter icon theme (multi-color variants, V4.0) | Stable |

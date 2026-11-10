@@ -4,13 +4,13 @@
 %global __brp_mangle_shebangs_exclude_from ^/opt/Freebuff/.*$
 Name:           freebuff-desktop
 Version:        0.0.201
-# sha256:  53608271f8bcc7ef1a160f0581f5825b220fe6e205a2209e47be758e9276a285
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Freebuff Desktop (Electron)
 License:        SUSE-Freeware
 Group:          Development/Tools/IDE
 URL:            https://freebuff.com
 Source0:        https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-desktop-v0.0.201/Freebuff-0.0.201-linux-amd64.deb
+# sha256: 53608271f8bcc7ef1a160f0581f5825b220fe6e205a2209e47be758e9276a285
 Source1:        freebuff-desktop-rpmlintrc
 BuildRequires:  binutils
 BuildRequires:  tar
@@ -62,7 +62,14 @@ Recommends:     xdg-desktop-portal-gtk
 ExclusiveArch:  x86_64
 
 %description
-Freebuff Desktop re-packs the upstream .deb payload under /opt.
+Freebuff Desktop is the graphical Freebuff coding agent. This package re-packs
+the upstream .deb payload under /opt/Freebuff and installs the upstream desktop
+entry and icon, so it is the only Freebuff package in the application menu.
+
+The bundle carries its own Bun runtime, git and orchestrator, so it does not
+need the freebuff command-line package. The terminal agent is packaged
+separately as freebuff and keeps the /usr/bin/freebuff name; this package
+provides /usr/bin/freebuff-desktop.
 
 %prep
 %setup -q -c -T
@@ -76,25 +83,46 @@ else echo "ERROR: unexpected data.tar compression in upstream DEB" >&2; exit 1; 
 :
 
 %install
-install -d %{buildroot}/opt %{buildroot}%{_datadir} %{buildroot}%{_bindir}
-if [ -d opt/Freebuff ]; then cp -a opt/Freebuff %{buildroot}/opt/; fi
-if [ -d usr/share ]; then cp -a usr/share/* %{buildroot}%{_datadir}/; fi
-if [ -d usr/share/applications ]; then install -d %{buildroot}%{_datadir}/applications; fi
-ln -sf /opt/Freebuff/freebuff %{buildroot}%{_bindir}/freebuff
+install -d %{buildroot}/opt %{buildroot}%{_bindir}
+cp -a opt/Freebuff %{buildroot}/opt/
+
+# explicit paths, no cp -a
+install -Dpm0644 usr/share/applications/freebuff.desktop \
+    %{buildroot}%{_datadir}/applications/freebuff.desktop
+install -Dpm0644 usr/share/doc/freebuff/changelog.gz \
+    %{buildroot}%{_datadir}/doc/freebuff/changelog.gz
+for icon in usr/share/icons/hicolor/*/apps/freebuff.png; do
+    size=${icon#usr/share/icons/hicolor/}
+    install -Dpm0644 "$icon" "%{buildroot}%{_datadir}/icons/hicolor/$size"
+done
+
+# GUI launcher name
+ln -s /opt/Freebuff/freebuff %{buildroot}%{_bindir}/freebuff-desktop
+
+%check
+desktop-file-validate %{buildroot}%{_datadir}/applications/freebuff.desktop
 
 %files
 /opt/Freebuff/
 %license /opt/Freebuff/LICENSE.electron.txt
 %attr(4755, root, root) /opt/Freebuff/chrome-sandbox
-%{_bindir}/freebuff
-%{_datadir}/applications/*
-%{_datadir}/doc/freebuff/
-%dir %{_datadir}/icons/hicolor
-%dir %{_datadir}/icons/hicolor/*
-%dir %{_datadir}/icons/hicolor/*/apps
-%{_datadir}/icons/hicolor/*/*/freebuff.png
+%{_bindir}/freebuff-desktop
+%{_datadir}/applications/freebuff.desktop
+%dir %{_datadir}/doc/freebuff
+%{_datadir}/doc/freebuff/changelog.gz
+%{_datadir}/icons/hicolor/*/apps/freebuff.png
 
 %changelog
+* Tue Nov 10 2026 Ackerman-00 <quietcraft@gmail.com> - 0.0.201-3
+- Rename the launcher symlink to /usr/bin/freebuff-desktop. It used to be
+  /usr/bin/freebuff, which the freebuff CLI package also ships, so the two
+  could not be installed together; /usr/bin/freebuff now belongs to the CLI.
+- This package is now the sole owner of freebuff.desktop, which comes from
+  upstream unchanged, so it is the only Freebuff entry in the app menu.
+- Move the sha256 pin below Source0 so the teardown sweep binds it to the .deb
+  instead of dropping it, and list the desktop file explicitly rather than
+  globbing the applications directory. Drop the hicolor directory declarations:
+  hicolor-icon-theme owns them and is already a Requires.
 * Sat Nov 07 2026 Ackerman-00 <no-reply> - 0.0.201-2
 - Exclude the /opt bundle from __brp_mangle_shebangs: upstream Electron bundle owns its file modes; brp removes exec bits from text files without shebangs
 * Sat Nov 07 2026 Ackerman-00 <no-reply> - 0.0.201-1

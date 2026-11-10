@@ -13,14 +13,14 @@ bibata-cursor-theme|bibata-cursor-theme|files-only
 caelestia-cli-mango|caelestia-cli-mango|caelestia --help
 caelestia-shell-mango|caelestia-shell-mango|test -x /usr/bin/caelestia-shell
 cascadia-code-nerd-fonts|cascadia-code-nerd-fonts|files-only
-cline-desktop|cline-desktop|test -x /usr/bin/cline-app
+cline-desktop|cline-desktop|cline-cli --help | grep -q '^Cline CLI' && cline-cli hub --help | grep -q '^Usage: cline hub' && test -x /usr/bin/cline-app
 cliphist|cliphist|cliphist version
 concat|concat|concat --version
 concord|concord|test -x /usr/bin/concord
 extension-manager|extension-manager|test -x /usr/bin/extension-manager
 fluxer|fluxer|test -f /usr/lib64/fluxer/resources/app.asar
-freebuff|freebuff|freebuff --version
-freebuff-desktop|freebuff-desktop|test -x /usr/bin/freebuff
+freebuff|freebuff|freebuff --smoke-tree-sitter 2>&1 | grep -q '^tree-sitter smoke ok'
+freebuff-desktop|freebuff-desktop|test -x /usr/bin/freebuff-desktop && test -f /usr/share/applications/freebuff.desktop && test -f /usr/share/icons/hicolor/512x512/apps/freebuff.png
 ghostty|ghostty|ghostty --version
 gpu-screen-recorder|gpu-screen-recorder|test -x /usr/bin/gpu-screen-recorder
 helium-browser|helium-browser|helium --no-sandbox --headless --disable-gpu --version

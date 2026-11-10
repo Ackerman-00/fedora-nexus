@@ -3,24 +3,27 @@
 
 Name:           freebuff
 Version:        0.2.36
-Release:        1%{?dist}
-Summary:        The free coding agent for your desktop
+Release:        2%{?dist}
+Summary:        The free coding agent for your terminal
 
 License:        MIT
-URL:            https://freebuff.com/desktop
+URL:            https://freebuff.com
 Source0:        https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v%{version}/freebuff-linux-x64.tar.gz
 # sha256: 672d66c3444f7469cc21b9c8a1c2c06c09676ca8f6a1771568282575a445a695
 Source1:        https://raw.githubusercontent.com/CodebuffAI/codebuff-community/freebuff-v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
-BuildRequires:  desktop-file-utils
+BuildRequires:  coreutils
 
 Recommends:     git
 
 %description
-Freebuff is the free, ad-supported tier of Codebuff: a coding agent that runs
-in your desktop with parallel agents, each isolated in its own workspace.
-No subscriptions, no API keys — powerful coding models funded by text ads.
+Freebuff is the free, ad-supported tier of Codebuff: a terminal coding agent
+with specialized agents and a choice of leading models. No subscriptions,
+no API keys — powerful coding models funded by text ads.
+
+This package ships the command-line agent only. The graphical application is
+a separate upstream product, packaged as freebuff-desktop.
 
 %prep
 %setup -c -T
@@ -29,38 +32,39 @@ tar xf %{SOURCE0}
 %build
 
 %install
+# wasm beside the real binary
+install -dm755 %{buildroot}%{_libexecdir}/%{name}
+install -m755 freebuff %{buildroot}%{_libexecdir}/%{name}/freebuff
+install -m644 tree-sitter.wasm %{buildroot}%{_libexecdir}/%{name}/tree-sitter.wasm
+
 install -dm755 %{buildroot}%{_bindir}
-install -m755 freebuff %{buildroot}%{_bindir}/freebuff
+ln -s ../libexec/%{name}/freebuff %{buildroot}%{_bindir}/freebuff
 
-install -dm755 %{buildroot}%{_datadir}/freebuff
-install -m644 tree-sitter.wasm %{buildroot}%{_datadir}/freebuff/tree-sitter.wasm
-
-install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
-
-install -dm755 %{buildroot}%{_datadir}/applications
-cat > %{buildroot}%{_datadir}/applications/freebuff.desktop <<'EOF'
-[Desktop Entry]
-Name=Freebuff
-Comment=The free coding agent for your desktop
-Exec=freebuff %U
-Icon=utilities-terminal
-Terminal=false
-Type=Application
-StartupWMClass=Freebuff
-Categories=Development;
-EOF
+install -Dpm0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %check
-desktop-file-validate %{buildroot}%{_datadir}/applications/freebuff.desktop
+# smoke exits 0 on FAIL
+smoke=$(timeout 120 %{buildroot}%{_libexecdir}/%{name}/freebuff --smoke-tree-sitter 2>&1)
+printf '%s\n' "$smoke"
+printf '%s\n' "$smoke" | grep -q '^tree-sitter smoke ok'
 
 %files
 %defattr(-,root,root,-)
 %license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/freebuff
-%{_datadir}/freebuff/tree-sitter.wasm
-%{_datadir}/applications/freebuff.desktop
+%dir %{_libexecdir}/%{name}
+%{_libexecdir}/%{name}/freebuff
+%{_libexecdir}/%{name}/tree-sitter.wasm
 
 %changelog
+* Tue Nov 10 2026 Ackerman-00 <quietcraft@gmail.com> - 0.2.36-2
+- Drop the hand-written freebuff.desktop: upstream's CLI tarball ships no desktop
+  entry or icon, and the file collided with freebuff-desktop, which owns the real
+  one. This package is terminal-only and no longer appears in the app menu.
+- Move the binary and tree-sitter.wasm to %%{_libexecdir}/freebuff with a
+  /usr/bin/freebuff symlink. The agent resolves the wasm next to
+  process.execPath, so the previous /usr/share/freebuff placement left every
+  install unable to find it (--smoke-tree-sitter reported "no wasm available").
 * Tue Nov 03 2026 Ackerman-00 <no-reply> - 0.2.36-1
 - Auto-updated to 0.2.36 via update.sh
 * Thu Oct 29 2026 Ackerman-00 <no-reply> - 0.2.35-1
