@@ -1,16 +1,16 @@
-%global commit          74dd931bf9b8f3bd9c1852a95ed87e70e7317b1e
+%global commit          199fb7fe64a34bec44bf059de323f78a4ed122a8
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261108031608
+%global gitdate         20261111131528
 
 Name:           noctalia-greeter
 Version:        1.7.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 License:        MIT AND Apache-2.0
 URL:            https://github.com/noctalia-dev/noctalia-greeter
 Source0:        %{url}/archive/%{commit}/%{name}-%{commit}.tar.gz
-# sha256: e27e23916bc94f9bb8f370f66e22420d00e78baa424f90ab15c012f456e5f01e
+# sha256: 62c2d289b8c110f3fdd7235b219f066379a58d1442c2a872377bd6830516a303
 Source1:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-APACHE
 # sha256: 0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594
 Source2:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-MIT
@@ -118,7 +118,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <no-reply> - 1.7.0^20261108031608git74dd931-2
-- Drop unused BuildRequires greetd/dbus/polkit (no build- or check-time reference in meson.build or tests/); use pkgconfig(glesv2) instead of virtual mesa-libGLES-devel; add Requires: polkit (pkexec path for noctalia-greeter-apply-appearance via the shipped .policy)
-* Sun Nov 08 2026 Ackerman-00 <no-reply> - 1.7.0^20261108031608git74dd931-1
-- Nightly sync with upstream main branch (Commit: 74dd931)
+* Wed Nov 11 2026 Ackerman-00 <no-reply> - 1.7.0^20261111131528git199fb7f-1
+- Nightly sync with upstream main branch (Commit: 199fb7f)
