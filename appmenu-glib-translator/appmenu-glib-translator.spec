@@ -6,7 +6,7 @@
 
 Name:           appmenu-glib-translator
 Version:        25.04^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        appmenu-glib-translator
 
 License:        LGPL-3.0-or-later
@@ -50,11 +50,12 @@ Development files for %{name}.
 %{_datadir}/gir-1.0/AppmenuGLibTranslator-25.04.gir
 %{_datadir}/vala/vapi/appmenu-glib-translator.deps
 %{_datadir}/vala/vapi/appmenu-glib-translator.vapi
-%{_includedir}/appmenu-glib-translator/importer.h
-%{_includedir}/appmenu-glib-translator/debug.h
+%{_includedir}/appmenu-glib-translator/*.h
 %{_libdir}/libappmenu-glib-translator.so
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
+* Wed Nov 11 2026 Ackerman-00 <no-reply> - 25.04^20261111220835git053f152-2
+- Package the devel header directory by glob so a new upstream header cannot break the build.
 * Wed Nov 11 2026 Ackerman-00 <no-reply> - 25.04^20261111220835git053f152-1
 - Nightly sync with upstream main branch (Commit: 053f152)
