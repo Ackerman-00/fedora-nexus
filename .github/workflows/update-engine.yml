@@ -27,9 +27,17 @@ jobs:
           python-version: '3.x'
 
       - name: Install System Dependencies
-        run: sudo apt-get update && sudo apt-get install -y libxml2-utils rpm
+        shell: bash
+        run: |
+          for i in 1 2 3; do
+            sudo apt-get -o Acquire::Retries=5 update &&
+              sudo apt-get -y -o Acquire::Retries=5 install libxml2-utils rpm && exit 0
+            echo "apt attempt $i failed; retrying"
+            sleep 20
+          done
+          exit 1
 
-      - run: python3 -m pip install requests
+      - run: python3 -m pip install --retries 5 requests
 
       - name: Restore a workflow file that main cannot run
         shell: bash
