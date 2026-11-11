@@ -89,7 +89,9 @@ def install_table(rows_paths):
             parts = line.rstrip("\n").split("|")
             if len(parts) < 5:
                 continue
-            pkg, chroot, nvr, _smoke, verdict = parts[:5]
+            # a smoke command may carry a pipe; the last two fields are fixed
+            head, verdict = line.rstrip("\n").rsplit("|", 2)[:2]
+            pkg, chroot, nvr, _smoke = head.split("|", 3)
             seen[(pkg, chroot)] = (nvr, verdict)
     for (pkg, chroot) in sorted(seen):
         nvr, verdict = seen[(pkg, chroot)]
