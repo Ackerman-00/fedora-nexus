@@ -4,7 +4,7 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | Package | Distfile | Pinned | Internal | Status | Note |
 |---|---|---|---|---|---|
 | app2unit | live Vladimir-csp/app2unit | 47e23ec6ab9e | 47e23ec6ab9e | **OK** | live Vladimir-csp/app2unit pin 47e23ec6ab9e vs upstream 47e23ec6ab9e |
-| appmenu-glib-translator | appmenu-glib-translator-3d42ca0.tar.gz | 25.04^20261109154809git3d42ca0 | >=1.3.0 | **SOURCE-OK** | tar meson.build=>=1.3.0 (vala-panel-appmenu-3d42ca002fc5dbb15f9ba32bb3ff00caf8046686/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3.0 (not authoritative) |
+| appmenu-glib-translator | appmenu-glib-translator-08f9649.tar.gz | 25.04^20261111151648git08f9649 | >=1.3.0 | **SOURCE-OK** | tar meson.build=>=1.3.0 (vala-panel-appmenu-08f96496068c631324bd5be9639058785fc7d85f/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3.0 (not authoritative) |
 | astal | live Aylur/astal | b7aaf4ce69eb | b7aaf4ce69eb | **OK** | live Aylur/astal pin b7aaf4ce69eb vs upstream b7aaf4ce69eb |
 | astal-gjs | live Aylur/astal | 7b4d37603c11 | b7aaf4ce69eb | **OK** | live Aylur/astal held at 7b4d37603c11 on purpose: upstream deleted lang/gjs in 9b67eb5; held at last good commit (pin verified upstream; upstream HEAD is b7aaf4ce69eb) |
 | astal-gtk4 | live Aylur/astal | b7aaf4ce69eb | b7aaf4ce69eb | **OK** | live Aylur/astal pin b7aaf4ce69eb vs upstream b7aaf4ce69eb |
@@ -22,33 +22,34 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | cline-desktop | cline-desktop-rpmlintrc | 0.0.49 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | cline-desktop | LICENSE | 0.0.49 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | cliphist | cliphist-v0.7.0.tar.gz | 0.7.0 | 0.7.0 | **SOURCE-OK** | tar version file=0.7.0 (cliphist-0.7.0/version.txt) \| hash no-checksum-pinned \| weak internal evidence 0.7.0 (not authoritative) |
-| concat | Concat-0.2.9-linux-x86_64.rpm | 0.2.9 | 0.2.9 | **OK** | rpm header concat=0.2.9-1 (tags NAME/VERSION/RELEASE) \| pinned 0.2.9 \| internal 0.2.9 |
+| concat | Concat-0.2.10-linux-x86_64.rpm | 0.2.10 | 0.2.10 | **OK** | rpm header concat=0.2.10-1 (tags NAME/VERSION/RELEASE) \| pinned 0.2.10 \| internal 0.2.10 |
 | concord | v2.7.0.tar.gz | 2.7.0 | 2.7.0 | **SOURCE-OK** | tar Cargo.toml=2.7.0 (concord-2.7.0/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 2.7.0 (not authoritative) |
 | extension-manager | extension-manager-0.7.0.tar.gz | 0.7.0 | >= 0.59.0 | **SOURCE-OK** | tar meson.build=>= 0.59.0 (extension-manager-0.7.0/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 0.59.0 (not authoritative) |
 | fluxer | rpm | 2026.1109.42917 | 2026.1109.42917 | **OK** | rpm header fluxer=2026.1109.42917-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1109.42917 \| internal 2026.1109.42917 |
 | freebuff | freebuff-linux-x64.tar.gz | 0.2.36 | 0.2.36 | **OK** | tar runtime probe freebuff --version: 0.2.36 \| pinned 0.2.36 \| internal 0.2.36 |
 | freebuff | LICENSE | 0.2.36 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| freebuff-desktop | Freebuff-0.0.201-linux-amd64.deb | 0.0.201 | 0.0.201 | **OK** | deb pkg=freebuff (control control.tar.gz) \| pinned 0.0.201 \| internal 0.0.201 |
-| freebuff-desktop | freebuff-desktop-rpmlintrc | 0.0.201 |  | **OK** | bundled aux/doc asset in repo, no download needed |
+| freebuff-desktop | Freebuff-0.0.202-linux-amd64.deb | 0.0.202 | 0.0.202 | **OK** | deb pkg=freebuff (control control.tar.gz) \| pinned 0.0.202 \| internal 0.0.202 |
+| freebuff-desktop | freebuff-desktop-rpmlintrc | 0.0.202 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | ghostty | ghostty_1.4.0-0.ppa2_amd64_trixie.deb | 1.4.0 | 1.4.0-0~ppa2 | **OK** | deb pkg=ghostty (control control.tar.xz) \| pinned 1.4.0 \| internal 1.4.0-0~ppa2 |
 | ghostty | LICENSE | 1.4.0 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | gpu-screen-recorder | gpu-screen-recorder.git.6.1.7.tar.gz | 6.1.7 | 6.1.7 | **SOURCE-OK** | tar meson.build=6.1.7 (meson.build) \| hash no-checksum-pinned \| weak internal evidence 6.1.7 (not authoritative) |
 | hatter-icon-theme | V4.0.tar.gz | 4.0 | 1.1 | **SOURCE-OK** | tar changelog=1.1 (Hatter-4.0/Building-blocks/Hatter-kde/actions/symbolic/newspaper-symbolic.svg) \| hash no-checksum-pinned \| weak internal evidence 1.1 (not authoritative) |
-| helium-browser | helium-0.21.1.1-x86_64_linux.tar.xz | 0.21.1.1 | 0.21.1.1 | **OK** | tar runtime probe chrome --version: Helium 0.21.1.1 (Chromium 157.0.8103.38) \| pinned 0.21.1.1 \| internal 0.21.1.1 |
-| helium-browser | net.imput.helium.metainfo.xml | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| helium-browser | LICENSE | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| helium-browser | LICENSE.ungoogled_chromium | 0.21.1.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
+| helium-browser | helium-0.21.2.1-x86_64_linux.tar.xz | 0.21.2.1 | 0.21.2.1 | **OK** | tar runtime probe chrome --version: Helium 0.21.2.1 (Chromium 157.0.8103.50) \| pinned 0.21.2.1 \| internal 0.21.2.1 |
+| helium-browser | net.imput.helium.metainfo.xml | 0.21.2.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
+| helium-browser | LICENSE | 0.21.2.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
+| helium-browser | LICENSE.ungoogled_chromium | 0.21.2.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | hellwal | hellwal-1.0.9.tar.gz | 1.0.9 | $(shell | **SOURCE-OK** | tar Makefile=$(shell (hellwal-1.0.9/Makefile) \| hash no-checksum-pinned \| weak internal evidence $(shell (not authoritative) |
-| hermes-agent-desktop | live NousResearch/hermes-agent | d5250190a23c | 825322b16656 | **STALE** | live NousResearch/hermes-agent pin d5250190a23c vs upstream 825322b16656 |
+| hermes-agent-desktop | live NousResearch/hermes-agent | 5df966a97a2d | 56ac7b5d5194 | **STALE** | live NousResearch/hermes-agent pin 5df966a97a2d vs upstream 56ac7b5d5194 |
 | heroic-games-launcher | Heroic-2.22.4-linux-x86_64.rpm | 2.22.4 | 2.22.4 | **OK** | rpm header heroic=2.22.4-1 (tags NAME/VERSION/RELEASE) \| pinned 2.22.4 \| internal 2.22.4 |
 | heroic-games-launcher | COPYING | 2.22.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| ladybird-unstable | 03ada6df57bf783747e774f93c30b5e3873b2068.tar.gz | 0.0.0 | 0.1.0 | **SOURCE-OK** | tar Cargo.toml=0.1.0 (ladybird-03ada6df57bf783747e774f93c30b5e3873b2068/AK/Rust/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 0.1.0 (not authoritative) |
+| ladybird-unstable | 28ba84f07c0a0e94b7d521f313dfd1f0a2d77fc4.tar.gz | 0.0.0 | 0.1.0 | **SOURCE-OK** | tar Cargo.toml=0.1.0 (ladybird-28ba84f07c0a0e94b7d521f313dfd1f0a2d77fc4/AK/Rust/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 0.1.0 (not authoritative) |
 | ladybird-unstable | harfbuzz-overlay-portfile.cmake | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | ladybird-unstable | harfbuzz-overlay-vcpkg.json | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | ladybird-unstable | harfbuzz-overlay-fix-win32-build.patch | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | ladybird-unstable | harfbuzz-overlay-config.cmake.in | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | ladybird-unstable | harfbuzz-overlay-usage | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | ladybird-unstable | check-bundled-libs.py | 0.0.0 |  | **OK** | bundled aux/doc asset in repo, no download needed |
+| ladybird-unstable | release-78.3.tar.gz | 0.0.0 | 78.3 | **SOURCE-OK** | tar pom.xml=78.3 (icu-release-78.3/icu4j/demos/pom.xml) \| hash no-checksum-pinned \| weak internal evidence 78.3 (not authoritative) |
 | lazyvim-git | live LazyVim/LazyVim | 5c26fac21fd3 | 5c26fac21fd3 | **OK** | live LazyVim/LazyVim pin 5c26fac21fd3 vs upstream 5c26fac21fd3 |
 | libcava | 1.0.0.tar.gz | 1.0.0 | $(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) | **SOURCE-OK** | tar Makefile.am=$(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) (cava-1.0.0/Makefile.am) \| hash no-checksum-pinned \| weak internal evidence $(AM_LIBTOOL_CURRENT):$(AM_LIBTOOL_REVISION):$(AM_LIBTOOL_RELEASE) (not authoritative) |
 | localsend | LocalSend-1.18.2-linux-x86-64.deb | 1.18.2 | 1.18.2+64 | **OK** | deb pkg=localsend (control control.tar.zst) \| pinned 1.18.2 \| internal 1.18.2+64 |
@@ -62,16 +63,16 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | matugen | matugen-4.2.0.crate | 4.2.0 |  | **SOURCE-OK** | crate (cargo package tarball), source by construction \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | mixtapes | live m-obeid/Mixtapes | a50a75d4d74c | a50a75d4d74c | **OK** | live m-obeid/Mixtapes pin a50a75d4d74c vs upstream a50a75d4d74c |
 | mpvpaper | 1.9.tar.gz | 1.9 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
-| noctalia-greeter | live noctalia-dev/noctalia-greeter | 74dd931bf9b8 | 74dd931bf9b8 | **OK** | live noctalia-dev/noctalia-greeter pin 74dd931bf9b8 vs upstream 74dd931bf9b8 |
+| noctalia-greeter | live noctalia-dev/noctalia-greeter | 199fb7fe64a3 | 199fb7fe64a3 | **OK** | live noctalia-dev/noctalia-greeter pin 199fb7fe64a3 vs upstream 199fb7fe64a3 |
 | nwg-look | v1.2.1.tar.gz | 1.2.1 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | obsidian | obsidian_1.15.0_amd64.deb | 1.15.0 | 1.15.0 | **OK** | deb pkg=obsidian (control control.tar.xz) \| pinned 1.15.0 \| internal 1.15.0 |
-| omnirush-desktop | omnirush-linux-amd64-3.8.3.deb | 3.8.3 | 3.8.3 | **OK** | deb pkg=omnirush.ai (control control.tar.xz) \| pinned 3.8.3 \| internal 3.8.3 |
-| omnirush-desktop | omnirush-desktop-rpmlintrc | 3.8.3 |  | **OK** | bundled aux/doc asset in repo, no download needed |
+| omnirush-desktop | omnirush-linux-amd64-3.8.4.deb | 3.8.4 | 3.8.4 | **OK** | deb pkg=omnirush.ai (control control.tar.xz) \| pinned 3.8.4 \| internal 3.8.4 |
+| omnirush-desktop | omnirush-desktop-rpmlintrc | 3.8.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | opencad-studio | OpenCADStudio-v2026.45-linux-x86_64.AppImage | 2026.45 | 2026.45 | **OK** | AppImage strings 2026.45 (AppRun) \| pinned 2026.45 \| internal 2026.45 |
 | opencad-studio | LICENSE | 2026.45 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | openchamber | OpenChamber-2.7.0-linux-x86_64.AppImage | 2.7.0 | 2.7.0 | **OK** | AppImage 2.7.0 (resources/app.asar) \| pinned 2.7.0 \| internal 2.7.0 |
 | openchamber | LICENSE | 2.7.0 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| opencode-desktop | opencode-desktop-linux-amd64.deb | 2.2.6 | 2.2.6 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.2.6 \| internal 2.2.6 |
+| opencode-desktop | opencode-desktop-linux-amd64.deb | 2.2.7 | 2.2.7 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.2.7 \| internal 2.2.7 |
 | protonplus | ProtonPlus-v0.6.8.tar.gz | 0.6.8 | >= 1.0.0 | **SOURCE-OK** | tar meson.build=>= 1.0.0 (ProtonPlus-0.6.8/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 1.0.0 (not authoritative) |
 | python-mprisify | mprisify-v1.0.1.tar.gz | 1.0.1 | 1.0.1 | **SOURCE-OK** | tar changelog=1.0.1 (mprisify-v1.0.1/CHANGELOG.md) \| hash no-checksum-pinned \| weak internal evidence 1.0.1 (not authoritative) |
 | python-mprisify | LICENSE | 1.0.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
@@ -80,8 +81,8 @@ Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this 
 | python-yt-dlp-get-pot-rustypipe | yt_dlp_get_pot_rustypipe-0.2.0.tar.gz | 0.2.0 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
 | python-yt-dlp-get-pot-rustypipe | LICENSE | 0.2.0 |  | **OK** | hash hash-OK \| license/doc/aux asset, not an artifact |
 | python-ytmusicapi | ytmusicapi-1.12.3.tar.gz | 1.12.3 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| source tarball (version = PV by construction) |
-| qoder | Qoder-linux-amd64.deb | 0.5.6 | 1:0.5.6 | **OK** | deb pkg=qoder (control control.tar.xz) \| pinned 0.5.6 \| internal 1:0.5.6 |
-| qoder | qoder-rpmlintrc | 0.5.6 |  | **OK** | bundled aux/doc asset in repo, no download needed |
+| qoder | Qoder-linux-amd64.deb | 0.5.7 | 1:0.5.7 | **OK** | deb pkg=qoder (control control.tar.xz) \| pinned 0.5.7 \| internal 1:0.5.7 |
+| qoder | qoder-rpmlintrc | 0.5.7 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | rootapp | Root.AppImage | 0.9.163 | 0.9.163 | **OK** | AppImage 0.9.163 (Root.desktop) \| pinned 0.9.163 \| internal 0.9.163 |
 | rustypipe-botguard | rustypipe-botguard-v0.1.2-x86_64-unknown-linux-gnu.tar.xz | 0.1.2 | 0.1.2 | **OK** | tar runtime probe rustypipe-botguard --version: rustypipe-botguard 0.1.2
 rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
@@ -96,7 +97,7 @@ rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | LICENSE | 1.5.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| umbriel-git | live noctalia-dev/umbriel | 8e13926aeb74 | 8e13926aeb74 | **OK** | live noctalia-dev/umbriel pin 8e13926aeb74 vs upstream 8e13926aeb74 |
+| umbriel-git | live noctalia-dev/umbriel | d3c85928dc05 | d3c85928dc05 | **OK** | live noctalia-dev/umbriel pin d3c85928dc05 vs upstream d3c85928dc05 |
 | vesktop | vesktop-1.6.9.x86_64.rpm | 1.6.9 | 1.6.9 | **OK** | rpm header vesktop=1.6.9-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.9 \| internal 1.6.9 |
 | vesktop | LICENSE | 1.6.9 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
@@ -115,24 +116,24 @@ rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | zen-browser | zen-browser | 1.24.1b |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | zen-browser | LICENSE | 1.24.1b |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | zig0.17 | zig-x86_64-linux-0.17.1.tar.xz | 0.17.1 | 0.0.0 | **SOURCE-OK** | tar build.zig.zon=0.0.0 (zig-x86_64-linux-0.17.1/lib/init/build.zig.zon) \| hash no-checksum-pinned \| weak internal evidence 0.0.0 (not authoritative) |
-| appmenu-glib-translator | upstream github.com/rilian-la-te/vala-panel-appmenu | 25.04^20261109154809git3d42ca0 | 0.6.1 | **OK** | at upstream latest 0.6.1 [releases/latest] |
+| appmenu-glib-translator | upstream github.com/rilian-la-te/vala-panel-appmenu | 25.04^20261111151648git08f9649 | 0.6.1 | **OK** | at upstream latest 0.6.1 [releases/latest] |
 | awww | upstream codeberg.org/LGFae/awww | 0.12.1 | v0.12.1 | **OK** | at upstream latest v0.12.1 [ls-remote] |
 | aylurs-gtk-shell | upstream github.com/Aylur/ags | 3.1.2 | v3.1.2 | **OK** | at upstream latest v3.1.2 [releases/latest] |
 | bibata-cursor-theme | upstream github.com/ful1e5/Bibata_Cursor | 2.0.7 | v2.0.7 | **OK** | at upstream latest v2.0.7 [releases/latest] |
 | cascadia-code-nerd-fonts | upstream github.com/ryanoasis/nerd-fonts | 3.5.1 | v3.5.1 | **OK** | at upstream latest v3.5.1 [releases/latest] |
 | cline-desktop | upstream github.com/cline/cline | 0.0.49 | v4.1.26 | **OK** | at upstream latest v4.1.26 [releases/latest] |
 | cliphist | upstream github.com/sentriz/cliphist | 0.7.0 | v0.7.0 | **OK** | at upstream latest v0.7.0 [releases/latest] |
-| concat | upstream github.com/jub0t/Concat | 0.2.9 | v0.2.9 | **OK** | at upstream latest v0.2.9 [releases/latest] |
+| concat | upstream github.com/jub0t/Concat | 0.2.10 | v0.2.10 | **OK** | at upstream latest v0.2.10 [releases/latest] |
 | concord | upstream github.com/chojs23/concord | 2.7.0 | v2.7.0 | **OK** | at upstream latest v2.7.0 [releases/latest] |
 | extension-manager | upstream github.com/mjakeman/extension-manager | 0.7.0 | v0.7.0 | **OK** | at upstream latest v0.7.0 [releases/latest] |
 | freebuff | upstream github.com/CodebuffAI/codebuff-community | 0.2.36 | freebuff-v0.2.36 | **OK** | at upstream latest freebuff-v0.2.36 [releases/latest] |
-| freebuff-desktop | upstream github.com/CodebuffAI/codebuff-community | 0.0.201 | freebuff-v0.2.36 | **OK** | at upstream latest freebuff-v0.2.36 [releases/latest] |
+| freebuff-desktop | upstream github.com/CodebuffAI/codebuff-community | 0.0.202 | freebuff-v0.2.36 | **OK** | at upstream latest freebuff-v0.2.36 [releases/latest] |
 | ghostty | upstream github.com/mkasberg/ghostty-ubuntu | 1.4.0 | 1.4.0-0-ppa2 | **OK** | at upstream latest 1.4.0-0-ppa2 [releases/latest] |
 | hatter-icon-theme | upstream github.com/Mibea/Hatter | 4.0 | V4.0 | **OK** | at upstream latest V4.0 [releases/latest] |
-| helium-browser | upstream github.com/imputnet/helium-linux | 0.21.1.1 | 0.21.1.1 | **OK** | at upstream latest 0.21.1.1 [releases/latest] |
+| helium-browser | upstream github.com/imputnet/helium-linux | 0.21.2.1 | 0.21.2.1 | **OK** | at upstream latest 0.21.2.1 [releases/latest] |
 | hellwal | upstream github.com/danihek/hellwal | 1.0.9 | v1.0.9 | **OK** | at upstream latest v1.0.9 [releases/latest] |
 | heroic-games-launcher | upstream github.com/Heroic-Games-Launcher/HeroicGamesLauncher | 2.22.4 | v2.22.4 | **OK** | at upstream latest v2.22.4 [releases/latest] |
-| ladybird-unstable | upstream github.com/LadybirdBrowser/ladybird | 0.0.0 |  | **SKIP-LIVE-UNVERIFIED** | upstream tags unreachable or none version-like |
+| ladybird-unstable | upstream github.com/LadybirdBrowser/ladybird | 0.0.0 | 2026.11.0 | **OK** | at upstream latest 2026.11.0 [ls-remote] |
 | libcava | upstream github.com/LukashonakV/cava | 1.0.0 | 1.0.0 | **OK** | at upstream latest 1.0.0 [releases/latest] |
 | localsend | upstream github.com/localsend/localsend | 1.18.2 | v1.18.2 | **OK** | at upstream latest v1.18.2 [releases/latest] |
 | logseq | upstream github.com/logseq/logseq | 2.0.2 | 2.0.2 | **OK** | at upstream latest 2.0.2 [releases/latest] |
@@ -140,7 +141,7 @@ rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | mpvpaper | upstream github.com/GhostNaN/mpvpaper | 1.9 | 1.9 | **OK** | at upstream latest 1.9 [releases/latest] |
 | nwg-look | upstream github.com/nwg-piotr/nwg-look | 1.2.1 | v1.2.1 | **OK** | at upstream latest v1.2.1 [releases/latest] |
 | obsidian | upstream github.com/obsidianmd/obsidian-releases | 1.15.0 | v1.15.0 | **OK** | at upstream latest v1.15.0 [releases/latest] |
-| omnirush-desktop | upstream github.com/omnirush-ai/omnirush-gui | 3.8.3 | v3.8.3 | **OK** | at upstream latest v3.8.3 [releases/latest] |
+| omnirush-desktop | upstream github.com/omnirush-ai/omnirush-gui | 3.8.4 | v3.8.4 | **OK** | at upstream latest v3.8.4 [releases/latest] |
 | opencad-studio | upstream github.com/HakanSeven12/OpenCADStudio | 2026.45 | v2026.45 | **OK** | at upstream latest v2026.45 [releases/latest] |
 | openchamber | upstream github.com/openchamber/openchamber | 2.7.0 | v2.7.0 | **OK** | at upstream latest v2.7.0 [releases/latest] |
 | protonplus | upstream github.com/vysp3r/ProtonPlus | 0.6.8 | v0.6.8 | **OK** | at upstream latest v0.6.8 [releases/latest] |
@@ -159,7 +160,6 @@ rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | xcur2png | upstream github.com/eworm-de/xcur2png | 0.7.1 | 0.7.1 | **OK** | at upstream latest 0.7.1 [releases/latest] |
 | zen-browser | upstream github.com/zen-browser/desktop | 1.24.1b | 1.24.1b | **OK** | at upstream latest 1.24.1b [releases/latest] |
 | cline-desktop | aur | 0.0.49 | 0.0.43 | **OK** | pinned 0.0.49 >= repology 0.0.43 (aur); tracker behind |
-| ladybird-unstable | ladybird-unstable | 0.0.0 |  | **UNVERIFIED** | repology has no entry; anitya/pypi/vendor index could not confirm |
 | python3-materialyoucolor | pypi:materialyoucolor | 3.0.4 | 3.0.4 | **OK** | upstream 3.0.4 == pinned 3.0.4 [freshness via pypi:materialyoucolor; repology has no entry] |
 | python-yt-dlp-ejs | pypi:yt-dlp-ejs | 0.8.0 | 0.8.0 | **OK** | upstream 0.8.0 == pinned 0.8.0 [freshness via pypi:yt-dlp-ejs; repology has no entry] |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology has no entry] |
@@ -167,6 +167,6 @@ rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | rootapp | aur | 0.9.163 | 0.9.163 | **OK** | pinned 0.9.163 >= repology 0.9.163 (aur); tracker behind |
 | starship | starship | 1.27.0 |  | **VULN-UNVERIFIED** | advisory ranges do not cover 1.27.0: CGA-9hcg-f7h9-475c, CGA-gr74-x3cx-8xpc |
 | zig0.17 | ziglang.org/download/index.json | 0.17.1 | 0.17.1 | **OK** | upstream 0.17.1 == pinned 0.17.1 [freshness via ziglang.org/download/index.json; repology has no entry] |
-| LIBYEAR | freshness | 0.10 yr | 3 pkgs | **METRIC** | threshold=20 libyears |
+| LIBYEAR | freshness | 0.09 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
 
-**Verdict: FAIL** (2 failure(s))
+**Verdict: FAIL** (1 failure(s))
