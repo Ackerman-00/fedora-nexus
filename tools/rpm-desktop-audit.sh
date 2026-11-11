@@ -4,7 +4,7 @@ RPM=${1:?usage: rpm-desktop-audit.sh <rpm> [chroot]}
 CH=${2:-44}
 DIR=$(cd "$(dirname "$RPM")" && pwd)
 FILE=$(basename "$RPM")
-docker run --rm -e FILE="$FILE" -v "$DIR:/rpms:ro" "registry.fedoraproject.org/fedora:$CH" bash -lc '
+docker run --rm -i -e FILE="$FILE" -v "$DIR:/rpms:ro" "registry.fedoraproject.org/fedora:$CH" bash -s <<'EOS'
 dnf -y -q --setopt=gpgcheck=0 install dnf-plugins-core >/dev/null 2>&1
 dnf -y -q --setopt=gpgcheck=0 copr enable ackerman/nexus >/dev/null 2>&1
 dnf -y -q --setopt=gpgcheck=0 install "/rpms/$FILE" >/tmp/i.log 2>&1 || {
@@ -52,7 +52,7 @@ for d in $(rpm -ql "$name" | grep "\.desktop$"); do
     /*) if [ -x "$exe" ]; then
           echo "EXEC_OK: $d Exec=$exe"
           if head -1 "$exe" 2>/dev/null | grep -q '^#!'; then
-            for t in $(sed -n 's/^exec \([^ ]*\).*/\1/p' "$exe" 2>/dev/null); do
+            for t in $(sed -n "s/^exec \([^ ]*\).*/\1/p" "$exe" 2>/dev/null); do
               case "$t" in
                 /*) if [ -e "$t" ]; then echo "WRAPPER_TARGET_OK: $exe -> $t"
                     else echo "WRAPPER_TARGET_MISSING: $exe -> $t"; rc=1; fi ;;
@@ -66,4 +66,5 @@ for d in $(rpm -ql "$name" | grep "\.desktop$"); do
   esac
 done
 echo "DESKTOP_ENTRIES=$found MENU_ENTRIES=$menu"
-exit $rc'
+exit $rc
+EOS
