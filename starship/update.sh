@@ -49,6 +49,7 @@ GIX_VERSION=$(tar xzf "$TMPDIR/src.tar.gz" -O "starship-$VERSION/Cargo.toml" 2>/
     | awk -F'"' '/^gix = /{print $2; exit}')
 
 sed -i "s/^Version:.*/Version:        $VERSION/" "$SPEC_FILE"
+sed -i -E "s|^Release:.*|Release:        1%{?dist}|" "$SPEC_FILE"
 sed -i "0,/^# sha256:.*/s|^# sha256:.*|# sha256:  $SHA256|" "$SPEC_FILE"
 
 if [ -n "$GIX_VERSION" ] && [ "$(printf '%s\n%s\n' "$GIX_FIXED" "$GIX_VERSION" | sort -V | head -1)" = "$GIX_FIXED" ]; then

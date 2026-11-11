@@ -73,13 +73,13 @@ SHA=$(bash "$_update_sh_dir/../tools/fetch-sha256.sh" "$DEB_URL") || { echo "Err
 sed -i -E "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
 sed -i -E "s|^Source0:.*|Source0:        $DEB_URL|" "$SPEC_FILE"
 sed -i -E "s|^# sha256:.*|# sha256:  $SHA|" "$SPEC_FILE"
-sed -i -E "s|^Release:.*|Release:        0|" "$SPEC_FILE"
+sed -i -E "s|^Release:.*|Release:        1%{?dist}|" "$SPEC_FILE"
 
 DATE=$(LC_ALL=C date +"%a %b %d %Y")
 sed -i '/^%changelog/,$d' "$SPEC_FILE"
 {
     echo "%changelog"
-    echo "* $DATE $PACKAGER - $LATEST_VERSION-0"
+    echo "* $DATE $PACKAGER - $LATEST_VERSION-1"
     echo "- Update to upstream release $LATEST_VERSION"
 } >> "$SPEC_FILE"
 

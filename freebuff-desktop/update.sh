@@ -90,7 +90,7 @@ if [ "$CURRENT_VERSION" = "$LATEST_VERSION" ]; then
     NEW_ENTRY="- Re-pin .deb (upstream respinned the tag)"
 else
     echo "Update found: $CURRENT_VERSION -> $LATEST_VERSION"
-    NEW_REL=0
+    NEW_REL=1
     NEW_ENTRY="- Update to upstream release $LATEST_VERSION"
 fi
 
