@@ -4,7 +4,7 @@
 
 Name:           app2unit
 Version:        1.4.4^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Launch desktop entries or commands as systemd user units
 
 License:        GPL-3.0-only
@@ -16,8 +16,9 @@ BuildRequires:  make
 BuildRequires:  scdoc
 BuildRequires:  gzip
 
-Requires:       bash
 Requires:       systemd
+Requires:       xdg-terminal-exec
+Requires:       xdg-utils
 
 %description
 Launch Desktop Entries (or arbitrary commands) as Systemd user units, and do it
@@ -47,5 +48,10 @@ system stored on an SSD, overhead can be as short as ~0.03s.
 %{_mandir}/man1/app2unit.1*
 
 %changelog
+* Wed Nov 11 2026 Ackerman-00 <no-reply> - 1.4.4^20260801195144git47e23ec-2
+- Declare the runtime tools the shipped script calls: xdg-terminal-exec is the
+  -T handler and the command exits 1 without it (app2unit:1491), xdg-utils
+  provides xdg-mime for -O/--open (app2unit:1506,1524). Drop Requires bash:
+  every shipped script is #!/bin/sh with no bashism.
 * Sat Aug 01 2026 Ackerman-00 <no-reply> - 1.4.4^20260801195144git47e23ec-1
 - Nightly sync with upstream master branch (Commit: 47e23ec)
