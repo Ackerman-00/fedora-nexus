@@ -3,15 +3,15 @@
 %global __provides_exclude_from ^/opt/Qoder/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/Qoder/.*$
 Name:           qoder
-Version:        0.5.6
-# sha256: 0058d5ff97b71c1e97935595fdcb07613bd20e9d7ba7f672c9efc7b566fc40d4
-Release:        3%{?dist}
+Version:        0.5.7
+# sha256: cbfb8e8e01c85246b34210a26e33df29db3ec17d01b0c5e389f0f85746542421
+Release:        1%{?dist}
 Epoch:          1
 Summary:        Agent workbench for human and AI software teams
 License:        SUSE-Freeware
 Group:          Development/Tools/IDE
 URL:            https://qoder.com
-Source0:        https://download.qoder.com.cn/qoder-app/releases/0.5.6/Qoder-linux-amd64.deb
+Source0:        https://download.qoder.com.cn/qoder-app/releases/0.5.7/Qoder-linux-amd64.deb
 Source1:        qoder-rpmlintrc
 BuildRequires:  binutils
 BuildRequires:  desktop-file-utils
@@ -143,11 +143,5 @@ fi
 /opt/Qoder/*
 
 %changelog
-* Sat Nov 07 2026 Ackerman-00 <no-reply> - 0.5.6-3
-- Drop the dead chmod on the excluded chrome-sandbox (the file is not shipped)
-* Sat Nov 07 2026 Ackerman-00 <no-reply> - 0.5.6-2
-- Exclude the 811MB /opt bundle from __brp_mangle_shebangs: the payload ships minified single-line JS that made the shebang pass unbounded (~25 min CPU per build), and brp removes exec bits from text files without shebangs
-* Sat Nov 07 2026 Ackerman-00 <no-reply> - 0.5.6-1
-- Ship LICENSE.electron.txt and LICENSES.chromium.html as %license (they were declared then excluded); drop the contradictory chrome-sandbox %attr line (the helper is deliberately not shipped); rewrite update.sh in the repo pattern.
-* Sat Nov 07 2026 Ackerman-00 <no-reply> - 0.5.6-0
-- Initial package
+* Wed Nov 11 2026 Ackerman-00 <no-reply> - 0.5.7-1
+- Update to upstream release 0.5.7

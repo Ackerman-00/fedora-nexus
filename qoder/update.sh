@@ -71,12 +71,13 @@ echo "Update found: $CURRENT_VERSION -> $NEW_VER"
 sed -i -E "s/^Version:.*/Version:        $NEW_VER/" "$SPEC_FILE"
 sed -i -E "s|^Source0:.*|Source0:        $DEB_URL|" "$SPEC_FILE"
 sed -i -E "s|^# sha256:.*|# sha256: $NEW_SHA|" "$SPEC_FILE"
+sed -i -E "s|^Release:.*|Release:        1%{?dist}|" "$SPEC_FILE"
 
 DATE=$(LC_ALL=C date +"%a %b %d %Y")
 sed -i '/^%changelog/,$d' "$SPEC_FILE"
 {
     echo "%changelog"
-    echo "* $DATE $PACKAGER - $NEW_VER-0"
+    echo "* $DATE $PACKAGER - $NEW_VER-1"
     echo "- Update to upstream release $NEW_VER"
 } >> "$SPEC_FILE"
 
