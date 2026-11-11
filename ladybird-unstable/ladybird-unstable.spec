@@ -8,7 +8,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        22.20261111git28ba84f%{?dist}
+Release:        23.20261111git28ba84f%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -44,6 +44,7 @@ Requires:       libvulkan.so.1()(64bit)
 Requires:       libwayland-client.so.0()(64bit)
 Requires:       libxcb-icccm.so.4()(64bit)
 Requires:       libxcb.so.1()(64bit)
+Requires:       hicolor-icon-theme
 Recommends:     qt6-qtwayland
 Recommends:     mesa-vulkan-drivers
 
@@ -171,6 +172,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Wed Nov 11 2026 Ackerman-00 <no-reply> - 0.0.0-23.20261111git28ba84f
+- Require hicolor-icon-theme: the package installs a scalable hicolor icon, and the
+  other 28 icon-shipping specs here carry that Requires. Folded into this rebuild so
+  the icon-dir fix and the changelog-scriptlet fix ship together.
 * Wed Nov 11 2026 Ackerman-00 <no-reply> - 0.0.0-22.20261111git28ba84f
 - Move the -21 entry below the %changelog tag and bump the revision so users get it:
   update.sh inserted entries above the tag, so the shipped %postun scriptlet carried
