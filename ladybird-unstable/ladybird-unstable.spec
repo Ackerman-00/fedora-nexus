@@ -8,7 +8,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        19.20261110git6a488f6%{?dist}
+Release:        20.20261110git6a488f6%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -117,9 +117,6 @@ cmake --build Build/release --parallel %{?_smp_build_ncpus}
 %if 0%{?fedora} < 45
 cd icu/icu4c/source
 export CFLAGS="%{optflags}" CXXFLAGS="%{optflags}"
-# RUNPATH is not transitive: libicuuc/libicui18n need libicudata from the same dir;
-# $ORIGIN keeps it relative because rpm check-rpaths rejects an absolute runpath
-export LDFLAGS="-Wl,-rpath,'\$\$ORIGIN'"
 ./runConfigureICU Linux --prefix=/opt/ladybird --libdir=/opt/ladybird/lib64 --disable-static --disable-tests --disable-samples
 make -j%{?_smp_build_ncpus}
 cd -
@@ -139,7 +136,9 @@ cp -a icu/icu4c/source/lib/libicudata.so.78.3 icu/icu4c/source/lib/libicuuc.so.7
 ln -sf libicudata.so.78.3 %{buildroot}/opt/ladybird/lib64/libicudata.so.78
 ln -sf libicuuc.so.78.3 %{buildroot}/opt/ladybird/lib64/libicuuc.so.78
 ln -sf libicui18n.so.78.3 %{buildroot}/opt/ladybird/lib64/libicui18n.so.78
-for lib in libicuuc libicui18n; do
+# $ORIGIN only: an absolute runpath trips check-rpaths 0002, an empty one trips 0010
+for lib in libicudata libicuuc libicui18n; do
+  patchelf --set-rpath '$ORIGIN' %{buildroot}/opt/ladybird/lib64/$lib.so.78.3
   readelf -d %{buildroot}/opt/ladybird/lib64/$lib.so.78.3 | grep -qE '(RUNPATH|RPATH).*\[\$ORIGIN\]' \
     || { echo "FATAL: $lib.so.78.3 has no \$ORIGIN runpath, the loader cannot resolve its ICU siblings" >&2; exit 1; }
 done
@@ -172,6 +171,14 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Wed Nov 11 2026 Ackerman-00 <no-reply> - 0.0.0-20.20261110git6a488f6
+- F43/F44 only: set the bundled ICU runpath with patchelf after the copy instead of
+  through ICU's LDFLAGS. -19 failed %install on f44 with
+  "file '/opt/ladybird/lib64/libicudata.so.78.3' contains an empty runpath in []"
+  (rpm check-rpaths 0010): ICU's data library link line re-expands the variable, so
+  the quoted $ORIGIN arrived empty even though libicuuc/libicui18n kept theirs. The
+  gate now asserts $ORIGIN on all three bundled ICU libraries, which also rejects an
+  empty runpath.
 * Wed Nov 11 2026 Ackerman-00 <no-reply> - 0.0.0-19.20261110git6a488f6
 - F43/F44 only: link the bundled ICU with a relative $ORIGIN runpath instead of
   configure --enable-rpath. -18 failed %install on f43/f44 with
