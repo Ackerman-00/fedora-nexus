@@ -8,7 +8,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        18.20261110git6a488f6%{?dist}
+Release:        19.20261110git6a488f6%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -117,8 +117,10 @@ cmake --build Build/release --parallel %{?_smp_build_ncpus}
 %if 0%{?fedora} < 45
 cd icu/icu4c/source
 export CFLAGS="%{optflags}" CXXFLAGS="%{optflags}"
-# RUNPATH is not transitive: libicuuc needs libicudata from the same dir, so each lib carries the libdir rpath
-./runConfigureICU Linux --prefix=/opt/ladybird --libdir=/opt/ladybird/lib64 --disable-static --disable-tests --disable-samples --enable-rpath
+# RUNPATH is not transitive: libicuuc/libicui18n need libicudata from the same dir;
+# $ORIGIN keeps it relative because rpm check-rpaths rejects an absolute runpath
+export LDFLAGS="-Wl,-rpath,'\$\$ORIGIN'"
+./runConfigureICU Linux --prefix=/opt/ladybird --libdir=/opt/ladybird/lib64 --disable-static --disable-tests --disable-samples
 make -j%{?_smp_build_ncpus}
 cd -
 %endif
@@ -137,10 +139,14 @@ cp -a icu/icu4c/source/lib/libicudata.so.78.3 icu/icu4c/source/lib/libicuuc.so.7
 ln -sf libicudata.so.78.3 %{buildroot}/opt/ladybird/lib64/libicudata.so.78
 ln -sf libicuuc.so.78.3 %{buildroot}/opt/ladybird/lib64/libicuuc.so.78
 ln -sf libicui18n.so.78.3 %{buildroot}/opt/ladybird/lib64/libicui18n.so.78
-for lib in libicudata libicuuc libicui18n; do
-  readelf -d %{buildroot}/opt/ladybird/lib64/$lib.so.78.3 | grep -qE '(RUNPATH|RPATH).*/opt/ladybird/lib64' \
-    || { echo "FATAL: $lib.so.78.3 has no libdir rpath, the loader cannot resolve its ICU siblings" >&2; exit 1; }
+for lib in libicuuc libicui18n; do
+  readelf -d %{buildroot}/opt/ladybird/lib64/$lib.so.78.3 | grep -qE '(RUNPATH|RPATH).*\[\$ORIGIN\]' \
+    || { echo "FATAL: $lib.so.78.3 has no \$ORIGIN runpath, the loader cannot resolve its ICU siblings" >&2; exit 1; }
 done
+if readelf -d %{buildroot}/opt/ladybird/lib64/*.so.78.3 | grep -qE '(RUNPATH|RPATH).*\[/'; then
+  echo 'FATAL: absolute RUNPATH on a bundled ICU library (rpm check-rpaths rejects it)' >&2
+  exit 1
+fi
 %else
 # system icu: vcpkg's patchelf step leaves libicudata with an empty dynamic section, and helpers re-exec without LD_LIBRARY_PATH
 rm -f %{buildroot}/opt/ladybird/lib64/libicu*.so*
@@ -166,6 +172,13 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Wed Nov 11 2026 Ackerman-00 <no-reply> - 0.0.0-19.20261110git6a488f6
+- F43/F44 only: link the bundled ICU with a relative $ORIGIN runpath instead of
+  configure --enable-rpath. -18 failed %install on f43/f44 with
+  "file '/opt/ladybird/lib64/libicudata.so.78.3' contains an invalid runpath
+  '/opt/ladybird/lib64' in [$ORIGIN:/opt/ladybird/lib64]" (rpm check-rpaths 0002,
+  absolute path); the build gate now asserts $ORIGIN and rejects an absolute
+  runpath on a bundled ICU library.
 * Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.0.0-18.20261110git6a488f6
 - F43/F44 only: build the bundled ICU 78.3 with --enable-rpath and fail the build
   if a bundled ICU library has no libdir rpath. libicuuc NEEDs libicudata from the
