@@ -4,11 +4,11 @@
 %global __requires_exclude_from ^/opt/ladybird/.*$
 %global __provides_exclude_from ^/opt/ladybird/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/ladybird/.*$
-%global commit         28ba84f07c0a0e94b7d521f313dfd1f0a2d77fc4
+%global commit         3d43356013360e078657788bac83de4c772de4ab
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        23.20261111git28ba84f%{?dist}
+Release:        24.20261111git3d43356%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -172,6 +172,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Wed Nov 11 2026 Ackerman-00 <no-reply> - 0.0.0-24.20261111git3d43356
+- Refresh snapshot 28ba84f -> 3d43356 (upstream commit dated 2026-11-11T22:34:36Z); build-system
+  files reviewed before the bump, COPR build verified after it
+
 * Wed Nov 11 2026 Ackerman-00 <no-reply> - 0.0.0-23.20261111git28ba84f
 - Require hicolor-icon-theme: the package installs a scalable hicolor icon, and the
   other 28 icon-shipping specs here carry that Requires. Folded into this rebuild so
