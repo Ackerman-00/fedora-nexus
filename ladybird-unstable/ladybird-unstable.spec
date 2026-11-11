@@ -4,11 +4,11 @@
 %global __requires_exclude_from ^/opt/ladybird/.*$
 %global __provides_exclude_from ^/opt/ladybird/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/ladybird/.*$
-%global commit         6a488f6931ff271d8fd035d8f5be09fe968d0536
+%global commit         28ba84f07c0a0e94b7d521f313dfd1f0a2d77fc4
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        20.20261110git6a488f6%{?dist}
+Release:        21.20261111git28ba84f%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -170,6 +170,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 %postun
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
+* Wed Nov 11 2026 Ackerman-00 <no-reply> - 0.0.0-21.20261111git28ba84f
+- Refresh snapshot 6a488f6 -> 28ba84f (upstream commit dated 2026-11-11T02:54:44Z); build-system
+  files reviewed before the bump, COPR build verified after it
 %changelog
 * Wed Nov 11 2026 Ackerman-00 <no-reply> - 0.0.0-20.20261110git6a488f6
 - F43/F44 only: set the bundled ICU runpath with patchelf after the copy instead of
