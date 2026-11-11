@@ -1,6 +1,6 @@
 Name:           xcur2png
 Version:        0.7.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Convert X cursor files into PNG images
 License:        GPL-3.0-or-later
 URL:            https://github.com/eworm-de/xcur2png
@@ -13,7 +13,7 @@ Patch:          c23-extern-int.patch
 BuildRequires:  gcc
 BuildRequires:  make
 BuildRequires:  pkgconfig
-BuildRequires:  pkgconfig(libpng)
+BuildRequires:  pkgconfig(libpng) >= 1.0.6
 BuildRequires:  pkgconfig(xcursor)
 
 %description
@@ -44,6 +44,9 @@ Not packaged in Fedora before this (packages.fedoraproject.org 404).
 %{_mandir}/man1/xcur2png.1*
 
 %changelog
+* Wed Nov 11 2026 Ackerman-00 <no-reply> - 0.7.1-2
+- Carry the libpng floor upstream declares (configure.ac:
+  PKG_CHECK_MODULES libpng >= 1.0.6) instead of an unfloored pkgconfig(libpng).
 * Sat Sep 26 2026 Ackerman-00 <no-reply> - 0.7.1-1
 - Initial packaging for Fedora Nexus (Nexus Optimized)
 - Runtime helper for hyprcursor-util -x, which greps "xcur2png --help" for
