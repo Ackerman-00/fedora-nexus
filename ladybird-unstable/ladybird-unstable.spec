@@ -8,7 +8,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        21.20261111git28ba84f%{?dist}
+Release:        22.20261111git28ba84f%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -170,10 +170,15 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 %postun
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
+%changelog
+* Wed Nov 11 2026 Ackerman-00 <no-reply> - 0.0.0-22.20261111git28ba84f
+- Move the -21 entry below the %changelog tag and bump the revision so users get it:
+  update.sh inserted entries above the tag, so the shipped %postun scriptlet carried
+  three junk shell lines and the changelog lost that entry. update.sh now inserts after
+  the tag, like the other packages do.
 * Wed Nov 11 2026 Ackerman-00 <no-reply> - 0.0.0-21.20261111git28ba84f
 - Refresh snapshot 6a488f6 -> 28ba84f (upstream commit dated 2026-11-11T02:54:44Z); build-system
   files reviewed before the bump, COPR build verified after it
-%changelog
 * Wed Nov 11 2026 Ackerman-00 <no-reply> - 0.0.0-20.20261110git6a488f6
 - F43/F44 only: set the bundled ICU runpath with patchelf after the copy instead of
   through ICU's LDFLAGS. -19 failed %install on f44 with

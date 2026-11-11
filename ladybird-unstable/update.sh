@@ -48,10 +48,12 @@ sed -i -E "s/^%global commit.*/%global commit         $LATEST/" "$SPEC_FILE"
 sed -i -E "s/^Release:.*/Release:        ${NEW_REL}.${NEW_DATE}git${SHORT}%{?dist}/" "$SPEC_FILE"
 
 CHANGELOG_VER="0.0.0-${NEW_REL}.${NEW_DATE}git${SHORT}"
-sed -i "/^%changelog/i\\
-* $(LC_ALL=C date +'%a %b %d %Y') $PACKAGER - $CHANGELOG_VER\\
-- Refresh snapshot ${CURRENT:0:7} -> $SHORT (upstream commit dated ${NEW_ISO}); build-system\\
-  files reviewed before the bump, COPR build verified after it" "$SPEC_FILE"
+CHANGELOG_ENTRY="* $(LC_ALL=C date +'%a %b %d %Y') $PACKAGER - $CHANGELOG_VER\n- Refresh snapshot ${CURRENT:0:7} -> $SHORT (upstream commit dated ${NEW_ISO}); build-system\n  files reviewed before the bump, COPR build verified after it\n"
+if grep -q '^%changelog' "$SPEC_FILE"; then
+  sed -i "0,/^%changelog$/s//%changelog\n$CHANGELOG_ENTRY/" "$SPEC_FILE"
+else
+  printf '\n%%changelog\n%b' "$CHANGELOG_ENTRY" >> "$SPEC_FILE"
+fi
 
 echo "Bumped $OLD_REL -> ${NEW_REL}.${NEW_DATE}git${SHORT}"
 grep -q '^Name:' "$SPEC_FILE" || { echo "FATAL: spec lost its Name: header" >&2; git checkout -- "$SPEC_FILE"; exit 1; }
