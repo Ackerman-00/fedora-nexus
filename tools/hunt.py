@@ -39,15 +39,19 @@ def _gh_headers():
     return headers
 
 
-def get_json(url, timeout=45):
+def get_json(url, timeout=45, attempts=3):
     req = urllib.request.Request(url, headers=_gh_headers() if "api.github.com" in url else UA)
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            return json.loads(r.read().decode())
-    except urllib.error.HTTPError as exc:
-        if exc.code in (403, 404):
-            return None
-        raise
+    for attempt in range(attempts):
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return json.loads(r.read().decode())
+        except urllib.error.HTTPError as exc:
+            if exc.code in (403, 404):
+                return None
+            if exc.code in (429, 500, 502, 503, 504) and attempt + 1 < attempts:
+                time.sleep(5 * (attempt + 1))
+                continue
+            raise
 
 
 def _range_total(header):
@@ -293,6 +297,16 @@ def upstream_refs(txt):
             continue
 
 
+def gitlab_tag_fallback(host, owner, repo):
+    """Highest stable tag over git ls-remote, for a GitLab API that rate-limits."""
+    out = subprocess.run(["git", "ls-remote", "--tags", "https://%s/%s/%s.git" % (host, owner, repo)],
+                         capture_output=True, text=True, timeout=90).stdout
+    names = [ref.rsplit("/", 1)[-1] for ref in
+             (line.split("\t")[1] for line in out.splitlines() if "\t" in line)]
+    stable = [n for n in names if re.match(r"^v?\d+(\.\d+)+$", n)]
+    return max(stable, key=vkey) if stable else None
+
+
 def latest_release(forge, owner, repo):
     if forge == "github":
         return (get_json("https://api.github.com/repos/%s/%s/releases/latest" % (owner, repo), 30)
@@ -302,14 +316,18 @@ def latest_release(forge, owner, repo):
         return d.get("tag_name")
     if forge in ("gitlab", "gitlab-fdo"):
         host = "gitlab.com" if forge == "gitlab" else "gitlab.freedesktop.org"
-        d = get_json("https://%s/api/v4/projects/%s/releases" % (host, quote(owner + "/" + repo, "")), 30) or []
-        for rel in d:
-            if not rel.get("upcoming_release"):
-                return rel.get("tag_name")
-        tags = get_json("https://%s/api/v4/projects/%s/repository/tags" % (host, quote(owner + "/" + repo, "")), 30) or []
-        for t in tags:
-            if re.match(r"^v?\d+(\.\d+)+$", t.get("name", "")):
-                return t["name"]
+        try:
+            d = get_json("https://%s/api/v4/projects/%s/releases" % (host, quote(owner + "/" + repo, "")), 30) or []
+            for rel in d:
+                if not rel.get("upcoming_release"):
+                    return rel.get("tag_name")
+            tags = get_json("https://%s/api/v4/projects/%s/repository/tags" % (host, quote(owner + "/" + repo, "")), 30) or []
+            for t in tags:
+                if re.match(r"^v?\d+(\.\d+)+$", t.get("name", "")):
+                    return t["name"]
+        except Exception:
+            pass
+        return gitlab_tag_fallback(host, owner, repo)
     if forge == "pypi":
         d = get_json("https://pypi.org/pypi/%s/json" % owner, 30) or {}
         return (d.get("info") or {}).get("version")
@@ -429,11 +447,20 @@ def probe_upstream(sp):
     return pkg, tag, ok, "%s %s/%s releases/latest" % (forge, owner, repo), ""
 
 
+def probe_safe(sp):
+    """probe_upstream, with one package's transient error kept off the others."""
+    try:
+        return probe_upstream(sp)
+    except Exception as exc:
+        pkg = os.path.basename(os.path.dirname(sp))
+        return pkg, "", None, "", "probe-error-%s" % type(exc).__name__
+
+
 def hunt_upstream():
     """Spec pin vs upstream HEAD (git pins) or latest release (tag pins)."""
     findings, checked, skipped, held_rows = [], 0, [], []
     for sp in specs():
-        pkg, ref, ok, cmd, err = probe_upstream(sp)
+        pkg, ref, ok, cmd, err = probe_safe(sp)
         if ok is None:
             skipped.append(os.path.basename(sp))
             if err and err != "no upstream URL and no vendor feed":
@@ -458,7 +485,7 @@ def upstream_rows():
     date = time.strftime("%Y-%m-%d", time.gmtime())
     rows = []
     for sp in specs():
-        pkg, ref, ok, cmd, err = probe_upstream(sp)
+        pkg, ref, ok, cmd, err = probe_safe(sp)
         ver = strip_packaging(resolve_version(sp, spec_field(sp, "Version")).lstrip("v"))
         if ok is None:
             rows.append("upstream: %s UNPROBED-%s | %s | %s" % (pkg, err.replace(" ", "-"), cmd or "-", date))
