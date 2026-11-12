@@ -3,12 +3,12 @@
 %global             debug_package %{nil}
 
 %global             __provides_exclude_from ^/opt/%{application_name}/.*$
-%global             __requires_exclude ^lib(gkcodecs|lgpllibs|mozavutil|mozgtk|mozsandbox|mozsqlite3|mozwayland|nssutil3|nss3|smime3|nspr4)\\.so.*$
+%global             __requires_exclude ^lib(gkcodecs|lgpllibs|mozavutil|mozgtk|mozsandbox|mozsqlite3|mozwayland|nssutil3|nss3|plc4|plds4|smime3|ssl3|nspr4)\\.so.*$
 
 Name:               zen-browser
 Epoch:              2
 Version:        1.24.1b
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPL-2.0
@@ -87,5 +87,10 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
+* Thu Nov 12 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2:1.24.1b-2
+- Exclude libplc4/libplds4/libssl3 from auto-requires: zen's bundle ships
+  the full nss/nspr stack (release 1 dragged in system nspr+nss for them).
+  Same upstream 1.24.1b.
+
 * Fri Nov 06 2026 Ackerman-00 <no-reply> - 2:1.24.1b-1
 - Auto-update to upstream release 1.24.1b

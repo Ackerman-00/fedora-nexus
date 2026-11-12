@@ -9,7 +9,7 @@
 
 Name:           heroic-games-launcher
 Version:        2.22.4
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Open source launcher for GOG, Epic, and Amazon Games (Nexus Optimized)
 
 License:        GPL-3.0-only AND MIT AND BSD-3-Clause
@@ -42,8 +42,6 @@ Requires:       libXrandr
 Requires:       libdrm
 Requires:       hicolor-icon-theme
 Requires:       libappindicator-gtk3
-Requires:       python3
-Requires:       which
 Requires:       xdg-utils
 
 Recommends:     gamemode
@@ -74,6 +72,8 @@ install -d -m 0755 %{buildroot}%{_datadir}
 cp -a usr/share/applications %{buildroot}%{_datadir}/
 cp -a usr/share/icons %{buildroot}%{_datadir}/
 
+sed -i 's|^Exec=.*|Exec=/usr/bin/heroic %U|' %{buildroot}%{_datadir}/applications/heroic.desktop
+
 install -d -m 0755 %{buildroot}%{_bindir}
 cat <<-'EOF' > %{buildroot}%{_bindir}/heroic
 #!/bin/sh
@@ -97,6 +97,14 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/COPYING
 %attr(4755, root, root) /opt/Heroic/chrome-sandbox
 
 %changelog
+* Thu Nov 12 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.22.4-4
+- Point the menu entry at the /usr/bin/heroic wrapper so the Wayland
+  ELECTRON_OZONE_PLATFORM_HINT shim actually applies from the menu; it
+  previously exec'd /opt/Heroic/heroic and bypassed the wrapper.
+- Drop Requires: python3 and Requires: which; the bundled legendary,
+  gogdl, nile, comet and vulkan-helper binaries are static builds with
+  no consumer for either.
+
 * Sun Nov 08 2026 Ackerman-00 <no-reply> - 2.22.4-3
 - Pin Source0 sha256 (hunt pins finding); update.sh now recomputes it on bump and wipes %changelog on version bump per policy
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.22.4-2
