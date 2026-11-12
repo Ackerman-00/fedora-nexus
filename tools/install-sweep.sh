@@ -108,10 +108,14 @@ EOS
   sex=$(grep -m1 '^SMOKE_EXIT=' "$out" | cut -d= -f2)
   local pmiss
   pmiss=$(grep -c '^PROBE_MISSING ' "$out")
+  # a smoke command carries shell pipes; percent-encode them so the row keeps six fields
+  local smoke_col
+  smoke_col=${smoke:-files-only}
+  smoke_col=${smoke_col//|/%7C}
   local verdict=PASS why=""
   if [ "$iex" = "0" ] && [ "$rv" = "1" ] && [ "${lddc:-0}" = "0" ] && [ "$sex" != "0" ] && [ "${pmiss:-0}" -gt 0 ]; then
     why="probe names $(grep -m1 '^PROBE_MISSING ' "$out" | cut -d' ' -f2-) which the RPM does not ship"
-    printf '%s|%s|%s|%s|%s|%s\n' "$pkg" "$CH" "$nvr" "${smoke:-files-only}" "PROBE-BUG" "$why" >> "$OUT/rows.txt"
+    printf '%s|%s|%s|%s|%s|%s\n' "$pkg" "$CH" "$nvr" "$smoke_col" "PROBE-BUG" "$why" >> "$OUT/rows.txt"
     echo "ROW $pkg $CH ${nvr:-?} PROBE-BUG $why"
     return 0
   fi
@@ -124,7 +128,7 @@ EOS
   [ "$rv" = "1" ] || { verdict=FAIL; why="$why rpm -V dirty"; }
   [ "${lddc:-0}" = "0" ] || { verdict=FAIL; why="$why ldd missing=$lddc"; }
   [ "$sex" = "0" ] || { verdict=FAIL; why="$why smoke rc=$sex"; }
-  printf '%s|%s|%s|%s|%s|%s\n' "$pkg" "$CH" "$nvr" "${smoke:-files-only}" "$verdict" "$why" >> "$OUT/rows.txt"
+  printf '%s|%s|%s|%s|%s|%s\n' "$pkg" "$CH" "$nvr" "$smoke_col" "$verdict" "$why" >> "$OUT/rows.txt"
   echo "ROW $pkg $CH ${nvr:-?} $verdict $why"
 }
 export -f one
