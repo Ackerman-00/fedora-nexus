@@ -5,14 +5,14 @@
 %global __urlhelper_localopts --http1.1 --retry 5 --retry-all-errors --retry-delay 5
 
 Name:           fluxer
-Version:        2026.1112.24929
+Version:        2026.1112.152359
 Release:        1%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND 0BSD AND LGPL-2.1-or-later AND Apache-2.0 AND IJG AND MIT AND GPL-2.0-or-later AND ISC AND OpenSSL AND (MPL-1.1 OR GPL-2.0-only OR LGPL-2.0-only)
 URL:            https://fluxer.app
 Source0:        https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm
-# sha256: 7889b8c9891684505cfb30264893d22d1b3387b3373ca0235f99d4612a3bdd6c
+# sha256: fdcf493371d1b392c72af7ba7b7534a3ea93d44b43257cb619e8e295b23917a8
 
 Requires:           hicolor-icon-theme
 Requires:       at-spi2-core
@@ -98,5 +98,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/app.fluxer.FluxerDesk
 %attr(4755, root, root) %{_libdir}/%{name}/chrome-sandbox
 
 %changelog
-* Thu Nov 12 2026 Ackerman-00 <no-reply> - 2026.1112.24929-1
-- Update to version 2026.1112.24929
+* Thu Nov 12 2026 Ackerman-00 <no-reply> - 2026.1112.152359-1
+- Update to version 2026.1112.152359
