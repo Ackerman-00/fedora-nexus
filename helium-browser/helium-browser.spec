@@ -2,10 +2,11 @@
 %global             helium_base /opt/helium
 
 %global __provides_exclude_from ^%{helium_base}/.*$
+%global __requires_exclude_from ^%{helium_base}/libqt[56]_shim[.]so.*$
 
 Name:               helium-browser
 Version:        0.21.2.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:            Private, fast, and honest web browser
 
 License:            GPL-3.0-only AND BSD-3-Clause
@@ -22,7 +23,6 @@ Provides:           www-browser = %{version}-%{release}
 
 Requires:           hicolor-icon-theme
 Requires:           xdg-utils
-Requires:           dbus-daemon
 Requires(post):     desktop-file-utils
 Requires(post):     gtk-update-icon-cache
 Requires(postun):   gtk-update-icon-cache
@@ -93,6 +93,13 @@ esac
 %{_datadir}/icons/hicolor/256x256/apps/helium.png
 
 %changelog
+* Thu Nov 12 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.21.2.1-2
+- Exclude the Qt5/Qt6 shim plugins from automatic Requires: they are
+  optional Chromium plugins and their libQt5*/libQt6* sonames pulled
+  qt5-qtbase and qt6-qtbase into every install.
+- Drop Requires: dbus-daemon. The browser needs libdbus-1.so.3 (automatic);
+  the session bus belongs to the desktop, as in Fedora's chromium and firefox.
+
 * Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.21.2.1-1
 - Update to upstream release 0.21.2.1
 
