@@ -28,6 +28,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 UA = {"User-Agent": "fedora-nexus-hunt/1.0"}
 COPR = "https://copr.fedorainfracloud.org/api_3"
+IN_FLIGHT_STATES = ("running", "pending", "starting", "importing", "waiting", "forked")
 
 
 def _gh_headers():
@@ -210,6 +211,11 @@ def vge(a, b):
     while len(kb) < len(ka):
         kb.append((0, 0, ""))
     return ka >= kb
+
+
+def build_settled(state):
+    """A build still in flight cannot be compared with git yet."""
+    return state not in IN_FLIGHT_STATES
 
 
 def newest_builds():
@@ -738,7 +744,7 @@ def hunt_published_nvr():
     chroots = sorted((get_json("%s/project?ownername=ackerman&projectname=nexus" % COPR)
                       .get("chroot_repos") or {}).keys())
     pub = {c: repodata_nvr(c) for c in chroots}
-    findings, checked = [], 0
+    findings, pending, checked = [], [], 0
     for sp in specs():
         name = resolve_version(sp, spec_field(sp, "Name"))
         if "%{" in name:
@@ -755,7 +761,10 @@ def hunt_published_nvr():
             continue
         want = nvr_norm(m.group(1))
         checked += 1
-        built, bid, state = builds.get(name, ("", None, None))[:3]
+        built, bid, state, _newestid = builds.get(name, ("", None, None, None))
+        if not build_settled(state):
+            pending.append(name)
+            continue
         if not built:
             findings.append((name, "no COPR build row for this package"))
         elif built != want:
@@ -769,6 +778,8 @@ def hunt_published_nvr():
             elif got != want:
                 findings.append((name, "%s repodata serves %s, git says %s" % (c, got, want)))
     note = "%d chroots read: %s" % (len(chroots), ", ".join(chroots))
+    if pending:
+        note += "; in flight, not a finding: %s" % " ".join(sorted(pending))
     return ("published-nvr", "%d packages, %d findings" % (checked, len(findings)), note, findings)
 
 
@@ -990,11 +1001,43 @@ def hunt_official():
             "absent: %s" % (", ".join(absent) or "none"), findings)
 
 
+def build_minutes():
+    """Per package: how long its newest succeeded COPR build took, in minutes."""
+    newest, out, off = {}, {}, 0
+    while True:
+        d = get_json("%s/build/list?ownername=ackerman&projectname=nexus&limit=200&offset=%d"
+                     % (COPR, off))
+        rows = d.get("items", [])
+        if not rows:
+            break
+        for b in rows:
+            sp = b.get("source_package")
+            name = sp.get("name") if isinstance(sp, dict) else None
+            if not name or b.get("state") != "succeeded":
+                continue
+            if name not in newest or b.get("id", 0) > newest[name].get("id", 0):
+                newest[name] = b
+        off += 200
+        if off > 3000:
+            break
+    for name, b in newest.items():
+        started, ended = b.get("started_on"), b.get("ended_on")
+        if started and ended and ended > started:
+            out[name] = (ended - started) / 60.0
+    return out
+
+
+SLICE_MAX_BUILD_MIN = 120
+
+
 def hunt_slice():
     """The fleet rotation slice, derived from the relay teardown ledger.
 
     Rotating by memory drops the packages nobody remembers; deriving it from
     the dated docker-teardown tokens makes the oldest-tested the next slice.
+    A package whose own COPR build takes longer than SLICE_MAX_BUILD_MIN can
+    never finish `rpmbuild -bb` inside one run on a 4-core runner, so it is
+    named in the note instead of being proposed forever.
     """
     relay = os.path.join(ROOT, ".opencode-relay.md")
     inv = sorted(os.path.basename(os.path.dirname(sp)) for sp in specs())
@@ -1008,15 +1051,21 @@ def hunt_slice():
         pkg, day = m.group(1), m.group(2)
         if pkg in inv and day > last.get(pkg, ""):
             last[pkg] = day
-    width = -(-len(inv) // 4)
-    order = sorted(inv, key=lambda p: (last.get(p, ""), p))
+    minutes = build_minutes()
+    over = {p: minutes[p] for p in inv if minutes.get(p, 0) > SLICE_MAX_BUILD_MIN}
+    pool = [p for p in inv if p not in over]
+    width = -(-len(pool) // 4)
+    order = sorted(pool, key=lambda p: (last.get(p, ""), p))
     slice_pkgs, rest = order[:width], order[width:width + width]
-    never = [p for p in inv if p not in last]
+    never = [p for p in pool if p not in last]
     findings = [("slice", "%s: no docker-teardown token in the relay" % p) for p in never]
     summary = ("%d packages, slice of %d, untested %d, oldest %s"
                % (len(inv), len(slice_pkgs), len(never),
                   min((last[p] for p in inv if p in last), default="none")))
     note = "teardown-slice: %s | next-start: %s" % (" ".join(slice_pkgs), " ".join(rest))
+    if over:
+        note += " | over-budget: %s" % " ".join(
+            "%s(%dm)" % (p, over[p]) for p in sorted(over, key=lambda p: -over[p]))
     return ("slice", summary, note, findings)
 
 

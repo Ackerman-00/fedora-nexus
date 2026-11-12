@@ -57,6 +57,11 @@ check("feed unquoted", hunt.feed_url_from_update_sh("FEED=https://a/b/latest.yam
 check("feed non-yml", hunt.feed_url_from_update_sh('FEED="https://a/b.json"\n'), None)
 check("feed absent", hunt.feed_url_from_update_sh("SPEC_FILE=x.spec\n"), None)
 
+check("in-flight build is not settled", hunt.build_settled("running"), False)
+check("pending build is not settled", hunt.build_settled("pending"), False)
+check("succeeded build is settled", hunt.build_settled("succeeded"), True)
+check("failed build is settled, so it is reported", hunt.build_settled("failed"), True)
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)
