@@ -2,7 +2,7 @@
 %global debug_package %{nil}
 
 Name:           obsidian
-Version:        1.15.0
+Version:        1.15.1
 Release:        1%{?dist}
 Summary:        A powerful knowledge base that works on top of a local folder of plain text Markdown files
 
@@ -78,5 +78,5 @@ ln -sf /opt/Obsidian/obsidian %{buildroot}%{_bindir}/obsidian
 %doc %{_datadir}/doc/obsidian/
 
 %changelog
-* Tue Nov 03 2026 Ackerman-00 <no-reply> - 1.15.0-1
-- Auto-updated to 1.15.0 via update.sh
+* Thu Nov 12 2026 Ackerman-00 <no-reply> - 1.15.1-1
+- Auto-updated to 1.15.1 via update.sh
