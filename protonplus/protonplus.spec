@@ -6,7 +6,7 @@
 
 Name:           protonplus
 Version:        %{fileref}
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        A modern compatibility tools manager
 ExclusiveArch:  x86_64
 
@@ -34,7 +34,7 @@ BuildRequires:  pkgconfig(sdl3) >= 3.2.0
 
 Requires:       hicolor-icon-theme
 Requires:       which
-Requires:       mesa-libGLES
+Requires:       libGLESv2.so.2()(64bit)
 
 %description
 ProtonPlus is a modern compatibility tools manager for Linux.
@@ -66,6 +66,12 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
 %{_metainfodir}/%{app_id}.metainfo.xml
 
 %changelog
+* Thu Nov 12 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.6.8-6
+- Depend on the soname libGLESv2.so.2()(64bit) instead of the virtual
+  mesa-libGLES package name; the glvnd split serves no real mesa-libGLES
+  package on f44/f45/rawhide, libglvnd-gles provides the soname there.
+  Same upstream v0.6.8.
+
 * Sun Oct 18 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.6.8-5
 - Add Requires: mesa-libGLES (libGLESv2.so.2 is dlopened at startup; the
   binary aborted RC=134 on a clean live install without it - launch-proven
