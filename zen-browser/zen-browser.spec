@@ -7,14 +7,14 @@
 
 Name:               zen-browser
 Epoch:              2
-Version:        1.24.1b
-Release:        2%{?dist}
+Version:        1.24.2b
+Release:        1%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPL-2.0
 URL:                https://github.com/zen-browser/desktop
-Source0:            https://github.com/zen-browser/desktop/releases/download/1.24.1b/zen.linux-x86_64.tar.xz
-# sha256: c592a31fe8faa5ddfe91d6243b50c3107e1831c1247539fe03cc04f0fd5cb9cd
+Source0:            https://github.com/zen-browser/desktop/releases/download/1.24.2b/zen.linux-x86_64.tar.xz
+# sha256: bcf7e43160ecfe5f29953ed2a984e7a8028a58f2ec0e3114d36bb904d5f5ce80
 Source1:            %{full_name}.desktop
 Source2:            policies.json
 Source3:            %{full_name}
@@ -87,10 +87,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
-* Thu Nov 12 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2:1.24.1b-2
-- Exclude libplc4/libplds4/libssl3 from auto-requires: zen's bundle ships
-  the full nss/nspr stack (release 1 dragged in system nspr+nss for them).
-  Same upstream 1.24.1b.
-
-* Fri Nov 06 2026 Ackerman-00 <no-reply> - 2:1.24.1b-1
-- Auto-update to upstream release 1.24.1b
+* Thu Nov 12 2026 Ackerman-00 <no-reply> - 2:1.24.2b-1
+- Auto-update to upstream release 1.24.2b
