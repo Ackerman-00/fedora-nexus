@@ -11,6 +11,12 @@ ELECTRON=0
 grep -q 'chrome-sandbox' "$R/$PKG/$SPEC" 2>/dev/null && ELECTRON=1
 OUTDIR=/tmp/teardown/$PKG
 mkdir -p "$OUTDIR"
+mkdir -p /tmp/teardown/.locks
+exec 9>"/tmp/teardown/.locks/$PKG.lock"
+if ! flock -n 9; then
+  echo "TEARDOWN_$PKG=FAIL harness-concurrent (another teardown of $PKG holds the lock)"
+  exit 6
+fi
 rm -f "$OUTDIR"/*.rpm "$OUTDIR"/build.log "$OUTDIR"/install.log
 [ -z "$SPEC" ] && { echo "TEARDOWN_$PKG=FAIL no-spec"; exit 2; }
 
