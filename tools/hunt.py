@@ -11,6 +11,7 @@ Output: one relay-ready line per category
 
 followed by the detail rows for anything that needs fixing.
 """
+import calendar
 import gzip
 import hashlib
 import importlib.util
@@ -178,6 +179,44 @@ def spec_field(path, key):
 def live_hold_reason(txt):
     m = re.search(r"(?im)^%global\s+live_hold_reason[ \t]+(.+?)\s*$", txt)
     return m.group(1).strip() if m else None
+
+
+def declared_cadence_hours(pkgdir):
+    """A bump interval the package's own update.sh enforces, if it declares one.
+
+    A package that deliberately refreshes on a slow cadence (ladybird-unstable
+    builds for ~2h, so its updater waits 20h) is not stale inside that window;
+    reporting it behind every run buries the packages that really are.
+    """
+    path = os.path.join(pkgdir, "update.sh")
+    try:
+        txt = open(path, encoding="utf-8", errors="replace").read()
+    except OSError:
+        return 0
+    m = re.search(r"(?m)^\s*MIN_INTERVAL_HOURS=(\d+)", txt)
+    return int(m.group(1)) if m else 0
+
+
+def pinned_epoch(sp):
+    txt = open(sp, encoding="utf-8", errors="replace").read()
+    stamp = spec_macro(sp, "gitdate") or ""
+    if not re.match(r"^\d{8}", stamp):
+        m = re.search(r"^Release:.*?(\d{8})git", txt, re.M)
+        stamp = m.group(1) if m else ""
+    if not re.match(r"^\d{8}", stamp):
+        return 0
+    return calendar.timegm(time.strptime(stamp[:8], "%Y%m%d"))
+
+
+def head_commit_epoch(forge, owner, repo, sha):
+    if forge != "github":
+        return 0
+    d = get_json("https://api.github.com/repos/%s/%s/commits/%s" % (owner, repo, sha), 30) or {}
+    iso = (d.get("commit") or {}).get("committer", {}).get("date") or ""
+    try:
+        return calendar.timegm(time.strptime(iso[:19], "%Y-%m-%dT%H:%M:%S"))
+    except ValueError:
+        return 0
 
 
 def spec_macro(path, name):
@@ -443,6 +482,16 @@ def probe_upstream(sp):
         if head != commit and held:
             return (pkg, head[:7], "held",
                     "git ls-remote %s/%s HEAD (hold: %s)" % (owner, repo, held), "")
+        if head != commit:
+            hours = declared_cadence_hours(os.path.dirname(sp))
+            pin = pinned_epoch(sp)
+            newer = head_commit_epoch(forge, owner, repo, head)
+            if hours and pin and newer:
+                age = (newer - pin) // 3600
+                if 0 <= age < hours:
+                    return (pkg, head[:7], "cadence",
+                            "git ls-remote %s/%s HEAD (cadence: updater waits %dh, upstream %dh past pin)"
+                            % (owner, repo, hours, age), "")
         return (pkg, head[:7], head == commit,
                 "git ls-remote %s/%s HEAD" % (owner, repo), "")
     tag = latest_release(forge, owner, repo)
@@ -464,7 +513,7 @@ def probe_safe(sp):
 
 def hunt_upstream():
     """Spec pin vs upstream HEAD (git pins) or latest release (tag pins)."""
-    findings, checked, skipped, held_rows = [], 0, [], []
+    findings, checked, skipped, held_rows, cadence_rows = [], 0, [], [], []
     for sp in specs():
         pkg, ref, ok, cmd, err = probe_safe(sp)
         if ok is None:
@@ -472,9 +521,12 @@ def hunt_upstream():
             if err and err != "no upstream URL and no vendor feed":
                 findings.append((pkg, "unprobed: " + err))
             continue
-        if ok == "held":
+        if ok == "held" or ok == "cadence":
             checked += 1
-            held_rows.append(pkg)
+            if ok == "held":
+                held_rows.append(pkg)
+            else:
+                cadence_rows.append(pkg)
             continue
         checked += 1
         if not ok:
@@ -482,6 +534,8 @@ def hunt_upstream():
     note = "skipped (no upstream URL found): %s" % (", ".join(skipped) or "none")
     if held_rows:
         note += "\n    held (live_hold_reason, deliberate): %s" % ", ".join(sorted(held_rows))
+    if cadence_rows:
+        note += "\n    held (updater cadence not yet elapsed): %s" % ", ".join(sorted(cadence_rows))
     return ("upstream-versions", "%d packages checked, %d behind" % (checked, len(findings)),
             note, findings)
 
@@ -497,6 +551,9 @@ def upstream_rows():
             rows.append("upstream: %s UNPROBED-%s | %s | %s" % (pkg, err.replace(" ", "-"), cmd or "-", date))
         elif ok == "held":
             rows.append("upstream: %s %s != spec (hold declared) | %s | %s" % (pkg, ref, cmd, date))
+        elif ok == "cadence":
+            rows.append("upstream: %s %s != spec (updater cadence, held deliberately) | %s | %s"
+                        % (pkg, ref, cmd, date))
         else:
             rows.append("upstream: %s %s %s spec | %s | %s"
                         % (pkg, ref, "==" if ok else "!= (pinned %s)" % ver, cmd, date))
