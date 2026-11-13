@@ -63,7 +63,7 @@ def dep_table(verified, fixed, notes):
             status = "deps-fixed" if pkg in fixed else "deps-verified"
             rows.append("| %s | build files of the pinned Source0, consumed by this run's "
                         "container build | %d BuildRequires | none: builddep resolved every "
-                        "one and rpmbuild -bb + install + smoke PASS | unused-BR rot not "
+                        "one and rpmbuild -bb + install PASS (smoke where a binary ships) | unused-BR rot not "
                         "re-derived (build proof only) | unproven: 0 missing (a missing "
                         "BR cannot compile); unused-BR rot unproven on extras | %s |" % (pkg, nbr, status))
         else:
