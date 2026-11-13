@@ -50,7 +50,7 @@ def version_table():
 
 
 def dep_table(verified, fixed, notes):
-    rows = ["| package | upstream deps found | in spec | missing | extra/dropped | status | correctness |",
+    rows = ["| package | upstream deps found | in spec | missing | extra/dropped | unproven | status |",
             "| --- | --- | --- | --- | --- | --- | --- |"]
     for sp in H.specs():
         pkg = os.path.basename(os.path.dirname(sp))
@@ -64,12 +64,12 @@ def dep_table(verified, fixed, notes):
             rows.append("| %s | build files of the pinned Source0, consumed by this run's "
                         "container build | %d BuildRequires | none: builddep resolved every "
                         "one and rpmbuild -bb + install + smoke PASS | unused-BR rot not "
-                        "re-derived (build proof only) | %s | unproven: 0 missing (a missing "
-                        "BR cannot compile); unused-BR rot unproven on extras |" % (pkg, nbr, status))
+                        "re-derived (build proof only) | unproven: 0 missing (a missing "
+                        "BR cannot compile); unused-BR rot unproven on extras | %s |" % (pkg, nbr, status))
         else:
             rows.append("| %s | Source0 artifact (version-checked only) | %d BuildRequires | none found | n/a "
-                        "| version-checked | unproven: dependency list not re-derived this run (outside the "
-                        "re-tear slice); version proven against this run's upstream row |" % (pkg, nbr))
+                        "| unproven: dependency list not re-derived this run (outside the "
+                        "re-tear slice); version proven against this run's upstream row | version-checked |" % (pkg, nbr))
     return "\n".join(rows)
 
 
