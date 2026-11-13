@@ -348,6 +348,11 @@ tracked files before touching the spec. Fix: `cp -a <pkgdir>/. SOURCES/`
 before running spectool. Hit on wlroots, ly, zen-browser 2026-10-10 (all
 three COPR builds were green the whole time).
 
+One teardown per package: `tools/teardown-fresh.sh` holds a per-package flock
+and emits `TEARDOWN_<pkg>=FAIL harness-concurrent` instead of letting two
+batches share `/tmp/teardown/<pkg>` (one run's cleanup empties the other's
+`/rpms`, which reads as a package install failure).
+
 ## Host `rpmspec -P` expansion gotcha (added 2026-10-11, real hit)
 
 `rpmspec -P` on the Ubuntu runner expands `%( ... )` shell macros with
