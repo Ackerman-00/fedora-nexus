@@ -643,7 +643,7 @@ def hunt_cves():
         except Exception:
             continue
         for vid in ids:
-            state = ts.osv_version_affected(vid, ver)
+            state = ts.osv_version_affected(vid, ver, ts.ECOSYSTEM_MAP.get("fedora"))
             if state is True:
                 hits.append((name, ver, vid, "affected"))
             elif state is None:

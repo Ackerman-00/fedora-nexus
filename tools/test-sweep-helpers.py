@@ -231,6 +231,49 @@ Source1:        https://example.com/LICENSE
     return failures
 
 
+def test_osv_version_state():
+    """A distro build record with no version bounds is not a claim about the
+    source version we ship. Regression guard: starship 1.27.0-4 backports gix
+    0.90.0 (the GHSA-q54r-jf2p-rfr2 fix), yet two Chainguard/Wolfi
+    whole-history records for the apk package `starship` failed the sweep."""
+    real = ts.get_json
+
+    def doc(ecos, events):
+        return {"affected": [{"package": {"ecosystem": e},
+                              "ranges": [{"type": "ECOSYSTEM", "events": events}]}
+                             for e in ecos]}
+    docs = {
+        "CGA-distro": doc(["Chainguard", "Wolfi"], [{"introduced": "0"}]),
+        "GHSA-unfixed": doc(["crates.io"], [{"introduced": "0.88.0"}]),
+        "GHSA-fixed": doc(["crates.io"], [{"introduced": "0.88.0"},
+                                          {"fixed": "0.90.0"}]),
+        "GHSA-listed": {"affected": [{"package": {"ecosystem": "PyPI"},
+                                      "versions": ["1.0.0"]}]},
+    }
+    ts.get_json = lambda url: docs.get(url.rsplit("/", 1)[-1])
+    cases = [
+        ("CGA-distro", "1.27.0", None, False, "distro record, source build"),
+        ("CGA-distro", "1.27.0", "wolfi", None, "same record, wolfi is queried"),
+        ("GHSA-unfixed", "0.87.0", "crates.io", False, "below introduced"),
+        ("GHSA-unfixed", "0.89.0", "crates.io", True, "past introduced, no fix"),
+        ("GHSA-fixed", "0.89.9", "crates.io", True, "before the fix"),
+        ("GHSA-fixed", "0.90.0", "crates.io", False, "at the fix"),
+        ("GHSA-listed", "1.0.0", "PyPI", True, "listed version"),
+        ("GHSA-listed", "1.0.1", "PyPI", False, "not the listed version"),
+    ]
+    failures = 0
+    try:
+        for vid, ver, eco, want, why in cases:
+            got = ts.osv_version_affected(vid, ver, eco)
+            ok = got is want
+            failures += 0 if ok else 1
+            print(f"{'PASS' if ok else 'FAIL'}: osv_version_affected("
+                  f"{vid}, {ver}, {eco}) -> {got} (want {want})  # {why}")
+    finally:
+        ts.get_json = real
+    return failures
+
+
 def main():
     failures = 0
     for pinned, upstream, want, why in CASES:
@@ -245,6 +288,7 @@ def main():
     failures += test_detect_type()
     failures += test_strings_version()
     failures += test_pin_attribution()
+    failures += test_osv_version_state()
     print(f"\n{'ALL PASS' if not failures else str(failures) + ' FAILURE(S)'}"
           f" ({len(CASES)} cases)")
     return 1 if failures else 0

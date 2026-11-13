@@ -327,7 +327,14 @@ def _vge(a, b):
     return ka >= kb
 
 
-def osv_version_affected(vuln_id, version):
+DISTRO_ECOSYSTEMS = {
+    "alpine", "chainguard", "wolfi", "debian", "ubuntu", "suse", "red hat",
+    "redhat", "mageia", "almalinux", "rocky linux", "amazon linux",
+    "oracle linux", "photon os", "azure linux",
+}
+
+
+def osv_version_affected(vuln_id, version, ecosystem=None):
     """Is `version` actually affected by this advisory? True / False / None.
 
     /v1/query does not version-filter for every ecosystem, so a hit is a
@@ -341,7 +348,10 @@ def osv_version_affected(vuln_id, version):
         return None
     affected_versions = []
     fixed = []
+    introduced = []
+    ecos = set()
     for a in data.get("affected", []) or []:
+        ecos.add(((a.get("package") or {}).get("ecosystem") or "").lower())
         for v in a.get("versions", []) or []:
             affected_versions.append(v)
         for r in a.get("ranges", []) or []:
@@ -350,6 +360,8 @@ def osv_version_affected(vuln_id, version):
                     fixed.append(e["fixed"])
                 if e.get("last_affected"):
                     fixed.append(e["last_affected"])
+                if e.get("introduced") and e["introduced"] != "0":
+                    introduced.append(e["introduced"])
     if version in affected_versions:
         return True
     for f in fixed:
@@ -360,6 +372,13 @@ def osv_version_affected(vuln_id, version):
         if _vge(version, m.group(1)):
             return False
     if affected_versions:
+        return False
+    if introduced:
+        return any(_vge(version, i) for i in introduced)
+    # a record with no version bounds at all is a distro build claim
+    if ecos and ecos <= DISTRO_ECOSYSTEMS and (ecosystem or "").lower() not in ecos:
+        log("  [VULN-DISTRO] %s: no version bounds, record scoped to %s builds"
+            % (vuln_id, ", ".join(sorted(e for e in ecos if e))))
         return False
     return None
 
@@ -3032,7 +3051,7 @@ def check_vulns_and_deps(pkgs, repo_type):
         if vulns:
             affected, unknown = [], []
             for vid in vulns:
-                state = osv_version_affected(vid, clean_pv)
+                state = osv_version_affected(vid, clean_pv, ECOSYSTEM_MAP.get(eco))
                 if state is True:
                     affected.append(vid)
                 elif state is None:
