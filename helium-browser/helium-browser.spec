@@ -5,14 +5,14 @@
 %global __requires_exclude_from ^%{helium_base}/libqt[56]_shim[.]so.*$
 
 Name:               helium-browser
-Version:        0.21.2.1
-Release:        2%{?dist}
+Version:        0.21.3.1
+Release:        1%{?dist}
 Summary:            Private, fast, and honest web browser
 
 License:            GPL-3.0-only AND BSD-3-Clause
 URL:                https://github.com/imputnet/helium-linux
 Source0:            https://github.com/imputnet/helium-linux/releases/download/%{version}/helium-%{version}-x86_64_linux.tar.xz
-# sha256: e55c253e082f78fb5ae094ca465a59e06882fd7c87ebf383165beb3560e0b519
+# sha256: 88f3c53a237182e872ac3061cc8c129e75aecbce84aead834225d8103096c254
 Source1:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/package/net.imput.helium.metainfo.xml
 Source2:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/LICENSE
 Source3:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/LICENSE.ungoogled_chromium
@@ -93,6 +93,10 @@ esac
 %{_datadir}/icons/hicolor/256x256/apps/helium.png
 
 %changelog
+* Fri Nov 13 2026 Ackerman-00 <no-reply> - 0.21.3.1-1
+- Update to upstream release 0.21.3.1 (Chromium 157.0.8103.78, read from the
+  shipped binary; tarball sha256 verified)
+
 * Thu Nov 12 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.21.2.1-2
 - Exclude the Qt5/Qt6 shim plugins from automatic Requires: they are
   optional Chromium plugins and their libQt5*/libQt6* sonames pulled
