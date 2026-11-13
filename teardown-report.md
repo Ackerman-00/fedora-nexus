@@ -1,11 +1,10 @@
 # Teardown Sweep Report
 
 Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this report is the receipt.
-Sweep run: 2026-11-13 (run 43379676033). Verdict: 1 not verified - hermes-agent-desktop STALE (pin cb5719d; upstream moved to 3783d3d during the run). Left for the next run per the one-build-per-package-per-run rule (6a); the pin was synced and built as 11320684 by this run.
 | Package | Distfile | Pinned | Internal | Status | Note |
 |---|---|---|---|---|---|
 | app2unit | live Vladimir-csp/app2unit | 47e23ec6ab9e | 47e23ec6ab9e | **OK** | live Vladimir-csp/app2unit pin 47e23ec6ab9e vs upstream 47e23ec6ab9e |
-| appmenu-glib-translator | appmenu-glib-translator-2447f1c.tar.gz | 25.04^20261112121309git2447f1c | >=1.3.0 | **SOURCE-OK** | tar meson.build=>=1.3.0 (vala-panel-appmenu-2447f1cdddcee6bde8bfaa5696eca2e0375634c2/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3.0 (not authoritative) |
+| appmenu-glib-translator | appmenu-glib-translator-5dce3af.tar.gz | 25.04^20261113152043git5dce3af | >=1.3.0 | **SOURCE-OK** | tar meson.build=>=1.3.0 (vala-panel-appmenu-5dce3af688d4e137d32bdae2aee99b206a373b6e/meson.build) \| hash no-checksum-pinned \| weak internal evidence >=1.3.0 (not authoritative) |
 | astal | live Aylur/astal | b7aaf4ce69eb | b7aaf4ce69eb | **OK** | live Aylur/astal pin b7aaf4ce69eb vs upstream b7aaf4ce69eb |
 | astal-gjs | live Aylur/astal | 7b4d37603c11 | b7aaf4ce69eb | **OK** | live Aylur/astal held at 7b4d37603c11 on purpose: upstream deleted lang/gjs in 9b67eb5; held at last good commit (pin verified upstream; upstream HEAD is b7aaf4ce69eb) |
 | astal-gtk4 | live Aylur/astal | b7aaf4ce69eb | b7aaf4ce69eb | **OK** | live Aylur/astal pin b7aaf4ce69eb vs upstream b7aaf4ce69eb |
@@ -23,6 +22,7 @@ Sweep run: 2026-11-13 (run 43379676033). Verdict: 1 not verified - hermes-agent-
 | cline-desktop | cline-desktop-rpmlintrc | 0.0.49 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | cline-desktop | LICENSE | 0.0.49 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | cliphist | cliphist-v0.7.0.tar.gz | 0.7.0 | 0.7.0 | **SOURCE-OK** | tar version file=0.7.0 (cliphist-0.7.0/version.txt) \| hash no-checksum-pinned \| weak internal evidence 0.7.0 (not authoritative) |
+| cliphist | cliphist-0.7.0-vendor.tar.gz | 0.7.0 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash no-checksum-pinned \| bundled source tarball (version = PV by construction) |
 | concat | Concat-0.2.10-linux-x86_64.rpm | 0.2.10 | 0.2.10 | **OK** | rpm header concat=0.2.10-1 (tags NAME/VERSION/RELEASE) \| pinned 0.2.10 \| internal 0.2.10 |
 | concord | v2.7.0.tar.gz | 2.7.0 | 2.7.0 | **SOURCE-OK** | tar Cargo.toml=2.7.0 (concord-2.7.0/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 2.7.0 (not authoritative) |
 | extension-manager | extension-manager-0.7.0.tar.gz | 0.7.0 | >= 0.59.0 | **SOURCE-OK** | tar meson.build=>= 0.59.0 (extension-manager-0.7.0/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 0.59.0 (not authoritative) |
@@ -40,7 +40,7 @@ Sweep run: 2026-11-13 (run 43379676033). Verdict: 1 not verified - hermes-agent-
 | helium-browser | LICENSE | 0.21.3.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | helium-browser | LICENSE.ungoogled_chromium | 0.21.3.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | hellwal | hellwal-1.0.9.tar.gz | 1.0.9 | $(shell | **SOURCE-OK** | tar Makefile=$(shell (hellwal-1.0.9/Makefile) \| hash no-checksum-pinned \| weak internal evidence $(shell (not authoritative) |
-| hermes-agent-desktop | live NousResearch/hermes-agent | cb5719de0a11 | 3783d3db11b4 | **STALE** | live NousResearch/hermes-agent pin cb5719de0a11 vs upstream 3783d3db11b4 |
+| hermes-agent-desktop | live NousResearch/hermes-agent | 0813d82a16b0 | b51a30c461ee | **OK** | live NousResearch/hermes-agent pin 0813d82a16b0 is 0h past the pin and inside the 8h update.sh cadence; upstream HEAD is b51a30c461ee |
 | heroic-games-launcher | Heroic-2.22.4-linux-x86_64.rpm | 2.22.4 | 2.22.4 | **OK** | rpm header heroic=2.22.4-1 (tags NAME/VERSION/RELEASE) \| pinned 2.22.4 \| internal 2.22.4 |
 | heroic-games-launcher | COPYING | 2.22.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | ladybird-unstable | 7824369eab6856487e38fa929c08356e76938356.tar.gz | 0.0.0 | 0.1.0 | **SOURCE-OK** | tar Cargo.toml=0.1.0 (ladybird-7824369eab6856487e38fa929c08356e76938356/AK/Rust/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 0.1.0 (not authoritative) |
@@ -98,7 +98,7 @@ rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | stoat-desktop | stoat.png | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | chat.stoat.StoatDesktop.metainfo.xml | 1.5.4 |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | stoat-desktop | LICENSE | 1.5.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| umbriel-git | live noctalia-dev/umbriel | 88ba829c6152 | 88ba829c6152 | **OK** | live noctalia-dev/umbriel pin 88ba829c6152 vs upstream 88ba829c6152 |
+| umbriel-git | live noctalia-dev/umbriel | 33a782dc750e | 33a782dc750e | **OK** | live noctalia-dev/umbriel pin 33a782dc750e vs upstream 33a782dc750e |
 | vesktop | vesktop-1.6.9.x86_64.rpm | 1.6.9 | 1.6.9 | **OK** | rpm header vesktop=1.6.9-1 (tags NAME/VERSION/RELEASE) \| pinned 1.6.9 \| internal 1.6.9 |
 | vesktop | LICENSE | 1.6.9 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | waypaper | 2.9.tar.gz | 2.9 | 2.8 | **SOURCE-OK** | tar Info.plist=2.8 (waypaper-2.9/data/macos/Waypaper.app/Contents/Info.plist) \| hash no-checksum-pinned \| weak internal evidence 2.8 (not authoritative) |
@@ -117,7 +117,7 @@ rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | zen-browser | zen-browser | 1.24.2b |  | **OK** | bundled aux/doc asset in repo, no download needed |
 | zen-browser | LICENSE | 1.24.2b |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | zig0.17 | zig-x86_64-linux-0.17.1.tar.xz | 0.17.1 | 0.0.0 | **SOURCE-OK** | tar build.zig.zon=0.0.0 (zig-x86_64-linux-0.17.1/lib/init/build.zig.zon) \| hash no-checksum-pinned \| weak internal evidence 0.0.0 (not authoritative) |
-| appmenu-glib-translator | upstream github.com/rilian-la-te/vala-panel-appmenu | 25.04^20261112121309git2447f1c | 0.6.1 | **OK** | at upstream latest 0.6.1 [releases/latest] |
+| appmenu-glib-translator | upstream github.com/rilian-la-te/vala-panel-appmenu | 25.04^20261113152043git5dce3af | 0.6.1 | **OK** | at upstream latest 0.6.1 [releases/latest] |
 | awww | upstream codeberg.org/LGFae/awww | 0.12.1 | v0.12.1 | **OK** | at upstream latest v0.12.1 [ls-remote] |
 | aylurs-gtk-shell | upstream github.com/Aylur/ags | 3.1.2 | v3.1.2 | **OK** | at upstream latest v3.1.2 [releases/latest] |
 | bibata-cursor-theme | upstream github.com/ful1e5/Bibata_Cursor | 2.0.7 | v2.0.7 | **OK** | at upstream latest v2.0.7 [releases/latest] |
@@ -166,8 +166,7 @@ rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology has no entry] |
 | python-ytmusicapi | pypi:ytmusicapi | 1.12.3 | 1.12.3 | **OK** | upstream 1.12.3 == pinned 1.12.3 [freshness via pypi:ytmusicapi; repology has no entry] |
 | rootapp | aur | 0.9.163 | 0.9.163 | **OK** | pinned 0.9.163 >= repology 0.9.163 (aur); tracker behind |
-| starship | starship | 1.27.0 |  | **VULN-UNVERIFIED** | advisory ranges do not cover 1.27.0: CGA-9hcg-f7h9-475c, CGA-gr74-x3cx-8xpc |
 | zig0.17 | ziglang.org/download/index.json | 0.17.1 | 0.17.1 | **OK** | upstream 0.17.1 == pinned 0.17.1 [freshness via ziglang.org/download/index.json; repology has no entry] |
 | LIBYEAR | freshness | 0.10 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
 
-**Verdict: FAIL** (1 failure(s))
+**Verdict: PASS** (0 failure(s))
