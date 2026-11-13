@@ -307,6 +307,67 @@ def hunt_builds():
             "states: " + ", ".join("%s=%d" % kv for kv in sorted(states.items())), bad)
 
 
+NET_BUILD_TOOLS = ("go build", "%gobuild", "cargo build", "cargo install",
+                   "npm ", "pnpm ", "pip install", "%pyproject_wheel", "yarn ")
+NET_SIGNATURES = (
+    ("go: downloading", "go module fetched at build time"),
+    ("Downloading crates", "crate fetched at build time"),
+    ("npm http fetch", "npm package fetched at build time"),
+    ("Looking in indexes", "package index queried at build time"),
+)
+
+
+def build_log(build_id, chroot="fedora-44-x86_64"):
+    """The builder log of one build, decompressed; empty when COPR has none."""
+    try:
+        d = get_json("%s/build-chroot/list/%d" % (COPR, build_id))
+    except Exception:
+        return ""
+    urls = [c.get("result_url") for c in d.get("items", [])
+            if c.get("name") == chroot and c.get("result_url")]
+    if not urls:
+        urls = [c.get("result_url") for c in d.get("items", []) if c.get("result_url")]
+    for url in urls:
+        try:
+            raw = urllib.request.urlopen(url + "builder-live.log.gz", timeout=120).read()
+            return gzip.decompress(raw).decode("utf-8", "replace")
+        except Exception:
+            continue
+    return ""
+
+
+def hunt_network_build():
+    """Builds whose toolchain fetched code from the network.
+
+    A buildroot with no network is the Fedora contract; a language toolchain
+    that downloads its dependencies inside %build makes the result
+    unreproducible and fails offline. cliphist shipped that way until its
+    modules were vendored.
+    """
+    newest = newest_builds()
+    findings, checked = [], 0
+    for sp in specs():
+        pkg = os.path.basename(os.path.dirname(sp))
+        txt = open(sp, encoding="utf-8", errors="replace").read()
+        if not any(k in txt for k in NET_BUILD_TOOLS):
+            continue
+        entry = newest.get(pkg)
+        if not entry:
+            continue
+        log = build_log(entry[3])
+        if not log:
+            continue
+        checked += 1
+        for sig, why in NET_SIGNATURES:
+            if sig in log:
+                line = next((l.strip() for l in log.splitlines() if sig in l), sig)
+                findings.append((pkg, "%s (build %d): %s" % (why, entry[3], line[:90])))
+                break
+    return ("network-builds", "%d source builds using a language toolchain, %d fetch at build time"
+            % (checked, len(findings)),
+            "one builder log per package, fedora-44 chroot; vendored/pinned sources show no fetch", findings)
+
+
 def hunt_chroots():
     """The project's enabled chroots, re-read live."""
     d = get_json("%s/project?ownername=ackerman&projectname=nexus" % COPR)
@@ -1247,7 +1308,7 @@ def hunt_macros():
     return ("macros", "%d specs expand a macro-package macro, %d undeclared" % (n, len(findings)), note, findings)
 
 
-HUNTS = (hunt_builds, hunt_chroots, hunt_copr_config, hunt_upstream, hunt_cves,
+HUNTS = (hunt_builds, hunt_network_build, hunt_chroots, hunt_copr_config, hunt_upstream, hunt_cves,
          hunt_official,
          hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_sources,
          hunt_pins, hunt_readme, hunt_published_nvr, hunt_probes, hunt_sandbox,
