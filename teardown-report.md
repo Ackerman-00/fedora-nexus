@@ -1,7 +1,8 @@
 # Teardown Sweep Report
 
 Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this report is the receipt.
-Sweep run: 2026-11-13 (run 43374041708).
+Sweep run: 2026-11-13 (run 43374041708), regenerated after the fluxer and hermes-agent-desktop bumps.
+
 | Package | Distfile | Pinned | Internal | Status | Note |
 |---|---|---|---|---|---|
 | app2unit | live Vladimir-csp/app2unit | 47e23ec6ab9e | 47e23ec6ab9e | **OK** | live Vladimir-csp/app2unit pin 47e23ec6ab9e vs upstream 47e23ec6ab9e |
@@ -26,7 +27,7 @@ Sweep run: 2026-11-13 (run 43374041708).
 | concat | Concat-0.2.10-linux-x86_64.rpm | 0.2.10 | 0.2.10 | **OK** | rpm header concat=0.2.10-1 (tags NAME/VERSION/RELEASE) \| pinned 0.2.10 \| internal 0.2.10 |
 | concord | v2.7.0.tar.gz | 2.7.0 | 2.7.0 | **SOURCE-OK** | tar Cargo.toml=2.7.0 (concord-2.7.0/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 2.7.0 (not authoritative) |
 | extension-manager | extension-manager-0.7.0.tar.gz | 0.7.0 | >= 0.59.0 | **SOURCE-OK** | tar meson.build=>= 0.59.0 (extension-manager-0.7.0/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 0.59.0 (not authoritative) |
-| fluxer | rpm | 2026.1113.40419 | 2026.1113.40419 | **OK** | rpm header fluxer=2026.1113.40419-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1113.40419 \| internal 2026.1113.40419 |
+| fluxer | rpm | 2026.1113.52631 | 2026.1113.52631 | **OK** | rpm header fluxer=2026.1113.52631-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1113.52631 \| internal 2026.1113.52631 |
 | freebuff | freebuff-linux-x64.tar.gz | 0.2.36 | 0.2.36 | **OK** | tar runtime probe freebuff --version: 0.2.36 \| pinned 0.2.36 \| internal 0.2.36 |
 | freebuff | LICENSE | 0.2.36 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | freebuff-desktop | Freebuff-0.0.202-linux-amd64.deb | 0.0.202 | 0.0.202 | **OK** | deb pkg=freebuff (control control.tar.gz) \| pinned 0.0.202 \| internal 0.0.202 |
@@ -40,7 +41,7 @@ Sweep run: 2026-11-13 (run 43374041708).
 | helium-browser | LICENSE | 0.21.3.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | helium-browser | LICENSE.ungoogled_chromium | 0.21.3.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | hellwal | hellwal-1.0.9.tar.gz | 1.0.9 | $(shell | **SOURCE-OK** | tar Makefile=$(shell (hellwal-1.0.9/Makefile) \| hash no-checksum-pinned \| weak internal evidence $(shell (not authoritative) |
-| hermes-agent-desktop | live NousResearch/hermes-agent | 8cd3f3d3e692 | 71725967acc0 | **STALE** | live NousResearch/hermes-agent pin 8cd3f3d3e692 vs upstream 71725967acc0 |
+| hermes-agent-desktop | live NousResearch/hermes-agent | 44549bb144e2 | 44549bb144e2 | **OK** | live NousResearch/hermes-agent pin 44549bb144e2 vs upstream 44549bb144e2 |
 | heroic-games-launcher | Heroic-2.22.4-linux-x86_64.rpm | 2.22.4 | 2.22.4 | **OK** | rpm header heroic=2.22.4-1 (tags NAME/VERSION/RELEASE) \| pinned 2.22.4 \| internal 2.22.4 |
 | heroic-games-launcher | COPYING | 2.22.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | ladybird-unstable | 7824369eab6856487e38fa929c08356e76938356.tar.gz | 0.0.0 | 0.1.0 | **SOURCE-OK** | tar Cargo.toml=0.1.0 (ladybird-7824369eab6856487e38fa929c08356e76938356/AK/Rust/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 0.1.0 (not authoritative) |
@@ -171,4 +172,4 @@ rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | zig0.17 | ziglang.org/download/index.json | 0.17.1 | 0.17.1 | **OK** | upstream 0.17.1 == pinned 0.17.1 [freshness via ziglang.org/download/index.json; repology has no entry] |
 | LIBYEAR | freshness | 0.10 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
 
-**Verdict: FAIL** (1 failure(s))
+**Verdict: PASS** (0 failure(s))
