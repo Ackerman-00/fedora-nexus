@@ -1,6 +1,6 @@
-%global commit          2447f1cdddcee6bde8bfaa5696eca2e0375634c2
+%global commit          5dce3af688d4e137d32bdae2aee99b206a373b6e
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261112121309
+%global gitdate         20261113152043
 
 %global _vpath_srcdir subprojects/appmenu-glib-translator
 
@@ -60,7 +60,5 @@ done
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
-* Thu Nov 12 2026 Ackerman-00 <no-reply> - 25.04^20261112121309git2447f1c-1
-- Nightly sync with upstream main branch (Commit: 2447f1c)
-- Ship the devel headers in the exporter/ and importer/ subdirectories the
-  generated vapi names, so Vala consumers (astal-libs tray) can compile.
+* Fri Nov 13 2026 Ackerman-00 <no-reply> - 25.04^20261113152043git5dce3af-1
+- Nightly sync with upstream main branch (Commit: 5dce3af)
