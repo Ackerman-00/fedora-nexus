@@ -62,6 +62,21 @@ check("pending build is not settled", hunt.build_settled("pending"), False)
 check("succeeded build is settled", hunt.build_settled("succeeded"), True)
 check("failed build is settled, so it is reported", hunt.build_settled("failed"), True)
 
+import tempfile as _tf
+import calendar as _cal
+import time as _time
+_want = _cal.timegm(_time.strptime("20261113162906", "%Y%m%d%H%M%S"))
+with _tf.TemporaryDirectory() as _d:
+    _p = os.path.join(_d, "p.spec")
+    open(_p, "w").write("Name: p\n%global gitdate 20261113162906\nVersion: 1\n")
+    _stamp = hunt.pinned_epoch(_p)
+check("14-digit gitdate keeps the hour", _stamp, _want)
+with _tf.TemporaryDirectory() as _d:
+    _p = os.path.join(_d, "p.spec")
+    open(_p, "w").write("Name: p\n%global gitdate 20261113\nVersion: 1\n")
+    _stamp = hunt.pinned_epoch(_p)
+check("8-digit gitdate parses at midnight", _stamp, _cal.timegm(_time.strptime("20261113", "%Y%m%d")))
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)

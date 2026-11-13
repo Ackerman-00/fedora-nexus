@@ -59,6 +59,24 @@ else
     GIT_DATE=$(echo "$COMMIT_DATE_RAW" | tr -d '\-TZ:')
 fi
 
+# upstream commits every ~40 min; the 8 h update-engine schedule owns the bump
+MIN_INTERVAL_HOURS=8
+PIN_STAMP=$(grep -E "^%global gitdate" "$SPEC_FILE" | awk '{print $3}')
+if [ "${#PIN_STAMP}" -ge 14 ]; then
+    PIN_ISO="${PIN_STAMP:0:4}-${PIN_STAMP:4:2}-${PIN_STAMP:6:2} ${PIN_STAMP:8:2}:${PIN_STAMP:10:2}:${PIN_STAMP:12:2}"
+else
+    PIN_ISO="${PIN_STAMP:0:4}-${PIN_STAMP:4:2}-${PIN_STAMP:6:2}"
+fi
+PIN_EPOCH=$(date -u -d "$PIN_ISO" +%s 2>/dev/null || echo 0)
+NEW_EPOCH=$(date -u -d "$COMMIT_DATE_RAW" +%s 2>/dev/null || echo 0)
+if [ "$PIN_EPOCH" -gt 0 ] && [ "$NEW_EPOCH" -gt 0 ]; then
+    AGE_H=$(( (NEW_EPOCH - PIN_EPOCH) / 3600 ))
+    if [ "$AGE_H" -lt "$MIN_INTERVAL_HOURS" ]; then
+        echo "Upstream moved ${CURRENT_COMMIT:0:7} -> $SHORT_COMMIT but only ${AGE_H}h past the pinned snapshot; the ${MIN_INTERVAL_HOURS}h cadence owns it."
+        exit 0
+    fi
+fi
+
 TARBALL_URL="https://github.com/$GITHUB_REPO/archive/$LATEST_COMMIT.tar.gz"
 NEW_SHA256=$(bash "$_update_sh_dir/../tools/fetch-sha256.sh" "$TARBALL_URL" 2>/dev/null)
 if [ -z "$NEW_SHA256" ]; then

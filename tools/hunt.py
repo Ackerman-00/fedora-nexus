@@ -205,6 +205,8 @@ def pinned_epoch(sp):
         stamp = m.group(1) if m else ""
     if not re.match(r"^\d{8}", stamp):
         return 0
+    if re.match(r"^\d{14}$", stamp):
+        return calendar.timegm(time.strptime(stamp, "%Y%m%d%H%M%S"))
     return calendar.timegm(time.strptime(stamp[:8], "%Y%m%d"))
 
 
