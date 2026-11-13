@@ -101,7 +101,12 @@ printf '%s  %s\n' "$want" "$engine" | sha256sum -c -
 %{_datadir}/icons/hicolor/*/*/omnirush.png
 
 %post
-if command -v update-mime-database >/dev/null 2>&1; then update-mime-database %{_datadir}/mime >/dev/null 2>&1 || true; fi
+# mime-version-marker: update-mime-database skips any XML older than the marker, and RPM keeps build mtimes
+if command -v update-mime-database >/dev/null 2>&1; then
+  rm -f %{_datadir}/mime/version
+  update-mime-database %{_datadir}/mime >/dev/null 2>&1 || \
+    echo "WARNING: update-mime-database failed; MIME types may be missing" >&2
+fi
 if command -v update-desktop-database >/dev/null 2>&1; then update-desktop-database %{_datadir}/applications >/dev/null 2>&1 || true; fi
 if [ -d %{_sysconfdir}/apparmor.d ] && [ -x /sbin/apparmor_parser ] \
    && [ -f /opt/omnirush/resources/apparmor-profile ]; then

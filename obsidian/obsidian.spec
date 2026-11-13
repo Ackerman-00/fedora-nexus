@@ -67,6 +67,14 @@ cp -a usr/share/* %{buildroot}%{_datadir}/
 
 ln -sf /opt/Obsidian/obsidian %{buildroot}%{_bindir}/obsidian
 
+%post
+# mime-version-marker: update-mime-database skips any XML older than the marker, and RPM keeps build mtimes
+if command -v update-mime-database >/dev/null 2>&1; then
+  rm -f %{_datadir}/mime/version
+  update-mime-database %{_datadir}/mime >/dev/null 2>&1 || \
+    echo "WARNING: update-mime-database failed; MIME types may be missing" >&2
+fi
+
 %files
 %defattr(-,root,root,-)
 %{_bindir}/obsidian
