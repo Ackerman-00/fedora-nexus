@@ -484,8 +484,8 @@ def probe_upstream(sp):
                     "git ls-remote %s/%s HEAD (hold: %s)" % (owner, repo, held), "")
         if head != commit:
             hours = declared_cadence_hours(os.path.dirname(sp))
-            pin = pinned_epoch(sp)
-            newer = head_commit_epoch(forge, owner, repo, head)
+            pin = pinned_epoch(sp) if hours else 0
+            newer = head_commit_epoch(forge, owner, repo, head) if pin else 0
             if hours and pin and newer:
                 age = (newer - pin) // 3600
                 if 0 <= age < hours:
