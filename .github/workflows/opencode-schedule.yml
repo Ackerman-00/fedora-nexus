@@ -305,7 +305,7 @@ jobs:
           exit 1
         env:
           MODEL: opencode/deepseek-v4.1-flash-free
-          OPENCODE_CONFIG_CONTENT: '{"agents":{"title":{"model":"opencode/mimo-v2.6-flash-free"}},"websearch":{"provider":"random"}}'
+          OPENCODE_CONFIG_CONTENT: '{"agents":{"title":{"model":"opencode/deepseek-v4.1-flash-free"}},"websearch":{"provider":"random"}}'
           COPR_LOGIN: ${{ secrets.COPR_LOGIN }}
           COPR_USERNAME: ${{ secrets.COPR_USERNAME }}
           COPR_TOKEN: ${{ secrets.COPR_TOKEN }}
