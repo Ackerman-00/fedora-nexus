@@ -1,12 +1,12 @@
-%global commit          0c1f125536f19dc62bcf277840bc503a1c756abf
+%global commit          88ba829c6152ee55cd2ffa9d80e7f9dee543605b
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261111224137
+%global gitdate         20261112222058
 
 %global _lto_cflags %{nil}
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -112,11 +112,5 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Thu Nov 12 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.1.0^20261111224137git0c1f125-2
-- BuildRequires pkgconfig(glib-2.0): src/scene/text_buffer.cpp includes
-  <glib.h> and uses g_markup_escape_text/g_free/g_object_unref; until now
-  it resolved only via a transitive devel chain, not by declaration.
-  Same upstream commit 0c1f125.
-
-* Wed Nov 11 2026 Ackerman-00 <no-reply> - 0.1.0^20261111224137git0c1f125-1
-- Nightly sync with upstream main branch (Commit: 0c1f125)
+* Fri Nov 13 2026 Ackerman-00 <no-reply> - 0.1.0^20261112222058git88ba829-1
+- Nightly sync with upstream main branch (Commit: 88ba829)
