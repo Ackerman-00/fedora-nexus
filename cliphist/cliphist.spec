@@ -2,12 +2,14 @@
 
 Name:           cliphist
 Version:        0.7.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Wayland clipboard manager with support for multimedia
 
 License:        BSD-3-Clause AND GPL-3.0-only AND MIT
 URL:            https://github.com/sentriz/cliphist
 Source0:        %{url}/archive/v%{version}/cliphist-v%{version}.tar.gz
+Source1:        cliphist-%{version}-vendor.tar.gz
+# sha256:  bde685def5b5e5c3399ee44cf6514a6fed4eb051c5ad984bfc936224d4804c78
 
 BuildRequires:  golang >= 1.20
 
@@ -23,8 +25,11 @@ such as wl-paste --watch cliphist store.
 
 %prep
 %autosetup -n cliphist-%{version}
+tar -xzf %{SOURCE1}
 
 %build
+export GOFLAGS="-mod=vendor"
+export GOPROXY=off
 go build -trimpath -ldflags="-s -w" -o cliphist .
 
 %install
@@ -33,6 +38,8 @@ install -m 0755 cliphist %{buildroot}%{_bindir}/cliphist
 
 %check
 export GO111MODULE=on
+export GOFLAGS="-mod=vendor"
+export GOPROXY=off
 if [ "$(id -u)" -eq 0 ]; then
   useradd -r -m -d /tmp/cliphist-check cliphist-check
   rm -rf /tmp/cliphist-src
@@ -50,6 +57,13 @@ fi
 %{_bindir}/cliphist
 
 %changelog
+* Fri Nov 13 2026 Ackerman-00 <no-reply> - 0.7.0-4
+- Vendor the five go modules the module graph pulls (uniseg, bbolt,
+  flagconf, x/image, go-internal) as a pinned Source1, and build with
+  GOFLAGS=-mod=vendor plus GOPROXY=off. The previous build downloaded
+  every module from the network inside the buildroot (COPR log:
+  "go: downloading github.com/rivo/uniseg v0.4.7" and four more), so it
+  was unreproducible and failed wherever the buildroot has no network.
 * Fri Oct 02 2026 Ackerman-00 <no-reply> - 0.7.0-3
 - Fix the check section in unprivileged builds. mock, and therefore COPR
   and koji, runs rpmbuild as the unprivileged "mockbuild" user, where the

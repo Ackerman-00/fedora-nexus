@@ -32,6 +32,34 @@ if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
 
     sed -i -E "s|archive/v[^/]*/cliphist-v[^/]*\.tar\.gz|archive/v$LATEST_VERSION/cliphist-v$LATEST_VERSION.tar.gz|" "$SPEC_FILE"
 
+    # vendored deps: regenerated with the version, never carried over
+    if ! command -v go >/dev/null 2>&1; then
+        echo "FATAL: the go toolchain is required to regenerate the vendor tarball." >&2
+        git checkout -- "$SPEC_FILE" 2>/dev/null || true
+        exit 1
+    fi
+    TMPDIR_V=$(mktemp -d) || exit 1
+    trap 'rm -rf "$TMPDIR_V"' EXIT
+    SRC_URL="https://github.com/$GITHUB_REPO/archive/v$LATEST_VERSION/cliphist-v$LATEST_VERSION.tar.gz"
+    if ! curl -sSfL "$SRC_URL" -o "$TMPDIR_V/src.tar.gz"; then
+        echo "FATAL: cannot download $SRC_URL to vendor its modules." >&2
+        git checkout -- "$SPEC_FILE" 2>/dev/null || true
+        exit 1
+    fi
+    tar -xzf "$TMPDIR_V/src.tar.gz" -C "$TMPDIR_V" || exit 1
+    if ! ( cd "$TMPDIR_V/cliphist-$LATEST_VERSION" && GOFLAGS= go mod vendor ); then
+        echo "FATAL: go mod vendor failed for $LATEST_VERSION." >&2
+        git checkout -- "$SPEC_FILE" 2>/dev/null || true
+        exit 1
+    fi
+    ( cd "$TMPDIR_V/cliphist-$LATEST_VERSION" \
+        && tar --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner -cf "$TMPDIR_V/vendor.tar" vendor \
+        && gzip -n -9 -c "$TMPDIR_V/vendor.tar" > "$_update_sh_dir/cliphist-$LATEST_VERSION-vendor.tar.gz" ) || exit 1
+    find "$_update_sh_dir" -maxdepth 1 -name 'cliphist-*-vendor.tar.gz' ! -name "cliphist-$LATEST_VERSION-vendor.tar.gz" -delete
+    VENDOR_SHA=$(sha256sum "$_update_sh_dir/cliphist-$LATEST_VERSION-vendor.tar.gz" | awk '{print $1}')
+    sed -i -E "s|^# sha256:.*|# sha256:  $VENDOR_SHA|" "$SPEC_FILE"
+    echo "Vendored modules for $LATEST_VERSION (sha256 $VENDOR_SHA)."
+
     DATE=$(LC_ALL=C date +"%a %b %d %Y")
     sed -i '/^%changelog/,$d' "$SPEC_FILE"
     {
