@@ -274,6 +274,37 @@ def test_osv_version_state():
     return failures
 
 
+def test_live_cadence():
+    """A snapshot package that declares MIN_INTERVAL_HOURS is not stale inside
+    that window. Regression guard: the sweep read hermes-agent-desktop (pinned
+    at 16:29, upstream 0h newer) as STALE on the same run that hunt reported a
+    held cadence, so no relay could satisfy both tools."""
+    import calendar
+    import pathlib
+    import tempfile
+    import time
+    want = calendar.timegm(time.strptime("20261113162906", "%Y%m%d%H%M%S"))
+    cases = [
+        ("MIN_INTERVAL_HOURS=8", "20261113162906", 8, want, "hour precision"),
+        ("MIN_INTERVAL_HOURS=8", "20261113", 8,
+         calendar.timegm(time.strptime("20261113", "%Y%m%d")), "date-only pin"),
+        ("set -u", "20261113162906", 0, want, "no declared cadence"),
+    ]
+    failures = 0
+    for ush, stamp, want_h, want_p, why in cases:
+        with tempfile.TemporaryDirectory() as d:
+            p = pathlib.Path(d)
+            (p / "pkg.spec").write_text("Name: p\n%%global gitdate %s\n" % stamp)
+            (p / "update.sh").write_text("#!/bin/bash\n%s\n" % ush)
+            got_h = ts._update_cadence_hours(str(p))
+            got_p = ts._pin_epoch(str(p))
+        ok = got_h == want_h and got_p == want_p
+        failures += 0 if ok else 1
+        print(f"{'PASS' if ok else 'FAIL'}: cadence(hours={got_h}, pin={got_p}) "
+              f"(want {want_h}, {want_p})  # {why}")
+    return failures
+
+
 def main():
     failures = 0
     for pinned, upstream, want, why in CASES:
@@ -289,6 +320,7 @@ def main():
     failures += test_strings_version()
     failures += test_pin_attribution()
     failures += test_osv_version_state()
+    failures += test_live_cadence()
     print(f"\n{'ALL PASS' if not failures else str(failures) + ' FAILURE(S)'}"
           f" ({len(CASES)} cases)")
     return 1 if failures else 0

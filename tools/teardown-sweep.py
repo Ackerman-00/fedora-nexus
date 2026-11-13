@@ -24,6 +24,7 @@ Pure stdlib (python3 only). No curl, no git, no dpkg, no unsquashfs required.
 """
 import argparse
 import base64
+import calendar
 import hashlib
 import json
 import glob
@@ -33,6 +34,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import time
 import urllib.error
 import urllib.request
 import zipfile
@@ -2072,6 +2074,49 @@ def _live_hold_reason(pkg):
     return None
 
 
+def _update_cadence_hours(pkg):
+    """MIN_INTERVAL_HOURS from the package's own update.sh, 0 when undeclared."""
+    try:
+        txt = open(os.path.join(pkg, "update.sh"), errors="ignore").read()
+    except OSError:
+        return 0
+    m = re.search(r"(?m)^\s*MIN_INTERVAL_HOURS=(\d+)", txt)
+    return int(m.group(1)) if m else 0
+
+
+def _pin_epoch(pkg):
+    """Epoch of the spec's %global gitdate pin, 0 when it carries none."""
+    for spec in glob.glob(os.path.join(pkg, "*.spec")):
+        try:
+            txt = open(spec, errors="ignore").read()
+        except OSError:
+            continue
+        m = re.search(r"(?m)^%global\s+gitdate\s+(\d{8}(?:\d{6})?)", txt)
+        if not m:
+            return 0
+        stamp = m.group(1)
+        try:
+            if len(stamp) == 14:
+                return calendar.timegm(time.strptime(stamp, "%Y%m%d%H%M%S"))
+            return calendar.timegm(time.strptime(stamp, "%Y%m%d"))
+        except ValueError:
+            return 0
+    return 0
+
+
+def _commit_epoch(repo, sha):
+    """Commit date of `sha` in `repo`, 0 when the API cannot answer."""
+    try:
+        d = json.loads(fetch("https://api.github.com/repos/%s/commits/%s"
+                             % (repo, sha), timeout=30))
+        iso = ((d.get("commit") or {}).get("committer") or {}).get("date") or ""
+        if not iso:
+            return 0
+        return calendar.timegm(time.strptime(iso[:19], "%Y-%m-%dT%H:%M:%S"))
+    except Exception:
+        return 0
+
+
 def check_live(pkg, live):
     repo, pin = live[0], live[1]
     head = upstream_head(repo)
@@ -2098,6 +2143,19 @@ def check_live(pkg, live):
         UPSTREAM_VERDICT[pkg] = ("stale", "live-hold", pin[:12])
         log("[%s] %s : %s" % (STATUS_STALE, pkg, note))
         return False
+    hours = _update_cadence_hours(pkg)
+    pin_ts = _pin_epoch(pkg) if hours else 0
+    if hours and pin_ts:
+        age = (_commit_epoch(repo, head) - pin_ts) // 3600
+        if 0 <= age < hours:
+            note = ("live %s pin %s is %dh past the pin and inside the %dh "
+                    "update.sh cadence; upstream HEAD is %s"
+                    % (repo, pin[:12], age, hours, head[:12]))
+            rows.append((pkg, "live %s" % repo, pin[:12], head[:12],
+                         STATUS_OK, note))
+            UPSTREAM_VERDICT[pkg] = ("fresh", "cadence", pin[:12])
+            log("[%s] %s : %s" % (STATUS_OK, pkg, note))
+            return True
     ok = (normalize(pin[:12]) == normalize(head[:12]))
     status = STATUS_OK if ok else STATUS_STALE
     note = "live %s pin %s vs upstream %s" % (repo, pin[:12], head[:12])
