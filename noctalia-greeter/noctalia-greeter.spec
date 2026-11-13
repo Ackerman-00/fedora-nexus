@@ -4,7 +4,7 @@
 
 Name:           noctalia-greeter
 Version:        1.7.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 License:        MIT AND Apache-2.0
@@ -47,6 +47,7 @@ BuildRequires:  pkgconfig(wayland-egl)
 BuildRequires:  pkgconfig(wayland-protocols)
 BuildRequires:  pkgconfig(wayland-server)
 BuildRequires:  pkgconfig(xkbcommon)
+BuildRequires:  systemd-rpm-macros
 
 Requires:       dbus
 Requires:       polkit
@@ -118,5 +119,7 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Fri Nov 13 2026 Ackerman-00 <no-reply> - 1.7.0^20261111131528git199fb7f-2
+- Declare BuildRequires: systemd-rpm-macros: %{_tmpfilesdir} was expanded only by rpm-build's transitive chain
 * Wed Nov 11 2026 Ackerman-00 <no-reply> - 1.7.0^20261111131528git199fb7f-1
 - Nightly sync with upstream main branch (Commit: 199fb7f)

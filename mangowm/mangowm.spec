@@ -1,6 +1,6 @@
 Name:           mangowm
 Version:        0.18.5
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <no-reply>
@@ -11,6 +11,7 @@ BuildRequires:  meson
 BuildRequires:  findutils
 BuildRequires:  ninja-build
 BuildRequires:  gcc
+BuildRequires:  systemd-rpm-macros
 BuildRequires:  pkgconfig(xcb)
 BuildRequires:  pkgconfig(xcb-icccm)
 BuildRequires:  pkgconfig(xcb-randr)
@@ -93,6 +94,8 @@ esac
 %{_userunitdir}/mango-session.target
 
 %changelog
+* Fri Nov 13 2026 Ackerman-00 <no-reply> - 0.18.5-3
+- Declare BuildRequires: systemd-rpm-macros: %{_userunitdir} (mango-session.target) was expanded only by rpm-build's transitive chain
 * Sun Nov 08 2026 Ackerman-00 <no-reply> - 0.18.5-2
 - Drop unjustified wayland-protocols floor and vulkan-loader/gcc-c++; add pkgconfig(x11)/pkgconfig(glib-2.0) (Xwayland Xlib path and text-node GLib use, previously transitive-only)
 * Wed Nov 04 2026 Ackerman-00 <no-reply> - 0.18.5-1
