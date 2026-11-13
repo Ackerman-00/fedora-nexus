@@ -3,7 +3,7 @@
 
 Name:           wlroots
 Version:        0.20.2
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        A modular Wayland compositor library
 
 %global tag     %(v='%{version}'; echo "${v//'~'/-}")
@@ -78,6 +78,14 @@ Development files for %{name}.
 %build
 MESON_OPTIONS=(
     -Dexamples=false
+    -Dbackends=drm,libinput,x11
+    -Drenderers=gles2,vulkan
+    -Dallocators=gbm,udmabuf
+    -Dsession=enabled
+    -Dcolor-management=enabled
+    -Dlibliftoff=enabled
+    -Dxwayland=enabled
+    -Dxcb-errors=enabled
 )
 
 %{meson} "${MESON_OPTIONS[@]}"
@@ -102,6 +110,8 @@ install -pm0644 -D '%{SOURCE3}' '%{buildroot}/%{_pkgdocdir}/examples/meson.build
 %{_libdir}/pkgconfig/wlroots-%{abi_ver}.pc
 
 %changelog
+* Fri Nov 13 2026 Ackerman-00 <no-reply> - 0.20.2-11
+- Pin the meson feature matrix (backends, renderers, allocators, session, xwayland, color-management, libliftoff, xcb-errors) so a missing BuildRequires fails the build instead of silently dropping a backend or renderer from the shipped library
 * Sun Nov 08 2026 Ackerman-00 <no-reply> - 0.20.2-10
 - Verify upstream signature: releases tarball + .sig + emersion key via %{gpgverify} (same trust model as Fedora dist-git). Examples sources shipped in -devel %doc; Suggests gcc/meson/wayland-egl for examples; drop unjustified pkgconfig(egl) >= 1.5 floor (only upstream's examples meson.build declares it; the build gate is the EGL_EGLEXT_VERSION header check)
 * Thu Oct 22 2026 Ackerman-00 <no-reply> - 0.20.2-9
