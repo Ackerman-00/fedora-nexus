@@ -1,8 +1,7 @@
 # Teardown Sweep Report
 
 Repo type: **fedora**. Sweep of **70** packages. Exit code is the verdict; this report is the receipt.
-Sweep run: 2026-11-13 (run 43374041708), regenerated after the fluxer and hermes-agent-desktop bumps.
-
+Sweep run: 2026-11-13 (run 43379676033). Verdict: 1 not verified - hermes-agent-desktop STALE (pin cb5719d; upstream moved to 3783d3d during the run). Left for the next run per the one-build-per-package-per-run rule (6a); the pin was synced and built as 11320684 by this run.
 | Package | Distfile | Pinned | Internal | Status | Note |
 |---|---|---|---|---|---|
 | app2unit | live Vladimir-csp/app2unit | 47e23ec6ab9e | 47e23ec6ab9e | **OK** | live Vladimir-csp/app2unit pin 47e23ec6ab9e vs upstream 47e23ec6ab9e |
@@ -41,7 +40,7 @@ Sweep run: 2026-11-13 (run 43374041708), regenerated after the fluxer and hermes
 | helium-browser | LICENSE | 0.21.3.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | helium-browser | LICENSE.ungoogled_chromium | 0.21.3.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | hellwal | hellwal-1.0.9.tar.gz | 1.0.9 | $(shell | **SOURCE-OK** | tar Makefile=$(shell (hellwal-1.0.9/Makefile) \| hash no-checksum-pinned \| weak internal evidence $(shell (not authoritative) |
-| hermes-agent-desktop | live NousResearch/hermes-agent | 44549bb144e2 | 44549bb144e2 | **OK** | live NousResearch/hermes-agent pin 44549bb144e2 vs upstream 44549bb144e2 |
+| hermes-agent-desktop | live NousResearch/hermes-agent | cb5719de0a11 | 3783d3db11b4 | **STALE** | live NousResearch/hermes-agent pin cb5719de0a11 vs upstream 3783d3db11b4 |
 | heroic-games-launcher | Heroic-2.22.4-linux-x86_64.rpm | 2.22.4 | 2.22.4 | **OK** | rpm header heroic=2.22.4-1 (tags NAME/VERSION/RELEASE) \| pinned 2.22.4 \| internal 2.22.4 |
 | heroic-games-launcher | COPYING | 2.22.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | ladybird-unstable | 7824369eab6856487e38fa929c08356e76938356.tar.gz | 0.0.0 | 0.1.0 | **SOURCE-OK** | tar Cargo.toml=0.1.0 (ladybird-7824369eab6856487e38fa929c08356e76938356/AK/Rust/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 0.1.0 (not authoritative) |
@@ -74,7 +73,7 @@ Sweep run: 2026-11-13 (run 43374041708), regenerated after the fluxer and hermes
 | opencad-studio | LICENSE | 2026.45 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | openchamber | OpenChamber-2.7.1-linux-x86_64.AppImage | 2.7.1 | 2.7.1 | **OK** | AppImage 2.7.1 (resources/app.asar) \| pinned 2.7.1 \| internal 2.7.1 |
 | openchamber | LICENSE | 2.7.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
-| opencode-desktop | opencode-desktop-linux-amd64.deb | 2.2.7 | 2.2.7 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.2.7 \| internal 2.2.7 |
+| opencode-desktop | opencode-desktop-linux-amd64.deb | 2.3.0 | 2.3.0 | **OK** | deb pkg=opencode (control control.tar.xz) \| pinned 2.3.0 \| internal 2.3.0 |
 | protonplus | ProtonPlus-v0.6.8.tar.gz | 0.6.8 | >= 1.0.0 | **SOURCE-OK** | tar meson.build=>= 1.0.0 (ProtonPlus-0.6.8/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 1.0.0 (not authoritative) |
 | python-mprisify | mprisify-v1.0.1.tar.gz | 1.0.1 | 1.0.1 | **SOURCE-OK** | tar changelog=1.0.1 (mprisify-v1.0.1/CHANGELOG.md) \| hash no-checksum-pinned \| weak internal evidence 1.0.1 (not authoritative) |
 | python-mprisify | LICENSE | 1.0.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
@@ -132,10 +131,10 @@ rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | freebuff-desktop | upstream github.com/CodebuffAI/codebuff-community | 0.0.202 | freebuff-v0.2.36 | **OK** | at upstream latest freebuff-v0.2.36 [releases/latest] |
 | ghostty | upstream github.com/mkasberg/ghostty-ubuntu | 1.4.0 | 1.4.0-0-ppa2 | **OK** | at upstream latest 1.4.0-0-ppa2 [releases/latest] |
 | hatter-icon-theme | upstream github.com/Mibea/Hatter | 4.0 | V4.0 | **OK** | at upstream latest V4.0 [releases/latest] |
-| helium-browser | upstream github.com/imputnet/helium-linux | 0.21.3.1 | 0.21.2.1 | **OK** | at upstream latest 0.21.2.1 [releases/latest] |
+| helium-browser | upstream github.com/imputnet/helium-linux | 0.21.3.1 | 0.21.3.1 | **OK** | at upstream latest 0.21.3.1 [releases/latest] |
 | hellwal | upstream github.com/danihek/hellwal | 1.0.9 | v1.0.9 | **OK** | at upstream latest v1.0.9 [releases/latest] |
 | heroic-games-launcher | upstream github.com/Heroic-Games-Launcher/HeroicGamesLauncher | 2.22.4 | v2.22.4 | **OK** | at upstream latest v2.22.4 [releases/latest] |
-| ladybird-unstable | upstream github.com/LadybirdBrowser/ladybird | 0.0.0 | 2026.11.0 | **OK** | at upstream latest 2026.11.0 [ls-remote] |
+| ladybird-unstable | upstream github.com/LadybirdBrowser/ladybird | 0.0.0 | 2026.46.0 | **OK** | at upstream latest 2026.46.0 [ls-remote] |
 | libcava | upstream github.com/LukashonakV/cava | 1.0.0 | 1.0.0 | **OK** | at upstream latest 1.0.0 [releases/latest] |
 | localsend | upstream github.com/localsend/localsend | 1.18.2 | v1.18.2 | **OK** | at upstream latest v1.18.2 [releases/latest] |
 | logseq | upstream github.com/logseq/logseq | 2.0.2 | 2.0.2 | **OK** | at upstream latest 2.0.2 [releases/latest] |
@@ -167,9 +166,8 @@ rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | python-yt-dlp-get-pot | pypi:yt-dlp-get-pot | 0.3.0 | 0.3.0 | **OK** | upstream 0.3.0 == pinned 0.3.0 [freshness via pypi:yt-dlp-get-pot; repology has no entry] |
 | python-ytmusicapi | pypi:ytmusicapi | 1.12.3 | 1.12.3 | **OK** | upstream 1.12.3 == pinned 1.12.3 [freshness via pypi:ytmusicapi; repology has no entry] |
 | rootapp | aur | 0.9.163 | 0.9.163 | **OK** | pinned 0.9.163 >= repology 0.9.163 (aur); tracker behind |
-| sonora | aur | 0.49.1 | 0.49.0 | **OK** | pinned 0.49.1 >= repology 0.49.0 (aur); tracker behind |
 | starship | starship | 1.27.0 |  | **VULN-UNVERIFIED** | advisory ranges do not cover 1.27.0: CGA-9hcg-f7h9-475c, CGA-gr74-x3cx-8xpc |
 | zig0.17 | ziglang.org/download/index.json | 0.17.1 | 0.17.1 | **OK** | upstream 0.17.1 == pinned 0.17.1 [freshness via ziglang.org/download/index.json; repology has no entry] |
 | LIBYEAR | freshness | 0.10 yr | 2 pkgs | **METRIC** | threshold=20 libyears |
 
-**Verdict: PASS** (0 failure(s))
+**Verdict: FAIL** (1 failure(s))
