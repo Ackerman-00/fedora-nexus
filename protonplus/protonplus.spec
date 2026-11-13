@@ -6,7 +6,7 @@
 
 Name:           protonplus
 Version:        %{fileref}
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        A modern compatibility tools manager
 ExclusiveArch:  x86_64
 
@@ -33,7 +33,6 @@ BuildRequires:  pkgconfig(libsoup-3.0)
 BuildRequires:  pkgconfig(sdl3) >= 3.2.0
 
 Requires:       hicolor-icon-theme
-Requires:       which
 Requires:       libGLESv2.so.2()(64bit)
 
 %description
@@ -66,6 +65,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
 %{_metainfodir}/%{app_id}.metainfo.xml
 
 %changelog
+* Fri Nov 13 2026 Ackerman-00 <no-reply> - 0.6.8-7
+- Drop Requires: which: its only call site is the flatpak branch of check_dependency, which an RPM install never takes
 * Thu Nov 12 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.6.8-6
 - Depend on the soname libGLESv2.so.2()(64bit) instead of the virtual
   mesa-libGLES package name; the glvnd split serves no real mesa-libGLES
