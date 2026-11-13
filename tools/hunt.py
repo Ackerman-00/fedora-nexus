@@ -1148,11 +1148,53 @@ def hunt_pins():
             note, findings)
 
 
+def hunt_macros():
+    """A spec that expands a macro must BuildRequire the package that defines it.
+
+    Undeclared macro packages expand only because rpm-build drags them in
+    transitively, so the spec builds on the packager's box and dies on a
+    leaner buildroot. %{_unitdir}/%{_tmpfilesdir} came from systemd-rpm-macros
+    in mangowm and noctalia-greeter.
+    """
+    providers = {
+        "systemd-rpm-macros": ("%{_unitdir}", "%{_userunitdir}", "%{_tmpfilesdir}",
+                               "%{_presetdir}", "%{_sysusersdir}",
+                               "%{_modulesloaddir}", "%{_systemdgeneratordir}"),
+        "forge-srpm-macros": ("%{forgesource}", "%{forgesetup}", "%{forgemeta}"),
+        "go-srpm-macros": ("%{gometa}", "%{gosource}", "%{gomodules}"),
+    }
+    # Requires of redhat-rpm-config, so already in every Fedora buildroot
+    implicit = ("forge-srpm-macros", "go-srpm-macros")
+    note = "implicit via redhat-rpm-config: %s" % ", ".join(implicit)
+    n, findings = 0, []
+    for sp in specs():
+        txt = open(sp, encoding="utf-8", errors="replace").read()
+        body = txt.split("%changelog")[0]
+        pkg = os.path.basename(os.path.dirname(sp))
+        hit = False
+        for prov, macros in providers.items():
+            used = [m for m in macros if m in body]
+            if not used:
+                continue
+            hit = True
+            if prov in implicit:
+                continue
+            if re.search(r"^BuildRequires:.*\b%s\b" % re.escape(prov), body, re.M):
+                continue
+            if re.search(r"^BuildRequires:.*\b%s\b" % re.escape(prov.replace("-rpm-macros", "-srpm-macros")), body, re.M):
+                continue
+            if any(re.search(r"^%%global\s+%s\b" % re.escape(m[2:-1]), body, re.M) for m in used):
+                continue
+            findings.append((pkg, "%s used without BuildRequires: %s" % (used[0], prov)))
+        n += 1 if hit else 0
+    return ("macros", "%d specs expand a macro-package macro, %d undeclared" % (n, len(findings)), note, findings)
+
+
 HUNTS = (hunt_builds, hunt_chroots, hunt_copr_config, hunt_upstream, hunt_cves,
          hunt_official,
          hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_sources,
          hunt_pins, hunt_readme, hunt_published_nvr, hunt_probes, hunt_sandbox,
-         hunt_fedora_releases, hunt_chroot_docs, hunt_slice)
+         hunt_macros, hunt_fedora_releases, hunt_chroot_docs, hunt_slice)
 
 
 def main():
