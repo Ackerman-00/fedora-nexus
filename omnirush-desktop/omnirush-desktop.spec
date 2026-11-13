@@ -6,7 +6,7 @@
 %global __brp_mangle_shebangs_exclude_from ^/opt/omnirush/.*$
 Name:           omnirush-desktop
 Version:        3.8.4
-Release:        2
+Release:        3
 Summary:        OmniRush.ai desktop shell (Electron)
 License:        SUSE-Freeware
 Group:          Productivity/Networking/Talk/Clients
@@ -128,6 +128,9 @@ if [ "$1" = 0 ] && [ -f %{_sysconfdir}/apparmor.d/omnirush ]; then
 fi
 
 %changelog
+* Fri Nov 13 2026 Ackerman-00 <no-reply> - 3.8.4-3
+- Rebuild for the %post MIME fix: clear the stale /usr/share/mime/version marker and re-run update-mime-database.
+
 * Tue Nov 10 2026 Ackerman-00 <no-reply> - 3.8.4-2
 - Drop a personal address from the prior changelog entries; metadata only, no payload change.
 * Tue Nov 10 2026 Ackerman-00 <no-reply> - 3.8.4-1

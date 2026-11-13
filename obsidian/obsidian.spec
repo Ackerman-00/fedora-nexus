@@ -3,7 +3,7 @@
 
 Name:           obsidian
 Version:        1.15.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A powerful knowledge base that works on top of a local folder of plain text Markdown files
 
 License:        LicenseRef-Proprietary
@@ -86,5 +86,8 @@ fi
 %doc %{_datadir}/doc/obsidian/
 
 %changelog
+* Fri Nov 13 2026 Ackerman-00 <no-reply> - 1.15.1-2
+- Rebuild for the %post MIME fix: clear the stale /usr/share/mime/version marker and re-run update-mime-database so the shipped obsidian.xml is registered even when its mtime predates the marker.
+
 * Thu Nov 12 2026 Ackerman-00 <no-reply> - 1.15.1-1
 - Auto-updated to 1.15.1 via update.sh
