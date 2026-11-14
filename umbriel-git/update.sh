@@ -91,6 +91,18 @@ if [ "$COMMIT_CHANGED" == "false" ] && [ "$BASE_VER_CHANGED" == "false" ] && [ "
     exit 0
 fi
 
+# cadence guard: one nightly sync per window, upstream commits every few minutes
+MIN_INTERVAL_HOURS=6
+if [ "$COMMIT_CHANGED" == "true" ] && [ "$BASE_VER_CHANGED" != "true" ] && [ "$SCENEFX_CHANGED" != "true" ]; then
+    PIN_DATE=$(awk '/^%global gitdate/{print $3; exit}' "$SPEC_FILE")
+    PIN_EPOCH=$(date -u -d "${PIN_DATE:0:4}-${PIN_DATE:4:2}-${PIN_DATE:6:2} ${PIN_DATE:8:2}:${PIN_DATE:10:2}:${PIN_DATE:12:2}" +%s 2>/dev/null || echo 0)
+    AGE_H=$(( ( $(date -u +%s) - PIN_EPOCH ) / 3600 ))
+    if [ "$PIN_EPOCH" -gt 0 ] && [ "$AGE_H" -lt "$MIN_INTERVAL_HOURS" ]; then
+        echo "Pinned snapshot is ${AGE_H}h old (window ${MIN_INTERVAL_HOURS}h); next nightly sync later."
+        exit 0
+    fi
+fi
+
 [ "$COMMIT_CHANGED" == "true" ] && echo "New commit: ${CURRENT_COMMIT:0:7} -> $SHORT_COMMIT"
 [ "$BASE_VER_CHANGED" == "true" ] && echo "Base version bump: $CURRENT_BASE_VER -> $BASE_VER"
 if [ "$USES_SCENEFX" == "yes" ]; then
