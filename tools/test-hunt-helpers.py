@@ -83,6 +83,43 @@ check("asset regex rejects another platform", bool(_rx.match("OpenClaw-2026.11.3
 check("asset regex handles a literal version", bool(hunt.asset_regex(
     "omnirush-linux-amd64-3.8.4.deb").match("omnirush-linux-amd64-3.8.4.deb")), True)
 
+class _Resp:
+    def __init__(self, body):
+        self.body = body
+
+    def read(self):
+        return self.body
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+_calls = {"n": 0}
+_real_urlopen = hunt.urllib.request.urlopen
+
+def _flaky(req, timeout=None):
+    _calls["n"] += 1
+    if _calls["n"] < 3:
+        raise OSError("transient")
+    return _Resp(b"<html>ok</html>")
+
+hunt.urllib.request.urlopen = _flaky
+check("get_text retries a transient failure", hunt.get_text("https://example.invalid/"), "<html>ok</html>")
+check("get_text retried three times", _calls["n"], 3)
+
+_calls["n"] = 0
+
+def _dead(req, timeout=None):
+    _calls["n"] += 1
+    raise OSError("down")
+
+hunt.urllib.request.urlopen = _dead
+check("get_text reports empty after every attempt fails", hunt.get_text("https://example.invalid/"), "")
+check("get_text stops at the attempt cap", _calls["n"], 3)
+hunt.urllib.request.urlopen = _real_urlopen
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)

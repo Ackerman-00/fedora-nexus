@@ -1232,13 +1232,17 @@ def hunt_slice():
     return ("slice", summary, note, findings)
 
 
-def get_text(url):
-    try:
-        req = urllib.request.Request(url, headers=UA)
-        with urllib.request.urlopen(req, timeout=45) as r:
-            return r.read().decode("utf-8", "replace")
-    except Exception:
-        return ""
+def get_text(url, attempts=3):
+    """Fetch a page; a transient error must not read as "the mirror has nothing"."""
+    for i in range(attempts):
+        try:
+            req = urllib.request.Request(url, headers=UA)
+            with urllib.request.urlopen(req, timeout=45) as r:
+                return r.read().decode("utf-8", "replace")
+        except Exception:
+            if i + 1 < attempts:
+                time.sleep(2 * (i + 1))
+    return ""
 
 
 def hunt_sandbox():
