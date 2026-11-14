@@ -1,6 +1,6 @@
 Name:           mangowm
 Version:        0.18.5
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <no-reply>
@@ -35,6 +35,7 @@ Requires:       xorg-x11-server-Xwayland
 Requires:       hicolor-icon-theme
 Requires(post): gtk-update-icon-cache
 Requires(postun): gtk-update-icon-cache
+Requires(posttrans): gtk-update-icon-cache
 Recommends:     xdg-desktop-portal >= 1.18
 Recommends:     xdg-desktop-portal-gtk
 Recommends:     xdg-desktop-portal-wlr
@@ -95,6 +96,8 @@ esac
 %{_userunitdir}/mango-session.target
 
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.18.5-4
+- Declare Requires(posttrans): gtk-update-icon-cache for the %posttrans cache refresh
 * Fri Nov 13 2026 Ackerman-00 <no-reply> - 0.18.5-3
 - Declare BuildRequires: systemd-rpm-macros: %{_userunitdir} (mango-session.target) was expanded only by rpm-build's transitive chain
 * Sun Nov 08 2026 Ackerman-00 <no-reply> - 0.18.5-2
