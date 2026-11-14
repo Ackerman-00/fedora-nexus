@@ -5,14 +5,14 @@
 %global __provides_exclude_from ^/opt/omnirush/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/omnirush/.*$
 Name:           omnirush-desktop
-Version:        3.8.4
-Release:        4%{?dist}
+Version:        3.8.5
+Release:        1%{?dist}
 Summary:        OmniRush.ai desktop shell (Electron)
 License:        SUSE-Freeware
 Group:          Productivity/Networking/Talk/Clients
 URL:            https://omnirush.ai
-Source0:        https://github.com/omnirush-ai/omnirush-gui/releases/download/v3.8.4/omnirush-linux-amd64-3.8.4.deb
-# sha256: 5749b6a3d838856d7a619b2054da35082ca9b49251e506488e80aef528f9b2b7
+Source0:        https://github.com/omnirush-ai/omnirush-gui/releases/download/v3.8.5/omnirush-linux-amd64-3.8.5.deb
+# sha256:  6b93ce4a45c0c7143fdaf0077edfcbc0c1140329cf7612752106a27ff80cf68e
 Source1:        omnirush-desktop-rpmlintrc
 BuildRequires:  binutils
 BuildRequires:  desktop-file-utils
@@ -129,26 +129,5 @@ if [ "$1" = 0 ] && [ -f %{_sysconfdir}/apparmor.d/omnirush ]; then
 fi
 
 %changelog
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 3.8.4-4
-- Release carried no %{?dist}, so all four chroots produced the same NEVR
-  (omnirush-desktop-3.8.4-3) and the rawhide/f43/f44/f45 packages were
-  indistinguishable in the published repos. Restore the dist tag.
-
-* Fri Nov 13 2026 Ackerman-00 <no-reply> - 3.8.4-3
-- Rebuild for the %post MIME fix: clear the stale /usr/share/mime/version marker and re-run update-mime-database.
-
-* Tue Nov 10 2026 Ackerman-00 <no-reply> - 3.8.4-2
-- Drop a personal address from the prior changelog entries; metadata only, no payload change.
-* Tue Nov 10 2026 Ackerman-00 <no-reply> - 3.8.4-1
-- Stop stripping the bundled Bun engine. brp-strip ran `strip -g` on
-  resources/sidecars/opencode2-x86_64-unknown-linux-gnu, changing its sha256
-  from the 9fc8e7a6... that the app's own versions.json expects to
-  2cbcb5fb... and reverting it to the bare Bun runtime (--version 1.4.2
-  instead of omnirush v2.0.32). The app therefore reported "Your antivirus
-  may have removed omnirush.ai's engine" and refused to start. The engine is
-  now byte-identical to the upstream DEB payload.
-- Add a %%check that verifies the engine against versions.json, run the engine
-  in the install probe, and move the sha256 pin below Source0 so the sweep
-  binds it.
-* Tue Nov 10 2026 Ackerman-00 <no-reply> - 3.8.4-0
-- Update to upstream release 3.8.4
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 3.8.5-1
+- Update to upstream release 3.8.5

@@ -4,11 +4,11 @@
 %global __requires_exclude_from ^/opt/ladybird/.*$
 %global __provides_exclude_from ^/opt/ladybird/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/ladybird/.*$
-%global commit         fb7c852c9476745a68639e67146b6d5b73f35834
+%global commit         e0b11464ff15fb53251c5428e4b820609d202cbc
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        28.20261114gitfb7c852%{?dist}
+Release:        29.20261114gite0b1146%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -174,6 +174,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.0.0-29.20261114gite0b1146
+- Refresh snapshot fb7c852 -> e0b1146 (upstream commit dated 2026-11-14T20:15:01Z); build-system
+  files reviewed before the bump, COPR build verified after it
+
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.0.0-28.20261114gitfb7c852
 - Move the in-app updater strip into %install
 
