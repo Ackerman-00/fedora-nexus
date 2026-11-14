@@ -6,12 +6,12 @@
 
 Name:           fluxer
 Version:        2026.1114.41034
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND 0BSD AND LGPL-2.1-or-later AND Apache-2.0 AND IJG AND MIT AND GPL-2.0-or-later AND ISC AND OpenSSL AND (MPL-1.1 OR GPL-2.0-only OR LGPL-2.0-only)
 URL:            https://fluxer.app
-Source0:        https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm
+Source0:        https://pkgs.fluxer.com/desktop/stable/linux/x64/%{version}/rpm
 # sha256: 6e850ee8d4ba56432c2e593780d1044cdd42e77ef5da8708b6bbc9ed8601418d
 
 Requires:           hicolor-icon-theme
@@ -98,5 +98,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/app.fluxer.FluxerDesk
 %attr(4755, root, root) %{_libdir}/%{name}/chrome-sandbox
 
 %changelog
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2026.1114.41034-1
-- Update to version 2026.1114.41034
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2026.1114.41034-2
+- Pin Source0 to the immutable versioned path so the sha256 receipt names the artifact it ships (the latest/ path is republished several times an hour)

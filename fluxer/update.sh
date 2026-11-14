@@ -15,6 +15,7 @@ fi
 SPEC_FILE="fluxer.spec"
 PACKAGER="Ackerman-00 <no-reply>"
 API_URL="https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm"
+SRC_BASE="https://pkgs.fluxer.com/desktop/stable/linux/x64"
 
 echo "Checking for upstream updates..."
 
@@ -49,9 +50,9 @@ if [ "$CURRENT_VERSION" != "$VERSION" ]; then
     sed -i "s/^Version:.*/Version:        $VERSION/" "$SPEC_FILE"
     sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 
-    echo "  -> [HASH] Computing sha256 of served artifact"
-    if ! SHA256=$(bash "$_update_sh_dir/../tools/fetch-sha256.sh" "$API_URL" --http1.1 -A "Mozilla/5.0"); then
-        echo "Error: could not download $API_URL for hashing." >&2
+    echo "  -> [HASH] Computing sha256 of $SRC_BASE/$VERSION/rpm"
+    if ! SHA256=$(bash "$_update_sh_dir/../tools/fetch-sha256.sh" "$SRC_BASE/$VERSION/rpm" --http1.1 -A "Mozilla/5.0"); then
+        echo "Error: could not download $SRC_BASE/$VERSION/rpm for hashing." >&2
         exit 1
     fi
     if [ -n "$SHA256" ]; then
