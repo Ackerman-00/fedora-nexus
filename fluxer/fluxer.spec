@@ -5,14 +5,14 @@
 %global __urlhelper_localopts --http1.1 --retry 5 --retry-all-errors --retry-delay 5
 
 Name:           fluxer
-Version:        2026.1114.41034
-Release:        4%{?dist}
+Version:        2026.1114.60222
+Release:        1%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND 0BSD AND LGPL-2.1-or-later AND Apache-2.0 AND IJG AND MIT AND GPL-2.0-or-later AND ISC AND OpenSSL AND (MPL-1.1 OR GPL-2.0-only OR LGPL-2.0-only)
 URL:            https://fluxer.app
 Source0:        https://pkgs.fluxer.com/desktop/stable/linux/x64/%{version}/rpm
-# sha256: 6e850ee8d4ba56432c2e593780d1044cdd42e77ef5da8708b6bbc9ed8601418d
+# sha256: 0419b2b7985e49522a89d91e066d92a2085111fcf6fc5badc52978a27f8aa7e3
 
 Requires:           hicolor-icon-theme
 Requires:       at-spi2-core
@@ -103,16 +103,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %attr(4755, root, root) %{_libdir}/%{name}/chrome-sandbox
 
 %changelog
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2026.1114.41034-4
-- Declare the three runtime libraries upstream's own RPM requires and we
-  dropped (Release 3): libsecret (Chromium keyring, dlopened so rpm never sees
-  it), pipewire-libs (WebRTC screen share on Wayland) and pulseaudio-libs
-  (audio client). Without them the app launches with its keyring, screen-share
-  and audio features silently degraded. Evidence: rpm -qp --requires of the
-  upstream Fluxer-2026.1114.41034 rpm lists all three.
-
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2026.1114.41034-3
-- Move the in-app updater strip into %install
-
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2026.1114.41034-2
-- Pin Source0 to the immutable versioned path so the sha256 receipt names the artifact it ships (the latest/ path is republished several times an hour)
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2026.1114.60222-1
+- Update to version 2026.1114.60222
