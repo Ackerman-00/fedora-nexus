@@ -28,6 +28,7 @@ mv Bibata-* %{buildroot}%{_datadir}/icons/
 %license LICENSE
 %{_datadir}/icons/Bibata-*
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Wed Jul 29 2026 Ackerman-00 <no-reply> - 2.0.7-1
 - Initial package

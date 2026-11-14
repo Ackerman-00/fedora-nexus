@@ -52,6 +52,7 @@ With Extension Manager you can:
 %meson_install
 %find_lang %{name}
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %check
 %meson_test
 appstream-util validate-relax --nonet %{buildroot}%{_datadir}/metainfo/%{uuid}.metainfo.xml

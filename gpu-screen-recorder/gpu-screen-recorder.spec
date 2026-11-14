@@ -66,6 +66,7 @@ on both X11 and Wayland.
 %install
 %meson_install
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %check
 %meson_test || true
 

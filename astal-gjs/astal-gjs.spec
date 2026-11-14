@@ -54,6 +54,7 @@ Development files for %{name}.
 %files devel
 %{_libdir}/pkgconfig/%{name}.pc
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Sat Nov 07 2026 Ackerman-00 <no-reply> - 0^20261101003451git7b4d376-1
 - Pin to 7b4d376: upstream deprecated and deleted the GJS bindings in 9b67eb5; update.sh holds this pin

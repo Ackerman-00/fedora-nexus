@@ -116,6 +116,7 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/vim/
 %{_datadir}/zsh/vendor-completions/_ghostty
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Sun Nov 08 2026 Ackerman-00 <no-reply> - 1.4.0-1
 - Update to upstream 1.4.0 (PPA release 1.4.0-0-ppa2, trixie amd64 deb; the

@@ -86,6 +86,7 @@ install -Dpm 0644 %{SOURCE4} %{buildroot}%{_licensedir}/%{name}/LICENSE
 /opt/Stoat/
 %attr(4755, root, root) /opt/Stoat/chrome-sandbox
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.5.4-2
 - Ship the upstream AGPL-3.0 LICENSE (Source4, same v1.5.4 tag as the zip

@@ -98,6 +98,7 @@ cp -a usr/share/doc/qoder/. %{buildroot}%{_docdir}/qoder/
 
 desktop-file-validate %{buildroot}%{_datadir}/applications/qoder.desktop
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 if command -v update-desktop-database >/dev/null 2>&1; then
   update-desktop-database %{_datadir}/applications >/dev/null 2>&1 || true

@@ -58,6 +58,7 @@ install -Dm755 target/release/concord %{buildroot}%{_bindir}/concord
 %doc docs/theme-options.md
 %{_bindir}/concord
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Tue Nov 10 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.7.0-3
 - Declare BuildRequires: rust-srpm-macros: the spec uses %{build_rustflags},

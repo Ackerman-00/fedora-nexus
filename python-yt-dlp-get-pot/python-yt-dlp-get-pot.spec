@@ -38,6 +38,7 @@ install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 %files -f %{pyproject_files}
 %license %{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.3.0-5
 - Install the LICENSE that the 0.3.0 sdist already ships as a %license file

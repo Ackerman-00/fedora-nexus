@@ -30,6 +30,7 @@ bash ./install.sh --dest %{buildroot}%{_datadir}/icons --theme all 2>&1 || bash 
 %license COPYING
 %{_datadir}/icons/WhiteSur*
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 gtk-update-icon-cache -q %{_datadir}/icons/WhiteSur 2>/dev/null || :
 # secondary colors have their own cache

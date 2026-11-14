@@ -47,6 +47,7 @@ system stored on an SSD, overhead can be as short as ~0.03s.
 %{_bindir}/app2unit-term-service
 %{_mandir}/man1/app2unit.1*
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Wed Nov 11 2026 Ackerman-00 <no-reply> - 1.4.4^20260801195144git47e23ec-2
 - Declare the runtime tools the shipped script calls: xdg-terminal-exec is the

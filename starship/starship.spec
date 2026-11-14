@@ -47,6 +47,7 @@ install -d -m 0755 %{buildroot}%{fish_completions_dir}
 %{zsh_completions_dir}/_starship
 %{fish_completions_dir}/starship.fish
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Tue Nov 10 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.27.0-4
 - Drop the zlib-sirocco feature: it pulls adler32furious, which does not

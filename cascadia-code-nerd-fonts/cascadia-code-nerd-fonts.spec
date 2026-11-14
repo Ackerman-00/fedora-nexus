@@ -25,6 +25,7 @@ install -m 0644 -p *.ttf %{buildroot}%{_datadir}/fonts/%{name}/
 %doc README.md
 %{_datadir}/fonts/%{name}
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Mon Oct 19 2026 Ackerman-00 <no-reply> - 3.5.1-2
 - Ship the OFL-1.1 LICENSE and README.md that CascadiaCode.tar.xz carries as

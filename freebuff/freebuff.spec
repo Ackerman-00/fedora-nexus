@@ -42,6 +42,7 @@ ln -s ../libexec/%{name}/freebuff %{buildroot}%{_bindir}/freebuff
 
 install -Dpm0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %check
 # smoke exits 0 on FAIL
 smoke=$(timeout 120 %{buildroot}%{_libexecdir}/%{name}/freebuff --smoke-tree-sitter 2>&1)

@@ -48,6 +48,7 @@ install -Dpm 0644 contrib/systemd/awww-daemon.service %{buildroot}%{_userunitdir
 %{_bindir}/awww-daemon
 %{_userunitdir}/awww-daemon.service
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Tue Nov 10 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.12.1-8
 - Declare BuildRequires: rust-srpm-macros: the spec uses %{build_rustflags},

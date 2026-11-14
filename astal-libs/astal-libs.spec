@@ -169,6 +169,7 @@ rm -rf %{buildroot}%{_libdir}/libcava.so*
 %{_libdir}/libastal-workspace.so.0{,.*}
 %{_libdir}/libquarrel.so.0{,.*}
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 

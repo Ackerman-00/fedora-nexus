@@ -39,6 +39,7 @@ cp -p %{SOURCE1} LICENSE
 %files -f %{pyproject_files}
 %license LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Tue Oct 20 2026 Ackerman-00 <no-reply> - 0.2.0-5
 - Ship the MIT license text: the sdist carries none, but the plugin lives in

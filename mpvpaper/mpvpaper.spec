@@ -41,6 +41,7 @@ install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_bindir}/mpvpaper-holder
 %{_mandir}/man1/mpvpaper.1*
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.9-3
 - Ship the upstream GPL-3.0 LICENSE as a license file. The package declared

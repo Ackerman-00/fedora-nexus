@@ -50,6 +50,7 @@ tar -xzf %{SOURCE1} -C node_modules/gnim --strip=1
 %{_bindir}/ags
 %{_datadir}/ags/
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Mon Oct 19 2026 Ackerman-00 <no-reply> - 3.1.2-2
 - Add the runtime Astal/libadwaita Requires the shipped JS imports: the gtk4

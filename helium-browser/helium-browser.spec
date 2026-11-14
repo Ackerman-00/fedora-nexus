@@ -66,6 +66,7 @@ install -m 644 %{SOURCE1} \
 
 ln -sf %{helium_base}/helium-wrapper %{buildroot}%{_bindir}/helium
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 /usr/bin/update-desktop-database > /dev/null 2>&1 || :
 /bin/touch --no-create %{_datadir}/icons/hicolor > /dev/null 2>&1 || :

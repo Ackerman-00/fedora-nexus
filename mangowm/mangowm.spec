@@ -63,6 +63,7 @@ sed -i "s/'-U_FORTIFY_SOURCE',//g" meson.build
 %meson_install
 install -Dpm0644 assets/mango.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/mango.svg
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 /bin/touch --no-create %{_datadir}/icons/hicolor >/dev/null 2>&1 || :
 /usr/bin/gtk-update-icon-cache -q %{_datadir}/icons/hicolor >/dev/null 2>&1 || :

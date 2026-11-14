@@ -70,6 +70,7 @@ install -Dpm 0644 completions/caelestia.fish %{buildroot}%{_datadir}/fish/vendor
 %doc README.md
 %license LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Wed Aug 12 2026 Ackerman-00 <no-reply> - 2.0.0^20260811125152gitbe54856-2
 - Require dbus-tools: subcommands/record.py invokes dbus-send to reveal

@@ -103,6 +103,7 @@ install -Dm644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/icons/hicolor/512x512/apps/openchamber.png
 %attr(4755, root, root) /opt/openchamber/chrome-sandbox
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Fri Nov 13 2026 Ackerman-00 <no-reply> - 2.7.1-1
 - Auto-update to upstream release v2.7.1

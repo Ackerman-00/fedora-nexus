@@ -34,6 +34,7 @@ Not packaged in Fedora before this (packages.fedoraproject.org 404).
 %install
 %make_install
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %check
 ./xcur2png --help 2>&1 | grep -qi xcursor
 

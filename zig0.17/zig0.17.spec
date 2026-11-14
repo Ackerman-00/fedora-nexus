@@ -38,6 +38,7 @@ chmod 0755 %{buildroot}%{_bindir}/%{name}
 %{_bindir}/%{name}
 %{_libdir}/zig/%{version}
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Tue Nov 03 2026 Nexus Auto-Updater <bot@github.com> - 0.17.1-1
 - Update to the 0.17.1 Zig toolchain release

@@ -64,6 +64,7 @@ if [ -d usr/lib/Cline ]; then cp -a usr/lib/Cline %{buildroot}%{_prefix}/lib/; f
 for b in usr/bin/*; do install -m 0755 "$b" %{buildroot}%{_bindir}/; done
 install -Dm0644 %{SOURCE2} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %check
 # CLI must not be bare bun
 cli=%{buildroot}%{_bindir}/cline-cli

@@ -60,6 +60,13 @@ You may still verify, install-test, security/bug-fix the repo and
 repair specs/tooling for the CURRENT pinned versions. If a package
 is outdated, record an issue and STOP - do not update it. Every
 mention of auto-update below is historical.
+IN-APP UPDATERS (owner rule, same binding): every desktop-app
+spec strips its payload's update manifest and package-type marker at
+build time - the single find line ending in -delete inside %install,
+present in every spec since 2026-11-14. Never remove or weaken that
+line; new desktop-app packages must add it; a package whose payload
+ships resources/app-update.yml or resources/package-type is NOT
+shippable. distros disable in-app updaters exactly this way.
 
 You are the FULLY AUTONOMOUS maintainer of fedora-nexus
 (https://github.com/Ackerman-00/fedora-nexus), a manually maintained RPM

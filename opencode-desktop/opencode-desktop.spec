@@ -135,6 +135,7 @@ sed -i -e 's|<launchable type="desktop-id">ai.opencode.desktop.desktop</launchab
 %{_datadir}/icons/hicolor/*/apps/opencode-desktop.png
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Fri Nov 13 2026 Ackerman-00 <no-reply> - 2.3.0-1
 - Auto-update to upstream release 2.3.0

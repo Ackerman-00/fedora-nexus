@@ -42,6 +42,7 @@ install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 %files -f %{pyproject_files}
 %license %{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Tue Oct 27 2026 Ackerman-00 <no-reply> - 0.8.0-6
 - Recommend nodejs: the package ships a JavaScript bundle that only runs on

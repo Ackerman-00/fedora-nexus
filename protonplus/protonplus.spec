@@ -51,6 +51,7 @@ like Proton, Wine, DXVK, and VKD3D across different launchers.
 %meson_install
 %find_lang %{app_id}
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %check
 %meson_test
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop

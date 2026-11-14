@@ -85,6 +85,7 @@ done
 
 install -Dpm0644 usr/share/applications/OpenClaw.desktop %{buildroot}%{_datadir}/applications/OpenClaw.desktop
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %check
 desktop-file-validate %{buildroot}%{_datadir}/applications/OpenClaw.desktop
 python3 -c "import json,sys; d=json.load(open('%{buildroot}%{_prefix}/lib/OpenClaw/desktop-runtime/manifest.json')); print('desktop-runtime manifest ok:', d.get('revision'))"

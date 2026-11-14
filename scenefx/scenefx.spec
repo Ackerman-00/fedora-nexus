@@ -65,6 +65,7 @@ MESON_OPTIONS=(
 %{_includedir}/%{name}-*/*
 %{_libdir}/pkgconfig/%{name}-*.pc
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Tue Oct 06 2026 Ackerman-00 <no-reply> - 0.5-3
 - Reconcile BuildRequires floors with upstream meson.build (meson >= 1.3,

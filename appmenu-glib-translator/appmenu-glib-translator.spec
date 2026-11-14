@@ -59,6 +59,7 @@ done
 %{_libdir}/libappmenu-glib-translator.so
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 25.04^20261113221544gitfa064d8-1
 - Nightly sync with upstream main branch (Commit: fa064d8)

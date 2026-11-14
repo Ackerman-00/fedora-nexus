@@ -57,6 +57,7 @@ Headers and pkg-config file for developing with libcava.
 %{_includedir}/cava/
 %{_libdir}/pkgconfig/libcava.pc
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Mon Jul 20 2026 Ackerman-00 <no-reply> - 1.0.0-1
 - Update to 1.0.0

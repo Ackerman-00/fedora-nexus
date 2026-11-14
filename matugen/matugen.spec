@@ -37,6 +37,7 @@ install -Dpm0755 target/release/matugen -t %{buildroot}%{_bindir}/
 %license LICENSE
 %{_bindir}/matugen
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Tue Nov 10 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 4.2.0-5
 - Declare BuildRequires: rust-srpm-macros: the spec uses %{build_rustflags},

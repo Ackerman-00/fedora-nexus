@@ -95,6 +95,7 @@ install -Dpm 0644 %{SOURCE2} %{buildroot}%{_licensedir}/%{name}/LICENSE.md
 %{_datadir}/applications/logseq-app.desktop
 %{_datadir}/icons/hicolor/512x512/apps/logseq.png
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Wed Oct 28 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.0.2-3
 - Ship the desktop entry as logseq-app.desktop. The rename was pushed

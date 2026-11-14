@@ -80,6 +80,7 @@ find third_party -type f \( -name "LICENSE*" -o -name "COPYING*" -o -name "NOTIC
     install -p -m 0644 "$file" "$dest_dir/"
 done
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %check
 %meson_test
 

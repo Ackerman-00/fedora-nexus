@@ -84,6 +84,7 @@ install -Dm644 com.pocoguy.Muse.metainfo.xml \
 install -Dm644 assets/icons/hicolor/scalable/apps/com.pocoguy.Muse.svg \
     %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/com.pocoguy.Muse.svg
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %check
 desktop-file-validate %{buildroot}%{_datadir}/applications/com.pocoguy.Muse.desktop
 

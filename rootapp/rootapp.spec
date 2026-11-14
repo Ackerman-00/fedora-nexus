@@ -136,6 +136,7 @@ DESKTOP_EOF
 %{_datadir}/icons/hicolor/*/apps/rootapp.png
 %{_datadir}/pixmaps/rootapp.png
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.9.163-1
 - Auto-update to 0.9.163 via update.sh

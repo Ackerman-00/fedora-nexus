@@ -48,6 +48,7 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %files -f %{pyproject_files}
 %license %{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.0.1-4
 - Ship the upstream LGPL-3.0 LICENSE (Source1, same v1.0.1 tag); the GitLab

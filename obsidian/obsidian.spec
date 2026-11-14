@@ -67,6 +67,7 @@ cp -a usr/share/* %{buildroot}%{_datadir}/
 
 ln -sf /opt/Obsidian/obsidian %{buildroot}%{_bindir}/obsidian
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 # mime-version-marker: update-mime-database skips any XML older than the marker, and RPM keeps build mtimes
 if command -v update-mime-database >/dev/null 2>&1; then

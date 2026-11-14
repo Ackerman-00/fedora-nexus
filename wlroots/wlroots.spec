@@ -96,6 +96,7 @@ MESON_OPTIONS=(
 install -pm0644 -Dt '%{buildroot}/%{_pkgdocdir}/examples' examples/*.[ch]
 install -pm0644 -D '%{SOURCE3}' '%{buildroot}/%{_pkgdocdir}/examples/meson.build'
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %check
 %{meson_test}
 

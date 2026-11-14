@@ -97,6 +97,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/app.fluxer.FluxerDesk
 %{_datadir}/icons/hicolor/*/apps/%{appid}.png
 %attr(4755, root, root) %{_libdir}/%{name}/chrome-sandbox
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 2026.1114.41034-2
 - Pin Source0 to the immutable versioned path so the sha256 receipt names the artifact it ships (the latest/ path is republished several times an hour)

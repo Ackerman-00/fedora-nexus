@@ -109,6 +109,7 @@ exec /usr/bin/qs -p "%{_datadir}/caelestia-shell" "$@"
 WRAPPER
 chmod 755 %{buildroot}%{_bindir}/caelestia-shell
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 if [ $1 -eq 1 ]; then
     echo ""

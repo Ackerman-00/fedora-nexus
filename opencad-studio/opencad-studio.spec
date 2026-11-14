@@ -88,6 +88,7 @@ install -Dm0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/icons/hicolor/*/apps/%{appid}.png
 %{_datadir}/metainfo/%{appid}.metainfo.xml
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 

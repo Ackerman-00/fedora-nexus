@@ -36,6 +36,7 @@ go build -trimpath -ldflags="-s -w" -o cliphist .
 install -d %{buildroot}%{_bindir}
 install -m 0755 cliphist %{buildroot}%{_bindir}/cliphist
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %check
 export GO111MODULE=on
 export GOFLAGS="-mod=vendor"

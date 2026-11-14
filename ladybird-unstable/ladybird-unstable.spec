@@ -165,6 +165,7 @@ python3 %{SOURCE6} %{buildroot}/opt/ladybird/lib64
 %{_datadir}/icons/hicolor/scalable/apps/org.ladybird.Ladybird.svg
 %{_metainfodir}/org.ladybird.Ladybird.metainfo.xml
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 

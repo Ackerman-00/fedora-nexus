@@ -32,6 +32,7 @@ Nexus repository via automated main-branch tracking.
 install -d -m 0755 %{buildroot}%{_datadir}/lazyvim
 cp -a init.lua lua doc queries scripts LICENSE NEWS.md %{buildroot}%{_datadir}/lazyvim/
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 if [ "$1" -eq 1 ]; then
     echo

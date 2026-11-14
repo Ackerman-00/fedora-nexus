@@ -77,6 +77,7 @@ install -Dm644 assets/icons/lucide/LICENSE %{buildroot}%{_licensedir}/%{name}/ic
 install -Dm644 assets/icons/remix/LICENSE %{buildroot}%{_licensedir}/%{name}/icons-remix-LICENSE
 install -Dm644 assets/icons/solar/LICENSE %{buildroot}%{_licensedir}/%{name}/icons-solar-LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 /usr/bin/update-desktop-database > /dev/null 2>&1 || :
 /bin/touch --no-create %{_datadir}/icons/hicolor > /dev/null 2>&1 || :

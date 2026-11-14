@@ -74,6 +74,7 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/icons/hicolor/*/apps/localsend_app.png
 %{_libdir}/localsend_app/
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.18.2-5
 - Rewrite the bundled plugins' RPATH to $ORIGIN. Upstream's Flutter build

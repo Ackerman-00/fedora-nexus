@@ -49,6 +49,7 @@ make build
 %{_datadir}/nwg-look/
 %{_datadir}/pixmaps/nwg-look.svg
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Thu Oct 22 2026 Ackerman-00 <no-reply> - 1.2.1-2
 - Floor golang at 1.26, the version go.mod declares

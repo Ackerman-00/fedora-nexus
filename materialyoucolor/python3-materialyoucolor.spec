@@ -39,6 +39,7 @@ pybind11 extension for speed, with a pure-Python fallback.
 %doc README.md
 %license LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Sat Aug 08 2026 Ackerman-00 <no-reply> - 3.0.4-1
 - Initial package (builds the C++ quantizer via pybind11)

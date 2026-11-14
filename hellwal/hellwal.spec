@@ -35,6 +35,7 @@ install -Dpm0644 assets/hellwal.fish %{buildroot}%{fish_completions_dir}/%{name}
 %{bash_completions_dir}/%{name}
 %{fish_completions_dir}/%{name}.fish
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Fri Oct 23 2026 Ackerman-00 <no-reply> - 1.0.9-1
 - Auto-update to version 1.0.9

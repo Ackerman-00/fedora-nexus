@@ -96,6 +96,7 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/COPYING
 /opt/Heroic/
 %attr(4755, root, root) /opt/Heroic/chrome-sandbox
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Thu Nov 12 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.22.4-4
 - Point the menu entry at the /usr/bin/heroic wrapper so the Wayland

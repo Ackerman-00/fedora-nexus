@@ -79,6 +79,7 @@ if [ -d usr/share ]; then cp -a usr/share/* %{buildroot}%{_datadir}/; fi
 if [ -d usr/share/applications ]; then install -d %{buildroot}%{_datadir}/applications; fi
 ln -sf /opt/omnirush/omnirush %{buildroot}%{_bindir}/omnirush
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %check
 # engine must match the app's own manifest
 sidecars=%{buildroot}/opt/omnirush/resources/sidecars

@@ -80,6 +80,7 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 /opt/Vesktop/
 %attr(4755, root, root) /opt/Vesktop/chrome-sandbox
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Thu Nov 05 2026 Nexus Auto-Updater <bot@github.com> - 1.6.9-1
 - Update to version 1.6.9

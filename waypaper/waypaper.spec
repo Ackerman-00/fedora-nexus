@@ -72,6 +72,7 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 %{_mandir}/man1/waypaper.1.gz
 %{_datadir}/systemd/user/waypaperd.service
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Wed Nov 11 2026 Ackerman-00 <no-reply> - 2.9-3
 - Require libdrm: the vendored screeninfo 0.8.1 dlopens libdrm

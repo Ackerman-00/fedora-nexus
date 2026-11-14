@@ -67,6 +67,7 @@ ln -s ../../../../../../opt/%{application_name}/browser/chrome/icons/default/def
 
 ln -s ../../../../../../opt/%{application_name}/browser/chrome/icons/default/default128.png %{buildroot}%{_datadir}/pixmaps/%{full_name}.png
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 

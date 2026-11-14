@@ -101,6 +101,7 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 /opt/SPlayer-Next/
 %attr(4755, root, root) /opt/SPlayer-Next/chrome-sandbox
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
 * Sat Oct 24 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.2.0-2
 - Refresh the sha256 pin and both bundled() versions from the 1.2.0 payload:
