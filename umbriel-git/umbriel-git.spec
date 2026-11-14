@@ -6,7 +6,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -33,6 +33,7 @@ BuildRequires:  pkgconfig(pixman-1) >= 0.43.0
 %if 0%{?fedora} >= 44
 BuildRequires:  pkgconfig(libdisplay-info) >= 0.3.0
 %else
+BuildRequires:  pkgconfig(libdisplay-info) >= 0.2.0
 %endif
 BuildRequires:  pkgconfig(libdrm) >= 2.4.129
 BuildRequires:  pkgconfig(glib-2.0)
@@ -113,5 +114,11 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.1.0^20261113145120git33a782d-2
+- Declare pkgconfig(libdisplay-info) on the fedora-43 branch: upstream
+  requires it unconditionally (meson.build dependency('libdisplay-info')),
+  and the old spec left the F43 build resolving it only transitively from
+  wlroots-devel's generated Requires.
+
 * Fri Nov 13 2026 Ackerman-00 <no-reply> - 0.1.0^20261113145120git33a782d-1
 - Nightly sync with upstream main branch (Commit: 33a782d)
