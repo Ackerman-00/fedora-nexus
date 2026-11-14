@@ -96,6 +96,13 @@ if [ "$iex" -eq 0 ]; then
   done
 fi
 echo PROBE_MISSING_COUNT=$pmiss
+echo '--- updater ---'
+uph=0
+for f in $(printf '%s\n' "$files" | grep -E '/(app-update\.ya?ml|package-type|updater|updater\.ini|update-settings\.ini)$'); do
+  [ -f "$f" ] || continue
+  echo "UPDATER_MANIFEST $f"; uph=$((uph+1))
+done
+echo UPDATER_MANIFEST_COUNT=$uph
 echo '--- smoke ---'
 if [ -n "$SMOKE" ]; then bash -c "$SMOKE"; else true; fi
 echo SMOKE_EXIT=$?
@@ -128,6 +135,9 @@ EOS
     if [ -n "$lag" ] && [ "${inst%-*}" = "$ever" ]; then
       iex=0
       why="pin-lag installed=$inst spec=$lag (COPR has not published this NVR yet)"
+    elif [ -n "$lag" ] && [ "${inst%-*}" != "$ever" ]; then
+      iex=0
+      why="published NVR $inst installs clean; spec $ever-$erel not in repo yet (build pending)"
     fi
   fi
   [ "$iex" = "0" ] || { verdict=FAIL; why="$why install rc=$iex"; }
@@ -139,6 +149,10 @@ EOS
   [ "$rv" = "1" ] || { verdict=FAIL; why="$why rpm -V dirty"; }
   [ "${lddc:-0}" = "0" ] || { verdict=FAIL; why="$why ldd missing=$lddc"; }
   [ "$sex" = "0" ] || { verdict=FAIL; why="$why smoke rc=$sex"; }
+  updc=$(grep -m1 '^UPDATER_MANIFEST_COUNT=' "$out" | cut -d= -f2)
+  if [ "${updc:-0}" != "0" ]; then
+    verdict=FAIL; why="$why payload ships an in-app updater manifest: $(grep -m1 '^UPDATER_MANIFEST ' "$out" | cut -d' ' -f2-)"
+  fi
   printf '%s|%s|%s|%s|%s|%s\n' "$pkg" "$CH" "$nvr" "$smoke_col" "$verdict" "$why" >> "$OUT/rows.txt"
   echo "ROW $pkg $CH ${nvr:-?} $verdict $why"
 }
