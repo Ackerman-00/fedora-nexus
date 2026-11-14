@@ -3,16 +3,15 @@
 %global __requires_exclude_from ^%{_prefix}/lib/OpenClaw/desktop-runtime/bin/bun$
 %global __provides_exclude_from ^%{_prefix}/lib/OpenClaw/desktop-runtime/bin/bun$
 
-Name:           openclaw
+Name:           openclaw-desktop
 Version:        2026.11.2
 Release:        1%{?dist}
-Summary:        Your AI assistant, running on your own devices and chats
+Summary:        OpenClaw companion app for the desktop
 License:        MIT
-Group:          Applications/Utility
 URL:            https://github.com/openclaw/openclaw
 Source0:        https://github.com/openclaw/openclaw/releases/download/v%{version}/OpenClaw-%{version}-amd64.deb
 # sha256:  190d8990e78caf36ef03089a43477897f75932f53287c8cd14a8f9cdd9eda5cb
-Source1:        openclaw-rpmlintrc
+Source1:        openclaw-desktop-rpmlintrc
 Source2:        https://raw.githubusercontent.com/openclaw/openclaw/v%{version}/LICENSE
 ExclusiveArch:  x86_64
 
@@ -38,18 +37,22 @@ Requires:       libgtk-3.so.0()(64bit)
 Requires:       libjavascriptcoregtk-4.1.so.0()(64bit)
 Requires:       libsoup-3.0.so.0()(64bit)
 Requires:       libwebkit2gtk-4.1.so.0()(64bit)
-Requires(post): desktop-file-utils
+Requires(post):   desktop-file-utils
+Requires(postun): desktop-file-utils
+
+Recommends:     gstreamer1-plugins-bad-free
+Recommends:     gstreamer1-plugins-good
 Recommends:     xdg-desktop-portal
 Recommends:     xdg-desktop-portal-gtk
-Recommends:     gstreamer1-plugins-good
-Recommends:     gstreamer1-plugins-bad-free
+Suggests:       gstreamer1-libav
+Suggests:       xdg-desktop-portal-gnome
 
 %description
 OpenClaw is an open-source personal AI assistant that runs on your own computer
 and answers in the chats you already use. This package ships the upstream
-prebuilt Linux companion app (a GTK3/WebKitGTK window plus the bundled Bun
-runtime). It repackages the upstream DEB payload as-is; it does not build
-anything from source and it cannot update itself.
+prebuilt Linux companion app: a GTK3/WebKitGTK window plus the bundled Bun
+runtime that hosts the Control UI. The CLI itself comes from Fedora's openclaw
+package or from the upstream installer script the payload carries.
 
 %prep
 %setup -q -c -T
@@ -75,12 +78,11 @@ install -Dpm0755 usr/bin/openclaw-desktop %{buildroot}%{_bindir}/openclaw-deskto
 install -Dpm0644 %{SOURCE2} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 install -d %{buildroot}%{_datadir}/icons/hicolor
-for d in usr/share/icons/hicolor/*/apps/openclaw-desktop.png; do
-    size=$(echo "$d" | cut -d/ -f5)
-    install -Dpm0644 "$d" %{buildroot}%{_datadir}/icons/hicolor/${size}/apps/openclaw-desktop.png
+for icon in usr/share/icons/hicolor/*/apps/openclaw-desktop.png; do
+    size=${icon#usr/share/icons/hicolor/}
+    install -Dpm0644 "$icon" %{buildroot}%{_datadir}/icons/hicolor/${size}
 done
 
-install -d %{buildroot}%{_datadir}/applications
 install -Dpm0644 usr/share/applications/OpenClaw.desktop %{buildroot}%{_datadir}/applications/OpenClaw.desktop
 
 %check
@@ -88,9 +90,12 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/OpenClaw.desktop
 python3 -c "import json,sys; d=json.load(open('%{buildroot}%{_prefix}/lib/OpenClaw/desktop-runtime/manifest.json')); print('desktop-runtime manifest ok:', d.get('revision'))"
 
 %post
-if command -v update-desktop-database >/dev/null 2>&1; then
-    update-desktop-database %{_datadir}/applications >/dev/null 2>&1 || true
-fi
+update-desktop-database &> /dev/null || :
+touch -- %{_datadir}/icons/hicolor &> /dev/null || :
+
+%postun
+update-desktop-database &> /dev/null || :
+touch -- %{_datadir}/icons/hicolor &> /dev/null || :
 
 %files
 %license %{_licensedir}/%{name}/LICENSE
@@ -104,4 +109,6 @@ fi
 
 %changelog
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 2026.11.2-1
-- initial release; upstream prebuilt amd64 .deb payload repacked as-is
+- Initial package: the upstream prebuilt amd64 .deb payload repacked as-is.
+  Named openclaw-desktop because the RPM name `openclaw` belongs to Fedora's
+  own CLI package (src.fedoraproject.org/rpms/openclaw).

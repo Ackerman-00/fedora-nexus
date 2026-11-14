@@ -43,6 +43,7 @@ omnirush-desktop|omnirush-desktop|test -x /usr/bin/omnirush && /opt/omnirush/res
 opencad-studio|opencad-studio|test -x /usr/bin/opencad-studio
 openchamber|openchamber|test -f /opt/openchamber/resources/app.asar
 opencode-desktop|opencode-desktop|test -f /opt/OpenCode/resources/app.asar && test -x "$(awk '/^exec /{print $2; exit}' /usr/bin/opencode-desktop)"
+openclaw-desktop|openclaw-desktop|test -x /usr/bin/openclaw-desktop && test -f /usr/share/applications/OpenClaw.desktop && python3 -c "import json; json.load(open('/usr/lib/OpenClaw/desktop-runtime/manifest.json'))"
 protonplus|protonplus|test -x /usr/bin/protonplus
 python-mprisify|python-mprisify|python3 -c 'import mprisify'
 python-yt-dlp-ejs|python-yt-dlp-ejs|python3 -c "import yt_dlp_ejs"

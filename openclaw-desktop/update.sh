@@ -6,7 +6,7 @@ if [ "$(pwd)" != "$_update_sh_dir" ]; then
     exit 1
 fi
 
-SPEC_FILE="openclaw.spec"
+SPEC_FILE="openclaw-desktop.spec"
 MANIFEST_URL="https://github.com/openclaw/openclaw/releases/latest/download/latest.json"
 
 echo "Checking for upstream companion-app updates..."
@@ -25,9 +25,9 @@ print(v, sha)
 " "$LATEST_JSON")
 
 if [ -z "$LATEST_VERSION" ] || [ -z "$LATEST_SHA" ]; then
-    echo "Error: no linux x86_64 .deb asset in the latest companion manifest (version=$LATEST_VERSION sha=$LATEST_SHA)." >&2
-    echo "Upstream likely shipped a macOS-only release; keeping the current pin." >&2
-    exit 1
+    echo "No linux x86_64 .deb in the companion manifest (version=$LATEST_VERSION sha=$LATEST_SHA)."
+    echo "Upstream shipped a macOS-only release; keeping the current pin."
+    exit 0
 fi
 
 CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
@@ -61,7 +61,7 @@ sed -i '/^%changelog/,$d' "$SPEC_FILE"
 {
     echo "%changelog"
     echo "* $DATE Ackerman-00 <no-reply> - $LATEST_VERSION-1"
-    echo "- update to v$LATEST_VERSION"
+    echo "- Update to upstream release $LATEST_VERSION"
 } >> "$SPEC_FILE"
 
 echo "Successfully updated to $LATEST_VERSION (sha256 $LATEST_SHA)."

@@ -100,7 +100,7 @@ sudo dnf install <package-name>
 | `opencad-studio` | Open-source 2D/3D CAD with native DWG/DXF support | Stable |
 | `omnirush-desktop` | Electron desktop shell for omnirush.ai | Stable |
 | `openchamber` | AI coding agent workspace (Electron) | Stable |
-| `openclaw` | Personal AI assistant for your own devices and chats (deb repackage; GTK3/WebKitGTK) | Stable |
+| `openclaw-desktop` | OpenClaw companion app for the desktop (deb repackage; GTK3/WebKitGTK + bundled Bun runtime) | Stable |
 | `opencode-desktop` | AI coding agent desktop app | Stable |
 | `protonplus` | Modern compatibility tools manager | Stable |
 | `qoder` | Agent workbench for human and AI software teams (deb-backed) | Stable |
