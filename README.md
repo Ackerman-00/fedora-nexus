@@ -4,10 +4,8 @@
 
 <h1>fedora-nexus</h1>
 
-<p>A self-updating RPM repository for Fedora, powered by COPR.</p>
+<p>A manually maintained RPM repository for Fedora, powered by COPR - version bumps are published only by Ackerman-00.</p>
 
-[![Build](https://img.shields.io/github/actions/workflow/status/Ackerman-00/fedora-nexus/update-engine.yml?style=for-the-badge&label=AUTO-UPDATE&logo=github&logoColor=white)](https://github.com/Ackerman-00/fedora-nexus/actions)
-&nbsp;
 [![COPR](https://img.shields.io/badge/COPR-ackerman/nexus-0055CC?style=for-the-badge&logo=fedora)](https://copr.fedorainfracloud.org/coprs/ackerman/nexus/)
 
 <p><sup>Recipes live in this repo · Built on COPR · Drop-in native RPM repo</sup></p>
