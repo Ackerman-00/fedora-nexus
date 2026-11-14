@@ -515,6 +515,12 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
   instead of guessing paths. `python3 tools/hunt.py probes` fails when a
   spec has no row, and `tools/verify-fedora.sh` refuses a relay while the
   file does not cover the inventory.
+- `bash tools/desktop-sweep.sh "<pkg> <pkg>" [chroot]` - install published packages in
+  one clean container and resolve every `.desktop` they ship: a menu entry (XDG dirs)
+  needs a shipped icon and an `Exec=` in PATH, a bundle copy under `/opt` only needs its
+  binary inside the payload, a session entry needs its `Exec=` in PATH. One container for
+  the whole set, so it catches the icon no file provides (mangowm shipped `Icon=mango`
+  with no icon for months).
 - `bash tools/check-workflows.sh` - YAML parse + actionlint + permission-scope
   scan for .github/workflows/*.yml, plus a drift check that the gate and the
   verifier parse the contract the same way. Run it before pushing any workflow
