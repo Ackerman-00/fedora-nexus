@@ -4,7 +4,7 @@
 
 Name:           noctalia-greeter
 Version:        1.7.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 License:        MIT AND Apache-2.0
@@ -50,7 +50,9 @@ BuildRequires:  pkgconfig(xkbcommon)
 BuildRequires:  systemd-rpm-macros
 
 Requires:       dbus
-Requires:       polkit
+# polkit: optional in upstream PACKAGING.md, the shipped .policy is inert without polkitd
+Recommends:     polkit
+Requires:       /usr/bin/bash
 Requires:       /usr/bin/dbus-run-session
 Requires:       greetd
 Requires:       wlroots >= 0.20
@@ -120,6 +122,9 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.7.0^20261111131528git199fb7f-3
+- polkit is optional upstream (PACKAGING.md:277): Recommends instead of Requires
+- Require /usr/bin/bash: 3 installed setup scripts start with #!/usr/bin/env bash
 * Fri Nov 13 2026 Ackerman-00 <no-reply> - 1.7.0^20261111131528git199fb7f-2
 - Declare BuildRequires: systemd-rpm-macros: %{_tmpfilesdir} was expanded only by rpm-build's transitive chain
 * Wed Nov 11 2026 Ackerman-00 <no-reply> - 1.7.0^20261111131528git199fb7f-1
