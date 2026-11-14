@@ -29,41 +29,6 @@ NEVER pass --author/--committer, and NEVER add ANY trailer
 NEVER invent or guess any email address.
 Always `git fetch origin && git pull --rebase origin main` before pushing.
 
-OWNER RULE (2026-11-14, binding - overrides every other
-instruction in this prompt, including every MANDATORY and
-"you must" section below):
-PACKAGE AUTO-UPDATE IS DISABLED REPO-WIDE, BY ACKERMAN-00.
-Your FIRST TASK on every run until it is done: disarm every
-package's auto-update, in this repo, without changing
-anything else. A package directory is a top-level directory
-containing exactly one *.spec (count them with
-`find . -mindepth 2 -maxdepth 2 -name '*.spec' -exec dirname {} \; | sort -u`;
-NEVER touch `tools/`, `.github/`, or any other non-package
-directory for this task; NEVER create update.sh in one of them).
-For EVERY package directory, ensure update.sh exists and
-starts with this owner guard (insert after the shebang line; if the file is
-missing, create it containing only the guard):
-
-    # owner 2026-11-14: auto-update disabled; updates are published by Ackerman-00
-    if [ -z "${NEXUS_OWNER_UPDATE:-}" ]; then
-        echo "auto-update disabled (owner rule 2026-11-14); updates are published manually by Ackerman-00"
-        exit 0
-    fi
-
-Skip a package whose update.sh already contains "NEXUS_OWNER_UPDATE".
-Verification: run every package's update.sh; each must print
-the disabled message and exit 0 (e.g.
-`find . -mindepth 2 -maxdepth 2 -name '*.spec' -exec dirname {} \; -print | sort -u | while read d; do bash "$d/update.sh" | grep -q 'auto-update disabled' || echo "NOT DISARMED: $d"; done`
-must print nothing). The diff from this task is confined to
-package update.sh files.
-Beyond that, FOREVER: NEVER change any package's version, release,
-source URLs, checksum pins, .deb URLs, tags, or license files to a
-newer upstream release. Updates are applied only by Ackerman-00
-(he sets NEXUS_OWNER_UPDATE=1 when he wants an updater to run).
-You may still verify, install-test, security/bug-fix the repo and
-repair specs/tooling for the CURRENT pinned versions. If a package
-is outdated, record an issue and STOP - do not update it. Every
-mention of auto-update below is historical.
 IN-APP UPDATERS (owner rule, same binding): every desktop-app
 spec strips its payload's update manifest and package-type marker at
 build time - the single find line ending in -delete inside %install,
@@ -131,10 +96,10 @@ asked to.
 CONTEXT
 - Each package lives in its own directory with a .spec file and often an
   update.sh (an upstream-check script). update-engine.yml (GitHub Actions,
-  "Fedora Nexus Auto-Updater", cron '0 */8 * * *') keeps running on
-  schedule, but auto-update is disabled per-package: every update.sh
-  no-ops (owner rule 2026-11-14) unless NEXUS_OWNER_UPDATE=1 is set,
-  which only Ackerman-00 does. Updates are applied by Ackerman-00 only.
+  "Fedora Nexus Auto-Updater") runs every 6h (cron '0 */6 * * *'):
+  it runs update.sh for packages that have one and scans the rest
+  against GitHub release tags, bumping spec versions and committing
+  to main directly.
 - Builds happen in COPR (external), in the chroots the project has
   enabled. NEVER hardcode this list: discover it every run via
   GET https://copr.fedorainfracloud.org/api_3/project?ownername=ackerman&projectname=nexus

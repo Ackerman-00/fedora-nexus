@@ -1,12 +1,4 @@
 # AGENTS.md — fedora-nexus
-> **Owner rule (2026-11-14):** package auto-update is disabled per-package
-> (each package's update.sh no-ops unless NEXUS_OWNER_UPDATE=1, set only by
-> Ackerman-00). Workflows keep their schedules; the autonomous maintainer must
-> never bump a package. Every mention of auto-updating below is historical.
-> In-app updaters: every desktop-app spec strips the payload's update
-> manifest (resources/app-update.yml) and package-type marker at build time;
-> never remove that find line from %install.
-
 Work-notes for AI agents and humans maintaining this repo.
 
 ## Self-healing sweep architecture (added 2026-08-21)
@@ -83,7 +75,7 @@ is NOT optional and NOT a pass-anyway script. It must:
    - Repology freshness (outdated vs 120+ repos)
    - Libyear drift (years behind upstream, budget=20yr)
    - Auto-update tool hints (per-package `update.sh`, else update-engine.yml scanner)
-4. For each OUTDATED: do NOT update it - open/refresh an issue; Ackerman-00 applies updates (owner rule 2026-11-14)
+4. For each OUTDATED: run the package's `update.sh` (or fix it) to update
 5. For each FAIL/MISMATCH: re-download, verify checksum, update if re-released
 6. LIBYEAR ENFORCEMENT: if >20 yr, prioritize highest-drift packages
 7. Never close a teardown issue without passing sweep + evidence

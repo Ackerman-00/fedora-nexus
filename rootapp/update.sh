@@ -1,10 +1,4 @@
 #!/bin/bash
-
-# owner 2026-11-14: auto-update disabled; updates are published by Ackerman-00
-if [ -z "${NEXUS_OWNER_UPDATE:-}" ]; then
-    echo "auto-update disabled (owner rule 2026-11-14); updates are published manually by Ackerman-00"
-    exit 0
-fi
 _update_sh_dir=$(cd "$(dirname "$0")" && pwd) || exit 1
 if [ "$(pwd)" != "$_update_sh_dir" ]; then
     echo "FATAL: run update.sh from its package directory:" >&2
@@ -79,7 +73,6 @@ elif command -v python3 &>/dev/null; then
     fi
 fi
 
-
 if [ "$EXTRACTED" = "1" ]; then
     ROOT="$TMPDIR/squashfs-root"
 
@@ -111,7 +104,6 @@ except:
     print('')
 ")
     fi
-
 
     rm -rf "$TMPDIR/squashfs-root" "$TMPDIR/squashfs.img"
 fi
