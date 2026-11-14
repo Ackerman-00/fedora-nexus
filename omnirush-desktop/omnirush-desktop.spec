@@ -6,7 +6,7 @@
 %global __brp_mangle_shebangs_exclude_from ^/opt/omnirush/.*$
 Name:           omnirush-desktop
 Version:        3.8.4
-Release:        3
+Release:        4%{?dist}
 Summary:        OmniRush.ai desktop shell (Electron)
 License:        SUSE-Freeware
 Group:          Productivity/Networking/Talk/Clients
@@ -129,6 +129,11 @@ if [ "$1" = 0 ] && [ -f %{_sysconfdir}/apparmor.d/omnirush ]; then
 fi
 
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 3.8.4-4
+- Release carried no %{?dist}, so all four chroots produced the same NEVR
+  (omnirush-desktop-3.8.4-3) and the rawhide/f43/f44/f45 packages were
+  indistinguishable in the published repos. Restore the dist tag.
+
 * Fri Nov 13 2026 Ackerman-00 <no-reply> - 3.8.4-3
 - Rebuild for the %post MIME fix: clear the stale /usr/share/mime/version marker and re-run update-mime-database.
 
