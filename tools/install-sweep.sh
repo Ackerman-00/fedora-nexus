@@ -62,6 +62,9 @@ if [ "$iex" -eq 0 ] && [ -n "$EVER" ] && [ -n "$EREL" ]; then
     grn=$(printf '%s' "$gr" | sed 's/[^0-9].*//')
     if [ "$gv" != "$EVER" ] || [ "$grn" != "$EREL" ]; then
       echo "SHADOWED_PIN_FAILED installed=$gv-$gr spec=$EVER-$EREL"
+      if [ -z "$(dnf -q repoquery --qf '%{name}' "$DNFN-$EVER-$EREL.*" 2>/dev/null | head -1)" ]; then
+        echo "PIN_NOT_IN_REPO=$EVER-$EREL"
+      fi
     else
       echo "SHADOWED_PINNED installed=$gv-$gr"
     fi
@@ -119,8 +122,16 @@ EOS
     echo "ROW $pkg $CH ${nvr:-?} PROBE-BUG $why"
     return 0
   fi
-  [ "$iex" = "0" ] || { verdict=FAIL; why="install rc=$iex"; }
-  if grep -q '^SHADOWED_PIN_FAILED' "$out"; then
+  if [ "$iex" != "0" ] && grep -q '^SHADOWED_PIN_FAILED' "$out"; then
+    lag=$(grep -m1 '^PIN_NOT_IN_REPO=' "$out" | cut -d= -f2)
+    inst=$(grep -m1 '^SHADOWED_PIN_FAILED' "$out" | sed 's/.*installed=//; s/ spec=.*//')
+    if [ -n "$lag" ] && [ "${inst%-*}" = "$ever" ]; then
+      iex=0
+      why="pin-lag installed=$inst spec=$lag (COPR has not published this NVR yet)"
+    fi
+  fi
+  [ "$iex" = "0" ] || { verdict=FAIL; why="$why install rc=$iex"; }
+  if grep -q '^SHADOWED_PIN_FAILED' "$out" && [ "$iex" != "0" ]; then
     verdict=FAIL; why="$why $(grep -m1 '^SHADOWED_PIN_FAILED' "$out" | cut -d' ' -f2-)"
   elif grep -q '^SHADOWED_PINNED' "$out"; then
     why="$why bare name resolves to a Fedora package; pinned NEVRA proved this one"
