@@ -1254,6 +1254,44 @@ def hunt_sandbox():
     return ("sandbox", "%d Electron specs, %d findings" % (n, len(findings)), "", findings)
 
 
+def hunt_files_syntax():
+    """%files takes absolute paths only, and the updater strip lives in %install.
+
+    A relative line in %files fails the whole build at spec parse time
+    ("File must begin with /") while rpmspec -P still exits 0.
+    """
+    SECTION = re.compile(r"^%(files|changelog|package|description|prep|build|install|check|"
+                         r"pre|post|postun|pretrans|posttrans|trigger|clean|conf|"
+                         r"generate_buildrequires|autopatch|autosetup)\b")
+    STRIP = "app-update.yml"
+    bad, checked, no_strip = [], 0, []
+    for sp in specs():
+        checked += 1
+        pkg = os.path.basename(os.path.dirname(sp))
+        lines = open(sp, encoding="utf-8", errors="replace").read().split("\n")
+        in_files = False
+        files_hits = []
+        install_hits = []
+        section = ""
+        for no, line in enumerate(lines, 1):
+            if SECTION.match(line):
+                section = SECTION.match(line).group(1)
+                in_files = section == "files"
+                continue
+            stripped = line.strip()
+            if in_files and stripped and not stripped.startswith(("#", "%", "/", '"')):
+                files_hits.append((no, stripped[:40]))
+            if STRIP in stripped and section == "install":
+                install_hits.append(no)
+        if files_hits:
+            bad.append((pkg, "relative %%files line %d: %s" % files_hits[0]))
+        if not install_hits:
+            no_strip.append(pkg)
+    note = "no %%install strip line: %s" % (", ".join(sorted(no_strip)) or "none")
+    return ("files-syntax", "%d specs, %d with relative %%files lines" % (checked, len(bad)),
+            note, bad)
+
+
 def hunt_pins():
     """Every pinned `# sha256:` comment must match the artifact it names.
 
@@ -1346,7 +1384,7 @@ HUNTS = (hunt_builds, hunt_network_build, hunt_chroots, hunt_copr_config, hunt_u
          hunt_official,
          hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_sources,
          hunt_pins, hunt_readme, hunt_published_nvr, hunt_probes, hunt_sandbox,
-         hunt_macros, hunt_fedora_releases, hunt_chroot_docs, hunt_slice)
+         hunt_macros, hunt_fedora_releases, hunt_chroot_docs, hunt_slice, hunt_files_syntax)
 
 
 def main():
