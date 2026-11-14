@@ -5,7 +5,7 @@
 
 Name:           opencode-desktop
 Version:        2.3.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        AI coding agent desktop app
 
 License:        MIT
@@ -126,6 +126,8 @@ install -Dm0644 usr/share/metainfo/ai.opencode.desktop.metainfo.xml \
 sed -i -e 's|<launchable type="desktop-id">ai.opencode.desktop.desktop</launchable>|<launchable type="desktop-id">opencode-desktop.desktop</launchable>|' \
     %{buildroot}%{_datadir}/metainfo/ai.opencode.desktop.metainfo.xml
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license opt/OpenCode/LICENSE.electron.txt
 %{_bindir}/opencode-desktop
@@ -135,7 +137,9 @@ sed -i -e 's|<launchable type="desktop-id">ai.opencode.desktop.desktop</launchab
 %{_datadir}/icons/hicolor/*/apps/opencode-desktop.png
 %attr(4755, root, root) /opt/OpenCode/chrome-sandbox
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2.3.0-2
+- Move the in-app updater strip into %install
+
 * Fri Nov 13 2026 Ackerman-00 <no-reply> - 2.3.0-1
 - Auto-update to upstream release 2.3.0

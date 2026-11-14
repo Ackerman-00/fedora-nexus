@@ -5,7 +5,7 @@
 
 Name:           rootapp
 Version:        0.9.163
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Root App is a new Discord alternative, designed for gaming communities and large online groups
 
 License:        LicenseRef-Proprietary
@@ -129,6 +129,8 @@ Categories=Network;InstantMessaging;
 MimeType=x-scheme-handler/rootapp;
 DESKTOP_EOF
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %{_bindir}/rootapp
 /opt/rootapp/
@@ -136,7 +138,9 @@ DESKTOP_EOF
 %{_datadir}/icons/hicolor/*/apps/rootapp.png
 %{_datadir}/pixmaps/rootapp.png
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.9.163-2
+- Move the in-app updater strip into %install
+
 * Mon Nov 09 2026 Ackerman-00 <no-reply> - 0.9.163-1
 - Auto-update to 0.9.163 via update.sh

@@ -1,6 +1,6 @@
 Name:           scenefx
 Version:        0.5
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 Summary:        A drop-in replacement for the wlroots scene API for eye-candy effects
 URL:            https://github.com/wlrfx/scenefx
@@ -56,6 +56,8 @@ MESON_OPTIONS=(
 %install
 %meson_install
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license LICENSE
 %doc README.md
@@ -65,8 +67,10 @@ MESON_OPTIONS=(
 %{_includedir}/%{name}-*/*
 %{_libdir}/pkgconfig/%{name}-*.pc
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.5-4
+- Move the in-app updater strip into %install
+
 * Tue Oct 06 2026 Ackerman-00 <no-reply> - 0.5-3
 - Reconcile BuildRequires floors with upstream meson.build (meson >= 1.3,
   libdrm >= 2.4.129, pixman-1 >= 0.43.0, wayland-server >= 1.24.0,

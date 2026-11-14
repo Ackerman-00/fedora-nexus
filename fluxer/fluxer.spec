@@ -6,7 +6,7 @@
 
 Name:           fluxer
 Version:        2026.1114.41034
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Free and open source instant messaging and VoIP platform
 
 License:        AGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND 0BSD AND LGPL-2.1-or-later AND Apache-2.0 AND IJG AND MIT AND GPL-2.0-or-later AND ISC AND OpenSSL AND (MPL-1.1 OR GPL-2.0-only OR LGPL-2.0-only)
@@ -88,6 +88,8 @@ done
 
 desktop-file-validate %{buildroot}%{_datadir}/applications/app.fluxer.FluxerDesktop.desktop || true
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license opt/Fluxer/LICENSE.electron.txt
 %doc opt/Fluxer/LICENSES.chromium.html
@@ -97,7 +99,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/app.fluxer.FluxerDesk
 %{_datadir}/icons/hicolor/*/apps/%{appid}.png
 %attr(4755, root, root) %{_libdir}/%{name}/chrome-sandbox
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2026.1114.41034-3
+- Move the in-app updater strip into %install
+
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 2026.1114.41034-2
 - Pin Source0 to the immutable versioned path so the sha256 receipt names the artifact it ships (the latest/ path is republished several times an hour)

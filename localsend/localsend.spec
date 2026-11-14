@@ -5,7 +5,7 @@
 
 Name:           localsend
 Version:        1.18.2
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        An open source cross-platform alternative to AirDrop
 
 License:        Apache-2.0
@@ -67,6 +67,8 @@ find %{buildroot}%{_libdir}/localsend_app/lib -type f -name '*.so*' \
 
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/localsend_app
@@ -74,8 +76,10 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/icons/hicolor/*/apps/localsend_app.png
 %{_libdir}/localsend_app/
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.18.2-6
+- Move the in-app updater strip into %install
+
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.18.2-5
 - Rewrite the bundled plugins' RPATH to $ORIGIN. Upstream's Flutter build
   embeds /home/runner/work/localsend/.../ephemeral and the Debian multiarch

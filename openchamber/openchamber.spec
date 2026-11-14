@@ -6,7 +6,7 @@
 
 Name:           openchamber
 Version:        2.7.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        AI coding agent workspace (Electron)
 
 License:        MIT
@@ -95,6 +95,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/openchamber.desktop |
 
 install -Dm644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/openchamber
@@ -103,7 +105,9 @@ install -Dm644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/icons/hicolor/512x512/apps/openchamber.png
 %attr(4755, root, root) /opt/openchamber/chrome-sandbox
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2.7.1-2
+- Move the in-app updater strip into %install
+
 * Fri Nov 13 2026 Ackerman-00 <no-reply> - 2.7.1-1
 - Auto-update to upstream release v2.7.1

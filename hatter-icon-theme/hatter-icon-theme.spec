@@ -2,7 +2,7 @@
 
 Name:           hatter-icon-theme
 Version:        4.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Icon theme from Mibea/Hatter
 License:        GPL-3.0-or-later
 URL:            https://github.com/Mibea/Hatter
@@ -40,11 +40,12 @@ for t in %{buildroot}%{_datadir}/icons/*/; do
     gtk-update-icon-cache -q "$t" 2>/dev/null || true
 done
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license COPYING
 %{_datadir}/icons/Hatter*/
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 for t in %{_datadir}/icons/Hatter*/; do
     gtk-update-icon-cache -q "$t" 2>/dev/null || :
@@ -55,5 +56,8 @@ for t in %{_datadir}/icons/Hatter*/; do
 done
 
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 4.0-2
+- Move the in-app updater strip into %install
+
 * Sat Nov 07 2026 Ackerman-00 <no-reply> - 4.0-1
 - Initial import

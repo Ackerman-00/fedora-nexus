@@ -1,6 +1,6 @@
 Name:           mpvpaper
 Version:        1.9
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A video wallpaper program for wlroots based Wayland compositors
 
 License:        GPL-3.0-only AND MIT
@@ -35,14 +35,18 @@ with minimal CPU usage.
 install -Dpm 0644 mpvpaper.man %{buildroot}%{_mandir}/man1/mpvpaper.1
 install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/mpvpaper
 %{_bindir}/mpvpaper-holder
 %{_mandir}/man1/mpvpaper.1*
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.9-4
+- Move the in-app updater strip into %install
+
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.9-3
 - Ship the upstream GPL-3.0 LICENSE as a license file. The package declared
   GPL-3.0-only AND MIT but installed no license text; the MIT half is the

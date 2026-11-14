@@ -1,6 +1,6 @@
 Name:           awww
 Version:        0.12.1
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Efficient animated wallpaper daemon for Wayland, controlled at runtime
 
 License:        GPL-3.0-only AND MIT AND Apache-2.0 AND MPL-2.0 AND BSD-3-Clause AND ISC
@@ -41,6 +41,8 @@ install -Dpm 0755 target/release/awww %{buildroot}%{_bindir}/awww
 install -Dpm 0755 target/release/awww-daemon %{buildroot}%{_bindir}/awww-daemon
 install -Dpm 0644 contrib/systemd/awww-daemon.service %{buildroot}%{_userunitdir}/awww-daemon.service
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license LICENSE
 %doc README.md
@@ -48,8 +50,10 @@ install -Dpm 0644 contrib/systemd/awww-daemon.service %{buildroot}%{_userunitdir
 %{_bindir}/awww-daemon
 %{_userunitdir}/awww-daemon.service
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.12.1-9
+- Move the in-app updater strip into %install
+
 * Tue Nov 10 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.12.1-8
 - Declare BuildRequires: rust-srpm-macros: the spec uses %{build_rustflags},
   which that package defines (it is not pulled in by cargo or rust).

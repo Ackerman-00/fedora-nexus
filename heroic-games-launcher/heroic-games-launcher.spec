@@ -9,7 +9,7 @@
 
 Name:           heroic-games-launcher
 Version:        2.22.4
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Open source launcher for GOG, Epic, and Amazon Games (Nexus Optimized)
 
 License:        GPL-3.0-only AND MIT AND BSD-3-Clause
@@ -88,6 +88,8 @@ find %{buildroot}/opt/Heroic -type f -name "*.a" -delete
 
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/COPYING
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license %{_licensedir}/%{name}/COPYING
 %{_bindir}/heroic
@@ -96,8 +98,10 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/COPYING
 /opt/Heroic/
 %attr(4755, root, root) /opt/Heroic/chrome-sandbox
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2.22.4-5
+- Move the in-app updater strip into %install
+
 * Thu Nov 12 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.22.4-4
 - Point the menu entry at the /usr/bin/heroic wrapper so the Wayland
   ELECTRON_OZONE_PLATFORM_HINT shim actually applies from the menu; it

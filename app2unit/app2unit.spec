@@ -4,7 +4,7 @@
 
 Name:           app2unit
 Version:        1.4.4^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Launch desktop entries or commands as systemd user units
 
 License:        GPL-3.0-only
@@ -35,6 +35,8 @@ system stored on an SSD, overhead can be as short as ~0.03s.
 %install
 %make_install prefix=%{_prefix}
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license LICENSE
 %doc README.md
@@ -47,8 +49,10 @@ system stored on an SSD, overhead can be as short as ~0.03s.
 %{_bindir}/app2unit-term-service
 %{_mandir}/man1/app2unit.1*
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.4.4^20260801195144git47e23ec-3
+- Move the in-app updater strip into %install
+
 * Wed Nov 11 2026 Ackerman-00 <no-reply> - 1.4.4^20260801195144git47e23ec-2
 - Declare the runtime tools the shipped script calls: xdg-terminal-exec is the
   -T handler and the command exits 1 without it (app2unit:1491), xdg-utils

@@ -6,7 +6,7 @@
 
 Name:           opencad-studio
 Version:        2026.45
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source 2D/3D CAD with native DWG/DXF support
 
 License:        GPL-3.0-only
@@ -80,6 +80,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{appid}.desktop
 
 install -Dm0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/opencad-studio
@@ -88,7 +90,6 @@ install -Dm0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/icons/hicolor/*/apps/%{appid}.png
 %{_datadir}/metainfo/%{appid}.metainfo.xml
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
@@ -96,5 +97,8 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2026.45-2
+- Move the in-app updater strip into %install
+
 * Sun Nov 08 2026 Ackerman-00 <no-reply> - 2026.45-1
 - Auto-update to upstream release v2026.45

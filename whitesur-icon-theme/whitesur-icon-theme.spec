@@ -2,7 +2,7 @@
 
 Name:           whitesur-icon-theme
 Version:        2026.09.10
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        WhiteSur macOS-like icon theme
 License:        GPL-3.0-or-later
 URL:            https://github.com/vinceliuice/WhiteSur-icon-theme
@@ -26,16 +26,20 @@ WhiteSur macOS-like icon theme (2026-09-10 release), packaged from upstream git.
 install -d -m 0755 %{buildroot}%{_datadir}/icons
 bash ./install.sh --dest %{buildroot}%{_datadir}/icons --theme all 2>&1 || bash ./install.sh --dest %{buildroot}%{_datadir}/icons 2>&1
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license COPYING
 %{_datadir}/icons/WhiteSur*
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 gtk-update-icon-cache -q %{_datadir}/icons/WhiteSur 2>/dev/null || :
 # secondary colors have their own cache
 for t in %{_datadir}/icons/WhiteSur*; do gtk-update-icon-cache -q "$t" 2>/dev/null || :; done
 
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2026.09.10-2
+- Move the in-app updater strip into %install
+
 * Sat Nov 07 2026 Ackerman-00 <no-reply> - 2026.09.10-1
 - Initial import

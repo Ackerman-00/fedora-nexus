@@ -6,7 +6,7 @@
 
 Name:           astal-libs
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Astal libraries
 
 License:        LGPL-2.1-only
@@ -113,6 +113,8 @@ rm -rf %{buildroot}%{_datadir}/consolefonts/cava.psf
 rm -rf %{buildroot}%{_libdir}/pkgconfig/libcava.pc
 rm -rf %{buildroot}%{_libdir}/libcava.so*
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license LICENSE
 %config(noreplace) /etc/pam.d/astal-auth
@@ -169,7 +171,6 @@ rm -rf %{buildroot}%{_libdir}/libcava.so*
 %{_libdir}/libastal-workspace.so.0{,.*}
 %{_libdir}/libquarrel.so.0{,.*}
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 
@@ -209,5 +210,8 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_libdir}/pkgconfig/quarrel-0.1.pc
 
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0^20261108102027gitb7aaf4c-2
+- Move the in-app updater strip into %install
+
 * Sun Nov 08 2026 Ackerman-00 <no-reply> - 0^20261108102027gitb7aaf4c-1
 - Nightly sync with upstream main branch (Commit: b7aaf4c)

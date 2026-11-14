@@ -1,6 +1,6 @@
 Name:           starship
 Version:        1.27.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Minimal, blazing-fast, and customizable prompt for any shell (Nexus Optimized)
 
 License:        ISC
@@ -40,6 +40,8 @@ install -d -m 0755 %{buildroot}%{fish_completions_dir}
 %{buildroot}%{_bindir}/starship completions zsh > %{buildroot}%{zsh_completions_dir}/_starship
 %{buildroot}%{_bindir}/starship completions fish > %{buildroot}%{fish_completions_dir}/starship.fish
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license LICENSE
 %{_bindir}/starship
@@ -47,8 +49,10 @@ install -d -m 0755 %{buildroot}%{fish_completions_dir}
 %{zsh_completions_dir}/_starship
 %{fish_completions_dir}/starship.fish
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.27.0-5
+- Move the in-app updater strip into %install
+
 * Tue Nov 10 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.27.0-4
 - Drop the zlib-sirocco feature: it pulls adler32furious, which does not
   build on the F43 toolchain (AVX-512 VNNI intrinsic signature mismatch).

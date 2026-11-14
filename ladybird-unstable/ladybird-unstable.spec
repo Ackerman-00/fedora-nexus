@@ -8,7 +8,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        27.20261114gitfb7c852%{?dist}
+Release:        28.20261114gitfb7c852%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -153,6 +153,8 @@ rm -f %{buildroot}/opt/ladybird/lib64/libicu*.so*
 %endif
 python3 %{SOURCE6} %{buildroot}/opt/ladybird/lib64
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license LICENSE
 %if 0%{?fedora} < 45
@@ -165,7 +167,6 @@ python3 %{SOURCE6} %{buildroot}/opt/ladybird/lib64
 %{_datadir}/icons/hicolor/scalable/apps/org.ladybird.Ladybird.svg
 %{_metainfodir}/org.ladybird.Ladybird.metainfo.xml
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
@@ -173,6 +174,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.0.0-28.20261114gitfb7c852
+- Move the in-app updater strip into %install
+
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.0.0-27.20261114gitfb7c852
 - Refresh snapshot 7824369 -> fb7c852 (upstream commit dated 2026-11-14T01:13:43Z); build-system
   files reviewed before the bump, COPR build verified after it

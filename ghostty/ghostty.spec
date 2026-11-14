@@ -12,7 +12,7 @@
 
 Name:           ghostty
 Version:        %{ghostty_version}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A fast, feature-rich, and cross-platform terminal emulator
 
 License:        MIT
@@ -85,6 +85,8 @@ rm -rf %{buildroot}%{_datadir}/doc
 
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/ghostty
@@ -116,8 +118,10 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 %{_datadir}/vim/
 %{_datadir}/zsh/vendor-completions/_ghostty
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.4.0-2
+- Move the in-app updater strip into %install
+
 * Sun Nov 08 2026 Ackerman-00 <no-reply> - 1.4.0-1
 - Update to upstream 1.4.0 (PPA release 1.4.0-0-ppa2, trixie amd64 deb; the
   24.04 asset is no longer published for 1.4.0); pin Source0 sha256; add

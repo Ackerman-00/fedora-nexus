@@ -2,7 +2,7 @@
 
 Name:           python-mprisify
 Version:        1.0.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        MPRIS D-Bus interface library for Python
 
 License:        LGPL-3.0-only
@@ -45,11 +45,15 @@ class LowercaseStrEnum(StrEnum):\
 
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files -f %{pyproject_files}
 %license %{_licensedir}/%{name}/LICENSE
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.0.1-5
+- Move the in-app updater strip into %install
+
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.0.1-4
 - Ship the upstream LGPL-3.0 LICENSE (Source1, same v1.0.1 tag); the GitLab
   sdist carries no license text.

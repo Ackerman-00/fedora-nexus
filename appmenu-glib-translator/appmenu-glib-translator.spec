@@ -6,7 +6,7 @@
 
 Name:           appmenu-glib-translator
 Version:        25.04^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        appmenu-glib-translator
 
 License:        LGPL-3.0-or-later
@@ -45,6 +45,8 @@ for h in exporter importer; do
       %{buildroot}%{_includedir}/%{name}/$h/$h.h
 done
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license LICENSE
 %{_libdir}/girepository-1.0/AppmenuGLibTranslator-25.04.typelib
@@ -59,7 +61,9 @@ done
 %{_libdir}/libappmenu-glib-translator.so
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 25.04^20261113221544gitfa064d8-2
+- Move the in-app updater strip into %install
+
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 25.04^20261113221544gitfa064d8-1
 - Nightly sync with upstream main branch (Commit: fa064d8)

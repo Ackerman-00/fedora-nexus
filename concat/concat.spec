@@ -5,7 +5,7 @@
 
 Name:           concat
 Version:        0.2.11
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Free and open source video editor (CapCut alternative)
 
 License:        AGPL-3.0-or-later
@@ -52,6 +52,8 @@ install -Dm0644 usr/share/icons/hicolor/256x256/apps/concat.png \
 
 desktop-file-validate %{buildroot}%{_datadir}/applications/concat.desktop || true
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license usr/share/doc/concat/LICENSE
 %doc usr/share/doc/concat/THIRD_PARTY_NOTICES.md
@@ -60,7 +62,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/concat.desktop || tru
 %{_datadir}/applications/concat.desktop
 %{_datadir}/icons/hicolor/256x256/apps/concat.png
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.2.11-2
+- Move the in-app updater strip into %install
+
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.2.11-1
 - Auto-update to upstream release v0.2.11

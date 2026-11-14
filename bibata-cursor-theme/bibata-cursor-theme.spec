@@ -1,6 +1,6 @@
 Name:           bibata-cursor-theme
 Version:        2.0.7
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open source, compact, and material designed cursor set
 
 License:        GPL-3.0-or-later
@@ -24,11 +24,15 @@ tar xf %{SOURCE0}
 install -d -m 0755 %{buildroot}%{_datadir}/icons
 mv Bibata-* %{buildroot}%{_datadir}/icons/
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license LICENSE
 %{_datadir}/icons/Bibata-*
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2.0.7-2
+- Move the in-app updater strip into %install
+
 * Wed Jul 29 2026 Ackerman-00 <no-reply> - 2.0.7-1
 - Initial package

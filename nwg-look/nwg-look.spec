@@ -5,7 +5,7 @@ Version:        1.2.1
 %gometa
 
 Name:           nwg-look
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        GTK3 settings editor adapted to work in the wlroots environment (Nexus Optimized)
 
 License:        MIT
@@ -41,6 +41,8 @@ make build
 
 %make_install
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license LICENSE
 %doc README.md
@@ -49,8 +51,10 @@ make build
 %{_datadir}/nwg-look/
 %{_datadir}/pixmaps/nwg-look.svg
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.2.1-3
+- Move the in-app updater strip into %install
+
 * Thu Oct 22 2026 Ackerman-00 <no-reply> - 1.2.1-2
 - Floor golang at 1.26, the version go.mod declares
 * Wed Oct 14 2026 Nexus Auto-Updater <bot@github.com> - 1.2.1-1

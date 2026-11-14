@@ -2,7 +2,7 @@
 
 Name:           logseq
 Version:        2.0.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A privacy-first, local-first platform for knowledge management and collaboration
 
 License:        AGPL-3.0-only
@@ -86,6 +86,8 @@ install -m644 %{SOURCE1} %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/logs
 
 install -Dpm 0644 %{SOURCE2} %{buildroot}%{_licensedir}/%{name}/LICENSE.md
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %defattr(-,root,root,-)
 %license %{_licensedir}/%{name}/LICENSE.md
@@ -95,8 +97,10 @@ install -Dpm 0644 %{SOURCE2} %{buildroot}%{_licensedir}/%{name}/LICENSE.md
 %{_datadir}/applications/logseq-app.desktop
 %{_datadir}/icons/hicolor/512x512/apps/logseq.png
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2.0.2-4
+- Move the in-app updater strip into %install
+
 * Wed Oct 28 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.0.2-3
 - Ship the desktop entry as logseq-app.desktop. The rename was pushed
   without a Release bump, so 2.0.2-2 holders never received it.

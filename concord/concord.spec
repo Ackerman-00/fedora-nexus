@@ -3,7 +3,7 @@
 
 Name:           concord
 Version:        2.7.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Feature-rich TUI client for Discord
 License:        GPL-3.0-only
 URL:            https://github.com/chojs23/concord
@@ -50,6 +50,8 @@ cargo build --release --locked
 %install
 install -Dm755 target/release/concord %{buildroot}%{_bindir}/concord
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license LICENSE
 %doc README.md
@@ -58,8 +60,10 @@ install -Dm755 target/release/concord %{buildroot}%{_bindir}/concord
 %doc docs/theme-options.md
 %{_bindir}/concord
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2.7.0-4
+- Move the in-app updater strip into %install
+
 * Tue Nov 10 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 2.7.0-3
 - Declare BuildRequires: rust-srpm-macros: the spec uses %{build_rustflags},
   which that package defines (it is not pulled in by cargo or rust).

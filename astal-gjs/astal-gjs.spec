@@ -9,7 +9,7 @@
 
 Name:           astal-gjs
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Astal GJS package
 
 License:        LGPL-2.1-only
@@ -46,6 +46,8 @@ Development files for %{name}.
 %install
 %meson_install
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license LICENSE
 %dir %{_datadir}/astal
@@ -54,7 +56,9 @@ Development files for %{name}.
 %files devel
 %{_libdir}/pkgconfig/%{name}.pc
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0^20261101003451git7b4d376-2
+- Move the in-app updater strip into %install
+
 * Sat Nov 07 2026 Ackerman-00 <no-reply> - 0^20261101003451git7b4d376-1
 - Pin to 7b4d376: upstream deprecated and deleted the GJS bindings in 9b67eb5; update.sh holds this pin

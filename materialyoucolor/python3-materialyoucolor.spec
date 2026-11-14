@@ -1,6 +1,6 @@
 Name:           python3-materialyoucolor
 Version:        3.0.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Material You color generation algorithms (pure Python + C++ quantizer)
 
 License:        MIT
@@ -35,11 +35,15 @@ pybind11 extension for speed, with a pure-Python fallback.
 %pyproject_install
 %pyproject_save_files materialyoucolor
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files -f %{pyproject_files}
 %doc README.md
 %license LICENSE
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 3.0.4-2
+- Move the in-app updater strip into %install
+
 * Sat Aug 08 2026 Ackerman-00 <no-reply> - 3.0.4-1
 - Initial package (builds the C++ quantizer via pybind11)

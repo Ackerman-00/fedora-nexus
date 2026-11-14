@@ -2,7 +2,7 @@
 
 Name:           libcava
 Version:        1.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Fork of CAVA to build it as a shared library
 
 License:        MIT
@@ -47,6 +47,8 @@ Headers and pkg-config file for developing with libcava.
 %install
 %meson_install
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license LICENSE
 %doc README.md
@@ -57,7 +59,9 @@ Headers and pkg-config file for developing with libcava.
 %{_includedir}/cava/
 %{_libdir}/pkgconfig/libcava.pc
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.0.0-2
+- Move the in-app updater strip into %install
+
 * Mon Jul 20 2026 Ackerman-00 <no-reply> - 1.0.0-1
 - Update to 1.0.0

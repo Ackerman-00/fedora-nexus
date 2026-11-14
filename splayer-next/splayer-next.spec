@@ -7,7 +7,7 @@
 
 Name:           splayer-next
 Version:        1.2.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Cross-platform desktop music player with rich lyric support (Nexus Optimized)
 
 License:        AGPL-3.0-only
@@ -93,6 +93,8 @@ chmod 0755 %{buildroot}%{_bindir}/splayer-next
 
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/splayer-next
@@ -101,8 +103,10 @@ install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 /opt/SPlayer-Next/
 %attr(4755, root, root) /opt/SPlayer-Next/chrome-sandbox
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.2.0-3
+- Move the in-app updater strip into %install
+
 * Sat Oct 24 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.2.0-2
 - Refresh the sha256 pin and both bundled() versions from the 1.2.0 payload:
   the auto-update left the pin and bundled(electron) at their 1.1.0 values

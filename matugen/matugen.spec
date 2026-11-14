@@ -2,7 +2,7 @@
 
 Name:           matugen
 Version:        4.2.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Material You color generation tool (Nexus Optimized)
 
 License:        GPL-2.0-or-later AND MIT AND Apache-2.0 AND Zlib
@@ -33,12 +33,16 @@ cargo build --release --locked
 %install
 install -Dpm0755 target/release/matugen -t %{buildroot}%{_bindir}/
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license LICENSE
 %{_bindir}/matugen
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 4.2.0-6
+- Move the in-app updater strip into %install
+
 * Tue Nov 10 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 4.2.0-5
 - Declare BuildRequires: rust-srpm-macros: the spec uses %{build_rustflags},
   which that package defines (it is not pulled in by cargo or rust).

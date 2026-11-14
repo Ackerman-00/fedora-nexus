@@ -2,7 +2,7 @@
 
 Name:           python-ytmusicapi
 Version:        1.12.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Unofficial API for YouTube Music
 
 License:        MIT
@@ -32,12 +32,16 @@ dependency of mixtapes.
 %pyproject_save_files ytmusicapi
 install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files -f %{pyproject_files}
 %license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/ytmusicapi
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.12.3-3
+- Move the in-app updater strip into %install
+
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.12.3-2
 - Ship the MIT LICENSE from the sdist as a proper license file.
 * Wed Sep 16 2026 Ackerman-00 <no-reply> - 1.12.3-1

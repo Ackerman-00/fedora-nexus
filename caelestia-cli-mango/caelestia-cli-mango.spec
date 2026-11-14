@@ -7,7 +7,7 @@
 
 Name:           caelestia-cli-mango
 Version:        %{pyver}^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The main control script for the Caelestia dotfiles (MangoWM)
 
 License:        GPL-3.0-only
@@ -62,6 +62,8 @@ sed -i 's/\["todoist"\]/["todoist.desktop"]/' src/caelestia/subcommands/toggle.p
 %pyproject_install
 install -Dpm 0644 completions/caelestia.fish %{buildroot}%{_datadir}/fish/vendor_completions.d/caelestia.fish
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %{_bindir}/caelestia
 %{python3_sitelib}/caelestia/
@@ -70,8 +72,10 @@ install -Dpm 0644 completions/caelestia.fish %{buildroot}%{_datadir}/fish/vendor
 %doc README.md
 %license LICENSE
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2.0.0^20260811125152gitbe54856-3
+- Move the in-app updater strip into %install
+
 * Wed Aug 12 2026 Ackerman-00 <no-reply> - 2.0.0^20260811125152gitbe54856-2
 - Require dbus-tools: subcommands/record.py invokes dbus-send to reveal
   files in the file manager (org.freedesktop.FileManager1)

@@ -2,7 +2,7 @@
 
 Name:           python-yt-dlp-ejs
 Version:        0.8.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        External JavaScript runtimes for yt-dlp
 
 License:        Unlicense AND MIT AND ISC
@@ -39,11 +39,15 @@ repository as a dependency of mixtapes.
 
 install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files -f %{pyproject_files}
 %license %{_licensedir}/%{name}/LICENSE
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.8.0-7
+- Move the in-app updater strip into %install
+
 * Tue Oct 27 2026 Ackerman-00 <no-reply> - 0.8.0-6
 - Recommend nodejs: the package ships a JavaScript bundle that only runs on
   an external JS runtime, so without one the plugin is silently inert

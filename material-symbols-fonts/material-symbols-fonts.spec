@@ -4,7 +4,7 @@
 
 Name:           material-symbols-fonts
 Version:        4.0.0^%{snapdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Material Symbols variable icon font by Google
 License:        Apache-2.0
 URL:            https://github.com/google/material-design-icons
@@ -31,11 +31,15 @@ install -m 0644 -p "%{SOURCE1}" %{buildroot}%{_datadir}/fonts/%{name}/MaterialSy
 install -m 0644 -p "%{SOURCE2}" %{buildroot}%{_datadir}/fonts/%{name}/MaterialSymbolsSharp.ttf
 install -Dpm 0644 %{SOURCE3} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license %{_licensedir}/%{name}/LICENSE
 %{_datadir}/fonts/%{name}
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 4.0.0^20261023021843git10ecc14-2
+- Move the in-app updater strip into %install
+
 * Fri Oct 23 2026 Ackerman-00 <no-reply> - 4.0.0^20261023021843git10ecc14-1
 - Nightly sync with upstream master branch (Commit: 10ecc14)

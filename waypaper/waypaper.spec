@@ -1,6 +1,6 @@
 Name:           waypaper
 Version:        2.9
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        GUI wallpaper manager for Wayland and Xorg Linux systems
 
 License:        GPL-3.0-only AND MIT AND BSD-2-Clause
@@ -59,6 +59,8 @@ install -Dpm 0644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 cp -a screeninfo %{buildroot}%{python3_sitelib}/
 cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/waypaper
@@ -72,8 +74,10 @@ cp -a imageio_ffmpeg %{buildroot}%{python3_sitelib}/
 %{_mandir}/man1/waypaper.1.gz
 %{_datadir}/systemd/user/waypaperd.service
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2.9-4
+- Move the in-app updater strip into %install
+
 * Wed Nov 11 2026 Ackerman-00 <no-reply> - 2.9-3
 - Require libdrm: the vendored screeninfo 0.8.1 dlopens libdrm
   (screeninfo/enumerators/drm.py:13) to enumerate monitors on a pure Wayland

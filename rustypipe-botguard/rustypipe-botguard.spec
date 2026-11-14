@@ -2,7 +2,7 @@
 
 Name:           rustypipe-botguard
 Version:        0.1.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        YouTube Botguard challenge solver for PO token generation
 
 License:        MIT
@@ -30,12 +30,16 @@ tar xJf %{SOURCE0}
 install -Dpm0755 rustypipe-botguard -t %{buildroot}%{_bindir}
 install -Dpm0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/rustypipe-botguard
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.1.2-3
+- Move the in-app updater strip into %install
+
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.1.2-2
 - Ship the upstream MIT LICENSE (Source1, same v0.1.2 tag); the release
   tarball contains only the binary.

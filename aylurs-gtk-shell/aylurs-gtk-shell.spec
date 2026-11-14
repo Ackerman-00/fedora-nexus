@@ -1,6 +1,6 @@
 Name:           aylurs-gtk-shell
 Version:        3.1.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A customizable and extensible shell
 
 License:        GPL-3.0-or-later
@@ -43,6 +43,8 @@ tar -xzf %{SOURCE1} -C node_modules/gnim --strip=1
 %install
 %meson_install
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license LICENSE
 %doc README.md
@@ -50,8 +52,10 @@ tar -xzf %{SOURCE1} -C node_modules/gnim --strip=1
 %{_bindir}/ags
 %{_datadir}/ags/
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 3.1.2-3
+- Move the in-app updater strip into %install
+
 * Mon Oct 19 2026 Ackerman-00 <no-reply> - 3.1.2-2
 - Add the runtime Astal/libadwaita Requires the shipped JS imports: the gtk4
   entry point needs gi://Astal?version=4.0 (astal-gtk4) and gi://Adw

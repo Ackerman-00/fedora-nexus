@@ -7,7 +7,7 @@
 
 Name:           stoat-desktop
 Version:        1.5.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Open source, user-first chat platform desktop client
 
 License:        AGPL-3.0-only AND MIT AND BSD-2-Clause
@@ -77,6 +77,8 @@ chmod 0755 %{buildroot}%{_bindir}/stoat-desktop
 
 install -Dpm 0644 %{SOURCE4} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/stoat-desktop
@@ -86,8 +88,10 @@ install -Dpm 0644 %{SOURCE4} %{buildroot}%{_licensedir}/%{name}/LICENSE
 /opt/Stoat/
 %attr(4755, root, root) /opt/Stoat/chrome-sandbox
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.5.4-3
+- Move the in-app updater strip into %install
+
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.5.4-2
 - Ship the upstream AGPL-3.0 LICENSE (Source4, same v1.5.4 tag as the zip
   payload, which contains no license text).

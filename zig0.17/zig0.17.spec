@@ -2,7 +2,7 @@
 
 Name:           zig0.17
 Version:        0.17.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Zig compiler and toolchain, 0.17 series
 License:        MIT
 URL:            https://ziglang.org/
@@ -33,13 +33,17 @@ printf '#!/bin/sh\nexec %s/zig "$@"\n' \
     %{_libdir}/zig/%{version} > %{buildroot}%{_bindir}/%{name}
 chmod 0755 %{buildroot}%{_bindir}/%{name}
 
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %files
 %license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/%{name}
 %{_libdir}/zig/%{version}
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.17.1-2
+- Move the in-app updater strip into %install
+
 * Tue Nov 03 2026 Nexus Auto-Updater <bot@github.com> - 0.17.1-1
 - Update to the 0.17.1 Zig toolchain release
   (sha256: 3581863e3cbcfd0fce0efc682ce7e9e93da96668a977791d356a26d2a7e9b17a)
