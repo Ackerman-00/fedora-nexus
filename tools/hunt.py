@@ -501,15 +501,26 @@ def vendor_version(pkg, txt):
         d = get_json("https://opencode.ai/update/api/latest/desktop/opencode/", 45) or {}
         return d.get("version"), "update feed /update/api/latest/desktop/opencode/"
     if pkg == "fluxer":
-        url = (re.search(r"^Source0:\s*(\S+)", txt, re.M) or [None, ""])[1]
-        if not url:
+        base = (re.search(r"^Source0:\s*(\S+/linux/x64)/%\{version\}", txt, re.M) or [None, ""])[1]
+        if not base:
             return None, ""
+        # vendor host rejects a non-browser UA
+        head = subprocess.run(["curl", "-sIL", "-A", "Mozilla/5.0",
+                               "https://api.fluxer.app/dl/desktop/stable/linux/x64/latest/rpm"],
+                              capture_output=True, text=True, timeout=60).stdout
+        m = (re.search(r"Fluxer-([0-9.]+)-linux", head)
+             or re.search(r"^x-fluxer-version:\s*(\S+)", head, re.M | re.I)
+             or re.search(r"/linux/x64/([0-9][0-9.]*)/rpm", head))
+        if not m:
+            return None, "api.fluxer.app latest HEAD"
+        served = m.group(1).rstrip("\r")
         with tempfile.TemporaryDirectory() as tmp:
             path = os.path.join(tmp, "fluxer.rpm")
-            subprocess.run(["curl", "-fsSL", "-A", UA["User-Agent"], "-o", path, url], timeout=600)
+            subprocess.run(["curl", "-fsSL", "-A", "Mozilla/5.0", "-o", path,
+                            "%s/%s/rpm" % (base, served)], timeout=900)
             out = subprocess.run(["rpm", "-qp", "--qf", "%{VERSION}", path],
                                  capture_output=True, text=True, timeout=60)
-            return (out.stdout.strip() or None), "api.fluxer.app latest rpm -> rpm -qp"
+        return (out.stdout.strip() or served), "api.fluxer.app HEAD -> rpm -qp (internal version)"
     if pkg == "gpu-screen-recorder":
         html = get_text("https://git.dec05eba.com/gpu-screen-recorder/") or ""
         tags = re.findall(r"tag/\?h=(\d+(?:\.\d+)+)", html)
