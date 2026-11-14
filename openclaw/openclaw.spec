@@ -5,7 +5,7 @@
 
 Name:           openclaw
 Version:        2026.11.2
-Release:        0%{?dist}
+Release:        1%{?dist}
 Summary:        Your AI assistant, running on your own devices and chats
 License:        MIT
 Group:          Applications/Utility
@@ -13,7 +13,7 @@ URL:            https://github.com/openclaw/openclaw
 Source0:        https://github.com/openclaw/openclaw/releases/download/v%{version}/OpenClaw-%{version}-amd64.deb
 # sha256:  190d8990e78caf36ef03089a43477897f75932f53287c8cd14a8f9cdd9eda5cb
 Source1:        openclaw-rpmlintrc
-Source2:        openclaw-LICENSE
+Source2:        https://raw.githubusercontent.com/openclaw/openclaw/v%{version}/LICENSE
 ExclusiveArch:  x86_64
 
 BuildRequires:  binutils
@@ -43,8 +43,6 @@ Recommends:     xdg-desktop-portal
 Recommends:     xdg-desktop-portal-gtk
 Recommends:     gstreamer1-plugins-good
 Recommends:     gstreamer1-plugins-bad-free
-# NOTE: gstreamer1-libav (needed for some media formats) is not in Fedora proper;
-# enable RPM Fusion free for it. Weak-dep era: it would resolve silently if present.
 
 %description
 OpenClaw is an open-source personal AI assistant that runs on your own computer
@@ -105,7 +103,5 @@ fi
 %{_datadir}/icons/hicolor/*/apps/openclaw-desktop.png
 
 %changelog
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2026.11.2-0
-- Initial package: repackage the upstream prebuilt amd64 .deb (GTK3/WebKitGTK
-  app plus bundled Bun runtime) as an RPM. Licensed MIT (OpenClaw Foundation);
-  LICENSE shipped as %%license from the committed openclaw-LICENSE.
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2026.11.2-1
+- initial release; upstream prebuilt amd64 .deb payload repacked as-is
