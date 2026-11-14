@@ -646,13 +646,25 @@ def hunt_upstream():
             note, findings)
 
 
+def pinned_label(sp, fallback):
+    """What the spec actually pins: the short commit for git snapshots, else the version."""
+    try:
+        txt = open(sp, encoding="utf-8", errors="replace").read()
+    except OSError:
+        return fallback
+    m = re.search(r"^%global\s+commit\s+(\S+)", txt, re.M)
+    if m and "%" not in m.group(1):
+        return m.group(1)[:7]
+    return fallback
+
+
 def upstream_rows():
     """Per-package relay lines: the pin, the live ref, and the command behind it."""
     date = time.strftime("%Y-%m-%d", time.gmtime())
     rows = []
     for sp in specs():
         pkg, ref, ok, cmd, err = probe_safe(sp)
-        ver = strip_packaging(resolve_version(sp, spec_field(sp, "Version")).lstrip("v"))
+        ver = pinned_label(sp, strip_packaging(resolve_version(sp, spec_field(sp, "Version")).lstrip("v")))
         if ok is None:
             rows.append("upstream: %s UNPROBED-%s | %s | %s" % (pkg, err.replace(" ", "-"), cmd or "-", date))
         elif ok == "held":

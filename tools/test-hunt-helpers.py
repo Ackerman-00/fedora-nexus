@@ -120,6 +120,17 @@ check("get_text reports empty after every attempt fails", hunt.get_text("https:/
 check("get_text stops at the attempt cap", _calls["n"], 3)
 hunt.urllib.request.urlopen = _real_urlopen
 
+with _tf.TemporaryDirectory() as _d:
+    _p = os.path.join(_d, "p.spec")
+    open(_p, "w").write("Name: p\n%global commit abcdef1234567890\nVersion: 0.0.0\n")
+    _label = hunt.pinned_label(_p, "0.0.0")
+check("pinned label reports the pinned commit", _label, "abcdef1")
+with _tf.TemporaryDirectory() as _d:
+    _p = os.path.join(_d, "p.spec")
+    open(_p, "w").write("Name: p\nVersion: 1.2.3\n")
+    _label = hunt.pinned_label(_p, "1.2.3")
+check("pinned label falls back to the version", _label, "1.2.3")
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)
