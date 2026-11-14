@@ -77,6 +77,12 @@ with _tf.TemporaryDirectory() as _d:
     _stamp = hunt.pinned_epoch(_p)
 check("8-digit gitdate parses at midnight", _stamp, _cal.timegm(_time.strptime("20261113", "%Y%m%d")))
 
+_rx = hunt.asset_regex("OpenClaw-%{version}-amd64.deb")
+check("asset regex accepts the release asset", bool(_rx.match("OpenClaw-2026.11.2-amd64.deb")), True)
+check("asset regex rejects another platform", bool(_rx.match("OpenClaw-2026.11.3-arm64.dmg")), False)
+check("asset regex handles a literal version", bool(hunt.asset_regex(
+    "omnirush-linux-amd64-3.8.4.deb").match("omnirush-linux-amd64-3.8.4.deb")), True)
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)

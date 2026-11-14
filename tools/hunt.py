@@ -442,6 +442,31 @@ def latest_release(forge, owner, repo):
     return None
 
 
+def asset_regex(asset_pattern):
+    """The release-asset name a spec's Source0 asks for, macro-aware."""
+    parts = re.split(r"%\{[a-z_]+\}", asset_pattern)
+    return re.compile("^" + ".+".join(re.escape(p) for p in parts) + "$")
+
+
+def github_asset_release(owner, repo, asset_pattern):
+    """Newest GitHub release whose assets carry the artifact this spec packs.
+
+    A release that ships only other platforms (a macOS-only tag) is not the
+    upstream of a package whose Source0 is a Linux .deb: the newest release
+    with that asset is. Returns (tag, command) or (None, command).
+    """
+    rx = asset_regex(asset_pattern)
+    cmd = "github %s/%s releases (newest carrying %s)" % (owner, repo, asset_pattern)
+    releases = get_json("https://api.github.com/repos/%s/%s/releases?per_page=30" % (owner, repo), 45) or []
+    for rel in releases:
+        if rel.get("draft") or rel.get("prerelease"):
+            continue
+        for asset in rel.get("assets") or []:
+            if rx.match(asset.get("name", "")):
+                return rel.get("tag_name"), cmd
+    return None, cmd
+
+
 def feed_url_from_update_sh(text):
     """The vendor yml feed an update.sh declares, if any."""
     m = re.search(r'^\s*FEED="?(https?://[^"\s]+)"?', text, re.M)
@@ -557,6 +582,13 @@ def probe_upstream(sp):
                             % (owner, repo, hours, age), "")
         return (pkg, head[:7], head == commit,
                 "git ls-remote %s/%s HEAD" % (owner, repo), "")
+    asset = re.search(r"https://github\.com/([^/\s]+)/([^/\s]+)/releases/download/[^/\s]+/(\S+)", txt)
+    if asset and forge == "github":
+        atag, acmd = github_asset_release(asset.group(1), asset.group(2), asset.group(3))
+        if atag:
+            aref = strip_packaging(str(atag).lstrip("v"))
+            ok = not (re.search(r"\d", ver) and re.search(r"\d", aref) and not vge(ver, aref))
+            return pkg, aref, ok, acmd, ""
     tag = latest_release(forge, owner, repo)
     if not tag:
         return pkg, "", None, "latest_release %s/%s" % (owner, repo), "no release seen"
