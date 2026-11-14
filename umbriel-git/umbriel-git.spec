@@ -1,12 +1,12 @@
-%global commit          33a782dc750e78f0ef2d21fd9d3df33229ae06f9
+%global commit          2cc809f88c7af978a15ac6d0bafc256e6b468d7d
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261113145120
+%global gitdate         20261114153627
 
 %global _lto_cflags %{nil}
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -114,11 +114,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.1.0^20261113145120git33a782d-2
-- Declare pkgconfig(libdisplay-info) on the fedora-43 branch: upstream
-  requires it unconditionally (meson.build dependency('libdisplay-info')),
-  and the old spec left the F43 build resolving it only transitively from
-  wlroots-devel's generated Requires.
-
-* Fri Nov 13 2026 Ackerman-00 <no-reply> - 0.1.0^20261113145120git33a782d-1
-- Nightly sync with upstream main branch (Commit: 33a782d)
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.1.0^20261114153627git2cc809f-1
+- Nightly sync with upstream main branch (Commit: 2cc809f)
