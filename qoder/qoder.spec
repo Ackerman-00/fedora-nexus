@@ -3,15 +3,15 @@
 %global __provides_exclude_from ^/opt/Qoder/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/Qoder/.*$
 Name:           qoder
-Version:        0.5.7
-# sha256: cbfb8e8e01c85246b34210a26e33df29db3ec17d01b0c5e389f0f85746542421
-Release:        2%{?dist}
+Version:        0.5.11
+# sha256: b16bc1e62c5a7c2c8efad6f4b17897805280f07bcd1d973129261a0fb42936bb
+Release:        1%{?dist}
 Epoch:          1
 Summary:        Agent workbench for human and AI software teams
 License:        SUSE-Freeware
 Group:          Development/Tools/IDE
 URL:            https://qoder.com
-Source0:        https://download.qoder.com.cn/qoder-app/releases/0.5.7/Qoder-linux-amd64.deb
+Source0:        https://download.qoder.com.cn/qoder-app/releases/0.5.11/Qoder-linux-amd64.deb
 Source1:        qoder-rpmlintrc
 BuildRequires:  binutils
 BuildRequires:  desktop-file-utils
@@ -146,8 +146,5 @@ fi
 /opt/Qoder/*
 
 %changelog
-* Fri Nov 13 2026 Ackerman-00 <no-reply> - 0.5.7-2
-- Rebuild for the %post MIME fix: clear the stale /usr/share/mime/version marker and re-run update-mime-database.
-
-* Wed Nov 11 2026 Ackerman-00 <no-reply> - 0.5.7-1
-- Update to upstream release 0.5.7
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.5.11-1
+- Update to upstream release 0.5.11
