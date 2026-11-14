@@ -8,7 +8,7 @@
 Name:               zen-browser
 Epoch:              2
 Version:        1.24.2b
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPL-2.0
@@ -67,7 +67,7 @@ ln -s ../../../../../../opt/%{application_name}/browser/chrome/icons/default/def
 
 ln -s ../../../../../../opt/%{application_name}/browser/chrome/icons/default/default128.png %{buildroot}%{_datadir}/pixmaps/%{full_name}.png
 
-find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' -o -name updater -o -name updater.ini -o -name update-settings.ini -o -path '*/icons/updater.png' \) -delete 2>/dev/null || true
 %post
 gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 
@@ -88,5 +88,10 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2:1.24.2b-2
+- Strip the payload's Firefox updater (updater, updater.ini,
+  update-settings.ini, icons/updater.png) at build time: distros own the
+  update channel, an in-app updater would replace files rpm tracks.
+
 * Thu Nov 12 2026 Ackerman-00 <no-reply> - 2:1.24.2b-1
 - Auto-update to upstream release 1.24.2b
