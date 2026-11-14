@@ -1,9 +1,8 @@
-%global debug_package %{nil}
 %global crate concord
 
 Name:           concord
 Version:        2.7.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Feature-rich TUI client for Discord
 License:        GPL-3.0-only
 URL:            https://github.com/chojs23/concord
@@ -61,6 +60,10 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_bindir}/concord
 
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2.7.0-5
+- Ship debuginfo: this is a source build (cargo), so the debug_package
+  override was discarding symbols the build already produces
+
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 2.7.0-4
 - Move the in-app updater strip into %install
 

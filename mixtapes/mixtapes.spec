@@ -1,12 +1,11 @@
 
-%global debug_package %{nil}
 %global commit          a50a75d4d74c3355e7398f35097da47b05df572f
 %global gitdate         20261031223600
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           mixtapes
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A cross-platform GTK4/Libadwaita YouTube Music client written in Rust
 
 License:        GPL-3.0-or-later
@@ -98,6 +97,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/com.pocoguy.Muse.desk
 %{_datadir}/icons/hicolor/scalable/apps/com.pocoguy.Muse*.svg
 
 %changelog
+* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0^20261031223600gita50a75d-3
+- Ship debuginfo: this is a source build (cargo), so the debug_package
+  override was discarding symbols the build already produces
+
 * Tue Nov 10 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0^20261031223600gita50a75d-2
 - Declare BuildRequires: rust-srpm-macros: the spec uses %{build_rustflags},
   which that package defines (it is not pulled in by cargo or rust).
