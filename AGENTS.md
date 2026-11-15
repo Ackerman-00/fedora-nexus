@@ -612,3 +612,12 @@ Pin something explicitly only when a new image actually breaks this CI, and
 then pin that one workflow, not the repo. When you pin an image label, add
 it to actionlint.yaml: actionlint 1.7.12 does not know ubuntu-26.04 and
 reports it as an unknown label.
+
+## One hung updater must not kill the auto-updater run (found 2026-11-15)
+
+The 20:44 auto-updater reached fluxer, hung on the RPM download (fetch-sha256
+allows `--max-time 1800` with 3 retries against a 30-minute job cap), and was
+cancelled at 21:14 with every package after fluxer unscanned. Fix (24565f2):
+each `update.sh` in update-engine.yml runs under `timeout 600`; a timeout logs
+`FAILED (timeout 600s)` for that package and the loop continues. fetch-sha256's
+1800s cap is for the human-run path; in CI the per-package timeout is the bound.
