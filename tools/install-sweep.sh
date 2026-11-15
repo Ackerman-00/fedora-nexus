@@ -32,8 +32,9 @@ for try in 1 2 3; do
   dnf -y --setopt=gpgcheck=0 --setopt=install_weak_deps=False install "$DNFN" >/tmp/i.log 2>&1
   iex=$?
   [ $iex -eq 0 ] && break
-  grep -qE 'Cannot download|All mirrors were tried|Librepo error|Timeout|timeout' /tmp/i.log || break
-  echo "INSTALL_RETRY $try $(grep -m1 -E 'Librepo error|Cannot download' /tmp/i.log)"
+  grep -qE 'Cannot download|All mirrors were tried|Librepo error|Timeout|timeout|No match for argument|No package .* available' /tmp/i.log || break
+  echo "INSTALL_RETRY $try $(grep -m1 -E 'Librepo error|Cannot download|No match for argument' /tmp/i.log)"
+  dnf -q clean all >/dev/null 2>&1
   sleep 5
 done
 tail -3 /tmp/i.log
@@ -104,7 +105,7 @@ for f in $(printf '%s\n' "$files" | grep -E '/(app-update\.ya?ml|package-type|up
 done
 echo UPDATER_MANIFEST_COUNT=$uph
 echo '--- smoke ---'
-if [ -n "$SMOKE" ]; then bash -c "$SMOKE"; else true; fi
+if [ -n "$SMOKE" ]; then timeout 180 bash -c "$SMOKE"; else true; fi
 echo SMOKE_EXIT=$?
 EOS
   local nvr iex rv lddc sex
