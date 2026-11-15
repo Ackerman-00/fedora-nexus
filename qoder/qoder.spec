@@ -3,15 +3,15 @@
 %global __provides_exclude_from ^/opt/Qoder/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/Qoder/.*$
 Name:           qoder
-Version:        0.5.11
-# sha256: b16bc1e62c5a7c2c8efad6f4b17897805280f07bcd1d973129261a0fb42936bb
+Version:        0.5.12
+# sha256: cc52011e5f9da78c8f7ac58e5fd4e41f4c08b99994e58d18424ccb1706a7d48c
 Release:        1%{?dist}
 Epoch:          1
 Summary:        Agent workbench for human and AI software teams
 License:        SUSE-Freeware
 Group:          Development/Tools/IDE
 URL:            https://qoder.com
-Source0:        https://download.qoder.com.cn/qoder-app/releases/0.5.11/Qoder-linux-amd64.deb
+Source0:        https://download.qoder.com.cn/qoder-app/releases/0.5.12/Qoder-linux-amd64.deb
 Source1:        qoder-rpmlintrc
 BuildRequires:  binutils
 BuildRequires:  desktop-file-utils
@@ -55,6 +55,8 @@ Requires:       libXcursor.so.1()(64bit)
 Requires:       libnotify.so.4()(64bit)
 Requires:       libpipewire-0.3.so.0()(64bit)
 Requires:       libpulse.so.0()(64bit)
+Requires(post):  gtk-update-icon-cache
+Requires(postun): gtk-update-icon-cache
 ExclusiveArch:  x86_64
 
 %description
@@ -63,8 +65,8 @@ upstream Electron 43 (Chromium 150) desktop client, the Qoder agent SDK, and
 the collaboration CLI for Linux x86_64.
 
 This RPM re-packs the upstream .deb payload under /opt/Qoder without changing
-it, so the app keeps its own update feed (electron-updater, generic provider at
-https://download.qoder.com.cn/qoder-app/releases).
+it. The in-app updater manifest is stripped at build time, so updates come
+from this repository.
 
 %prep
 %setup -q -c -T
@@ -100,6 +102,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/qoder.desktop
 
 find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 %post
+gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 if command -v update-desktop-database >/dev/null 2>&1; then
   update-desktop-database %{_datadir}/applications >/dev/null 2>&1 || true
 fi
@@ -121,6 +124,7 @@ if [ -d %{_sysconfdir}/apparmor.d ] && [ -x /sbin/apparmor_parser ] \
 fi
 
 %postun
+gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 if [ "$1" = 0 ] && [ -f %{_sysconfdir}/apparmor.d/qoder ]; then
   if [ -x /sbin/apparmor_parser ]; then
     /sbin/apparmor_parser --remove %{_sysconfdir}/apparmor.d/qoder >/dev/null 2>&1 || true
@@ -143,9 +147,11 @@ fi
 %dir %{_docdir}/qoder
 %doc %{_docdir}/qoder/changelog.gz
 %dir /opt/Qoder
-%exclude /opt/Qoder/chrome-sandbox
 /opt/Qoder/*
+%attr(4755, root, root) /opt/Qoder/chrome-sandbox
 
 %changelog
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.5.11-1
-- Update to upstream release 0.5.11
+* Sun Nov 15 2026 Ackerman-00 <no-reply> - 0.5.12-1
+- Update to upstream release 0.5.12
+- Ship chrome-sandbox setuid so Chromium can use its SUID sandbox
+- Refresh the hicolor icon cache in %post/%postun
