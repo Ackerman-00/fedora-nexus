@@ -140,6 +140,19 @@ check("changelog NVR epoch prefix",
 check("changelog NVR epoch implied by version digits",
       hunt.nvr_matches("* Sun Nov 15 2026 Ackerman-00 <no-reply> - 2.7.2-1", "2.7.2", "2", "0"), False)
 
+TAGGED_SPEC = "Name: p\nSource0: https://github.com/o/r/archive/refs/tags/v1.tar.gz\n"
+GIT_SPEC = "Name: p\nSource0: %{url}/archive/%{commit}/p-%{shortcommit}.tar.gz\n"
+check("updater: broken shebang flagged",
+      len(hunt.updater_findings("#!/usr/bin/env bashset -u\necho nothing\n", TAGGED_SPEC)), 2)
+check("updater: stub on a tag-tracked spec",
+      hunt.updater_findings("#!/bin/bash\necho manual\n", TAGGED_SPEC)[0][:12].strip(),
+      "update.sh is")
+check("updater: stub on a commit-pinned spec is legal",
+      hunt.updater_findings("#!/bin/bash\necho manual\n", GIT_SPEC), [])
+check("updater: real updater is clean",
+      hunt.updater_findings("#!/bin/bash\nset -u\nsed -i \"s/^Version:.*/Version: 2/\" p.spec\n"
+                            "curl -sL https://api.github.com/repos/o/r/releases/latest\n", TAGGED_SPEC), [])
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)

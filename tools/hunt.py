@@ -1486,11 +1486,47 @@ def hunt_macros():
     return ("macros", "%d specs expand a macro-package macro, %d undeclared" % (n, len(findings)), note, findings)
 
 
+TAG_TRACKED = re.compile(r"^Source0:.*(archive/refs/tags/|/releases/download/|/releases/.*\.tar)", re.M)
+
+
+def updater_findings(updater_txt, spec_txt):
+    """Can this update.sh ever move this spec?
+
+    A stub is legal only when the spec tracks nothing a bot could read: a
+    tag/release Source0 means the auto-updater must be able to bump it.
+    """
+    first = (updater_txt.splitlines() or [""])[0]
+    out = []
+    if not re.match(r"^#!.*\b(bash|sh)\b", first):
+        out.append("update.sh shebang is not a runnable shell: %r" % first[:60])
+    code = [l for l in updater_txt.splitlines() if l.strip() and not l.strip().startswith("#")]
+    if len(code) <= 2 and TAG_TRACKED.search(spec_txt):
+        out.append("update.sh is a %d-line stub but Source0 tracks an upstream tag/release" % len(code))
+    return out
+
+
+def hunt_updaters():
+    """Every updater must be able to track the feed its spec pins."""
+    findings = []
+    n = 0
+    for sp in specs():
+        pkg = os.path.basename(os.path.dirname(sp))
+        path = os.path.join(os.path.dirname(sp), "update.sh")
+        if not os.path.isfile(path):
+            continue
+        n += 1
+        upd = open(path, encoding="utf-8", errors="replace").read()
+        spec_txt = open(sp, encoding="utf-8", errors="replace").read()
+        findings += [(pkg, msg) for msg in updater_findings(upd, spec_txt)]
+    return ("updaters", "%d updaters, %d cannot track a release" % (n, len(findings)), "", findings)
+
+
 HUNTS = (hunt_builds, hunt_network_build, hunt_chroots, hunt_copr_config, hunt_upstream, hunt_cves,
          hunt_official,
          hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_sources,
          hunt_pins, hunt_readme, hunt_published_nvr, hunt_probes, hunt_probe_paths, hunt_sandbox,
-         hunt_macros, hunt_fedora_releases, hunt_chroot_docs, hunt_slice, hunt_files_syntax)
+         hunt_macros, hunt_fedora_releases, hunt_chroot_docs, hunt_slice, hunt_files_syntax,
+         hunt_updaters)
 
 
 def main():
