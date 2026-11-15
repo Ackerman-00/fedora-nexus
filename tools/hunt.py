@@ -735,14 +735,28 @@ def hunt_licenses():
             note, missing)
 
 
+def changelog_nvr(first):
+    """The trailing NVR of a changelog entry line."""
+    return first.rsplit(" - ", 1)[-1].strip() if " - " in first else ""
+
+
+def nvr_matches(first, ver, rel, epoch=""):
+    """True when the changelog line names exactly this spec's [[epoch:]ver-rel]."""
+    want = ["%s-%s" % (ver, rel)]
+    if epoch and epoch != "0":
+        want.append("%s:%s-%s" % (epoch, ver, rel))
+    return changelog_nvr(first) in want
+
+
 def hunt_release_discipline():
-    """The newest changelog entry must name the spec's own Version and Release."""
+    """The newest changelog entry must name the spec's own [[epoch:]version-release]."""
     bad, checked, skipped = [], 0, []
     for sp in specs():
         txt = open(sp, encoding="utf-8", errors="replace").read()
         ver = resolve_version(sp, spec_field(sp, "Version")).strip()
         rel = resolve_version(sp, spec_field(sp, "Release")).split("%{?dist}")[0].strip()
-        if "%{" in ver:
+        epoch = resolve_version(sp, spec_field(sp, "Epoch")).strip()
+        if "%{" in ver or "%{" in rel:
             skipped.append(os.path.basename(sp))
             continue
         ch = re.search(r"^%changelog\s*\n(.*)", txt, re.M | re.S)
@@ -751,9 +765,12 @@ def hunt_release_discipline():
             continue
         first = ch.group(1).strip().splitlines()[0]
         checked += 1
-        if ver.split("^")[0] not in first or (rel and rel not in first):
-            bad.append((os.path.basename(sp), "changelog %r vs Version %r Release %r"
-                        % (first[-60:], ver, rel)))
+        if not nvr_matches(first, ver, rel, epoch):
+            want = ["%s-%s" % (ver, rel)]
+            if epoch and epoch != "0":
+                want.append("%s:%s-%s" % (epoch, ver, rel))
+            bad.append((os.path.basename(sp), "changelog NVR %r vs spec %s"
+                        % (changelog_nvr(first), " or ".join(want))))
     note = "skipped (version from an external macro): %s" % (", ".join(skipped) or "none")
     return ("release-discipline", "%d specs, %d changelog mismatches" % (checked, len(bad)),
             note, bad)

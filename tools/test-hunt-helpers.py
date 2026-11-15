@@ -131,6 +131,15 @@ with _tf.TemporaryDirectory() as _d:
     _label = hunt.pinned_label(_p, "1.2.3")
 check("pinned label falls back to the version", _label, "1.2.3")
 
+check("changelog NVR exact match",
+      hunt.nvr_matches("* Sun Nov 15 2026 Ackerman-00 <no-reply> - 2.7.2-2", "2.7.2", "2"), True)
+check("changelog NVR one release behind",
+      hunt.nvr_matches("* Sun Nov 15 2026 Ackerman-00 <no-reply> - 2.7.2-1", "2.7.2", "2"), False)
+check("changelog NVR epoch prefix",
+      hunt.nvr_matches("* Sun Nov 15 2026 Ackerman-00 <no-reply> - 2:1.24.2b-2", "1.24.2b", "2", "2"), True)
+check("changelog NVR epoch implied by version digits",
+      hunt.nvr_matches("* Sun Nov 15 2026 Ackerman-00 <no-reply> - 2.7.2-1", "2.7.2", "2", "0"), False)
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)
