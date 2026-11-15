@@ -1,4 +1,5 @@
-#!/usr/bin/env bashset -u
+#!/usr/bin/env bash
+set -u
 SPEC_FILE=ladybird-unstable.spec
 GITHUB_REPO=LadybirdBrowser/ladybird
 PACKAGER="Ackerman-00 <no-reply>"
