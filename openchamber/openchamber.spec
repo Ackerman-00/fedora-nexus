@@ -6,7 +6,7 @@
 
 Name:           openchamber
 Version:        2.7.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        AI coding agent workspace (Electron)
 License:        MIT
 URL:            https://github.com/openchamber/openchamber
