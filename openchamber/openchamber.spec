@@ -97,6 +97,10 @@ fi
 if command -v update-desktop-database >/dev/null 2>&1; then update-desktop-database %{_datadir}/applications >/dev/null 2>&1 || true; fi
 
 %changelog
+* Sun Nov 15 2026 Ackerman-00 <no-reply> - 2.7.2-2
+- Rebuild the native .rpm repack unchanged: COPR's importer aborted while
+  fetching the 2.7.2-1 SRPM, so the same content was republished to clear
+  the failed build
 * Sun Nov 15 2026 Ackerman-00 <no-reply> - 2.7.2-1
 - Switch the packaging from the upstream AppImage to the native upstream
   .rpm (OpenChamber-2.7.2-linux-x86_64.rpm) repacked exactly like the
