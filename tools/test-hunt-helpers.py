@@ -76,6 +76,16 @@ with _tf.TemporaryDirectory() as _d:
     open(_p, "w").write("Name: p\n%global gitdate 20261113\nVersion: 1\n")
     _stamp = hunt.pinned_epoch(_p)
 check("8-digit gitdate parses at midnight", _stamp, _cal.timegm(_time.strptime("20261113", "%Y%m%d")))
+with _tf.TemporaryDirectory() as _d:
+    _p = os.path.join(_d, "p.spec")
+    open(_p, "w").write("Name: p\nVersion: 0.0.0\nRelease: 31.20261115giteb909f8\n")
+    _stamp = hunt.pin_stamp(_p)
+check("date-only Release stamp is readable", _stamp, "20261115")
+with _tf.TemporaryDirectory() as _d:
+    _p = os.path.join(_d, "p.spec")
+    open(_p, "w").write("Name: p\nVersion: 1.0\nRelease: 3\n")
+    _stamp = hunt.pin_stamp(_p)
+check("tag-pinned spec carries no snapshot stamp", _stamp, "")
 
 _rx = hunt.asset_regex("OpenClaw-%{version}-amd64.deb")
 check("asset regex accepts the release asset", bool(_rx.match("OpenClaw-2026.11.2-amd64.deb")), True)

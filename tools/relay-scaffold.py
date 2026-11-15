@@ -42,8 +42,12 @@ def version_table():
         _p, ref, ok, _cmd, err = H.probe_upstream(sp)
         if ok is None:
             rows.append("| %s | %s | unprobed (%s) | needs-build |" % (pkg, ver, err))
-        elif ok:
+        elif ok is True:
             rows.append("| %s | %s | %s | up-to-date |" % (pkg, ver, ref))
+        elif ok == "held":
+            rows.append("| %s | %s | %s | held (live_hold_reason) |" % (pkg, ver, ref))
+        elif ok == "cadence":
+            rows.append("| %s | %s | %s | held (updater cadence) |" % (pkg, ver, ref))
         else:
             rows.append("| %s | %s | %s | needs-build |" % (pkg, ver, ref))
     return "\n".join(rows)

@@ -199,13 +199,19 @@ def declared_cadence_hours(pkgdir):
     return int(m.group(1)) if m else 0
 
 
-def pinned_epoch(sp):
+def pin_stamp(sp):
+    """The stamp that dates the pin: %gitdate, else the Release NVR's date."""
     txt = open(sp, encoding="utf-8", errors="replace").read()
     stamp = spec_macro(sp, "gitdate") or ""
     if not re.match(r"^\d{8}", stamp):
         m = re.search(r"^Release:.*?(\d{8})git", txt, re.M)
         stamp = m.group(1) if m else ""
-    if not re.match(r"^\d{8}", stamp):
+    return stamp if re.match(r"^\d{8}", stamp) else ""
+
+
+def pinned_epoch(sp):
+    stamp = pin_stamp(sp)
+    if not stamp:
         return 0
     if re.match(r"^\d{14}$", stamp):
         return calendar.timegm(time.strptime(stamp, "%Y%m%d%H%M%S"))
@@ -589,10 +595,17 @@ def probe_upstream(sp):
             newer = head_commit_epoch(forge, owner, repo, head) if pin else 0
             if hours and pin and newer:
                 age = (newer - pin) // 3600
+                same_day = (len(pin_stamp(sp)) == 8
+                            and time.strftime("%Y%m%d", time.gmtime(newer))
+                            == time.strftime("%Y%m%d", time.gmtime(pin)))
                 if 0 <= age < hours:
                     return (pkg, head[:7], "cadence",
                             "git ls-remote %s/%s HEAD (cadence: updater waits %dh, upstream %dh past pin)"
                             % (owner, repo, hours, age), "")
+                if same_day:
+                    return (pkg, head[:7], "cadence",
+                            "git ls-remote %s/%s HEAD (cadence: date-stamped pin, upstream moved the same day)"
+                            % (owner, repo), "")
         return (pkg, head[:7], head == commit,
                 "git ls-remote %s/%s HEAD" % (owner, repo), "")
     asset = re.search(r"https://github\.com/([^/\s]+)/([^/\s]+)/releases/download/[^/\s]+/(\S+)", txt)
