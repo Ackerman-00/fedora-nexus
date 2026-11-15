@@ -2,8 +2,8 @@
 # authority: opencode curated list > live catalog > published independent scores > vendor claims
 # order is set by the per-run web check in tools/sweep-prompt.md, not by hand
 
-# tier 1 - independently scored leaders (Artificial Analysis Intelligence Index re-read 2026-11-12)
-# AA Intelligence Index 33 - source: artificialanalysis.ai/leaderboards/models, DeepSeek V4.1 Flash 1017 (max) - 2026-11-12
+# tier 1 - independently scored leaders (Artificial Analysis Intelligence Index re-read 2026-11-15)
+# AA Intelligence Index 32.6 - source: awesome-free-ai-coding score table (AA read 2026-11-09), DeepSeek V4.1 Flash 1017 - re-read 2026-11-15
 deepseek-v4.1-flash-free
 # AA Intelligence Index 31 - source: artificialanalysis.ai/leaderboards/models, Inkling 2 Small - 2026-11-12
 inkling-2-small-free
@@ -32,4 +32,4 @@ big-pickle
 
 # vetoed by owner (2026-10-22): glm-5.3-flash-free, jev-1.13-free (probabilistic classifier, not a coding model)
 # retired from the live catalog: crouton-alpha-free (2026-11-10), Pulse Alpha Free (2026-11-06)
-# leader unchanged 2026-11-14: AA Intelligence Index re-read live, DeepSeek V4.1 Flash 1017 (max) 33 is the highest free id; GLM-5.3 (max) 32 and Inkling 2 Small 31 follow, MiniMax-M3.1-Flash 29, MiMo-V2.6-Flash 27, Beam 1.0 18, Nemotron 3.5 Super VL 14, Nemotron 3.5 Lightning 6; Kimi K3.1 Pro (46) leads all open weights but is not a free catalog id; live catalog 11 free ids, glm-5.3-flash-free still owner-vetoed
+# leader re-read 2026-11-15: qwen3.8-max 33.7, deepseek-v4.1-flash-1017 32.6, glm-5.3 31.7, mimo-v2.6-pro 29.9 lead the AA sample, but of those only DeepSeek is a free catalog id; live catalog still 11 free ids and the order below is unchanged, glm-5.3-flash-free still owner-vetoed
