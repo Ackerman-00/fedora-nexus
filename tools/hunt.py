@@ -15,6 +15,7 @@ import calendar
 import gzip
 import hashlib
 import importlib.util
+import io
 import json
 import os
 import re
@@ -23,6 +24,7 @@ import sys
 import tempfile
 import time
 import urllib.request
+import xml.etree.ElementTree as ET
 from urllib.parse import quote
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -1365,6 +1367,66 @@ def hunt_pins():
             note, findings)
 
 
+def repo_filelists(chroot, wanted):
+    """Published name -> set of shipped paths, from one chroot's filelists metadata."""
+    base = "https://download.copr.fedorainfracloud.org/results/ackerman/nexus/%s" % chroot
+    md = get_text(base + "/repodata/repomd.xml")
+    m = re.search(r'href="(repodata/[^"]*filelists[^"]*)"', md)
+    if not m:
+        raise RuntimeError("no filelists entry in %s repomd.xml" % chroot)
+    raw = urllib.request.urlopen(
+        urllib.request.Request(base + "/" + m.group(1), headers=UA), timeout=180).read()
+    ns = "{http://linux.duke.edu/metadata/filelists}"
+    per = {}
+    for _ev, el in ET.iterparse(gzip.GzipFile(fileobj=io.BytesIO(raw)), events=("end",)):
+        if el.tag != ns + "package":
+            continue
+        name = el.get("name")
+        if name in wanted:
+            ver = el.find(ns + "version")
+            nvr = "%s-%s" % (ver.get("ver"), ver.get("rel")) if ver is not None else ""
+            per.setdefault((name, nvr), set()).update(
+                f.text for f in el.findall(ns + "file") if f.text)
+        el.clear()
+    best = {}
+    for (name, nvr), files in per.items():
+        if name not in best or vge(nvr, best[name][0]):
+            best[name] = (nvr, files)
+    return {name: files for name, (_nvr, files) in best.items()}
+
+
+def hunt_probe_paths():
+    """A probe that names a path its RPM does not ship cannot ever pass."""
+    path = os.path.join(HERE, "probes.txt")
+    rows = []
+    for line in open(path, encoding="utf-8"):
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split("|", 2)
+        if len(parts) == 3:
+            rows.append(parts)
+    wanted = {p[0] for p in rows} | {p[1] for p in rows}
+    chroot = "fedora-45-x86_64"
+    lists = repo_filelists(chroot, wanted)
+    findings = []
+    checked = 0
+    missing_list = []
+    for pkg, dnf, smoke in rows:
+        files = lists.get(dnf) or lists.get(pkg)
+        if not files:
+            missing_list.append(pkg)
+            continue
+        for probe_path in set(re.findall(r"/opt/[^\s;'\"]+", smoke)):
+            checked += 1
+            if probe_path.rstrip("/") not in files:
+                findings.append((pkg, "probe names %s which %s does not ship"
+                                 % (probe_path, dnf)))
+    note = "%s, %d with no published file list" % (chroot, len(missing_list))
+    return ("probe-paths", "%d payload paths checked, %d not shipped"
+            % (checked, len(findings)), note, findings)
+
+
 def hunt_macros():
     """A spec that expands a macro must BuildRequire the package that defines it.
 
@@ -1410,7 +1472,7 @@ def hunt_macros():
 HUNTS = (hunt_builds, hunt_network_build, hunt_chroots, hunt_copr_config, hunt_upstream, hunt_cves,
          hunt_official,
          hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_sources,
-         hunt_pins, hunt_readme, hunt_published_nvr, hunt_probes, hunt_sandbox,
+         hunt_pins, hunt_readme, hunt_published_nvr, hunt_probes, hunt_probe_paths, hunt_sandbox,
          hunt_macros, hunt_fedora_releases, hunt_chroot_docs, hunt_slice, hunt_files_syntax)
 
 
