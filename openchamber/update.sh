@@ -25,20 +25,20 @@ CURRENT_VERSION=$(grep -E "^Version:" "$SPEC_FILE" | awk '{print $2}')
 if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     echo "Update found: $CURRENT_VERSION -> $LATEST_VERSION"
 
-    APPIMAGE_URL="https://github.com/$GITHUB_REPO/releases/download/$LATEST_TAG/OpenChamber-${LATEST_VERSION}-linux-x86_64.AppImage"
-    echo "  -> [CHECK] Verifying $APPIMAGE_URL"
-    if ! curl --output /dev/null --silent --location --head --fail "$APPIMAGE_URL"; then
-        echo "  -> [SKIP] Linux x86_64 AppImage for $LATEST_TAG is not published (yet). Keeping $CURRENT_VERSION."
+    RPM_URL="https://github.com/$GITHUB_REPO/releases/download/$LATEST_TAG/OpenChamber-${LATEST_VERSION}-linux-x86_64.rpm"
+    echo "  -> [CHECK] Verifying $RPM_URL"
+    if ! curl --output /dev/null --silent --location --head --fail "$RPM_URL"; then
+        echo "  -> [SKIP] Linux RPM for $LATEST_TAG is not published (yet). Keeping $CURRENT_VERSION."
         exit 0
     fi
 
     sed -i -E "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
     sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
-    sed -i -E "s|releases/download/[^/]+/OpenChamber-.*-linux-x86_64.AppImage|releases/download/$LATEST_TAG/OpenChamber-${LATEST_VERSION}-linux-x86_64.AppImage|" "$SPEC_FILE"
+    sed -i -E "s|releases/download/[^/]+/OpenChamber-.*-linux-x86_64.rpm|releases/download/$LATEST_TAG/OpenChamber-${LATEST_VERSION}-linux-x86_64.rpm|" "$SPEC_FILE"
 
-    echo "  -> [HASH] Computing sha256 of $APPIMAGE_URL"
-    if ! SHA256=$(bash "$_update_sh_dir/../tools/fetch-sha256.sh" "$APPIMAGE_URL"); then
-        echo "Error: could not download $APPIMAGE_URL for hashing." >&2
+    echo "  -> [HASH] Computing sha256 of $RPM_URL"
+    if ! SHA256=$(bash "$_update_sh_dir/../tools/fetch-sha256.sh" "$RPM_URL"); then
+        echo "Error: could not download $RPM_URL for hashing." >&2
         exit 1
     fi
     if [ -n "$SHA256" ]; then
