@@ -82,13 +82,17 @@ jobs:
             echo ""
             echo "--- Updating $pkg ---"
             pushd "$dir" > /dev/null
-            if bash update.sh >"$out" 2>&1; then
+            if timeout 600 bash update.sh >"$out" 2>&1; then
               cat "$out"
               echo "  -> OK"
             else
               rc=$?
               cat "$out"
-              echo "  -> FAILED (exit $rc)"
+              if [ "$rc" -eq 124 ]; then
+                echo "  -> FAILED (timeout 600s)"
+              else
+                echo "  -> FAILED (exit $rc)"
+              fi
               failed=$((failed + 1))
               {
                 echo "[$pkg] exit $rc"
