@@ -527,6 +527,10 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
   change.
 - `bash tools/model-cascade.sh` - the free-model chain for this run, derived
   from the live catalog; `tools/model-rank.txt` holds the strength order.
+- `bash tools/dgit-drift.sh` - every package's spec as COPR built it
+  (copr-dist-git, shallow clone, falls back to the spec's `Name:` when the
+  dist-git repo is not named after the directory) diffed against this
+  checkout: catches a spec edited in git whose build never picked the change.
 - `bash tools/verify-fedora.sh` - the external completion verifier. Exit 1
   means the run is not done; fix what it names and re-run it.
 
