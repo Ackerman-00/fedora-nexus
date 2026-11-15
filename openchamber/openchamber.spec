@@ -5,14 +5,14 @@
 %global __requires_exclude_from ^/opt/openchamber/.*$
 
 Name:           openchamber
-Version:        2.7.1
-Release:        2%{?dist}
+Version:        2.7.2
+Release:        1%{?dist}
 Summary:        AI coding agent workspace (Electron)
 
 License:        MIT
 URL:            https://github.com/openchamber/openchamber
-Source0:        %{url}/releases/download/v2.7.1/OpenChamber-2.7.1-linux-x86_64.AppImage
-# sha256: 6b3fc1116a9d280cab60879fdeee124ccc61fba31593d28b7b1be36c45fe7062
+Source0:        %{url}/releases/download/v2.7.2/OpenChamber-2.7.2-linux-x86_64.AppImage
+# sha256: 6a06cf7d3a8c528dbe93d0ccd3ec94faa54b703158c73329c6e13cbbe252ef3c
 Source1:        %{url}/raw/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
@@ -106,8 +106,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %attr(4755, root, root) /opt/openchamber/chrome-sandbox
 
 %changelog
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2.7.1-2
-- Move the in-app updater strip into %install
-
-* Fri Nov 13 2026 Ackerman-00 <no-reply> - 2.7.1-1
-- Auto-update to upstream release v2.7.1
+* Sun Nov 15 2026 Ackerman-00 <no-reply> - 2.7.2-1
+- Auto-update to upstream release v2.7.2

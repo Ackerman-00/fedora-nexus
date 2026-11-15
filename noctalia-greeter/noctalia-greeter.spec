@@ -1,16 +1,16 @@
-%global commit          199fb7fe64a34bec44bf059de323f78a4ed122a8
+%global commit          936473c9d804da3999ef191f8febaabacd1834b7
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261111131528
+%global gitdate         20261115034454
 
 Name:           noctalia-greeter
 Version:        1.7.0^%{gitdate}git%{shortcommit}
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 License:        MIT AND Apache-2.0
 URL:            https://github.com/noctalia-dev/noctalia-greeter
 Source0:        %{url}/archive/%{commit}/%{name}-%{commit}.tar.gz
-# sha256: 62c2d289b8c110f3fdd7235b219f066379a58d1442c2a872377bd6830516a303
+# sha256: 6965f5c5c50aa1d5af670148814ce9559d5d06328099437686aa3d934708e04b
 Source1:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-APACHE
 # sha256: 0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594
 Source2:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-MIT
@@ -122,10 +122,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.7.0^20261111131528git199fb7f-3
-- polkit is optional upstream (PACKAGING.md:277): Recommends instead of Requires
-- Require /usr/bin/bash: 3 installed setup scripts start with #!/usr/bin/env bash
-* Fri Nov 13 2026 Ackerman-00 <no-reply> - 1.7.0^20261111131528git199fb7f-2
-- Declare BuildRequires: systemd-rpm-macros: %{_tmpfilesdir} was expanded only by rpm-build's transitive chain
-* Wed Nov 11 2026 Ackerman-00 <no-reply> - 1.7.0^20261111131528git199fb7f-1
-- Nightly sync with upstream main branch (Commit: 199fb7f)
+* Sun Nov 15 2026 Ackerman-00 <no-reply> - 1.7.0^20261115034454git936473c-1
+- Nightly sync with upstream main branch (Commit: 936473c)
