@@ -13,26 +13,20 @@ SRC_BASE="https://pkgs.fluxer.com/desktop/stable/linux/x64"
 
 echo "Checking for upstream updates..."
 
-HEADER=$(curl -sI --max-time 15 -A "Mozilla/5.0" "$API_URL")
-VERSION=$(echo "$HEADER" | grep -i "^X-Fluxer-Version:" | awk '{print $2}' | tr -d '\r')
-DISP_VERSION=$(echo "$HEADER" | grep -i "content-disposition" | grep -oP 'Fluxer-\K[0-9.]+' | head -1)
-if [ -n "$DISP_VERSION" ] && [ "$DISP_VERSION" != "$VERSION" ]; then
-    echo "Note: X-Fluxer-Version=$VERSION vs Content-Disposition=$DISP_VERSION, using $DISP_VERSION (filename authoritative)"
-    VERSION="$DISP_VERSION"
-fi
-if [ -z "$VERSION" ] || [ "$VERSION" != "$DISP_VERSION" ]; then
-    FINAL_HEADER=$(curl -sI --max-time 15 -L -A "Mozilla/5.0" "$API_URL")
-    FINAL_DISP=$(echo "$FINAL_HEADER" | grep -i "content-disposition" | grep -oP 'Fluxer-\K[0-9.]+' | head -1)
-    if [ -n "$FINAL_DISP" ]; then
-        if [ "$FINAL_DISP" != "$VERSION" ]; then
-            echo "Note: served RPM filename $FINAL_DISP vs X-Fluxer-Version=$VERSION, using $FINAL_DISP (filename authoritative)"
-        fi
-        VERSION="$FINAL_DISP"
-    fi
-fi
+# the served RPM filename is authoritative; X-Fluxer-Version can name a build that 404s
+FINAL_URL=$(curl -sIL --max-time 30 -A "Mozilla/5.0" -o /dev/null -w '%{url_effective}' "$API_URL")
+VERSION=$(printf '%s' "$FINAL_URL" | grep -oP 'Fluxer-\K[0-9]+(\.[0-9]+)+' | head -1)
+HEADER_VERSION=$(curl -sI --max-time 15 -A "Mozilla/5.0" "$API_URL" | grep -i "^X-Fluxer-Version:" | awk '{print $2}' | tr -d '\r')
 
 if [ -z "$VERSION" ]; then
-    echo "Error: Failed to fetch upstream version."
+    echo "Error: Failed to fetch upstream version (url: $FINAL_URL)."
+    exit 1
+fi
+if [ -n "$HEADER_VERSION" ] && [ "$HEADER_VERSION" != "$VERSION" ]; then
+    echo "Note: X-Fluxer-Version=$HEADER_VERSION, served filename=$VERSION (filename authoritative)"
+fi
+if ! curl -sfI -L --max-time 30 -o /dev/null -A "Mozilla/5.0" "$SRC_BASE/$VERSION/rpm"; then
+    echo "Error: versioned artifact $SRC_BASE/$VERSION/rpm does not resolve." >&2
     exit 1
 fi
 
