@@ -49,12 +49,11 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 
 %files
 %license LICENSE
-%{_libdir}/girepository-1.0/AppmenuGLibTranslator-25.04.typelib
-%{_libdir}/libappmenu-glib-translator.so.0
-%{_libdir}/libappmenu-glib-translator.so.25.04
+%{_libdir}/girepository-1.0/AppmenuGLibTranslator-*.typelib
+%{_libdir}/libappmenu-glib-translator.so.*
 
 %files devel
-%{_datadir}/gir-1.0/AppmenuGLibTranslator-25.04.gir
+%{_datadir}/gir-1.0/AppmenuGLibTranslator-*.gir
 %{_datadir}/vala/vapi/appmenu-glib-translator.deps
 %{_datadir}/vala/vapi/appmenu-glib-translator.vapi
 %{_includedir}/%{name}/
@@ -62,5 +61,6 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
-* Sun Nov 15 2026 Ackerman-00 <no-reply> - 25.04^20261115211721gitc3fa11c-1
-- Nightly sync with upstream main branch (Commit: c3fa11c)
+* Sun Nov 15 2026 Ackerman-00 <no-reply> - 25.04^20261115211721gitc3fa11c-2
+- Match the subproject's API namespace by glob: upstream moved it 25.04 -> 26.11
+  without a soversion change, so the pinned filenames missed every build output
