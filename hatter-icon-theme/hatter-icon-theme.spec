@@ -1,12 +1,13 @@
 %global debug_package %{nil}
 
 Name:           hatter-icon-theme
-Version:        4.0
-Release:        2%{?dist}
+Version:        4.1
+Release:        1%{?dist}
 Summary:        Icon theme from Mibea/Hatter
 License:        GPL-3.0-or-later
 URL:            https://github.com/Mibea/Hatter
-Source0:        https://github.com/Mibea/Hatter/archive/refs/tags/V4.0.tar.gz
+Source0:        https://github.com/Mibea/Hatter/archive/refs/tags/V4.1.tar.gz
+# sha256: 16eeea40b569a1688b3e15dd461f29c6bbc7e585fe38539f9b2a22040a4f144d
 
 BuildRequires:  bash
 BuildRequires:  rsync
@@ -19,20 +20,20 @@ BuildRequires:  gtk-update-icon-cache
 BuildArch:      noarch
 
 %description
-Hatter icon theme (V4.0 release), built from the upstream Hatter sources.
+Hatter icon theme (V4.1 release), built from the upstream Hatter sources.
+Ships the base theme, nine colour variants and nine Yaru colour variants.
 
 %prep
-%setup -q -n Hatter-4.0
+%setup -q -n Hatter-4.1
 find . -depth -name '* *' -exec bash -c 'for f; do mv -- "$f" "${f// /-}"; done' _ {} +
 
 %build
-echo 2 | bash ./Build-Hatter.sh
+bash ./build.sh --all --dest dist --version %{version} --whitespace fail
 
 %install
 install -d -m 0755 %{buildroot}%{_datadir}/icons
 shopt -s nullglob
-for t in Build/*/; do
-    [ -d "$t" ] || continue
+for t in dist/*/; do
     cp -a "$t" "%{buildroot}%{_datadir}/icons/$(basename "$t")"
 done
 shopt -u nullglob
@@ -56,6 +57,10 @@ for t in %{_datadir}/icons/Hatter*/; do
 done
 
 %changelog
+* Sun Nov 15 2026 Ackerman-00 <no-reply> - 4.1-1
+- Update to V4.1; upstream replaced the interactive Build-Hatter.sh with a
+  non-interactive build.sh --dest and dropped the Hatter-kde variants
+
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 4.0-2
 - Move the in-app updater strip into %install
 
