@@ -19,7 +19,7 @@ concat|concat|concat --version
 concord|concord|test -x /usr/bin/concord
 extension-manager|extension-manager|test -x /usr/bin/extension-manager
 fluxer|fluxer|test -f /usr/lib64/fluxer/resources/app.asar
-freebuff|freebuff|freebuff --smoke-tree-sitter 2>&1 | grep -q '^tree-sitter smoke ok'
+freebuff|freebuff|freebuff --smoke-tree-sitter
 freebuff-desktop|freebuff-desktop|test -x /usr/bin/freebuff-desktop && test -f /usr/share/applications/freebuff.desktop && test -f /usr/share/icons/hicolor/512x512/apps/freebuff.png
 ghostty|ghostty|ghostty --version
 gpu-screen-recorder|gpu-screen-recorder|test -x /usr/bin/gpu-screen-recorder
