@@ -1,12 +1,12 @@
-%global commit          fa064d858c277d823b6bd3509a4b0952ba5a7ceb
+%global commit          c3fa11cd9db99cd942b2e3cfb2788d95e17620e2
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261113221544
+%global gitdate         20261115211721
 
 %global _vpath_srcdir subprojects/appmenu-glib-translator
 
 Name:           appmenu-glib-translator
 Version:        25.04^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        appmenu-glib-translator
 
 License:        LGPL-3.0-or-later
@@ -62,8 +62,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 25.04^20261113221544gitfa064d8-2
-- Move the in-app updater strip into %install
-
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 25.04^20261113221544gitfa064d8-1
-- Nightly sync with upstream main branch (Commit: fa064d8)
+* Sun Nov 15 2026 Ackerman-00 <no-reply> - 25.04^20261115211721gitc3fa11c-1
+- Nightly sync with upstream main branch (Commit: c3fa11c)
