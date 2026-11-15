@@ -6,7 +6,7 @@
 
 Name:               helium-browser
 Version:        0.21.3.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:            Private, fast, and honest web browser
 
 License:            GPL-3.0-only AND BSD-3-Clause
@@ -29,6 +29,8 @@ Requires(postun):   gtk-update-icon-cache
 
 Recommends:         liberation-fonts
 Recommends:         vulkan-loader
+Recommends:         xdg-desktop-portal
+Recommends:         xdg-desktop-portal-gtk
 
 %description
 Helium is a private, fast, and honest web browser based on Chromium.
@@ -94,6 +96,10 @@ esac
 %{_datadir}/icons/hicolor/256x256/apps/helium.png
 
 %changelog
+* Sun Nov 15 2026 Ackerman-00 <no-reply> - 0.21.3.1-2
+- Recommend xdg-desktop-portal and its GTK backend: Wayland screen sharing,
+  file dialogs and notifications go through the portal, and a minimal
+  compositor install ships none
 * Fri Nov 13 2026 Ackerman-00 <no-reply> - 0.21.3.1-1
 - Update to upstream release 0.21.3.1 (Chromium 157.0.8103.78, read from the
   shipped binary; tarball sha256 verified)

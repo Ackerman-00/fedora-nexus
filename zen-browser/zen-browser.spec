@@ -8,7 +8,7 @@
 Name:               zen-browser
 Epoch:              2
 Version:        1.24.2b
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPL-2.0
@@ -25,6 +25,8 @@ BuildRequires:      patchelf
 
 Recommends:         (plasma-browser-integration if plasma-workspace)
 Recommends:         (gnome-browser-connector if gnome-shell)
+Recommends:         xdg-desktop-portal
+Recommends:         xdg-desktop-portal-gtk
 
 Requires(post):     gtk-update-icon-cache
 Requires:           hicolor-icon-theme
@@ -88,6 +90,10 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
+* Sun Nov 15 2026 Ackerman-00 <no-reply> - 2:1.24.2b-3
+- Recommend xdg-desktop-portal and its GTK backend: Wayland screen sharing,
+  file dialogs and notifications go through the portal, and a minimal
+  compositor install ships none
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 2:1.24.2b-2
 - Strip the payload's Firefox updater (updater, updater.ini,
   update-settings.ini, icons/updater.png) at build time: distros own the
