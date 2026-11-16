@@ -1,6 +1,6 @@
 Name:           scenefx
 Version:        0.5
-Release:        4%{?dist}
+Release:        5%{?dist}
 
 Summary:        A drop-in replacement for the wlroots scene API for eye-candy effects
 URL:            https://github.com/wlrfx/scenefx
@@ -68,6 +68,9 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_libdir}/pkgconfig/%{name}-*.pc
 
 %changelog
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.5-5
+- BuildRequires wlroots-0.20 >= 0.20.2 (rebuilt against this repo's wlroots 0.20.2)
+
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.5-4
 - Move the in-app updater strip into %install
 

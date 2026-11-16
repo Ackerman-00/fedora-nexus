@@ -4,7 +4,7 @@
 
 Name:           noctalia-greeter
 Version:        1.7.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 License:        MIT AND Apache-2.0
@@ -122,5 +122,8 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 1.7.0^20261115034454git936473c-2
+- BuildRequires wlroots-0.20 >= 0.20.2 and Requires: wlroots >= 0.20.2 (rebuilt against this repo's wlroots 0.20.2)
+
 * Sun Nov 15 2026 Ackerman-00 <no-reply> - 1.7.0^20261115034454git936473c-1
 - Nightly sync with upstream main branch (Commit: 936473c)

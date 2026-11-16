@@ -100,6 +100,7 @@ sudo dnf install <package-name>
 | `opencad-studio` | Open-source 2D/3D CAD with native DWG/DXF support | Stable |
 | `omnirush-desktop` | Electron desktop shell for omnirush.ai | Stable |
 | `openchamber` | AI coding agent workspace (Electron) | Stable |
+| `otr-git` | The Otr programming language toolchain, built from the git snapshot | Git |
 | `openclaw-desktop` | OpenClaw companion app for the desktop (deb repackage; GTK3/WebKitGTK + bundled Bun runtime) | Stable |
 | `opencode-desktop` | AI coding agent desktop app | Stable |
 | `protonplus` | Modern compatibility tools manager | Stable |
@@ -126,6 +127,7 @@ sudo dnf install <package-name>
 | `xdg-desktop-portal-umbriel-git` | XDG Desktop Portal backend for Umbriel (Git Snapshot) | Git |
 | `zen-browser` | Privacy-focused Firefox fork | Stable |
 | `zig0.17` | Zig 0.17 toolchain, installable side by side with the distro zig as `zig0.17` | Stable |
+| `zoolander-git` | Zoolander Wayland compositor, built from the git snapshot | Git |
 
 > `Git` packages track upstream HEAD and rebuild on every new commit.
 

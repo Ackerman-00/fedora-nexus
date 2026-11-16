@@ -6,7 +6,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -114,5 +114,8 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.1.0^20261115223140git1bbbf15-2
+- BuildRequires wlroots-0.20 >= 0.20.2 (build against the 0.20.2 wlroots in this repo)
+
 * Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.1.0^20261115223140git1bbbf15-1
 - Nightly sync with upstream main branch (Commit: 1bbbf15)
