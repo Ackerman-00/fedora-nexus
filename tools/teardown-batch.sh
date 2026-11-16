@@ -53,5 +53,18 @@ one() {
 export -f one
 export R CH OUT DATE FORMAT
 
+# preflight: refuse a list whose columns are not readable in the chosen format
+first=$(grep -m1 -v '^[[:space:]]*$' "$LIST" || true)
+IFS='|' read -r _f1 _f2 _f3 <<< "$first"
+if [ "$FORMAT" = probes ]; then
+  if [ -z "${_f2:-}" ] || [ -z "${_f3:-}" ]; then
+    echo "FATAL: $LIST is not pkg|dnf-name|smoke; probes lists need 3 columns" >&2
+    exit 2
+  fi
+elif [[ "${_f3:-}" == *" "* || "${_f3:-}" == /* || "${_f3:-}" == *=* ]]; then
+  echo "FATAL: $LIST is pkg|dnf-name|smoke; re-run with --probes" >&2
+  exit 2
+fi
+
 tr '\n' '\0' < "$LIST" | xargs -0 -P "$JOBS" -I{} bash -c 'one "$@"' _ {}
 echo "logs: $OUT"
