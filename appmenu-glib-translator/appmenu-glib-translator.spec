@@ -1,6 +1,6 @@
-%global commit          c3fa11cd9db99cd942b2e3cfb2788d95e17620e2
+%global commit          7472d7d6c7c65cb9baff820029582d0fcc4c5079
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261115211721
+%global gitdate         20261116104421
 
 %global _vpath_srcdir subprojects/appmenu-glib-translator
 
@@ -12,6 +12,7 @@ Summary:        appmenu-glib-translator
 License:        LGPL-3.0-or-later
 URL:            https://github.com/rilian-la-te/vala-panel-appmenu/blob/master/subprojects/appmenu-glib-translator
 Source:         https://github.com/rilian-la-te/vala-panel-appmenu/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
+# sha256: e1683322257c93a7dff2d6e383c610c3800a954b5715d87255e41998e8aa7809
 
 BuildRequires:  meson >= 0.61.0
 BuildRequires:  gcc
@@ -61,6 +62,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
-* Sun Nov 15 2026 Ackerman-00 <no-reply> - 25.04^20261115211721gitc3fa11c-1
-- Match the subproject's API namespace by glob: upstream moved it 25.04 -> 26.11
-  without a soversion change, so the pinned filenames missed every build output
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 25.04^20261116104421git7472d7d-1
+- Nightly sync with upstream main branch (Commit: 7472d7d)

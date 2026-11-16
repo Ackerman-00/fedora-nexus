@@ -1,16 +1,16 @@
-%global commit          936473c9d804da3999ef191f8febaabacd1834b7
+%global commit          b8f95e0e569bf509be6588ac1534cbb22820fdab
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261115034454
+%global gitdate         20261116083605
 
 Name:           noctalia-greeter
 Version:        1.7.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 License:        MIT AND Apache-2.0
 URL:            https://github.com/noctalia-dev/noctalia-greeter
 Source0:        %{url}/archive/%{commit}/%{name}-%{commit}.tar.gz
-# sha256: 6965f5c5c50aa1d5af670148814ce9559d5d06328099437686aa3d934708e04b
+# sha256: 9523f2ad9f169b4ba4e4a0931a506e696cf8781e8c70c4cecd4a838ef1c21652
 Source1:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-APACHE
 # sha256: 0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594
 Source2:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-MIT
@@ -122,8 +122,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Mon Nov 16 2026 Ackerman-00 <no-reply> - 1.7.0^20261115034454git936473c-2
-- BuildRequires wlroots-0.20 >= 0.20.2 and Requires: wlroots >= 0.20.2 (rebuilt against this repo's wlroots 0.20.2)
-
-* Sun Nov 15 2026 Ackerman-00 <no-reply> - 1.7.0^20261115034454git936473c-1
-- Nightly sync with upstream main branch (Commit: 936473c)
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 1.7.0^20261116083605gitb8f95e0-1
+- Nightly sync with upstream main branch (Commit: b8f95e0)

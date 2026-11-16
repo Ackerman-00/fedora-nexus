@@ -49,6 +49,19 @@ sed -i -E "s/^%global gitdate.*/%global gitdate         $GIT_DATE/" "$SPEC_FILE"
 sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
 sed -i -E "s/^Version:.*/Version:        ${BASE_VER}^%{gitdate}git%{shortcommit}/" "$SPEC_FILE"
 
+SOURCE_URL=$(grep -E '^Source:' "$SPEC_FILE" | awk '{print $2}' | sed -e "s/%{commit}/$LATEST_COMMIT/g" -e "s/%{shortcommit}/$SHORT_COMMIT/g" -e "s/%{name}/appmenu-glib-translator/g")
+SOURCE_SHA=$(curl -sL --retry 3 --retry-all-errors --max-time 600 "$SOURCE_URL" | sha256sum | awk '{print $1}')
+if [ ${#SOURCE_SHA} -ne 64 ]; then
+    echo "FATAL: could not hash $SOURCE_URL; leaving the spec untouched" >&2
+    git checkout -- "$SPEC_FILE" 2>/dev/null || true
+    exit 1
+fi
+if grep -q "^# sha256:" "$SPEC_FILE"; then
+    sed -i -E "s|^# sha256:.*|# sha256: $SOURCE_SHA|" "$SPEC_FILE"
+else
+    sed -i -E "/^Source:/a # sha256: $SOURCE_SHA" "$SPEC_FILE"
+fi
+
 DATE_STRING=$(LC_ALL=C date +"%a %b %d %Y")
 CHANGELOG_VER="${BASE_VER}^${GIT_DATE}git${SHORT_COMMIT}-1"
 sed -i '/^%changelog/,$d' "$SPEC_FILE"
