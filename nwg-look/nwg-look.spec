@@ -5,8 +5,8 @@ Version:        1.2.1
 %gometa
 
 Name:           nwg-look
-Release:        4%{?dist}
-Summary:        GTK3 settings editor adapted to work in the wlroots environment (Nexus Optimized)
+Release:        5%{?dist}
+Summary:        GTK3 settings editor for Wayland compositors
 
 License:        MIT
 
@@ -24,11 +24,10 @@ BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(cairo-gobject)
 
 Requires:       gtk3
-Requires:       glib2
 
 %description
-nwg-look is a GTK3 settings editor, designed to work properly in wlroots-based Wayland environments.
-Packaged specifically for the Nexus repository. Compiled natively using optimized Go macros for peak Wayland performance.
+nwg-look is a GTK3 settings editor for Wayland compositors.
+Built for the Nexus repository with optimized Go macros.
 
 %prep
 %goprep
@@ -57,6 +56,13 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_datadir}/icons/hicolor/scalable/apps/nwg-look.svg
 
 %changelog
+* Sun Nov 16 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.2.1-5
+- Bring the built RPM to 0 rpmlint errors: shorten Summary, wrap
+  %description to 79 columns, drop the explicit glib2 Requires
+  (explicit-lib-dependency; soname Requires cover it), drop "natively"
+  from the text, and keep both flagged words out of Summary and
+  %description instead of filtering them
+
 * Sun Nov 16 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.2.1-4
 - Ship the app icon into hicolor/scalable/apps as well as pixmaps: the .desktop
   declares Icon=nwg-look, and panels that read only icon themes showed no icon
