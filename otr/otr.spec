@@ -1,6 +1,6 @@
 Name:           otr
 Version:        0.2.6
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        The Otr programming language toolchain
 
 License:        MIT
@@ -8,6 +8,9 @@ URL:            https://git.pika-os.com/general-packages/otr
 Source0:        https://git.pika-os.com/api/v1/repos/general-packages/otr/archive/v%{version}.tar.gz#/otr-v%{version}.tar.gz
 # sha256: a1e227aa3e576b5fa1ef9cf372cc87b569501ddf6914f0ffd43399f62fa6c67a
 
+# bundled toolchain libs stay private
+%global __provides_exclude_from ^%{_libdir}/%{name}/.*$
+%global __requires_exclude_from ^%{_libdir}/%{name}/.*$
 # bundled LLVM/mold payload: foreign ELF, no build-id note to link
 %global debug_package %{nil}
 %global _missing_build_ids_terminate_build 0
@@ -69,6 +72,12 @@ ln -s $(realpath --relative-to=%{buildroot}%{_bindir} %{buildroot}%{_libdir}/otr
 %{_libdir}/otr/
 
 %changelog
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.2.6-5
+- Keep the bundled LLVM libraries private: without the provides/requires
+  exclusion they advertise libstdc++.so.6 and libz.so.1 as system-wide
+  capabilities, so dnf installs this toolchain instead of the real Fedora
+  libraries in the F45 and rawhide buildroots and rpmbuild -bs cannot start.
+
 * Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.2.6-4
 - BuildRequires for what the bundled toolchain compiles: gcc-c++ supplies the C++
   standard headers the LLVM gold plugin needs, zlib-devel and libzstd-devel its -lz
