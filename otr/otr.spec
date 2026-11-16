@@ -5,7 +5,7 @@ Summary:        The Otr programming language toolchain
 
 License:        MIT
 URL:            https://git.pika-os.com/general-packages/otr
-Source0:        %{url}/archive/v%{version}.tar.gz#/otr-v%{version}.tar.gz
+Source0:        https://git.pika-os.com/api/v1/repos/general-packages/otr/archive/v%{version}.tar.gz#/otr-v%{version}.tar.gz
 # sha256: a1e227aa3e576b5fa1ef9cf372cc87b569501ddf6914f0ffd43399f62fa6c67a
 
 ExclusiveArch:  x86_64

@@ -28,10 +28,6 @@ BuildRequires:  libinput-devel
 BuildRequires:  libseat-devel
 BuildRequires:  libudev-devel
 BuildRequires:  libxcb-devel
-BuildRequires:  libxcb-xfixes0-devel
-BuildRequires:  libxcb-composite-devel
-BuildRequires:  libxcb-sync-devel
-BuildRequires:  libxcb-res-devel
 BuildRequires:  freetype-devel
 BuildRequires:  harfbuzz-devel
 BuildRequires:  fontconfig-devel
