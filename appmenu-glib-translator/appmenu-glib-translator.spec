@@ -6,7 +6,7 @@
 
 Name:           appmenu-glib-translator
 Version:        25.04^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        appmenu-glib-translator
 
 License:        LGPL-3.0-or-later
@@ -19,7 +19,7 @@ BuildRequires:  gcc
 BuildRequires:  /usr/bin/vapigen
 
 BuildRequires:  pkgconfig(gdk-pixbuf-2.0)
-BuildRequires:  pkgconfig(gio-unix-2.0) >= 2.52.0
+BuildRequires:  pkgconfig(gio-unix-2.0) >= 2.56.0
 BuildRequires:  pkgconfig(gobject-introspection-1.0)
 
 %package        devel
@@ -62,5 +62,9 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 25.04^20261116104421git7472d7d-2
+- BuildRequires gio-unix-2.0 floor 2.52 -> 2.56, the version the subproject's
+  own meson.build demands; pin the Source sha256 in update.sh output
+
 * Mon Nov 16 2026 Ackerman-00 <no-reply> - 25.04^20261116104421git7472d7d-1
 - Nightly sync with upstream main branch (Commit: 7472d7d)
