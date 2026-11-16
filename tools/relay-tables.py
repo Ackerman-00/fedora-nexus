@@ -10,22 +10,44 @@ ROOT = Path(__file__).resolve().parent.parent
 UPSTREAM_RE = re.compile(r"^upstream: ([A-Za-z0-9._+-]+) (.+)$")
 TOKEN_RE = re.compile(r"^docker-teardown: ([A-Za-z0-9._+-]+) (.*)$")
 PASS_RE = re.compile(r"install PASS")
+NVR_RE = re.compile(r"^%changelog\s*\n\s*\*\s+\w+\s+\w+\s+\d+\s+\d{4}\s+.+?\s+-\s+(\S+)\s*$", re.M)
 
 
 def inventory():
     return sorted(p.parent.name for p in ROOT.glob("*/*.spec"))
 
 
+def changelog_nvr(text):
+    m = NVR_RE.search(text)
+    return m.group(1) if m else ""
+
+
+def resolve_version(ver, rel, text):
+    """Expand a macro Version to the NVR the repo authored.
+
+    %{gitdate}/%{shortcommit}/%(shell) never expand outside rpmbuild, so the
+    raw Version line is not the version users got.
+    """
+    if not ver or ("%{" not in ver and "%(" not in ver):
+        return ver, rel
+    nvr = changelog_nvr(text)
+    if not nvr or "%" in nvr:
+        return ver, rel
+    m = re.match(r"^(.+)-(\d+)$", nvr)
+    return (m.group(1), m.group(2)) if m else (nvr, rel)
+
+
 def spec_version(pkg):
     for spec in sorted((ROOT / pkg).glob("*.spec")):
+        text = spec.read_text(errors="replace")
         ver = rel = ""
-        for line in spec.read_text(errors="replace").splitlines():
+        for line in text.splitlines():
             if line.startswith("Version:"):
                 ver = line.split(":", 1)[1].strip()
             elif line.startswith("Release:"):
                 rel = line.split(":", 1)[1].strip()
         if ver:
-            return ver, rel
+            return resolve_version(ver, rel, text)
     return "", ""
 
 
@@ -158,6 +180,14 @@ def selftest():
     no_pass = {"alpha": f"docker-teardown: alpha chroot:44 rpmbuild-bb PASS install FAIL smoke PASS | {today}"}
     text2 = emit(["alpha"], upstream, no_pass, today, changed=[])
     check("failed install is not deps-verified", "| deps-verified |" not in text2)
+
+    macro_spec = "%changelog\n* Mon Nov 16 2026 Ackerman-00 <no-reply> - 1.7.0^20261116083605gitb8f95e0-3\n- x\n"
+    v, r = resolve_version("1.7.0^%{gitdate}git%{shortcommit}", "1%{?dist}", macro_spec)
+    check("macro version resolves to changelog NVR", v == "1.7.0^20261116083605gitb8f95e0" and r == "3")
+    v, r = resolve_version("1.7.0^%{gitdate}git%{shortcommit}", "2%{?dist}", "%changelog\n")
+    check("macro version without changelog stays honest", v == "1.7.0^%{gitdate}git%{shortcommit}" and r == "2%{?dist}")
+    v, r = resolve_version("2.7.1", "1%{?dist}", macro_spec)
+    check("plain version untouched", v == "2.7.1" and r == "1%{?dist}")
 
     for name in failures:
         print(f"SELFTEST FAIL: {name}")

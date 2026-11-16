@@ -2,7 +2,7 @@
 
 Name:           concord
 Version:        2.7.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Feature-rich TUI client for Discord
 License:        GPL-3.0-only
 URL:            https://github.com/chojs23/concord
@@ -39,7 +39,6 @@ previews in the terminal.
 
 %prep
 %setup -q -n %{crate}-%{version}
-sed -i 's/rust-version = "1.99"/rust-version = "1.98"/' Cargo.toml
 
 %build
 export CARGO_NET_OFFLINE=false
@@ -60,5 +59,9 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_bindir}/concord
 
 %changelog
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 2.7.1-2
+- Drop the MSRV rewrite: every chroot ships rustc >= 1.99.1 (F43/F44/F45
+  1.99.1, rawhide 1.100.0), so the sed only rewrote a floor already satisfied
+
 * Mon Nov 16 2026 Ackerman-00 <no-reply> - 2.7.1-1
 - Auto-update to upstream stable release v2.7.1
