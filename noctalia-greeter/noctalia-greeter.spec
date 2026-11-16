@@ -4,7 +4,7 @@
 
 Name:           noctalia-greeter
 Version:        1.7.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 License:        MIT AND Apache-2.0
@@ -102,6 +102,10 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %post
 # Fresh-install auto-setup
 if [ "$1" -eq 1 ]; then
+    # PAM seat patch
+    if [ ! -f /etc/pam.d/greetd ] && [ -f /usr/lib/pam.d/greetd ]; then
+        cp /usr/lib/pam.d/greetd /etc/pam.d/greetd 2>/dev/null || :
+    fi
     SETUP=/usr/share/noctalia-greeter/setup_greeter_system.sh
     if [ -x "$SETUP" ] && command -v systemctl >/dev/null 2>&1; then
         "${SETUP}" >/dev/null 2>&1 || :
@@ -140,6 +144,11 @@ if [ "$1" -eq 0 ] && [ -L /etc/systemd/system/display-manager.service ]; then
 fi
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 1.7.0^20261116083605gitb8f95e0-3
+- Stage /usr/lib/pam.d/greetd to /etc before running the setup script: the
+  shipped script silently skipped the pam_systemd seat patch on Fedora because
+  greetd's PAM lives under /usr/lib, leaving greeter sessions without a seat.
+
 * Tue Nov 17 2026 Ackerman-00 <no-reply> - 1.7.0^20261116083605gitb8f95e0-2
 - Auto-configure greetd on install: apply the shipped PAM/state-dir setup,
   point /etc/greetd/config.toml at the greeter (backup kept), disable kmscon

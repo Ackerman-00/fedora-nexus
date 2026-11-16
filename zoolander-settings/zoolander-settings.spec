@@ -14,7 +14,7 @@
 
 Name:           zoolander-settings-git
 Version:        %{zsver}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Graphical settings app for the Zoolander compositor
 
 License:        MIT
@@ -62,13 +62,20 @@ reloads on Apply. The Otter library sources are vendored into this package and
 statically linked; no separate sibling packages are needed.
 
 %prep
-# -c extracts all 9 tarballs into one dir; their top dirs become siblings,
-# which is the layout the ../../ relative dependency paths require
-%autosetup -c -n zoolander-settings-build
+# Sibling source layout
+tar -xzf %{SOURCE0}
+tar -xzf %{SOURCE1}
+tar -xzf %{SOURCE2}
+tar -xzf %{SOURCE3}
+tar -xzf %{SOURCE4}
+tar -xzf %{SOURCE5}
+tar -xzf %{SOURCE6}
+tar -xzf %{SOURCE7}
+tar -xzf %{SOURCE8}
 
 %build
 cd zoolander-settings
-# baseline CPU: never ship host-specific ISA (COPR builders are AVX-512)
+# Baseline CPU
 OTR_CPU=baseline DESTDIR="%{buildroot}" otr run otr/build.otr -- install \
     --prefix %{_prefix} --cpu baseline
 
@@ -90,6 +97,11 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-2
+- Extract sources with plain tar so the top-level dirs are siblings directly
+  in BUILD; -1 used autosetup -c which nested them one level too deep and the
+  ../../ relative deps in otr.toml could not resolve.
+
 * Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-1
 - Initial package. Vendors the 9 pinned Otter library sources (from
   otter-zenith/pins.json) and links them statically, so a single RPM provides
