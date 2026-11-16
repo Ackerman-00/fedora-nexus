@@ -2,7 +2,7 @@
 
 Name:           sonora
 Version:        0.50.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Native music streaming client
 
 License:        GPL-3.0-or-later AND OFL-1.1 AND ISC AND MIT AND Apache-2.0 AND CC-BY-4.0
@@ -96,5 +96,5 @@ esac
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
-* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.50.0-1
-- Repackage the upstream prebuilt x86_64 binary instead of building from source
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.50.0-2
+- Repackage the upstream prebuilt x86_64 binary instead of building from source with cargo
