@@ -4,7 +4,7 @@
 
 Name:           noctalia-greeter
 Version:        1.7.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 License:        MIT AND Apache-2.0
@@ -100,27 +100,54 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_datadir}/polkit-1/actions/org.noctalia.greeter.apply-appearance.policy
 
 %post
+# Auto-configure on fresh install so a COPR user does not have to run the
+# setup script by hand. Every step is idempotent and makes a backup.
 if [ "$1" -eq 1 ]; then
-    echo
-    echo "================================================================"
-    echo "  noctalia-greeter is installed but NOT enabled yet."
-    echo
-    echo "  1. Run the system setup script (PAM patch, state dir, config):"
-    echo "    sudo /usr/share/noctalia-greeter/setup_greeter_system.sh"
-    echo
-    echo "  2. Point greetd at the greeter - /etc/greetd/config.toml:"
-    echo "    [default_session]"
-    echo "    command = \"/usr/bin/noctalia-greeter-session\""
-    echo "    user = \"greetd\""
-    echo
-    echo "  3. Enable and start it:"
-    echo "    sudo systemctl enable --now greetd"
-    echo
-    echo "  Tip: user avatars on the login screen need accountsservice:"
-    echo "    sudo dnf install accountsservice"
-    echo "================================================================"
+    SETUP=/usr/share/noctalia-greeter/setup_greeter_system.sh
+    if [ -x "$SETUP" ] && command -v systemctl >/dev/null 2>&1; then
+        "${SETUP}" >/dev/null 2>&1 || :
+    fi
+
+    # Point greetd at the greeter (keep the stock config as a backup).
+    greeter_user=$(awk -F= '/^[[:space:]]*user[[:space:]]*=/{gsub(/["[:space:]]/,"",$2); u=$2} END{print (u?u:"greetd")}' /etc/greetd/config.toml 2>/dev/null || echo greetd)
+    [ -n "$greeter_user" ] || greeter_user=greetd
+    if [ -f /etc/greetd/config.toml ] &&
+       ! grep -q 'noctalia-greeter-session' /etc/greetd/config.toml 2>/dev/null; then
+        cp -a /etc/greetd/config.toml /etc/greetd/config.toml.bak.noctalia.$(date +%%Y%%m%%d%%H%%M%%S) 2>/dev/null || :
+        cat > /etc/greetd/config.toml <<EOF
+[terminal]
+vt = 1
+
+[default_session]
+command = "/usr/bin/noctalia-greeter-session"
+user = "$greeter_user"
+EOF
+    fi
+
+    # Free VT1 from kmscon (F45 holds DRM master there) and make greetd the
+    # display manager. A text console stays available on VT2.
+    systemctl disable kmsconvt@tty1.service >/dev/null 2>&1 || :
+    systemctl enable getty@tty2.service >/dev/null 2>&1 || :
+    systemctl enable greetd.service >/dev/null 2>&1 || :
+    if [ ! -e /etc/systemd/system/display-manager.service ]; then
+        ln -s /usr/lib/systemd/system/greetd.service /etc/systemd/system/display-manager.service 2>/dev/null || :
+    fi
+fi
+
+%postun
+# On final removal, undo the display-manager alias if it still points here.
+if [ "$1" -eq 0 ] && [ -L /etc/systemd/system/display-manager.service ]; then
+    target=$(readlink /etc/systemd/system/display-manager.service 2>/dev/null || :)
+    case "$target" in *greetd.service*) rm -f /etc/systemd/system/display-manager.service ;; esac
 fi
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 1.7.0^20261116083605gitb8f95e0-2
+- Auto-configure greetd on install: apply the shipped PAM/state-dir setup,
+  point /etc/greetd/config.toml at the greeter (backup kept), disable kmscon
+  on VT1 (F45 kmscon holds DRM master and blocks the compositor), keep a
+  getty on VT2, and enable greetd + the display-manager alias. A fresh COPR
+  install now boots straight into the greeter instead of needing manual steps.
+
 * Mon Nov 16 2026 Ackerman-00 <no-reply> - 1.7.0^20261116083605gitb8f95e0-1
 - Nightly sync with upstream main branch (Commit: b8f95e0)

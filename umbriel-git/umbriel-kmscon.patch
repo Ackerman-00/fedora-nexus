@@ -1,0 +1,20 @@
+--- a/data/start-umbriel.in	2026-11-17 01:10:15.055801872 +0600
++++ b/data/start-umbriel.in	2026-11-17 01:10:15.057092041 +0600
+@@ -1,5 +1,17 @@
+ #!/bin/sh
+ 
++# Fedora 45+: kmscon holds DRM master on the VT, so a compositor launched from
++# that TTY cannot take the GPU. Re-exec through kmscon-launch-gui so kmscon
++# releases DRM master first. Guarded to avoid recursion; a greetd/logind seat
++# (kmscon disabled) or a nested session skips this path.
++if [ -z "${WAYLAND_DISPLAY:-}" ] && [ -z "${DISPLAY:-}" ] &&
++   [ -z "${WAYLAND_SOCKET:-}" ] && [ -n "${XDG_VTNR:-}" ] &&
++   [ "${UMBRIEL_KMS_GUI:-}" != 1 ] &&
++   command -v kmscon-launch-gui >/dev/null 2>&1 &&
++   systemctl is-active --quiet "kmsconvt@tty${XDG_VTNR}.service" 2>/dev/null; then
++    UMBRIEL_KMS_GUI=1 exec kmscon-launch-gui "$0" "$@"
++fi
++
+ drs=
+ if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ] &&
+    command -v dbus-run-session >/dev/null 2>&1; then
