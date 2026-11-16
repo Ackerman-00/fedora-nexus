@@ -14,7 +14,7 @@
 
 Name:           zoolander-settings-git
 Version:        %{zsver}
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Graphical settings app for the Zoolander compositor
 
 License:        MIT
@@ -38,6 +38,7 @@ Source6:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-theme/arc
 Source7:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-ui/archive/v%{ui}.tar.gz#/otter-ui-v%{ui}.tar.gz
 # sha256: 8595b2b2aebbae055c012fce60fd9299bd41e2de05c55d00e8790254ce585e70
 Source8:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-desktop/archive/v%{desktop}.tar.gz#/otter-desktop-v%{desktop}.tar.gz
+Source9:        LICENSE
 # sha256: 47dd5b0ecaaea92bcaa40902304fb23cea312abb440fc9aea675a93b1a905be5
 
 ExclusiveArch:  x86_64 aarch64
@@ -81,10 +82,10 @@ DESTDIR=%{_builddir}/staging OTR_CPU=baseline otr run otr/build.otr -- install \
 
 %install
 cp -a %{_builddir}/staging/usr %{buildroot}/
-install -D -m 0644 zoolander-settings/LICENSE %{buildroot}%{_licensedir}/zoolander-settings-git/LICENSE
+install -D -m 0644 %{SOURCE9} %{buildroot}%{_licensedir}/zoolander-settings-git/LICENSE
 
 %files
-%license zoolander-settings/LICENSE
+%license %{_licensedir}/zoolander-settings-git/LICENSE
 %{_bindir}/zoolander-settings
 %{_datadir}/applications/
 %{_datadir}/icons/hicolor/
@@ -98,6 +99,11 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-7
+- Ship the vendored LICENSE as Source9 and install from %{SOURCE9}; the
+  previous relative path did not resolve at %install time (the tarball ships
+  no license file) - COPR build 11337071/11337077 failed
+
 * Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-6
 - Vendor the Otter project's MIT license text (identical to the LICENSE files
   shipped by otter-utils and otter-render): zoolander-settings ships no LICENSE
