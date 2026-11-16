@@ -300,7 +300,8 @@ def newest_builds():
         base = os.path.basename(url)
         prefix = name + "-"
         nvr = base[len(prefix):] if base.startswith(prefix) else base
-        out[name] = (nvr_norm(nvr), source.get("id"), b.get("state"), b.get("id"))
+        out[name] = (nvr_norm(nvr), source.get("id"), b.get("state"), b.get("id"),
+                     tuple(sorted(b.get("chroots") or ())))
     return out
 
 
@@ -309,7 +310,7 @@ def hunt_builds():
     newest = newest_builds()
     bad = []
     states = {}
-    for name, (_nvr, _srcid, state, newestid) in sorted(newest.items()):
+    for name, (_nvr, _srcid, state, newestid, _chroots) in sorted(newest.items()):
         if state in ("failed", "unknown"):
             bad.append((name, newestid, state))
         states[state] = states.get(state, 0) + 1
@@ -406,6 +407,10 @@ def upstream_refs(txt):
         if m:
             yield ("gitlab", m.group(1), m.group(2).rstrip("/"))
             continue
+        m = re.search(r"https://([^/\s]+)/api/v1/repos/([^/\s]+/[^/\s#]+)", u)
+        if m:
+            yield ("gitea", m.group(1), m.group(2).rstrip("/"))
+            continue
         m = re.search(r"pypi\.org/project/([^/\s#]+)", u)
         if m:
             yield ("pypi", m.group(1), "")
@@ -443,6 +448,9 @@ def latest_release(forge, owner, repo):
         except Exception:
             pass
         return gitlab_tag_fallback(host, owner, repo)
+    if forge == "gitea":
+        d = get_json("https://%s/api/v1/repos/%s/releases/latest" % (owner, repo), 30) or {}
+        return d.get("tag_name")
     if forge == "pypi":
         d = get_json("https://pypi.org/pypi/%s/json" % owner, 30) or {}
         return (d.get("info") or {}).get("version")
@@ -577,9 +585,17 @@ def probe_upstream(sp):
         return pkg, "", None, "", "no upstream URL and no vendor feed"
     forge, owner, repo = refs[0]
     commit = spec_macro(sp, "commit")
-    if commit and forge in ("github", "codeberg"):
-        host = "github.com" if forge == "github" else "codeberg.org"
-        out = subprocess.run(["git", "ls-remote", "https://%s/%s/%s.git" % (host, owner, repo), "HEAD"],
+    if not commit:
+        m = re.search(r"/archive/([0-9a-f]{40})", txt)
+        if m:
+            commit = m.group(1)
+    if commit and forge in ("github", "codeberg", "gitea"):
+        if forge == "gitea":
+            url = "https://%s/%s.git" % (owner, repo)
+        else:
+            host = "github.com" if forge == "github" else "codeberg.org"
+            url = "https://%s/%s/%s.git" % (host, owner, repo)
+        out = subprocess.run(["git", "ls-remote", url, "HEAD"],
                              capture_output=True, text=True, timeout=60).stdout.split()
         if not out:
             return pkg, "", None, "git ls-remote %s/%s HEAD" % (owner, repo), "HEAD unreadable"
@@ -950,7 +966,7 @@ def hunt_published_nvr():
     chroots = sorted((get_json("%s/project?ownername=ackerman&projectname=nexus" % COPR)
                       .get("chroot_repos") or {}).keys())
     pub = {c: repodata_nvr(c) for c in chroots}
-    findings, pending, checked = [], [], 0
+    findings, pending, checked, excluded = [], [], 0, []
     for sp in specs():
         name = resolve_version(sp, spec_field(sp, "Name"))
         if "%{" in name:
@@ -967,7 +983,7 @@ def hunt_published_nvr():
             continue
         want = nvr_norm(m.group(1))
         checked += 1
-        built, bid, state, _newestid = builds.get(name, ("", None, None, None))
+        built, bid, state, _newestid, asked = builds.get(name, ("", None, None, None, ()))
         if not build_settled(state):
             pending.append(name)
             continue
@@ -977,6 +993,9 @@ def hunt_published_nvr():
             findings.append((name, "git NVR %s is not the built NVR %s (build %s, %s)"
                              % (want, built, bid, state)))
         for c in chroots:
+            if asked and c not in asked:
+                excluded.append("%s:%s" % (name, c))
+                continue
             room = pub[c]
             got = room.get(name)
             if got is None:
@@ -984,6 +1003,8 @@ def hunt_published_nvr():
             elif got != want:
                 findings.append((name, "%s repodata serves %s, git says %s" % (c, got, want)))
     note = "%d chroots read: %s" % (len(chroots), ", ".join(chroots))
+    if excluded:
+        note += "; not requested for this package (chroot denylist), not a finding: %s" % " ".join(sorted(excluded))
     if pending:
         note += "; in flight, not a finding: %s" % " ".join(sorted(pending))
     return ("published-nvr", "%d packages, %d findings" % (checked, len(findings)), note, findings)
@@ -1260,7 +1281,7 @@ def hunt_slice():
     minutes = build_minutes()
     over = {p: minutes[p] for p in inv if minutes.get(p, 0) > SLICE_MAX_BUILD_MIN}
     pool = [p for p in inv if p not in over]
-    width = -(-len(pool) // 4)
+    width = min(-(-len(inv) // 4), len(pool))
     order = sorted(pool, key=lambda p: (last.get(p, ""), p))
     slice_pkgs, rest = order[:width], order[width:width + width]
     never = [p for p in pool if p not in last]
@@ -1322,6 +1343,7 @@ def hunt_files_syntax():
                          r"pre|post|postun|pretrans|posttrans|trigger|clean|conf|"
                          r"generate_buildrequires|autopatch|autosetup)\b")
     STRIP = "app-update.yml"
+    PAYLOAD = re.compile(r"app[.]asar|electron|resources/app", re.I)
     bad, checked, no_strip = [], 0, []
     for sp in specs():
         checked += 1
@@ -1343,7 +1365,7 @@ def hunt_files_syntax():
                 install_hits.append(no)
         if files_hits:
             bad.append((pkg, "relative %%files line %d: %s" % files_hits[0]))
-        if not install_hits:
+        if not install_hits and PAYLOAD.search("\n".join(lines)):
             no_strip.append(pkg)
     note = "no %%install strip line: %s" % (", ".join(sorted(no_strip)) or "none")
     return ("files-syntax", "%d specs, %d with relative %%files lines" % (checked, len(bad)),
