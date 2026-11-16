@@ -15,7 +15,9 @@ Adapted from fvadicamo/dev-agent-skills and openclaw-pr-maintainer.
   it. The tracker is this repo's audit trail, not a human handover.
 - Every verdict comment carries commands, build ids, and the verification
   result. Close only after the fix is built, installed, and verified.
-- PRs you open are yours to review and merge (squash) in the same run.
+- PRs you open are yours to review and merge (squash) in the same run. Run
+  `gh pr checks <n>` and confirm the build/install evidence before
+  `gh pr merge <n> --squash`; never merge on a green checkbox alone.
 - Never wait for owner approval: you are the owner. Pushes, merges, COPR
   writes, chroot edits, and issue closure are yours to execute now. The gate
   fails `needs-owner` / `waiting for owner` / approval markers. A missing

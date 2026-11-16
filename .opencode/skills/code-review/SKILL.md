@@ -19,6 +19,16 @@ Adapted from gstack review, coderabbitai/skills, and requesting-code-review.
 - For update scripts check: the updater can actually track a release, no
   broken shebang, and a real version regex.
 
+## Output contract
+
+- Write findings as one terse line each: **location, problem, fix, severity**
+  (bug / risk / nit / question). No praise, restated diff, or hedging.
+- Run five axes on every change: correctness, readability, architecture,
+  security, performance. Ask whether an abstraction earns its complexity and
+  whether the change can remove a concept, branch, wrapper, or special case.
+- Approve when the change clearly improves overall code health, not when it
+  matches your preferred style. A finding you cannot reproduce stays a nit.
+
 ## Disposition
 
 - Fix the generator, not the instance: a recurring finding means the tool or

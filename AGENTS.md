@@ -458,11 +458,12 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
 
 ## Tools in this repo (what to run instead of hand-rolling it)
 
-- `.opencode/skills/<id>/SKILL.md` holds the scheduler's skills (nine:
+- `.opencode/skills/<id>/SKILL.md` holds the scheduler's skills (twelve:
   web-research, linux-packaging, rpm-copr, security-audit, code-review,
   systematic-debugging, verification-before-completion, github-ops,
-  container-validation). `tools/sweep-prompt.md` has the registry that loads
-  them all at the start of every run.
+  container-validation, python-tooling, writing-for-agents, fedora-triage).
+  `tools/sweep-prompt.md` has the registry that loads them all at the start
+  of every run; the gate and verifier count all twelve.
 
 - `python3 tools/hunt.py` - machine-checked hunt categories against live
   sources: builds (COPR), chroots, upstream-versions (GitHub, Codeberg,

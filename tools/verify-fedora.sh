@@ -298,12 +298,12 @@ if [[ -z "$skills_line" ]]; then
   echo "FAIL: NOT COMPLETE -- no 'skills:' line naming the skills loaded this run"
   FAIL=1
 else
-  skills_n=$(printf '%s\n' "$skills_line" | grep -oE '\b(web-research|linux-packaging|rpm-copr|security-audit|code-review|systematic-debugging|verification-before-completion|github-ops|container-validation)\b' | sort -u | wc -l || true)
-  if [[ "$skills_n" -lt 9 ]]; then
-    echo "FAIL: NOT COMPLETE -- skills: names $skills_n of the 9 required skills"
+  skills_n=$(printf '%s\n' "$skills_line" | grep -oE '\b(web-research|linux-packaging|rpm-copr|security-audit|code-review|systematic-debugging|verification-before-completion|github-ops|container-validation|python-tooling|writing-for-agents|fedora-triage)\b' | sort -u | wc -l || true)
+  if [[ "$skills_n" -lt 12 ]]; then
+    echo "FAIL: NOT COMPLETE -- skills: names $skills_n of the 12 required skills"
     FAIL=1
   else
-    echo "PASS: all 9 skills named as loaded"
+    echo "PASS: all 12 skills named as loaded"
   fi
 fi
 today="$TODAY"; yest="$YEST"

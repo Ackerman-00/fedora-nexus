@@ -7,6 +7,20 @@ description: Root-cause investigation before fixing - form competing hypotheses,
 
 Adapted from obra/superpowers systematic-debugging and gstack investigate.
 
+## Stop the line and shrink the failure
+
+- Preserve the original failure before any cleanup: logs, build ids, exit
+  codes, state, timing, and input. A clean rerun does not explain the run
+  that failed.
+- Minimize the reproduction to a deterministic, agent-runnable red loop
+  (the exact `rpmbuild`/`dnf`/`gh` command) before forming hypotheses.
+- For a complex failure with several plausible causes, split the
+  investigation across subagents; require file/line citations and a
+  confidence tier for each conclusion before arbitrating.
+- After three failed fixes, stop patching and question the architecture or
+  the tooling: change the generator, not the instance. Escalate to a
+  different hypothesis or subagent, never to a human approval.
+
 ## Prove the cause before the fix
 
 - Record the symptom verbatim: log lines, build ids, exit codes, URLs.

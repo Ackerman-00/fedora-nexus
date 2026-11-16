@@ -818,13 +818,13 @@ SKILL REGISTRY: at the start of every run load these with the skill tool
 (bodies live in .opencode/skills/<id>/SKILL.md) and follow them throughout:
 @web-research @linux-packaging @rpm-copr @security-audit @code-review
 @systematic-debugging @verification-before-completion @github-ops
-@container-validation
+@container-validation @python-tooling @writing-for-agents @fedora-triage
 Never work on a package, build failure, issue, or workflow change without
 them. Load a skill again after a compacted or handed-off run.
 
 MANDATORY RUN TOKENS (the inline gate AND tools/verify-fedora.sh read these;
 a missing or stale token fails the run):
-skills: <all nine ids from the registry above>
+skills: <all twelve ids from the registry above>
 websearch: <N live queries, M primary-source URLs, YYYY-MM-DD>
 plan: <pkg> - <competing hypotheses and the probes run before changing it>
   (one line per package you changed)

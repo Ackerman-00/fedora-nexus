@@ -229,8 +229,8 @@ jobs:
             local skills_line skills_n web_line plan_pkg
             skills_line=$(grep -m1 -E '^[[:space:]]*skills:' <<< "$content" || true)
             [ -n "$skills_line" ] || return 1
-            skills_n=$(printf '%s\n' "$skills_line" | grep -oE '\b(web-research|linux-packaging|rpm-copr|security-audit|code-review|systematic-debugging|verification-before-completion|github-ops|container-validation)\b' | sort -u | wc -l || true)
-            [ "$skills_n" -ge 9 ] || return 1
+            skills_n=$(printf '%s\n' "$skills_line" | grep -oE '\b(web-research|linux-packaging|rpm-copr|security-audit|code-review|systematic-debugging|verification-before-completion|github-ops|container-validation|python-tooling|writing-for-agents|fedora-triage)\b' | sort -u | wc -l || true)
+            [ "$skills_n" -ge 12 ] || return 1
             web_line=$(grep -m1 -E "^[[:space:]]*websearch: .*($today|$yest)" <<< "$content" || true)
             [ -n "$web_line" ] || return 1
             for plan_pkg in $changed_pkgs; do
