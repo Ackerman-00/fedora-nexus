@@ -155,6 +155,10 @@ jobs:
             [ "$g_unclass" -lt 0 ] && g_unclass=0
             [ "$g_act" -eq 0 ] || return 1
             [ "$g_unclass" -eq 0 ] || return 1
+            local g_ext g_probe
+            g_ext=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?GAP: external" <<< "$content" || true)
+            g_probe=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?GAP: external.*\[probe:" <<< "$content" || true)
+            [ "$g_ext" -eq "$g_probe" ] || return 1
             for tool in "rpmspec -P" "dnf builddep" "rpmlint"; do
               grep -qi "$tool.*PASS\|PASS.*$tool" <<< "$content" || return 1
             done

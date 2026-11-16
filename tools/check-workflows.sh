@@ -78,7 +78,8 @@ gp, vp = grep_patterns(gate), grep_patterns(ver)
 for pat in (r"^[[:space:]]*defects-found:[[:space:]]*[0-9]+",
             r"^[[:space:]]*defects-fixed:[[:space:]]*[0-9]+",
             r"^[[:space:]]*changed:",
-            r"^[[:space:]]*hunt: [a-z0-9-]+"):
+            r"^[[:space:]]*hunt: [a-z0-9-]+",
+             r"^[[:space:]]*([-*][[:space:]]*)?GAP: external.*\[probe:"):
     in_gate = norm(pat) in gp
     in_ver = norm(pat) in vp
     if in_gate and in_ver:

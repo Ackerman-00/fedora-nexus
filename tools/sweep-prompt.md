@@ -142,7 +142,7 @@ asked to.
 CONTEXT
 - Each package lives in its own directory with a .spec file and often an
   update.sh (an upstream-check script). update-engine.yml (GitHub Actions,
-  "Fedora Nexus Auto-Updater") runs every 6h (cron '0 */6 * * *'):
+  "Fedora Nexus Auto-Updater") runs every 8h (cron '0 */8 * * *'):
   it runs update.sh for packages that have one and scans the rest
   against GitHub release tags, bumping spec versions and committing
   to main directly.
@@ -1923,6 +1923,16 @@ with a command you ran THIS run: paste the 403, the 404, the
 missing asset, the chroot that has not synced, the header that
 proves the version is not published. If you cannot show the probe
 that proves it, it is `actionable` and you fix it now.
+A COPR chroot failure is NOT automatically an external outage: a missing
+library can be an older package THIS repo published advertising that
+library's SONAME. Before calling a buildroot broken, query what provides
+each missing SONAME (`dnf repoquery --whatprovides` or the chroot's
+repodata) and paste the result. Every `GAP: external` about a build
+failure must carry `[probe: <command + result>]` on the same line or the
+gate fails it. A spec fix cannot reach the buildroot until its new binary
+publishes: if the bad provider is still the published build, break the
+cycle with COPR chroot additional_packages for the real libraries,
+rebuild the fixed package, then revert the chroot settings.
 SPECIFICALLY, THESE ARE ACTIONABLE, NOT EXTERNAL:
   - a version regex, sed or updater in this repo that cannot match
     a real upstream tag -> fix the pattern

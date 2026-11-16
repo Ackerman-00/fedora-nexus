@@ -621,3 +621,22 @@ cancelled at 21:14 with every package after fluxer unscanned. Fix (24565f2):
 each `update.sh` in update-engine.yml runs under `timeout 600`; a timeout logs
 `FAILED (timeout 600s)` for that package and the loop continues. fetch-sha256's
 1800s cap is for the human-run path; in CI the per-package timeout is the bound.
+
+## A published package can poison every chroot's buildroot (found 2026-11-16)
+
+A spec that bundles ELF libraries under a private dir (for example
+`%{_libdir}/<name>/`) without `__provides_exclude_from` publishes those
+libraries' SONAMEs as system-wide capabilities. When that package is
+installable in a chroot, dnf resolves `rpm-build`'s library requirements to it
+instead of the real Fedora libraries, and `rpmbuild -bs` dies before the spec
+is read. The repo's other 20 bundled specs carry the guard; a new one must too.
+
+The published binary is the poison, not the spec in git: a Release-bumped
+rebuild cannot fix the chroot because the SRPM stage runs before the new binary
+exists. Break the cycle with COPR credentials: add the real libraries to the
+affected chroots' buildroot packages (`copr-cli edit-chroot --packages
+"libstdc++ zlib"`), rebuild the fixed package, then revert the chroot setting.
+A `GAP: external` for a buildroot failure must first rule out this repo's own
+providers (`dnf repoquery --whatprovides <SONAME>` or chroot repodata) and carry
+a `[probe: ...]` token; the gate enforces the token (tools/check-workflows.sh
+keeps gate and verifier in sync).

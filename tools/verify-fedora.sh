@@ -234,6 +234,12 @@ if [[ -f "$RELAY" ]]; then
     echo "FAIL: NOT COMPLETE -- $g_noreason 'external' gap(s)/HOLD(s) with no reason after the marker"
     FAIL=1
   fi
+  g_ext=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?GAP: external" <<< "$scope" || true)
+  g_probe=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?GAP: external.*\[probe:" <<< "$scope" || true)
+  if [[ "$g_ext" -gt 0 && "$g_ext" -ne "$g_probe" ]]; then
+    echo "FAIL: NOT COMPLETE -- $g_ext external gap(s) but $g_probe [probe:] token(s); every external gap must name the command and result that prove it"
+    FAIL=1
+  fi
   if ! grep -qiE "docker-teardown:.*PASS.*($TODAY|$YEST)" <<< "$scope"; then
     echo "FAIL: NOT COMPLETE -- no docker teardown evidence in THIS run's block"
     FAIL=1
