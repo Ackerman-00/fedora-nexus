@@ -1,6 +1,6 @@
 Name:           otr
 Version:        0.2.6
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The Otr programming language toolchain
 
 License:        MIT
@@ -23,6 +23,8 @@ backend and the mold linker. Otter Shell is built with it.
 
 %prep
 %autosetup -n otr
+# host WAF refuses the default curl UA
+sed -i 's|curl -sfL --retry 3|curl -sfL --retry 3 -A "Mozilla/5.0 (X11; Linux x86_64)"|' tools/bootstrap.sh
 
 %build
 sh tools/bootstrap.sh > /tmp/otr-boot-path
@@ -46,6 +48,10 @@ ln -s $(realpath --relative-to=%{buildroot}%{_bindir} %{buildroot}%{_libdir}/otr
 %{_libdir}/otr/
 
 %changelog
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.2.6-3
+- Bootstrap download sends a browser User-Agent: the release-asset host answers
+  403 to the default curl UA and 206 to this one, so the toolchain fetch failed
+
 * Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.2.6-2
 - Use %autosetup -n otr: %build ran in the wrong directory and never found
   tools/bootstrap.sh ("sh tools/bootstrap.sh: No such file or directory")
