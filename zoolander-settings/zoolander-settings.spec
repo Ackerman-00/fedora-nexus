@@ -14,7 +14,7 @@
 
 Name:           zoolander-settings-git
 Version:        %{zsver}
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Graphical settings app for the Zoolander compositor
 
 License:        MIT
@@ -76,11 +76,11 @@ tar -xzf %{SOURCE8}
 %build
 cd zoolander-settings
 # Baseline CPU
-OTR_CPU=baseline DESTDIR="%{buildroot}" otr run otr/build.otr -- install \
+DESTDIR=%{_builddir}/staging OTR_CPU=baseline otr run otr/build.otr -- install \
     --prefix %{_prefix} --cpu baseline
 
 %install
-# build.otr --install already staged into DESTDIR
+cp -a %{_builddir}/staging/usr %{buildroot}/
 
 %files
 %license zoolander-settings/LICENSE
@@ -97,6 +97,12 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-4
+- Stage the otr install into %{_builddir}/staging and copy into %{buildroot}
+  from %install: rpm wipes %{buildroot} before the %install script, so the
+  tree staged by %build never survived to %files (COPR build 11336995 failed:
+  "File not found: .../usr/bin/zoolander-settings")
+
 * Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-3
 - Give every Source a unique #/filename: all nine gitea archive URLs end in
   v<version>.tar.gz and four of them share v0.13.45, so they downloaded to one
