@@ -1,6 +1,6 @@
 ---
 name: Python Tooling
-description: Standards for this repo's stdlib-only Python tools - pytest tests, negative tests for detectors, and no new runtime dependencies. Use for any tools/*.py change.
+description: Standards for this repo's stdlib-only Python tools - positive and negative tests for detectors, no new runtime dependencies. Use for every tools/*.py edit, even a one-line regex change.
 ---
 
 # Python Tooling

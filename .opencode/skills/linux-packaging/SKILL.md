@@ -1,6 +1,6 @@
 ---
 name: Linux Packaging
-description: Fedora/RPM packaging rules for fedora-nexus - dependency mapping, spec structure, desktop metadata, and clean-environment validation. Use for every spec, update.sh, or package change.
+description: Fedora/RPM packaging rules for fedora-nexus - dependency mapping, spec structure, desktop metadata, clean-environment validation. Use for every spec, update.sh, or package change, including version-only bumps that look mechanical.
 ---
 
 # Linux Packaging (Fedora subset)

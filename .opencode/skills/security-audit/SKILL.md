@@ -1,6 +1,6 @@
 ---
 name: Security Audit
-description: Package and repository security review - OSV/CVE ranges, checksum pins, secrets, unsafe scriptlets, SUID helpers, and supply-chain floors. Use for every spec, incident, or dependency change.
+description: Package and repository security review - OSV ranges, checksum pins, secrets, unsafe scriptlets, SUID helpers, supply-chain floors. Use for every spec, incident, dependency change, and any 'no CVEs' or 'clean' claim.
 ---
 
 # Security Audit
@@ -9,7 +9,8 @@ Adapted from Trail of Bits insecure-defaults/static-analysis and gstack CSO.
 
 ## Secrets and supply chain
 
-- Never print, echo, or commit tokens; check presence only and redact logs.
+- Keep tokens out of logs, commits, and issues: a leaked token ends every
+  run. Check presence, never the value, and redact command output.
 - Verify every `# sha256:` pin against the artifact it names. A pin that lags
   the version shipped is a false receipt, not evidence.
 - Trivy floor >= 0.72.0 with commit-SHA-pinned actions; the March 2026

@@ -1,6 +1,6 @@
 ---
 name: Web Research
-description: Mandatory live research discipline - verify versions, URLs, dates, CVEs, and host status on the web every run; never trust memory, the prompt, or a single snippet. Use before every claim about the outside world.
+description: Mandatory live research - verify versions, URLs, dates, CVEs, and host status on the web every run, from primary sources with exact status codes, never from memory or one snippet. Use before any claim about the outside world.
 ---
 
 # Web Research

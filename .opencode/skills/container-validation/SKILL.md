@@ -1,6 +1,6 @@
 ---
 name: Container Validation
-description: Clean-environment proof for RPMs - fresh Fedora container build, install, rpm -V, ldd, and the real smoke test. Never build on the maintainer host. Use before any install PASS claim.
+description: Clean-environment proof for RPMs - fresh Fedora container build, install, rpm -V, ldd, and the real smoke test. Use before any install PASS claim, teardown token, or changed-package verification; never build on the maintainer host, which lacks the Fedora toolchain and would pollute its state.
 ---
 
 # Container Validation

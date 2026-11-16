@@ -1,6 +1,6 @@
 ---
 name: GitHub Ops
-description: Issue and PR triage with the gh CLI - the tracker is the queue, evidence in every comment, close only with proof, strict bot identity. Use for every issue, PR, and commit.
+description: Issue and PR triage with the gh CLI - the tracker is the queue, evidence in every comment, close only with proof, strict bot identity. Use for every issue, PR, commit, and push; never wait for a reviewer or owner.
 ---
 
 # GitHub Ops

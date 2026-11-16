@@ -819,14 +819,15 @@ SKILL REGISTRY: at the start of every run load these with the skill tool
 @web-research @linux-packaging @rpm-copr @security-audit @code-review
 @systematic-debugging @verification-before-completion @github-ops
 @container-validation @python-tooling @writing-for-agents @fedora-triage
-@repo-improvement
+@repo-improvement @why-from-record
 Never work on a package, build failure, issue, or workflow change without
 them. Load a skill again after a compacted or handed-off run.
 
 MANDATORY RUN TOKENS (the inline gate AND tools/verify-fedora.sh read these;
 a missing or stale token fails the run):
-skills: <all thirteen ids from the registry above>
+skills: <all fourteen ids from the registry above>
 websearch: <N live queries, M primary-source URLs, YYYY-MM-DD>
+why: <subject> - source: <commit | AGENTS.md#section | issue #N | relay run_id> - inference: <none | what you inferred>
 improve: <N candidates, >= 5> - <top pick> - landed: <commit or issue #>
 plan: <pkg> - <competing hypotheses and the probes run before changing it>
   (one line per package you changed)
@@ -2217,27 +2218,16 @@ now reads the cells. Write what you observed.
 3. DEFECT ACCOUNTING - two lines, exactly:
    defects-found: <N>   (every defect you found this run)
    defects-fixed: <M>  (how many you fixed and pushed)
-   Every defect is fixed (counted in M) or proven external (a
-   GAP: external line carrying the probe). The gate computes
-   M + external_gaps >= N and fails the run otherwise.
-4. HUNT EVIDENCE - one line per category you hunted, with the command
-   and its result, e.g.
-   hunt: upstream-versions - 56 updaters ran, 0 moved
-   hunt: install-tests - 47 rows, 0 FAIL
-   hunt: cves - osv querybatch, 0 hits
-   hunt: licenses - 64 specs, 0 missing license text
-   hunt: deps - 64 dnf builddep, 0 missing
-   hunt: builds - 64 newest COPR builds, 0 failed
-   hunt: spec-lint - rpmspec/rpmlint, 0 errors
-   hunt: smoke - 24 teardowns, 0 FAIL
-   `python3 tools/hunt.py` runs the machine-checkable categories
-   (builds, chroots, upstream-versions, cves, licenses,
-   release-discipline, version-probe, readme, fedora-releases)
-   against the live sources and prints the relay-ready hunt: lines
-   plus every finding - run it instead of hand-rolling those
-   checks. The
-   container categories (deps, install-tests, spec-lint, smoke) are
-   yours. The gate counts distinct categories and needs at least 5.
+   Every defect is fixed (counted in M) or proven external (a GAP or
+   HOLD external line carrying a [probe: ...] token). The gate computes
+   M + probed external gaps >= N and fails the run otherwise.
+4. HUNT EVIDENCE - one `hunt: <slug> - <command and result>` line per
+   category. The gate requires at least 8 distinct categories and
+   specifically these machine slugs: builds, chroots, upstream-versions,
+   cves, pins, sources, probes, published-nvr. `python3 tools/hunt.py`
+   runs them against live sources and prints the relay-ready lines plus
+   every finding - run it instead of hand-rolling those checks. The
+   container categories (deps, install-tests, spec-lint, smoke) are yours.
    A category you did not run is a category you did not check.
 ## PACKAGER/EMAIL POLICY (MANDATORY - added for maintainer privacy)
 - The maintainer identity is "Ackerman-00" and it must never be published with

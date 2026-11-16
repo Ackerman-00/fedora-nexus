@@ -234,8 +234,8 @@ if [[ -f "$RELAY" ]]; then
     echo "FAIL: NOT COMPLETE -- $g_noreason 'external' gap(s)/HOLD(s) with no reason after the marker"
     FAIL=1
   fi
-  g_ext=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?GAP: external" <<< "$scope" || true)
-  g_probe=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?GAP: external.*\[probe:" <<< "$scope" || true)
+  g_ext=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD): external" <<< "$scope" || true)
+  g_probe=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD): external.*\[probe:" <<< "$scope" || true)
   if [[ "$g_ext" -gt 0 && "$g_ext" -ne "$g_probe" ]]; then
     echo "FAIL: NOT COMPLETE -- $g_ext external gap(s) but $g_probe [probe:] token(s); every external gap must name the command and result that prove it"
     FAIL=1
@@ -298,18 +298,21 @@ if [[ -z "$skills_line" ]]; then
   echo "FAIL: NOT COMPLETE -- no 'skills:' line naming the skills loaded this run"
   FAIL=1
 else
-  skills_n=$(printf '%s\n' "$skills_line" | grep -oE '\b(web-research|linux-packaging|rpm-copr|security-audit|code-review|systematic-debugging|verification-before-completion|github-ops|container-validation|python-tooling|writing-for-agents|fedora-triage|repo-improvement)\b' | sort -u | wc -l || true)
-  if [[ "$skills_n" -lt 13 ]]; then
-    echo "FAIL: NOT COMPLETE -- skills: names $skills_n of the 13 required skills"
+  skills_n=$(printf '%s\n' "$skills_line" | grep -oE '\b(web-research|linux-packaging|rpm-copr|security-audit|code-review|systematic-debugging|verification-before-completion|github-ops|container-validation|python-tooling|writing-for-agents|fedora-triage|repo-improvement|why-from-record)\b' | sort -u | wc -l || true)
+  if [[ "$skills_n" -lt 14 ]]; then
+    echo "FAIL: NOT COMPLETE -- skills: names $skills_n of the 14 required skills"
     FAIL=1
   else
-    echo "PASS: all 13 skills named as loaded"
+    echo "PASS: all 14 skills named as loaded"
   fi
 fi
 today="$TODAY"; yest="$YEST"
 web_line=$(grep -m1 -E "^[[:space:]]*websearch: .*($today|$yest)" <<< "$scope" || true)
 if [[ -z "$web_line" ]]; then
   echo "FAIL: NOT COMPLETE -- no dated 'websearch:' line with live research for THIS run"
+  FAIL=1
+elif ! grep -qiE 'https?://' <<< "$web_line"; then
+  echo "FAIL: NOT COMPLETE -- websearch: line carries no source URL"
   FAIL=1
 else
   echo "PASS: live websearch recorded"
@@ -326,12 +329,22 @@ if [[ -z "$improve_line" ]]; then
   FAIL=1
 else
   improve_n=$(printf '%s\n' "$improve_line" | sed -E 's/^[[:space:]]*improve: ([0-9]+).*/\1/')
-  if [[ "$improve_n" -lt 5 ]] || ! grep -qE 'landed:|issue #[0-9]+' <<< "$improve_line"; then
+  if [[ "$improve_n" -lt 5 ]] || ! grep -qE 'landed:[[:space:]]*[0-9a-f]{7,40}|issue[[:space:]]*#[0-9]+' <<< "$improve_line"; then
     echo "FAIL: NOT COMPLETE -- improve: needs >= 5 candidates and a landed outcome (commit or issue #)"
     FAIL=1
   else
     echo "PASS: improvement brainstorm landed"
   fi
+fi
+why_line=$(grep -m1 -E '^[[:space:]]*why: .*source:' <<< "$scope" || true)
+if [[ -z "$why_line" ]]; then
+  echo "FAIL: NOT COMPLETE -- no 'why: <subject> - source: <record>' line"
+  FAIL=1
+elif ! grep -qE '[0-9a-f]{7,40}|AGENTS\.md#|issue[[:space:]]*#[0-9]+|relay[[:space:]]+[0-9]+' <<< "$why_line"; then
+  echo "FAIL: NOT COMPLETE -- why: line has no commit / AGENTS.md / issue / relay source"
+  FAIL=1
+else
+  echo "PASS: why answered from the record"
 fi
 wait_line=$(grep -im1 -E '^[[:space:]]*([-*][[:space:]]*)?(needs-owner|waiting for (the )?owner|awaiting (the )?owner|pending owner|owner approval|human approval|needs approval|owner to apply|requires owner)' <<< "$scope" || true)
 owner_ask=$(grep -im1 -E 'needs[[:space:]]*-?[[:space:]]*owner|wait(ing)? for (the )?owner|ask(ing)? (the )?owner|owner.{0,20}(approv|decid|permission)|(approv|permission).{0,20}from (the )?owner|owner declined' <<< "$scope" || true)

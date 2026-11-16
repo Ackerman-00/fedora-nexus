@@ -1,6 +1,6 @@
 ---
 name: Systematic Debugging
-description: Root-cause investigation before fixing - form competing hypotheses, probe each, and prove the mechanism instead of patching symptoms. Use for every failure that is not immediately obvious.
+description: Root-cause investigation before fixing - competing hypotheses, falsifying probes, and attacking the premise after two failed fixes. Use for every non-obvious failure and before any second attempt at the same fix.
 ---
 
 # Systematic Debugging
@@ -20,6 +20,15 @@ Adapted from obra/superpowers systematic-debugging and gstack investigate.
 - After three failed fixes, stop patching and question the architecture or
   the tooling: change the generator, not the instance. Escalate to a
   different hypothesis or subagent, never to a human approval.
+
+## Attack the premise
+
+- After two fixes that share one premise fail the same gate, suspect the
+  premise, not the fixes. Write the one-sentence premise down and test it
+  with an observation that would differ if it were false.
+- Look at how failures are distributed, not only their size; make the check
+  rerunnable. If evidence contradicts the premise, stop fixing that cause.
+- Do not start a third fix before the premise has been written and tested.
 
 ## Prove the cause before the fix
 

@@ -155,10 +155,12 @@ jobs:
             [ "$g_unclass" -lt 0 ] && g_unclass=0
             [ "$g_act" -eq 0 ] || return 1
             [ "$g_unclass" -eq 0 ] || return 1
-            local g_ext g_probe
-            g_ext=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?GAP: external" <<< "$content" || true)
-            g_probe=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?GAP: external.*\[probe:" <<< "$content" || true)
+            local g_ext g_probe g_noreason
+            g_ext=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD): external" <<< "$content" || true)
+            g_probe=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD): external.*\[probe:" <<< "$content" || true)
+            g_noreason=$(grep -ciE "^[[:space:]]*([-*][[:space:]]*)?((GAP|HOLD)[[:space:]]*:[[:space:]]*external|not verified\b.*\bexternal\b)[[:space:]]*:?[[:space:]]*$" <<< "$content" || true)
             [ "$g_ext" -eq "$g_probe" ] || return 1
+            [ "$g_noreason" -eq 0 ] || return 1
             for tool in "rpmspec -P" "dnf builddep" "rpmlint"; do
               grep -qi "$tool.*PASS\|PASS.*$tool" <<< "$content" || return 1
             done
@@ -229,10 +231,11 @@ jobs:
             local skills_line skills_n web_line plan_pkg
             skills_line=$(grep -m1 -E '^[[:space:]]*skills:' <<< "$content" || true)
             [ -n "$skills_line" ] || return 1
-            skills_n=$(printf '%s\n' "$skills_line" | grep -oE '\b(web-research|linux-packaging|rpm-copr|security-audit|code-review|systematic-debugging|verification-before-completion|github-ops|container-validation|python-tooling|writing-for-agents|fedora-triage|repo-improvement)\b' | sort -u | wc -l || true)
-            [ "$skills_n" -ge 13 ] || return 1
+            skills_n=$(printf '%s\n' "$skills_line" | grep -oE '\b(web-research|linux-packaging|rpm-copr|security-audit|code-review|systematic-debugging|verification-before-completion|github-ops|container-validation|python-tooling|writing-for-agents|fedora-triage|repo-improvement|why-from-record)\b' | sort -u | wc -l || true)
+            [ "$skills_n" -ge 14 ] || return 1
             web_line=$(grep -m1 -E "^[[:space:]]*websearch: .*($today|$yest)" <<< "$content" || true)
             [ -n "$web_line" ] || return 1
+            grep -qiE 'https?://' <<< "$web_line" || return 1
             for plan_pkg in $changed_pkgs; do
               grep -qE "^[[:space:]]*plan: $plan_pkg " <<< "$content" || return 1
             done
@@ -241,7 +244,11 @@ jobs:
             [ -n "$improve_line" ] || return 1
             improve_n=$(printf '%s\n' "$improve_line" | sed -E 's/^[[:space:]]*improve: ([0-9]+).*/\1/')
             [ "$improve_n" -ge 5 ] || return 1
-            grep -qE 'landed:|issue #[0-9]+' <<< "$improve_line" || return 1
+            grep -qE 'landed:[[:space:]]*[0-9a-f]{7,40}|issue[[:space:]]*#[0-9]+' <<< "$improve_line" || return 1
+            local why_line
+            why_line=$(grep -m1 -E '^[[:space:]]*why: .*source:' <<< "$content" || true)
+            [ -n "$why_line" ] || return 1
+            grep -qE '[0-9a-f]{7,40}|AGENTS\.md#|issue[[:space:]]*#[0-9]+|relay[[:space:]]+[0-9]+' <<< "$why_line" || return 1
             local wait_line
             wait_line=$(grep -im1 -E '^[[:space:]]*([-*][[:space:]]*)?(needs-owner|waiting for (the )?owner|awaiting (the )?owner|pending owner|owner approval|human approval|needs approval|owner to apply|requires owner)' <<< "$content" || true)
             [ -z "$wait_line" ] || return 1

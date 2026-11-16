@@ -1,6 +1,6 @@
 ---
 name: RPM and COPR
-description: Fedora RPM and COPR build logistics - chroots, SRPM vs chroot stage, build logs, repodata, provider conflicts, and dist-git drift. Use for every build failure or publication claim.
+description: Fedora RPM and COPR build logistics - chroots, SRPM vs chroot stage, logs, repodata, provider conflicts, dist-git drift. Use for every build failure, red chroot, publication claim, or suspicion that COPR is broken.
 ---
 
 # RPM and COPR

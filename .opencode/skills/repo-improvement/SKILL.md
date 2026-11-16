@@ -1,6 +1,6 @@
 ---
 name: Repo Improvement
-description: Autonomous improvement thinking for fedora-nexus - frame the problem, generate 5-7 approaches, stress-test assumptions with probes, then land the best fix. Use every run.
+description: Autonomous improvement thinking for fedora-nexus - frame the problem, generate 5-7 approaches, stress-test assumptions with probes, land the winner. Use every run, including runs that look like routine maintenance.
 ---
 
 # Repo Improvement

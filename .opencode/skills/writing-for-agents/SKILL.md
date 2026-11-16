@@ -1,6 +1,6 @@
 ---
 name: Writing for Agents
-description: Author and edit agent-consumed docs - AGENTS.md, sweep-prompt.md, SKILL.md - with short labels, pointer-reached context, and no stale claims. Use for every documentation change.
+description: Author and edit agent-consumed docs - AGENTS.md, sweep-prompt.md, SKILL.md - with short labels, pointer-reached context, and no stale claims. Use for every documentation change and whenever a new scheduler rule is added.
 ---
 
 # Writing for Agents

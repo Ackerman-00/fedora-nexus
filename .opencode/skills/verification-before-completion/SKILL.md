@@ -1,6 +1,6 @@
 ---
 name: Verification Before Completion
-description: Final gate discipline - run the real verifier, prove every verdict cell, and never write status complete on belief. Use before every relay checkpoint and completion claim.
+description: Final gate discipline - run the real verifier, prove every verdict cell and number, explain the number, never write status complete on belief. Use before every relay checkpoint, completion claim, or reported metric.
 ---
 
 # Verification Before Completion
@@ -21,6 +21,16 @@ battle-tested gate.
   is from today or yesterday UTC.
 - Check that the toolchain evidence (`rpmspec -P`, `dnf builddep`, `rpmlint`)
   is from this run's fresh container, not memory.
+
+## Explain every number
+
+- Any count, speedup, regression, or eval result you report must carry its
+  run count, its spread, and the named limiter that bounds it. Rule out
+  errors, cached or skipped work, code that never ran, and noise with
+  evidence before calling a number real.
+- A number in the relay without the command that produced it is a fake.
+  If you cannot say why it is not twice as good, you do not know what you
+  measured - do not report it as improvement.
 
 ## Never game the gate
 

@@ -1,6 +1,6 @@
 ---
 name: Code Review
-description: Evidence-backed review of specs, tools, and workflow changes before merge - findings with location and proof, never a rubber stamp. Use before any commit or PR landing.
+description: Evidence-backed review of specs, tools, and workflow changes before anything lands - findings with location, proof, and severity, never a rubber stamp. Use before every commit, squash-merge, or PR landing, including changes that look trivial or already passed CI.
 ---
 
 # Code Review

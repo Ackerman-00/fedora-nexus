@@ -1,6 +1,6 @@
 ---
 name: Fedora Triage
-description: Fedora-native triage with dnf, systemd, SELinux and firewalld - verification after each change and rollback plans. Use for runtime or system issues around built packages.
+description: Fedora-native triage with dnf, systemd, SELinux and firewalld, with verification after each step and a rollback plan. Use for any runtime, host, SELinux, or service issue around a built package, even when the spec itself looks correct.
 ---
 
 # Fedora Triage
