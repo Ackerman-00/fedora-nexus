@@ -281,12 +281,45 @@ else
   echo "PASS: defect accounting ($d_found found, $d_fixed fixed, ${g_decl:-0} external)"
 fi
 hunt_cats=$(grep -oE '^[[:space:]]*hunt: [a-z0-9-]+' <<< "$scope" | sort -u | wc -l || true)
-if [[ "$hunt_cats" -lt 5 ]]; then
-  echo "FAIL: NOT COMPLETE -- only $hunt_cats hunt categories recorded, need >= 5"
+if [[ "$hunt_cats" -lt 8 ]]; then
+  echo "FAIL: NOT COMPLETE -- only $hunt_cats hunt categories recorded, need >= 8"
   FAIL=1
 else
-  echo "PASS: hunt categories $hunt_cats >= 5"
+  echo "PASS: hunt categories $hunt_cats >= 8"
 fi
+for cat in builds chroots upstream-versions cves pins sources probes published-nvr; do
+  if ! grep -qE "^[[:space:]]*hunt: $cat " <<< "$scope"; then
+    echo "FAIL: NOT COMPLETE -- mandatory hunt category '$cat' missing"
+    FAIL=1
+  fi
+done
+skills_line=$(grep -m1 -E '^[[:space:]]*skills:' <<< "$scope" || true)
+if [[ -z "$skills_line" ]]; then
+  echo "FAIL: NOT COMPLETE -- no 'skills:' line naming the skills loaded this run"
+  FAIL=1
+else
+  skills_n=$(printf '%s\n' "$skills_line" | grep -oE '\b(web-research|linux-packaging|rpm-copr|security-audit|code-review|systematic-debugging|verification-before-completion|github-ops|container-validation)\b' | sort -u | wc -l || true)
+  if [[ "$skills_n" -lt 9 ]]; then
+    echo "FAIL: NOT COMPLETE -- skills: names $skills_n of the 9 required skills"
+    FAIL=1
+  else
+    echo "PASS: all 9 skills named as loaded"
+  fi
+fi
+today="$TODAY"; yest="$YEST"
+web_line=$(grep -m1 -E "^[[:space:]]*websearch: .*($today|$yest)" <<< "$scope" || true)
+if [[ -z "$web_line" ]]; then
+  echo "FAIL: NOT COMPLETE -- no dated 'websearch:' line with live research for THIS run"
+  FAIL=1
+else
+  echo "PASS: live websearch recorded"
+fi
+for plan_pkg in $changed_pkgs; do
+  if ! grep -qE "^[[:space:]]*plan: $plan_pkg " <<< "$scope"; then
+    echo "FAIL: NOT COMPLETE -- changed package '$plan_pkg' has no pre-action plan: line"
+    FAIL=1
+  fi
+done
 
 if [[ "$FAIL" -ne 0 ]]; then
   echo "FAIL: NOT COMPLETE -- agent must continue, repair gaps, and rerun verification"

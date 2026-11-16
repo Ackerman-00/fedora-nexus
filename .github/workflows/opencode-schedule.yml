@@ -222,7 +222,20 @@ jobs:
             [ -n "$d_found" ] && [ -n "$d_fixed" ] || return 1
             [ "$d_fixed" -ge "$d_found" ] || [ $(( d_fixed + g_decl )) -ge "$d_found" ] || return 1
             hunt_cats=$(grep -oE '^[[:space:]]*hunt: [a-z0-9-]+' <<< "$content" | sort -u | wc -l || true)
-            [ "$hunt_cats" -ge 5 ] || return 1
+            [ "$hunt_cats" -ge 8 ] || return 1
+            for cat in builds chroots upstream-versions cves pins sources probes published-nvr; do
+              grep -qE "^[[:space:]]*hunt: $cat " <<< "$content" || return 1
+            done
+            local skills_line skills_n web_line plan_pkg
+            skills_line=$(grep -m1 -E '^[[:space:]]*skills:' <<< "$content" || true)
+            [ -n "$skills_line" ] || return 1
+            skills_n=$(printf '%s\n' "$skills_line" | grep -oE '\b(web-research|linux-packaging|rpm-copr|security-audit|code-review|systematic-debugging|verification-before-completion|github-ops|container-validation)\b' | sort -u | wc -l || true)
+            [ "$skills_n" -ge 9 ] || return 1
+            web_line=$(grep -m1 -E "^[[:space:]]*websearch: .*($today|$yest)" <<< "$content" || true)
+            [ -n "$web_line" ] || return 1
+            for plan_pkg in $changed_pkgs; do
+              grep -qE "^[[:space:]]*plan: $plan_pkg " <<< "$content" || return 1
+            done
             return 0
           }
           sleep $((RANDOM % 180))

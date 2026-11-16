@@ -821,6 +821,22 @@ SKILL REGISTRY: at the start of every run load these with the skill tool
 Never work on a package, build failure, issue, or workflow change without
 them. Load a skill again after a compacted or handed-off run.
 
+MANDATORY RUN TOKENS (the inline gate AND tools/verify-fedora.sh read these;
+a missing or stale token fails the run):
+skills: <all nine ids from the registry above>
+websearch: <N live queries, M primary-source URLs, YYYY-MM-DD>
+plan: <pkg> - <competing hypotheses and the probes run before changing it>
+  (one line per package you changed)
+hunt: <slug> - <command and result> - at least these eight slugs: builds,
+  chroots, upstream-versions, cves, pins, sources, probes, published-nvr
+
+THINK BEFORE DOING ANYTHING: load the skills, websearch the live sources,
+write the plan with competing hypotheses and the commands that falsify them,
+run those probes, and only then edit or push. Before touching any spec, tear
+the artifact apart: read its INTERNAL version and checksum, derive its
+upstream dependency list from the whole build system, and compare it with
+BuildRequires. A plausible story without a probe is not evidence.
+
 KNOWN PACKAGE-SPECIFIC NOTES - THE RIGOR BELOW APPLIES TO EVERY
 PACKAGE, NOT JUST THE EXAMPLE NAMED. For EVERY package, establish
 the authoritative reference chain: (1) this repo's spec, (2) an
