@@ -5,7 +5,7 @@ Version:        1.2.1
 %gometa
 
 Name:           nwg-look
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        GTK3 settings editor for Wayland compositors
 
 License:        MIT
@@ -24,6 +24,10 @@ BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(cairo-gobject)
 
 Requires:       gtk3
+Requires:       hicolor-icon-theme
+Requires(post):     desktop-file-utils
+Requires(post):     gtk-update-icon-cache
+Requires(postun):   gtk-update-icon-cache
 
 %description
 nwg-look is a GTK3 settings editor for Wayland compositors.
@@ -46,6 +50,22 @@ install -Dpm0644 %{buildroot}%{_datadir}/pixmaps/nwg-look.svg \
 
 find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 
+%post
+/usr/bin/update-desktop-database > /dev/null 2>&1 || :
+/bin/touch --no-create %{_datadir}/icons/hicolor > /dev/null 2>&1 || :
+
+%postun
+/usr/bin/update-desktop-database > /dev/null 2>&1 || :
+case "$1" in
+    0)
+        /bin/touch --no-create %{_datadir}/icons/hicolor > /dev/null 2>&1
+        /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor > /dev/null 2>&1 || :
+        ;;
+esac
+
+%posttrans
+/usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor > /dev/null 2>&1 || :
+
 %files
 %license LICENSE
 %doc README.md
@@ -56,6 +76,12 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_datadir}/icons/hicolor/scalable/apps/nwg-look.svg
 
 %changelog
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 1.2.1-7
+- Own the hicolor icon the way the desktop-app guideline requires:
+  Requires hicolor-icon-theme and update the icon cache and desktop
+  database in the standard scriptlets, so the menu icon resolves right
+  after install
+
 * Mon Nov 16 2026 Ackerman-00 <no-reply> - 1.2.1-6
 - Rebuild for every chroot: the newest build targeted only fedora-43 and
   fedora-44, so fedora-45 and rawhide still served 1.2.1-3, which predates
