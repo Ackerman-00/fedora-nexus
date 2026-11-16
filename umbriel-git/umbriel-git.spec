@@ -6,7 +6,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -83,7 +83,7 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 %endif
 
 %build
-%meson -Db_lto=true -Dtests=disabled -Dlocaled=enabled \
+%meson -Db_lto=true -Dtests=disabled -Dharness=disabled -Dlocaled=enabled \
     -Dtracy=disabled
 %meson_build
 
@@ -114,5 +114,7 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Sun Nov 16 2026 Ackerman-00 <no-reply> - 0.1.0^20261115142928git70b3724-2
+- Build without test harness (%meson auto-features enables it; release shipped test-only IPC)
 * Sun Nov 15 2026 Ackerman-00 <no-reply> - 0.1.0^20261115142928git70b3724-1
 - Nightly sync with upstream main branch (Commit: 70b3724)
