@@ -5,7 +5,7 @@ Version:        1.2.1
 %gometa
 
 Name:           nwg-look
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        GTK3 settings editor adapted to work in the wlroots environment (Nexus Optimized)
 
 License:        MIT
@@ -41,6 +41,10 @@ make build
 
 %make_install
 
+# menu Icon= must resolve through an icon theme, not only the legacy pixmap path
+install -Dpm0644 %{buildroot}%{_datadir}/pixmaps/nwg-look.svg \
+    %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/nwg-look.svg
+
 find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 
 %files
@@ -50,8 +54,14 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_datadir}/applications/nwg-look.desktop
 %{_datadir}/nwg-look/
 %{_datadir}/pixmaps/nwg-look.svg
+%{_datadir}/icons/hicolor/scalable/apps/nwg-look.svg
 
 %changelog
+* Sun Nov 16 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.2.1-4
+- Ship the app icon into hicolor/scalable/apps as well as pixmaps: the .desktop
+  declares Icon=nwg-look, and panels that read only icon themes showed no icon
+  (tools/desktop-sweep.sh counted 1014 theme icons and none named nwg-look)
+
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.2.1-3
 - Move the in-app updater strip into %install
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Install published packages in a clean container and resolve every .desktop they ship:
-# menu entries (XDG dirs) must resolve Icon= and Exec=; a bundle copy under /opt only
-# needs its Exec binary inside the payload; a session entry needs its Exec in PATH.
+# menu entries (XDG dirs) must resolve Icon= and Exec=; a file outside those dirs needs
+# its Exec in PATH or inside the payload (bundle under /opt); a session needs Exec in PATH.
 # usage: desktop-sweep.sh "<pkg> <pkg> ..." [chroot]
 set -u
 PKGS=${1:?usage: desktop-sweep.sh "<pkg> <pkg> ..." [chroot]}
@@ -52,7 +52,9 @@ for p in $PKGS; do
         case "$exec_bin" in
           "") : ;;
           /*) [ -x "$exec_bin" ] || { echo "BUNDLE_EXEC_MISSING $p $f exec=$exec_bin"; rc=1; } ;;
-          *) find /opt -maxdepth 4 -name "$exec_bin" -type f -perm -u+x 2>/dev/null | grep -q . \
+          *) # a system-dir file (KDE servicemenu, thumbnailer) resolves through PATH; a bundle copy lives in /opt
+             command -v "$exec_bin" >/dev/null 2>&1 \
+               || find /opt -maxdepth 4 -name "$exec_bin" -type f -perm -u+x 2>/dev/null | grep -q . \
                || { echo "BUNDLE_EXEC_MISSING $p $f exec=$exec_bin"; rc=1; } ;;
         esac
         echo "BUNDLE $p $(basename "$f") exec=${exec_bin:--}" ;;
