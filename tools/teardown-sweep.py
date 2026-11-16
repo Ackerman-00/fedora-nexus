@@ -1745,9 +1745,35 @@ def strings_version(sub, distname, max_files=12, max_total=400_000_000):
     return None, None
 
 
+def sniff_ext(path, distname):
+    """Classify an extension-less artifact by its magic bytes."""
+    try:
+        with open(path, "rb") as f:
+            head = f.read(8)
+    except OSError:
+        return None
+    if head[:4] == b"\xed\xab\xee\xdb":
+        return ".rpm"
+    if head[:4] == b"\x1f\x8b":
+        return ".tar.gz"
+    if head[:4] == b"\x28\xb5\x2f\xfd":
+        return ".zst"
+    if head[:7] == b"!<arch>":
+        return ".deb"
+    if head[:4] == b"\x7fELF":
+        return ".elf"
+    return None
+
 def tear_apart(path, distname, tmp):
     """Return (internal_version, note, strong, source_like)."""
     ext = distname.lower()
+    known = (".appimage", ".deb", ".rpm", ".crate", ".zip", ".tar.gz",
+             ".tgz", ".tar.xz", ".txz", ".tar.zst", ".tar.bz2", ".7z",
+             ".zst", ".xbps")
+    if not any(ext.endswith(k) or k in ext for k in known):
+        sniffed = sniff_ext(path, distname)
+        if sniffed:
+            ext = "artifact" + sniffed
     if ext.endswith(".appimage") or ".appimage" in ext:
         try:
             os.chmod(path, 0o755)
@@ -1772,6 +1798,19 @@ def tear_apart(path, distname, tmp):
                 res.returncode, res.stderr.decode(errors="ignore")[-300:]), False, False
         except Exception as e:
             return None, "AppImage teardown error: %s" % e, False, False
+    if ext.endswith(".elf"):
+        try:
+            name = re.split(r"[-_ ]+v?\d", distname, maxsplit=1)[0]
+            name = re.sub(r"\.(elf|exe|bin|app)$", "", name, flags=re.I).rstrip("._- ")
+            if len(name) >= 4:
+                pat = re.escape(name.encode()) + rb"[/ _-]v?(\d+(?:\.\d+)+[a-zA-Z0-9]{0,3})"
+                data = open(path, "rb").read()
+                m = re.search(pat, data)
+                if m:
+                    return m.group(1).decode(errors="ignore").rstrip(".-_"), "elf strings", True, False
+            return None, "elf binary, no embedded version string matched", False, False
+        except Exception as e:
+            return None, "elf teardown error: %s" % e, False, False
     if ext.endswith(".deb"):
         ver, note = extract_deb_control_version(path, tmp)
         return ver, note, bool(ver), False
@@ -3392,11 +3431,18 @@ def check_rpm_dependencies(root, repo_type):
         tools.append("static repology/packages.fedoraproject.org check")
     log("Tools available: %s" % ", ".join(tools))
     BUILD_TOOL_BRS = {
-        "cmake": "cmake", "meson": "meson", "ninja": "ninja-build",
-        "autoreconf": "autoconf", "automake": "automake",
-        "pkg-config": "pkgconfig", "pkgconf": "pkgconfig",
-        "desktop-file-install": "desktop-file-utils",
-        "go": "golang", "cargo": "cargo", "rustc": "rust",
+        "cmake": ("cmake", r"\bcmake\b"),
+        "meson": ("meson", r"\bmeson\b"),
+        "ninja": ("ninja", r"\b(?:ninja|samu|ninja-build)\b"),
+        "autoreconf": ("autoconf", r"\bautoreconf\b"),
+        "automake": ("automake", r"\bautomake\b"),
+        "pkg-config": ("pkgconfig", r"\bpkg-config\b"),
+        "pkgconf": ("pkgconfig", r"\bpkgconf\b"),
+        # \bgo\b fires on "chmod go-w"; require a go subcommand instead
+        "desktop-file-install": ("desktop-file-utils", r"\bdesktop-file-install\b"),
+        "go": ("golang", r"\bgo\s+(?:build|run|test|vet|mod|list|install|generate|env|tool)\b"),
+        "cargo": ("cargo", r"\bcargo\s+(?:build|run|test|vendor|check|clippy|install|fetch)\b"),
+        "rustc": ("rust", r"\brustc\b"),
     }
     rows_dep = []
     for spec in sorted(specs):
@@ -3467,15 +3513,15 @@ def check_rpm_dependencies(root, repo_type):
         build_script = "\n".join(re.findall(r"^%(?:build|install|check)\b.*?(?=^%|\Z)", txt, re.M | re.S))
         build_script = "\n".join(line for line in build_script.splitlines()
                                  if not line.lstrip().startswith("#"))
-        for tool, br_atom in BUILD_TOOL_BRS.items():
+        for tool, (br_atom, tool_re) in BUILD_TOOL_BRS.items():
             if br_atom in br or ("pkgconfig(%s)" % br_atom) in br:
                 continue
             if tool in ("pkg-config", "pkgconf") and any(b.startswith("pkgconfig") for b in br):
                 continue
-            if re.search(r"\b%s\b" % re.escape(tool), build_script):
+            if re.search(tool_re, build_script):
                 br_missing.append("RPM324: %s -> BuildRequires: %s" % (tool, br_atom))
         for r in list(req):
-            if r.endswith("-devel") or r in BUILD_TOOL_BRS:
+            if r.endswith("-devel") or r in {a for a, _ in BUILD_TOOL_BRS.values()}:
                 br_missing.append("RPM323: Requires:%s looks like BuildRequires" % r)
         if ("chrome-sandbox" in txt
                 and not re.search(r"%attr\(\s*4755\s*,\s*root\s*,\s*root\s*\)[^\n]*chrome-sandbox", txt)
