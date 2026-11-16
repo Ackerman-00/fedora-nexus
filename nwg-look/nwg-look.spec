@@ -5,7 +5,7 @@ Version:        1.2.1
 %gometa
 
 Name:           nwg-look
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        GTK3 settings editor for Wayland compositors
 
 License:        MIT
@@ -56,7 +56,12 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_datadir}/icons/hicolor/scalable/apps/nwg-look.svg
 
 %changelog
-* Sun Nov 16 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.2.1-5
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 1.2.1-6
+- Rebuild for every chroot: the newest build targeted only fedora-43 and
+  fedora-44, so fedora-45 and rawhide still served 1.2.1-3, which predates
+  the hicolor icon that makes the menu entry's Icon= resolve
+
+* Mon Nov 16 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.2.1-5
 - Bring the built RPM to 0 rpmlint errors: shorten Summary, wrap
   %description to 79 columns, drop the explicit glib2 Requires
   (explicit-lib-dependency; soname Requires cover it), drop "natively"
