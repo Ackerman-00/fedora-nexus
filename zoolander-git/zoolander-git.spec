@@ -5,7 +5,7 @@
 
 Name:           zoolander-git
 Version:        %{base_version}+git%{gitdate}.%{shortcommit}
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Zoolander Wayland compositor, built from the git snapshot
 
 License:        MIT
@@ -52,6 +52,8 @@ Requires:       xorg-x11-server-Xwayland
 Requires:       libseat
 Requires:       netcat
 Requires:       kmscon
+Requires:       zoolander-settings-git
+Conflicts:      zoolander
 Recommends:     mesa-vulkan-drivers
 
 %description
@@ -127,6 +129,9 @@ sed -i -e 's|zl.exec_command("otter-wallpaper")|zl.exec_command("command -v otte
 %{_libdir}/libVkLayer_zoolander_wsi.so
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-7
+- Require zoolander-settings-git and conflict with the non-git zoolander-settings
+
 * Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-6
 - Starter config: skip otter-wallpaper/otter-bar at startup when absent
   (checked in /bin/sh via command -v; Lua has no os) so a bare zoolander run
