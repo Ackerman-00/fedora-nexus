@@ -19,6 +19,8 @@ beam-free
 nemotron-3.5-super-vl-free
 # AA Coding Index 48.3 estimated, medium confidence; SWE-bench Verified 74.2 vendor - source: Benchgap - 2026-11-09
 flint-40b-free
+# ModelComp 57.2 overall (48 agent reports, read 2026-11-15): SWE-bench Verified 68%, Terminal-Bench 49.4%; stealth id, 200K ctx, slowest median of the free roster and reported to lose track past 50-70K ctx - treat as last resort for long edits
+big-pickle
 
 # tier 3 - no independent coding score (live catalog re-verified 2026-11-16)
 # AA Intelligence Index 6 - source: artificialanalysis.ai/leaderboards/models, Nemotron 3.5 Lightning - 2026-11-12
@@ -27,7 +29,9 @@ nemotron-3.5-lightning-free
 longcat-2.5-free
 # no independent score; stealth model - source: OpenCode Zen catalog
 iceman-free
+# Hy4 flash launch 2026-11-16 (Tencent): Terminal-Bench 4.0 19.2 vs Hy4 44.4, ProgramBench 16.0 vs 30.0 - built for daily office work, long-horizon coding regressed; placeholder until this repo's own sweep measures it
+hy4-flash-free
 
 # vetoed by owner (2026-10-22): glm-5.3-flash-free, jev-1.13-free (probabilistic classifier, not a coding model)
 # retired from the live catalog: crouton-alpha-free (2026-11-10), Pulse Alpha Free (2026-11-06)
-# leader re-read 2026-11-16: Arena Coding 11 Nov 2026 (DeepSeek-V4.1-Flash-20261017 1664, Kimi K3.1 Pro 1687, Kimi K3 1658), llmbenchmark.ai 2026-11-15 (V4.1 Flash 1017 66.9, GLM 5.3 68.5), LMSA (Inkling 2 Small 30.6); of the scored leaders only DeepSeek-V4.1-Flash and Inkling 2 Small are free catalog ids. big-pickle dropped: no longer in the live catalog. Live catalog re-read 2026-11-16: 11 free ids, order below unchanged; glm-5.3-flash-free still owner-vetoed
+# leader re-read 2026-11-16: Arena Coding 11 Nov 2026 (DeepSeek-V4.1-Flash-20261017 1664, Kimi K3.1 Pro 1687, Kimi K3 1658), llmbenchmark.ai 2026-11-15 (V4.1 Flash 1017 66.9, GLM 5.3 68.5), LMSA (Inkling 2 Small 30.6); of the scored leaders only DeepSeek-V4.1-Flash, Inkling 2 Small, big-pickle and hy4-flash-free are free catalog ids. Live catalog re-read 2026-11-16: 13 free ids, both returners ranked above (big-pickle tier 2 on ModelComp, hy4-flash-free tier 3 on its own launch numbers); glm-5.3-flash-free still owner-vetoed
