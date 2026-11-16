@@ -1,8 +1,10 @@
 %global appid io.github.nolight132.sonora
+# prebuilt binary: nothing to strip
+%global debug_package %{nil}
 
 Name:           sonora
 Version:        0.50.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Native music streaming client
 
 License:        GPL-3.0-or-later AND OFL-1.1 AND ISC AND MIT AND Apache-2.0 AND CC-BY-4.0
@@ -27,11 +29,10 @@ Stream from Apple Music, Spotify, YouTube Music, Deezer, Subsonic/Navidrome
 and play local files — all in one app.
 
 %prep
-tar -xzf %{SOURCE1}
+%setup -q -T -b 1
 
 %install
 install -Dm755 %{SOURCE0} %{buildroot}%{_bindir}/sonora
-chdir sonora-%{version}
 
 install -Dm644 assets/linux/sonora.desktop %{buildroot}%{_datadir}/applications/sonora.desktop
 for s in 16x16 24x24 32x32 48x48 64x64 128x128 256x256 512x512; do
@@ -96,5 +97,9 @@ esac
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.50.0-3
+- Fix the repackage: %setup extracts the source tree, so %install and the
+  %files license/doc paths resolve (the old chdir was not a shell builtin)
+
 * Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.50.0-2
 - Repackage the upstream prebuilt x86_64 binary instead of building from source with cargo
