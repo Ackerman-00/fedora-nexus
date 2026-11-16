@@ -5,7 +5,7 @@
 
 Name:           openclaw-desktop
 Version:        2026.11.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OpenClaw companion app for the desktop
 License:        MIT
 URL:            https://github.com/openclaw/openclaw
@@ -50,8 +50,8 @@ Suggests:       xdg-desktop-portal-gnome
 %description
 OpenClaw is an open-source personal AI assistant that runs on your own computer
 and answers in the chats you already use. This package ships the upstream
-prebuilt Linux companion app: a GTK3/WebKitGTK window plus the bundled Bun
-runtime that hosts the Control UI. The CLI itself comes from Fedora's openclaw
+Linux companion app: a GTK3/WebKitGTK window plus the bundled Bun runtime
+that hosts the Control UI. The CLI itself comes from Fedora's openclaw
 package or from the upstream installer script the payload carries.
 
 %prep
@@ -109,5 +109,9 @@ touch -- %{_datadir}/icons/hicolor &> /dev/null || :
 %{_datadir}/icons/hicolor/*/apps/openclaw-desktop.png
 
 %changelog
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 2026.11.4-2
+- Drop three unused rpmlint filters (the bundled deb trips only
+  unstripped-binary-or-object) and reword %description
+
 * Mon Nov 16 2026 Ackerman-00 <no-reply> - 2026.11.4-1
 - Update to upstream release 2026.11.4
