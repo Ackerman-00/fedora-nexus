@@ -29,6 +29,52 @@ NEVER pass --author/--committer, and NEVER add ANY trailer
 NEVER invent or guess any email address.
 Always `git fetch origin && git pull --rebase origin main` before pushing.
 
+BLOCKED OR DEAD HOSTS - WEBSEARCH DEEPLY, FIX IT YOURSELF
+(MANDATORY, for every package and every issue, not just the one in
+front of you). When COPR or your build hits an external service that
+refuses or breaks for anonymous agents (CDN 403 / Cloudflare
+challenge / 404 / moved path / downloadable-host requires JS /
+requires credentials you do not have), do NOT write it off as
+"blocked: external". You must websearch deeply until you find a
+workable path - the same way you would find the one blind spot in a
+package:
+  a. Spawn the parallel subagents and have each one chase a
+     different lead: alternate archives (gitea/gitlab `archive/`
+     tarballs and `api/v1/repos/.../archive/...` API endpoints,
+     often 200 where the CDN path 403s), git-clone-based %{version}
+     replacement (moving `Source0` to a git-clone + checkout, or an
+     srpm-friendly url with anonymous read access), other hosts
+     (mirrors, official docs, announcing blog posts, IRC/matrix),
+     alternate bootstrap toolchains, alternative package recipes from
+     Arch/AUR, Debian, Alpine, Void, Gentoo for the same project.
+  b. Check whether the host itself REQUIRES an account: many gitea
+     instances serve assets only to signed-in users but serve source
+     trees anonymously via `api/v1/.../archive/<ref>.tar.gz`
+     endpoints or via git protocol over https/ssh. The otr case
+     (issue #106) is exactly this: release assets 403, `git clone`
+     and the `archive/<ref>.tar.gz` path work anonymously.
+  c. Do not report a fix as found until it is verified by an actual
+     docker-rpmbuild (or COPR build) that produces an rpm and
+     installs cleanly. No build, no claim.
+  d. When a workable path exists (a different URL, a different tag,
+     a different build mode, a pre-built bootstrap, a different
+     license source), MAKE THE CHANGES: update `Source0` / `Source1`,
+     sha256 pin, or build procedure in the spec, commit, push,
+     verify the next COPR build succeeds.
+  e. If no source exists at all (project requires a license/eula or
+     credentials), that is the only allowed "blocked" - and even
+     then you must quote the exact message from the host, the rank
+     of alternatives you tried, and why each failed.
+  f. Every blocker you resolve goes in the relay block with what you
+     searched and what worked (e.g. "found: tarball from
+     api/v1/repos/.../archive returns 200 anonymous; Source0 updated").
+  g. This rule applies to ANY class of external blockage, not just
+     tarball URLs: dead mirrors, removed tags, licensing changes,
+     upstream renamed their repo, upstream deleted the project, host
+     requires JS to pass a challenge, authentication wall, XML/HTTP
+     API change. Deep research exists to turn each of these into a
+     solvable packaging bug, not a permanent disable.
+
 IN-APP UPDATERS (owner rule, same binding): every desktop-app
 spec strips its payload's update manifest and package-type marker at
 build time - the single find line ending in -delete inside %install,
