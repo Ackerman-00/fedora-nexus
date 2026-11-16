@@ -37,6 +37,13 @@ def resolve_version(ver, rel, text):
     return (m.group(1), m.group(2)) if m else (nvr, rel)
 
 
+def buildrequires(pkg):
+    for spec in sorted((ROOT / pkg).glob("*.spec")):
+        return sum(1 for line in spec.read_text(errors="replace").splitlines()
+                   if line.startswith("BuildRequires:"))
+    return 0
+
+
 def spec_version(pkg):
     for spec in sorted((ROOT / pkg).glob("*.spec")):
         text = spec.read_text(errors="replace")
@@ -96,7 +103,21 @@ def verify_rows(pkgs, upstream, tokens, today):
     return bad
 
 
-def emit(pkgs, upstream, tokens, today, changed):
+def read_install_rows(paths):
+    """Rows written by tools/install-sweep.sh: pkg|chroot|nvr|smoke|verdict|note."""
+    rows = {}
+    for path in paths:
+        p = Path(path)
+        if not p.is_file():
+            continue
+        for line in p.read_text(errors="replace").splitlines():
+            f = line.split("|")
+            if len(f) >= 5 and f[0] and f[0] != "package":
+                rows[f[0]] = f
+    return rows
+
+
+def emit(pkgs, upstream, tokens, today, changed, install=None):
     out = []
     out.append("#### Version accuracy table (100% of inventory)\n")
     out.append("| package | packaged version | upstream latest | status |")
@@ -117,17 +138,30 @@ def emit(pkgs, upstream, tokens, today, changed):
     out.append("| --- | --- | --- | --- | --- | --- | --- |")
     for pkg in pkgs:
         teardown = tokens.get(pkg, "")
+        nbr = buildrequires(pkg)
         if PASS_RE.search(teardown) and today in teardown:
             status = "deps-fixed" if pkg in changed else "deps-verified"
+            out.append(
+                f"| {pkg} | upstream build files re-read in this run's teardown | {nbr} BR lines | none | none | unproven: 0 | {status} |"
+            )
         else:
             status = "version-checked"
-        out.append(
-            f"| {pkg} | re-derived this run | matches spec | none | none | unproven: 0 | {status} |"
-        )
+            out.append(
+                f"| {pkg} | not re-torn this run (teardown rotation, upstream unchanged) | {nbr} BR lines | not audited this run | not audited this run | unproven: n/a-version-checked | {status} |"
+            )
 
     out.append("\n#### Install-test table\n")
-    out.append("| package | chroot | COPR build | installed NVR | verdict |")
-    out.append("| --- | --- | --- | --- | --- |")
+    if install:
+        out.append("| package | chroot | COPR build | installed NVR | verdict |")
+        out.append("| --- | --- | --- | --- | --- |")
+        for pkg in sorted(install):
+            f = install[pkg]
+            nvr = f[2]
+            build = nvr.rsplit("-", 1)[0] if nvr else "live-repo"
+            out.append(f"| {pkg} | fedora-{f[1]} | {build} | {nvr} | {f[4]} |")
+    else:
+        out.append("| package | chroot | COPR build | installed NVR | verdict |")
+        out.append("| --- | --- | --- | --- | --- |")
     for pkg in sorted(tokens):
         if not PASS_RE.search(tokens[pkg]):
             continue
@@ -189,6 +223,15 @@ def selftest():
     v, r = resolve_version("2.7.1", "1%{?dist}", macro_spec)
     check("plain version untouched", v == "2.7.1" and r == "1%{?dist}")
 
+    deps_section = text.split("Dependency audit table")[1].split("Install-test table")[0]
+    beta_row = re.search(r"^\| beta \|.*$", deps_section, re.M).group(0)
+    check("untorn row does not claim a re-derivation", "re-derived this run" not in beta_row)
+    check("untorn row says it was not audited", "not audited this run" in beta_row)
+
+    install = {"alpha": ["alpha", "44", "alpha-1.0-2.fc44.x86_64", "alpha --version", "PASS", ""]}
+    text3 = emit(pkgs, upstream, tokens, today, changed=[], install=install)
+    check("install row carries the installed NVR", "alpha-1.0-2.fc44.x86_64" in text3)
+
     for name in failures:
         print(f"SELFTEST FAIL: {name}")
     if failures:
@@ -202,6 +245,7 @@ def main():
     ap.add_argument("--hunt", action="append", default=[], help="file with upstream: evidence lines")
     ap.add_argument("--tokens", action="append", default=[], help="teardown tokens.txt (repeatable)")
     ap.add_argument("--changed", default="", help="space separated packages changed this run")
+    ap.add_argument("--install-rows", action="append", default=[], help="install-sweep rows.txt (repeatable)")
     ap.add_argument("--today", default="", help="UTC date the evidence must carry")
     ap.add_argument("--selftest", action="store_true")
     args = ap.parse_args()
@@ -222,7 +266,7 @@ def main():
     for pkg in unknown:
         print(f"WARN changed package {pkg} has no spec", file=sys.stderr)
 
-    print(emit(pkgs, upstream, tokens, today, changed))
+    print(emit(pkgs, upstream, tokens, today, changed, read_install_rows(args.install_rows)))
     missing_tokens = [p for p in changed if p not in tokens]
     if missing_tokens:
         print(f"WARN changed without teardown: {' '.join(missing_tokens)}", file=sys.stderr)
