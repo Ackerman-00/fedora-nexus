@@ -1,10 +1,10 @@
-%global commit          56951426eb9931db3f1c57348f226c2427fba4f3
+%global commit          116e9485b39552a39e4e6088ff7cbe50e7504829
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261106143557
+%global gitdate         20261115220706
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        XDG Desktop Portal backend for Umbriel
 
 License:        MIT
@@ -71,7 +71,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %config(noreplace) %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <no-reply> - 0.1.0^20261106143557git5695142-2
-- Add explicit pkgconfig(glib-2.0)/pkgconfig(gio-2.0) BuildRequires (gnome.compile_resources and glib-unix.h)
-* Fri Nov 06 2026 Ackerman-00 <no-reply> - 0.1.0^20261106143557git5695142-1
-- Nightly sync with upstream main branch (Commit: 5695142)
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.1.0^20261115220706git116e948-1
+- Nightly sync with upstream main branch (Commit: 116e948)

@@ -1,12 +1,12 @@
-%global commit          70b3724f3a192b3f05562f3c28df84564df5fa06
+%global commit          1bbbf155d25b2a338c7b6d52863d9f6efaf346ac
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261115142928
+%global gitdate         20261115223140
 
 %global _lto_cflags %{nil}
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -114,7 +114,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Sun Nov 16 2026 Ackerman-00 <no-reply> - 0.1.0^20261115142928git70b3724-2
-- Build without test harness (%meson auto-features enables it; release shipped test-only IPC)
-* Sun Nov 15 2026 Ackerman-00 <no-reply> - 0.1.0^20261115142928git70b3724-1
-- Nightly sync with upstream main branch (Commit: 70b3724)
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.1.0^20261115223140git1bbbf15-1
+- Nightly sync with upstream main branch (Commit: 1bbbf15)
