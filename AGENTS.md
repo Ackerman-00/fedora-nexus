@@ -628,6 +628,15 @@ each `update.sh` in update-engine.yml runs under `timeout 600`; a timeout logs
 `FAILED (timeout 600s)` for that package and the loop continues. fetch-sha256's
 1800s cap is for the human-run path; in CI the per-package timeout is the bound.
 
+## No owner approval gates (2026-11-16)
+
+The scheduler is the owner: wildcard tool permissions, write-scope workflows,
+bot commit identity, COPR credentials, and self-merge are already configured.
+The gate and `verify-fedora.sh` fail any relay line containing `needs-owner`,
+waiting-for-owner, or approval markers. Only a missing/expired secret or a
+proven external outage is a `GAP: external - ... [probe: ...]` plus one
+tracking issue - never a request to a human.
+
 ## A published package can poison every chroot's buildroot (found 2026-11-16)
 
 A spec that bundles ELF libraries under a private dir (for example

@@ -236,6 +236,9 @@ jobs:
             for plan_pkg in $changed_pkgs; do
               grep -qE "^[[:space:]]*plan: $plan_pkg " <<< "$content" || return 1
             done
+            local wait_line
+            wait_line=$(grep -im1 -E '^[[:space:]]*([-*][[:space:]]*)?(needs-owner|waiting for (the )?owner|awaiting (the )?owner|pending owner|owner approval|human approval|needs approval|owner to apply|requires owner)' <<< "$content" || true)
+            [ -z "$wait_line" ] || return 1
             return 0
           }
           sleep $((RANDOM % 180))

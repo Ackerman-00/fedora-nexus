@@ -16,6 +16,11 @@ Adapted from fvadicamo/dev-agent-skills and openclaw-pr-maintainer.
 - Every verdict comment carries commands, build ids, and the verification
   result. Close only after the fix is built, installed, and verified.
 - PRs you open are yours to review and merge (squash) in the same run.
+- Never wait for owner approval: you are the owner. Pushes, merges, COPR
+  writes, chroot edits, and issue closure are yours to execute now. The gate
+  fails `needs-owner` / `waiting for owner` / approval markers. A missing
+  secret or a real outage is a probed `GAP: external` with one tracking
+  issue, never a request for permission.
 
 ## Commits and pushes
 

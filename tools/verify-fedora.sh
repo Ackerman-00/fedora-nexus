@@ -320,6 +320,13 @@ for plan_pkg in $changed_pkgs; do
     FAIL=1
   fi
 done
+wait_line=$(grep -im1 -E '^[[:space:]]*([-*][[:space:]]*)?(needs-owner|waiting for (the )?owner|awaiting (the )?owner|pending owner|owner approval|human approval|needs approval|owner to apply|requires owner)' <<< "$scope" || true)
+if [[ -n "$wait_line" ]]; then
+  echo "FAIL: NOT COMPLETE -- owner-approval/needs-owner marker in this run: $wait_line"
+  FAIL=1
+else
+  echo "PASS: no owner-approval waiting"
+fi
 
 if [[ "$FAIL" -ne 0 ]]; then
   echo "FAIL: NOT COMPLETE -- agent must continue, repair gaps, and rerun verification"

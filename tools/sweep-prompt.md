@@ -194,9 +194,10 @@ kills every run of it. All other pushes (specs, README, relay,
 etc.) work normally - always
 `git fetch origin && git pull --rebase origin main` before pushing.
 PAT HEALTH: if a push touching .github/workflows/* is rejected
-with "without workflows permission", record `needs-owner:
-REPO_FULL_ACCESS_TOKEN missing/expired/no-workflow-scope`,
-cc @Ackerman-00, and continue with non-workflow work.
+with "without workflows permission", record
+`GAP: external - REPO_FULL_ACCESS_TOKEN missing/expired/no-workflow-scope
+[probe: <push output>]` and open ONE tracking issue, then continue with
+non-workflow work. Never write a needs-owner line - the gate fails it.
 - COPR WRITE ACCESS (2026-09-21, verified live against copr-cli 2.6
   + python-copr docs + https://copr.fedorainfracloud.org/api/).
   The old "no owner-level COPR access in CI" limitation is GONE once
@@ -228,9 +229,9 @@ cc @Ackerman-00, and continue with non-workflow work.
      `copr-cli whoami` MUST print the owner's username - record one
      line in the relay: `copr-auth: OK <user> @<UTC-date>` or
      `copr-auth: EXPIRED @<UTC-date>`. Only if whoami still fails
-     with the config complete is the token expired: open/refresh ONE issue titled
-     "needs-owner: refresh COPR_API_TOKEN (expired)", cc
-     @Ackerman-00, and fall back
+     with the config complete is the token expired: record
+     `GAP: external - refresh COPR_API_TOKEN (expired) [probe: <whoami output>]`, and open ONE tracking issue
+     and fall back
      to read-only COPR behavior for this run. This rotation is the
      single recurring owner task - note the expiry date in the relay
      every run so it never surprises. Do not gate on this line -
@@ -249,7 +250,7 @@ cc @Ackerman-00, and continue with non-workflow work.
      - new Fedora chroot (CURRENT FEDORA RELEASES): enable via the
        project modify / `edit-chroot` path; verify via the project
        chroot list. COPR ghost-RPM purges and anything the API
-       rejects stay OWNER-ACL (see issue classes, priority 4).
+       rejects are external ONLY after pasting the API rejection; attempt the API write yourself first.
   4. Every COPR write is followed by a read proving it
      (get-package/build list output pasted in the relay). A write
      you cannot verify is an unfinished package, not a fix.
@@ -1492,9 +1493,10 @@ time. Do this every run:
       (`edit-package-scm`: webhook-rebuild on, correct
       clone-url/subdir/spec), then push a Release-bump commit and
       confirm a NEW build appears. Only if the API rejects the
-      repair does it become OWNER-ACL (priority 4): record the
-      evidence in .opencode-relay.md and add it to the consolidated
-      needs-owner list instead of filing repeated per-issue
+      repair is it external (priority 4): record the
+      API rejection as a probed GAP: external in .opencode-relay.md
+      and add it to the consolidated external-items list instead of
+      filing repeated per-issue
       "still blocked" comments.
      - FINAL GATE CHECK: in your final summary state for EVERY
       package you pushed the webhook delivery id/status AND the
@@ -1681,22 +1683,17 @@ time. Do this every run:
    - EVERY issue you close gets a closing comment with the verdict
      (fixed / not-a-bug / user error / duplicate) and the evidence.
      Use `gh issue close <n> --comment "<verdict and evidence>"`.
-   - ISSUE CLASSES (2026-09-21: every issue is AUTO or OWNER-ACL,
-     nothing in between). AUTO (fix+verify+close yourself, no human
-     needed): spec bugs, wrong/stale versions, missing deps, broken
-     update.sh, failed COPR builds, webhook/source-type repairs and
-     missing COPR package records (via COPR WRITE ACCESS above),
-     docs, triage replies. An AUTO issue open past one run is YOUR
-     failure. OWNER-ACL (only what the COPR API rejects or is
-     secrets-gated: ghost-RPM admin purges, COPR token refresh,
-     infra outages): NEVER post repeated "still blocked" comments
-     (the #30 spam loop). Comment ONCE per issue per run MAXIMUM,
-     and maintain ONE consolidated `needs-owner:` list in
-     .opencode-relay.md, newest block only, carrying every
-     unresolved item forward: (item | evidence | since-run |
-     recheck-by: <date>). Mention @Ackerman-00 in the tracking
-     issue. A new OWNER-ACL item gets a new issue ONLY if
-     no open issue already tracks it.
+   - ISSUE CLASSES: every issue is yours to fix, verify and close.
+     Spec bugs, versions, deps, update.sh, COPR builds, webhooks,
+     package records, chroots, docs and triage are all AUTO. An AUTO
+     issue open past one run is YOUR failure. The ONLY stops are the
+     four impossibilities below, each needing a probed
+     `GAP: external - ... [probe: ...]` line, never a needs-owner or
+     waiting-for-owner marker (the gate fails those). Keep ONE
+     consolidated `external-items:` list in .opencode-relay.md,
+     newest block only: (item | evidence | since-run |
+     recheck-by: <date>). Open an issue only if none already tracks
+     it; comment ONCE per issue per run (the #30 spam loop).
     - Reply on issues WITH `gh issue comment <n>` even before any fix,
       so the reporter always gets a response from this run.
     - "OWNER TO APPLY" IS STALE - YOU APPLY IT. Any issue text saying
@@ -1901,13 +1898,25 @@ withheld. UNDER-ACTION IS THE FAILURE MODE HERE, not over-action.
 THE ONLY FOUR THINGS YOU MAY NOT FIX YOURSELF - everything else is
 yours: (1) a secret that does not exist or has expired (COPR token,
 GITHUB_TOKEN, REPO_FULL_ACCESS_TOKEN); (2) a paid, destructive or
-otherwise irreversible action; (3) a legal or licensing decision
-that needs the owner's judgement; (4) a service outage outside this
-repo (COPR, GitHub, an upstream host being down). For those four:
-name the exact external thing, prove it with a command you ran this
-run, and keep working on everything else. "I am not sure", "this
-looks risky", "this would take a while" and "a human should decide"
-are NOT on that list - they are your work.
+otherwise irreversible action - use the least destructive reversible
+path first, never park it as owner approval; (3) a legal or licensing
+decision that cannot be resolved from the license text and the
+upstream grant; (4) a service outage outside this repo (COPR, GitHub,
+an upstream host being down). For those four: name the exact external
+thing, prove it with a command you ran this run, record a probed
+`GAP: external - ... [probe: ...]`, and keep working on everything
+else. "I am not sure", "this looks risky", "this would take a while",
+"the owner should decide" and "a human needs to approve" are NOT on
+that list - they are your work.
+
+NO WAITING FOR OWNER APPROVAL (MANDATORY): you ARE the owner of this
+repo. Pushes, squash-merges of your own PRs, COPR writes, chroot
+edits, issue closure and workflow fixes are all yours to execute now.
+The gate FAILS any relay line saying needs-owner, waiting for owner,
+awaiting owner, pending owner, owner/human approval, owner to apply,
+or requires owner. Token refresh and real outages are external facts
+with a probe, never a request for permission. Do not soften a fix into
+a recommendation, and do not leave a fix for the next run.
 COMMENT POLICY (owner rule, every file you touch): comments are
 short topic labels only - one line, a few words, naming a constraint
 the code cannot show. No incident narratives, no dated lesson logs,
