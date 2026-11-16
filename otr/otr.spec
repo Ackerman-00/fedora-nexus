@@ -1,6 +1,6 @@
 Name:           otr
 Version:        0.2.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Otr programming language toolchain
 
 License:        MIT
@@ -22,7 +22,7 @@ server, the standard library, a bundled clang toolchain, the TPDE fast
 backend and the mold linker. Otter Shell is built with it.
 
 %prep
-tar -xzf %{SOURCE0}
+%autosetup -n otr
 
 %build
 sh tools/bootstrap.sh > /tmp/otr-boot-path
@@ -46,5 +46,9 @@ ln -s $(realpath --relative-to=%{buildroot}%{_bindir} %{buildroot}%{_libdir}/otr
 %{_libdir}/otr/
 
 %changelog
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.2.6-2
+- Use %autosetup -n otr: %build ran in the wrong directory and never found
+  tools/bootstrap.sh ("sh tools/bootstrap.sh: No such file or directory")
+
 * Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.2.6-1
 - Initial package
