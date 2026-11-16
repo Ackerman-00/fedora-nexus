@@ -1,38 +1,18 @@
-%global crate sonora
 %global appid io.github.nolight132.sonora
 
 Name:           sonora
 Version:        0.50.0
 Release:        1%{?dist}
 Summary:        Native music streaming client
+
 License:        GPL-3.0-or-later AND OFL-1.1 AND ISC AND MIT AND Apache-2.0 AND CC-BY-4.0
 URL:            https://github.com/sonorahq/sonora
-Source0:        https://github.com/sonorahq/sonora/archive/refs/tags/v%{version}.tar.gz
+Source0:        %{url}/releases/download/v%{version}/sonora-v%{version}-x86_64-unknown-linux-gnu
+# sha256: 9d237f02071db3184b7fcee0e08f16c9369df93cc8190af2518e33400941286c
+Source1:        %{url}/archive/refs/tags/v%{version}.tar.gz
+# sha256: 149a059f27df649e81476ab6f69455c43e9d701d0da8995f6ddfbbf72fe48daa
 
 ExclusiveArch:  x86_64
-
-BuildRequires:  cargo
-BuildRequires:  rust
-BuildRequires:  rust-srpm-macros
-BuildRequires:  gcc
-BuildRequires:  gcc-c++
-BuildRequires:  mold
-BuildRequires:  git
-BuildRequires:  pkgconf-pkg-config
-BuildRequires:  cmake
-BuildRequires:  alsa-lib-devel
-BuildRequires:  fontconfig-devel
-BuildRequires:  freetype-devel
-BuildRequires:  sqlite-devel
-BuildRequires:  libX11-devel
-BuildRequires:  libxcb-devel
-BuildRequires:  libXcursor-devel
-BuildRequires:  libXi-devel
-BuildRequires:  libxkbcommon-devel
-BuildRequires:  libxkbcommon-x11-devel
-BuildRequires:  wayland-devel
-BuildRequires:  vulkan-loader-devel
-BuildRequires:  dbus-devel
 
 Requires:       hicolor-icon-theme
 Requires(post): desktop-file-utils
@@ -47,15 +27,11 @@ Stream from Apple Music, Spotify, YouTube Music, Deezer, Subsonic/Navidrome
 and play local files — all in one app.
 
 %prep
-%setup -q -n %{crate}-%{version}
-
-%build
-export CARGO_NET_OFFLINE=false
-export RUSTFLAGS="%{build_rustflags}"
-cargo build --release --locked --package sonora
+tar -xzf %{SOURCE1}
 
 %install
-install -Dm755 target/release/sonora %{buildroot}%{_bindir}/sonora
+install -Dm755 %{SOURCE0} %{buildroot}%{_bindir}/sonora
+chdir sonora-%{version}
 
 install -Dm644 assets/linux/sonora.desktop %{buildroot}%{_datadir}/applications/sonora.desktop
 for s in 16x16 24x24 32x32 48x48 64x64 128x128 256x256 512x512; do
@@ -77,6 +53,7 @@ install -Dm644 assets/icons/remix/LICENSE %{buildroot}%{_licensedir}/%{name}/ico
 install -Dm644 assets/icons/solar/LICENSE %{buildroot}%{_licensedir}/%{name}/icons-solar-LICENSE
 
 find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
+
 %post
 /usr/bin/update-desktop-database > /dev/null 2>&1 || :
 /bin/touch --no-create %{_datadir}/icons/hicolor > /dev/null 2>&1 || :
@@ -120,4 +97,4 @@ esac
 
 %changelog
 * Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.50.0-1
-- Auto-update to upstream stable release v0.50.0
+- Repackage the upstream prebuilt x86_64 binary instead of building from source
