@@ -129,6 +129,7 @@ sudo dnf install <package-name>
 | `zen-browser` | Privacy-focused Firefox fork | Stable |
 | `zig0.17` | Zig 0.17 toolchain, installable side by side with the distro zig as `zig0.17` | Stable |
 | `zoolander-git` | Zoolander Wayland compositor, built from the git snapshot | Git |
+| `zoolander-settings-git` | Graphical settings app for Zoolander (Otr toolchain) | Stable |
 
 > `Git` packages track upstream HEAD and rebuild on every new commit.
 
