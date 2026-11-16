@@ -5,14 +5,14 @@
 %global __provides_exclude_from ^/opt/omnirush/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/omnirush/.*$
 Name:           omnirush-desktop
-Version:        3.8.5
+Version:        3.8.6
 Release:        1%{?dist}
 Summary:        OmniRush.ai desktop shell (Electron)
 License:        SUSE-Freeware
 Group:          Productivity/Networking/Talk/Clients
 URL:            https://omnirush.ai
-Source0:        https://github.com/omnirush-ai/omnirush-gui/releases/download/v3.8.5/omnirush-linux-amd64-3.8.5.deb
-# sha256:  6b93ce4a45c0c7143fdaf0077edfcbc0c1140329cf7612752106a27ff80cf68e
+Source0:        https://github.com/omnirush-ai/omnirush-gui/releases/download/v3.8.6/omnirush-linux-amd64-3.8.6.deb
+# sha256:  ea68117a2825d78c413685dd96e54f1d3163a6d71e5a87d4652c55ab05606377
 Source1:        omnirush-desktop-rpmlintrc
 BuildRequires:  binutils
 BuildRequires:  desktop-file-utils
@@ -129,5 +129,5 @@ if [ "$1" = 0 ] && [ -f %{_sysconfdir}/apparmor.d/omnirush ]; then
 fi
 
 %changelog
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 3.8.5-1
-- Update to upstream release 3.8.5
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 3.8.6-1
+- Update to upstream release 3.8.6
