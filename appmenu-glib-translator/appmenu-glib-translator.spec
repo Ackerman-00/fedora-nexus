@@ -61,6 +61,6 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
-* Sun Nov 15 2026 Ackerman-00 <no-reply> - 25.04^20261115211721gitc3fa11c-2
+* Sun Nov 15 2026 Ackerman-00 <no-reply> - 25.04^20261115211721gitc3fa11c-1
 - Match the subproject's API namespace by glob: upstream moved it 25.04 -> 26.11
   without a soversion change, so the pinned filenames missed every build output
