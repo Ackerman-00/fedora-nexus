@@ -20,7 +20,7 @@ Source1:        https://git.pika-os.com/api/v1/repos/otter-shell/zooland/archive
 %global _missing_build_ids_terminate_build 0
 %global _build_id_links none
 
-# binary loads these via $ORIGIN/../lib/zoolander, which resolves to /usr/lib/zoolander
+# Private lib provides
 %global __provides_exclude_from ^%{_prefix}/lib/zoolander/.*$
 
 ExclusiveArch:  x86_64
@@ -109,7 +109,7 @@ sed -e 's|^Exec=/usr/local/bin/.*|Exec=/usr/bin/zoolander-session|' -e 's|^TryEx
 install -D -m 0644 ../zoolander-portals.conf %{buildroot}%{_datadir}/xdg-desktop-portal/zoolander-portals.conf
 install -d %{buildroot}%{_datadir}/zoolander/config
 install -m 0644 ../config/starter/*.lua %{buildroot}%{_datadir}/zoolander/config/
-# Skip Otter Shell programs when absent (Lua has no os; check in /bin/sh)
+# Optional Otter startup
 sed -i -e 's|zl.exec_command("otter-wallpaper")|zl.exec_command("command -v otter-wallpaper >/dev/null 2>\&1 \&\& otter-wallpaper")|' \
        -e 's|zl.exec_command("otter-bar")|zl.exec_command("command -v otter-bar >/dev/null 2>\&1 \&\& otter-bar")|' \
        %{buildroot}%{_datadir}/zoolander/config/init.lua
