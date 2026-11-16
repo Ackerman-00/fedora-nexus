@@ -5,7 +5,7 @@
 
 Name:           zoolander-git
 Version:        %{base_version}+git%{gitdate}.%{shortcommit}
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Zoolander Wayland compositor, built from the git snapshot
 
 License:        MIT
@@ -19,6 +19,9 @@ Source1:        https://git.pika-os.com/api/v1/repos/otter-shell/zooland/archive
 %global debug_package %{nil}
 %global _missing_build_ids_terminate_build 0
 %global _build_id_links none
+
+# binary loads these via $ORIGIN/../lib/zoolander, which resolves to /usr/lib/zoolander
+%global __provides_exclude_from ^%{_prefix}/lib/zoolander/.*$
 
 ExclusiveArch:  x86_64
 
@@ -80,8 +83,8 @@ otr run ../wsi/manifest.otr -- %{_libdir}/libVkLayer_zoolander_wsi.so > zoolande
 %install
 cd zoolander/otr-out
 install -D -m 0755 zoolander %{buildroot}%{_bindir}/zoolander
-install -D -m 0644 libzoolander_bell.so %{buildroot}%{_libdir}/zoolander/libzoolander_bell.so
-install -D -m 0644 libzoolander_audio_visualizer.so %{buildroot}%{_libdir}/zoolander/libzoolander_audio_visualizer.so
+install -D -m 0644 libzoolander_bell.so %{buildroot}%{_prefix}/lib/zoolander/libzoolander_bell.so
+install -D -m 0644 libzoolander_audio_visualizer.so %{buildroot}%{_prefix}/lib/zoolander/libzoolander_audio_visualizer.so
 install -D -m 0644 libVkLayer_zoolander_wsi.so %{buildroot}%{_libdir}/libVkLayer_zoolander_wsi.so
 install -D -m 0644 zoolander_wsi.json %{buildroot}%{_datadir}/vulkan/implicit_layer.d/zoolander_wsi.x86_64.json
 install -D -m 0755 ../zoolanderctl %{buildroot}%{_bindir}/zoolanderctl
@@ -103,10 +106,18 @@ install -m 0644 ../config/starter/*.lua %{buildroot}%{_datadir}/zoolander/config
 %{_datadir}/xdg-desktop-portal/zoolander-portals.conf
 %{_datadir}/zoolander/
 %{_datadir}/vulkan/implicit_layer.d/zoolander_wsi.x86_64.json
-%{_libdir}/zoolander/
+%{_prefix}/lib/zoolander/
 %{_libdir}/libVkLayer_zoolander_wsi.so
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-5
+- Install the dlopen'd bell/audio-visualizer libs to %{_prefix}/lib/zoolander:
+  the binary's RUNPATH is $ORIGIN/../lib/zoolander (=/usr/lib/zoolander), but
+  they were shipped to %{_libdir}/zoolander (=/usr/lib64/zoolander). On Fedora
+  those are different dirs, so zoolander could not load either library
+- Add __provides_exclude_from for that private dir so the bundled .so sonames
+  stop leaking as global Provides; keep their pipewire Requires intact
+
 * Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-4
 - Ship cap_sys_nice through %caps instead of a %post setcap call: rpm records
   the capability, so `rpm -V` stops reporting the binary as modified and the
