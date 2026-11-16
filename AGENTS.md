@@ -458,8 +458,9 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
 
 ## Tools in this repo (what to run instead of hand-rolling it)
 
-- `tools/sweep-prompt.md` is the scheduler's instruction file and also carries
-  the adapted Linux-packaging skill (Fedora subset) applied to every spec.
+- `.opencode/skills/linux-packaging/SKILL.md` is the adapted Linux-packaging
+  skill (Fedora subset); the scheduler loads it via `@linux-packaging` in
+  `tools/sweep-prompt.md`.
 
 - `python3 tools/hunt.py` - machine-checked hunt categories against live
   sources: builds (COPR), chroots, upstream-versions (GitHub, Codeberg,

@@ -813,37 +813,10 @@ with no error when libudev-devel was absent). For EVERY package:
        extracted Source0 for the pattern to prove expiry, then
        delete it with a Release bump, never carry it.
 
-LINUX PACKAGING SKILL (adopted from wazimmerman/build-linux-apps-plugin,
-Fedora subset) - APPLY TO EVERY PACKAGE YOU TOUCH. Read first: the app's
-language, build system, license, runtime and native dependencies, desktop
-files, AppStream metadata, icons, tests and release artifacts. Inspect the
-existing spec, update.sh, packaging files and workflows before editing.
-Preserve the project's current packaging style unless the owner asks for a
-new target; this repo publishes Fedora RPMs only, so DEB and PKGBUILD
-targets are out of scope.
-Dependency mapping: do not assume names match across distros. Fedora names
-to expect include gcc, gcc-c++, redhat-rpm-config, meson, ninja-build,
-cmake, pkgconf-pkg-config, gtk4-devel, libadwaita-devel,
-qt6-qtbase-devel and qt6-qtdeclarative-devel. Verify exact names in the
-chroots you build; distro names drift. rpm-build's own library
-requirements must resolve to the real Fedora libraries, never to a
-bundled payload advertising libstdc++.so.6 or libz.so.1.
-RPM: a spec needs clear BuildRequires, %prep, %build, %install, %check
-and %files, and must prefer %meson/%cmake with the _build/_install macros
-where available. Validate with rpmspec -P, rpmlint, dnf builddep and a
-fresh fedora:44 container (rpmbuild -bb, install, rpm -V, smoke) before
-claiming a fix. Account for per-chroot availability: what resolves on F44
-may not on F45 or rawhide.
-Metadata and integration: install .desktop to %{_datadir}/applications,
-AppStream metainfo to %{_datadir}/metainfo and icons under hicolor; run
-desktop-file-validate and appstreamcli validate. Check binaries,
-resources, schemas, MIME info, systemd user units, udev and polkit rules
-land in distro-appropriate paths. Smoke graphical apps on Wayland and
-X11/XWayland (xvfb-run where needed).
-CI and release: use containers or distro-native builders, keep signing
-keys out of the repo, store packages as CI artifacts and install/launch
-in a clean environment. Document minimum supported Fedora versions when
-a dependency floor or toolkit API requires them.
+LINUX PACKAGING SKILL: at the start of every run load `@linux-packaging`
+with the skill tool (it lives in .opencode/skills/linux-packaging/SKILL.md)
+and apply it to every spec, update.sh and package change. Never work on a
+package without it.
 
 KNOWN PACKAGE-SPECIFIC NOTES - THE RIGOR BELOW APPLIES TO EVERY
 PACKAGE, NOT JUST THE EXAMPLE NAMED. For EVERY package, establish
