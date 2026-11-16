@@ -662,7 +662,17 @@ The published binary is the poison, not the spec in git: a Release-bumped
 rebuild cannot fix the chroot because the SRPM stage runs before the new binary
 exists. Break the cycle with COPR credentials: add the real libraries to the
 affected chroots' buildroot packages (`copr-cli edit-chroot --packages
-"libstdc++ zlib"`), rebuild the fixed package, then revert the chroot setting.
+"libstdc++ zlib libzstd libgcc"`), rebuild the fixed package, then revert the
+chroot setting. Cover EVERY capability the poison advertises, not just the one
+in the first error message: otr advertises libstdc++, libz, libzstd and
+libgcc_s, so adding only libstdc++ moved the same failure to libz.so.1
+(2026-11-16). Find the set by scoping the repodata parse to
+`<rpm:provides>` (`python3 tools/hunt.py published-nvr` reads the same files);
+a regex over the whole `<package>` element also matches `<rpm:requires>` and
+reports every package as a poison. For a local container repro of the same
+package, `dnf --exclude=<pkg> builddep <spec>` gives you the same de-capitated
+resolution without touching the COPR chroot.
+
 A `GAP: external` for a buildroot failure must first rule out this repo's own
 providers (`dnf repoquery --whatprovides <SONAME>` or chroot repodata) and carry
 a `[probe: ...]` token; the gate enforces the token (tools/check-workflows.sh
