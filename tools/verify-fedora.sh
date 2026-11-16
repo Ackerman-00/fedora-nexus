@@ -88,6 +88,13 @@ if [[ -f "$RELAY" ]]; then
     FAIL=1
   fi
 
+  if python3 tools/relay-tables.py --selftest >/dev/null 2>&1; then
+    echo "PASS: relay table generator self-test"
+  else
+    echo "FAIL: NOT COMPLETE -- tools/relay-tables.py --selftest fails; relay tables must be generated from evidence"
+    FAIL=1
+  fi
+
   if ! grep -q "| package | packaged version |" <<< "$scope"; then
     echo "FAIL: NOT COMPLETE -- version accuracy table missing from THIS run's block"
     FAIL=1
