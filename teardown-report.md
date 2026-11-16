@@ -1,6 +1,6 @@
 # Teardown Sweep Report
 
-Repo type: **fedora**. Sweep of **73** packages. Exit code is the verdict; this report is the receipt.
+Repo type: **fedora**. Sweep of **74** packages. Exit code is the verdict; this report is the receipt.
 | Package | Distfile | Pinned | Internal | Status | Note |
 |---|---|---|---|---|---|
 | app2unit | live Vladimir-csp/app2unit | 47e23ec6ab9e | 47e23ec6ab9e | **OK** | live Vladimir-csp/app2unit pin 47e23ec6ab9e vs upstream 47e23ec6ab9e |
@@ -26,7 +26,7 @@ Repo type: **fedora**. Sweep of **73** packages. Exit code is the verdict; this 
 | concat | Concat-0.2.11-linux-x86_64.rpm | 0.2.11 | 0.2.11 | **OK** | rpm header concat=0.2.11-1 (tags NAME/VERSION/RELEASE) \| pinned 0.2.11 \| internal 0.2.11 |
 | concord | v2.7.1.tar.gz | 2.7.1 | 2.7.1 | **SOURCE-OK** | tar Cargo.toml=2.7.1 (concord-2.7.1/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 2.7.1 (not authoritative) |
 | extension-manager | extension-manager-0.7.0.tar.gz | 0.7.0 | >= 0.59.0 | **SOURCE-OK** | tar meson.build=>= 0.59.0 (extension-manager-0.7.0/meson.build) \| hash no-checksum-pinned \| weak internal evidence >= 0.59.0 (not authoritative) |
-| fluxer | rpm | 2026.1116.75059 | 2026.1116.75059 | **OK** | rpm header fluxer=2026.1116.75059-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1116.75059 \| internal 2026.1116.75059 |
+| fluxer | rpm | 2026.1116.172250 | 2026.1116.172250 | **OK** | rpm header fluxer=2026.1116.172250-1 (tags NAME/VERSION/RELEASE) \| pinned 2026.1116.172250 \| internal 2026.1116.172250 |
 | freebuff | freebuff-linux-x64.tar.gz | 0.2.36 | 0.2.36 | **OK** | tar runtime probe freebuff --version: 0.2.36 \| pinned 0.2.36 \| internal 0.2.36 |
 | freebuff | LICENSE | 0.2.36 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | freebuff-desktop | Freebuff-0.0.203-linux-amd64.deb | 0.0.203 | 0.0.203 | **OK** | deb pkg=freebuff (control control.tar.gz) \| pinned 0.0.203 \| internal 0.0.203 |
@@ -40,7 +40,7 @@ Repo type: **fedora**. Sweep of **73** packages. Exit code is the verdict; this 
 | helium-browser | LICENSE | 0.21.3.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | helium-browser | LICENSE.ungoogled_chromium | 0.21.3.1 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | hellwal | hellwal-1.0.9.tar.gz | 1.0.9 | $(shell | **SOURCE-OK** | tar Makefile=$(shell (hellwal-1.0.9/Makefile) \| hash no-checksum-pinned \| weak internal evidence $(shell (not authoritative) |
-| hermes-agent-desktop | live NousResearch/hermes-agent | c3b90ccc70e3 | b8dd611d4a09 | **OK** | live NousResearch/hermes-agent pin c3b90ccc70e3 is 3h past the pin and inside the 8h update.sh cadence; upstream HEAD is b8dd611d4a09 |
+| hermes-agent-desktop | live NousResearch/hermes-agent | c3b90ccc70e3 | ae2a81ccc00e | **OK** | live NousResearch/hermes-agent pin c3b90ccc70e3 is 5h past the pin and inside the 8h update.sh cadence; upstream HEAD is ae2a81ccc00e |
 | heroic-games-launcher | Heroic-2.22.4-linux-x86_64.rpm | 2.22.4 | 2.22.4 | **OK** | rpm header heroic=2.22.4-1 (tags NAME/VERSION/RELEASE) \| pinned 2.22.4 \| internal 2.22.4 |
 | heroic-games-launcher | COPYING | 2.22.4 |  | **OK** | hash no-checksum-pinned \| license/doc/aux asset, not an artifact |
 | ladybird-unstable | ab5aaba1e6ff68a38fa41a98104320be3469f5ff.tar.gz | 0.0.0 | 0.1.0 | **SOURCE-OK** | tar Cargo.toml=0.1.0 (ladybird-ab5aaba1e6ff68a38fa41a98104320be3469f5ff/AK/Rust/Cargo.toml) \| hash no-checksum-pinned \| weak internal evidence 0.1.0 (not authoritative) |
@@ -124,6 +124,15 @@ rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | zig0.17 | zig-x86_64-linux-0.17.1.tar.xz | 0.17.1 | 0.0.0 | **SOURCE-OK** | tar build.zig.zon=0.0.0 (zig-x86_64-linux-0.17.1/lib/init/build.zig.zon) \| hash no-checksum-pinned \| weak internal evidence 0.0.0 (not authoritative) |
 | zoolander-git | zoolander-4d6702edcfccdb7b27650e2e994afd0c1099b478.tar.gz | 0.1.49+git20261115145914.4d6702e | 0.1.49-101pika1 | **SOURCE-OK** | tar changelog=0.1.49-101pika1 (zoolander/debian/changelog) \| hash hash-OK \| weak internal evidence 0.1.49-101pika1 (not authoritative) |
 | zoolander-git | zooland-bca0d3ce591d37ca3d670f20e4fd62ce25207148.tar.gz | 0.1.49+git20261115145914.4d6702e |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash hash-OK \| source tarball (version = PV by construction) |
+| zoolander-settings-git | zoolander-settings-v0.13.47.tar.gz | 0.13.47 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash hash-OK \| source tarball (version = PV by construction) |
+| zoolander-settings-git | otter-geo-v0.13.45.tar.gz | 0.13.47 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash hash-OK \| source tarball (version = PV by construction) |
+| zoolander-settings-git | otter-utils-v0.13.46.tar.gz | 0.13.47 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash hash-OK \| source tarball (version = PV by construction) |
+| zoolander-settings-git | otter-conf-v0.13.14.tar.gz | 0.13.47 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash hash-OK \| source tarball (version = PV by construction) |
+| zoolander-settings-git | otter-render-v0.13.45.tar.gz | 0.13.47 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash hash-OK \| source tarball (version = PV by construction) |
+| zoolander-settings-git | otter-wayland-v0.13.45.tar.gz | 0.13.47 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash hash-OK \| source tarball (version = PV by construction) |
+| zoolander-settings-git | otter-theme-v0.13.35.tar.gz | 0.13.47 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash hash-OK \| source tarball (version = PV by construction) |
+| zoolander-settings-git | otter-ui-v0.13.45.tar.gz | 0.13.47 |  | **SOURCE-OK** | tar extracted, no version evidence found \| hash hash-OK \| source tarball (version = PV by construction) |
+| zoolander-settings-git | otter-desktop-v0.13.44.tar.gz | 0.13.47 | >= 0.54 | **SOURCE-OK** | tar meson.build=>= 0.54 (otter-desktop/vendor/basu/meson.build) \| hash hash-OK \| weak internal evidence >= 0.54 (not authoritative) |
 | appmenu-glib-translator | upstream github.com/rilian-la-te/vala-panel-appmenu | 25.04^20261116104421git7472d7d | 0.6.1 | **OK** | at upstream latest 0.6.1 [releases/latest] |
 | awww | upstream codeberg.org/LGFae/awww | 0.12.1 | v0.12.1 | **OK** | at upstream latest v0.12.1 [ls-remote] |
 | aylurs-gtk-shell | upstream github.com/Aylur/ags | 3.1.2 | v3.1.2 | **OK** | at upstream latest v3.1.2 [releases/latest] |
@@ -170,6 +179,7 @@ rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | xcur2png | upstream github.com/eworm-de/xcur2png | 0.7.1 | 0.7.1 | **OK** | at upstream latest 0.7.1 [releases/latest] |
 | zen-browser | upstream github.com/zen-browser/desktop | 1.24.2b | 1.24.2b | **OK** | at upstream latest 1.24.2b [releases/latest] |
 | zoolander-git | upstream git.pika-os.com/otter-shell/zoolander | 0.1.49+git20261115145914.4d6702e | v0.1.49 | **OK** | at upstream latest v0.1.49 [ls-remote] |
+| zoolander-settings-git | upstream git.pika-os.com/otter-shell/zoolander-settings | 0.13.47 | v0.13.47 | **OK** | at upstream latest v0.13.47 [ls-remote] |
 | cline-desktop | aur | 0.0.49 | 0.0.43 | **OK** | pinned 0.0.49 >= repology 0.0.43 (aur); tracker behind |
 | python3-materialyoucolor | pypi:materialyoucolor | 3.0.4 | 3.0.4 | **OK** | upstream 3.0.4 == pinned 3.0.4 [freshness via pypi:materialyoucolor; repology has no entry] |
 | python-yt-dlp-ejs | pypi:yt-dlp-ejs | 0.8.0 | 0.8.0 | **OK** | upstream 0.8.0 == pinned 0.8.0 [freshness via pypi:yt-dlp-ejs; repology has no entry] |
@@ -177,6 +187,6 @@ rustypipe-botguard-api 1 \| pinned 0.1.2 \| internal 0.1.2 |
 | python-ytmusicapi | pypi:ytmusicapi | 1.12.3 | 1.12.3 | **OK** | upstream 1.12.3 == pinned 1.12.3 [freshness via pypi:ytmusicapi; repology has no entry] |
 | rootapp | aur | 0.9.163 | 0.9.163 | **OK** | pinned 0.9.163 >= repology 0.9.163 (aur); tracker behind |
 | zig0.17 | ziglang.org/download/index.json | 0.17.1 | 0.17.1 | **OK** | upstream 0.17.1 == pinned 0.17.1 [freshness via ziglang.org/download/index.json; repology has no entry] |
-| LIBYEAR | freshness | 0.11 yr | 3 pkgs | **METRIC** | threshold=20 libyears |
+| LIBYEAR | freshness | 0.12 yr | 4 pkgs | **METRIC** | threshold=20 libyears |
 
 **Verdict: PASS** (0 failure(s))
