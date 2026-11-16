@@ -3433,7 +3433,7 @@ def check_rpm_dependencies(root, repo_type):
     BUILD_TOOL_BRS = {
         "cmake": ("cmake", r"\bcmake\b"),
         "meson": ("meson", r"\bmeson\b"),
-        "ninja": ("ninja", r"\b(?:ninja|samu|ninja-build)\b"),
+        "ninja": ("ninja-build", r"(?<![.\w])ninja\b|(?<![.\w])samu\b"),
         "autoreconf": ("autoconf", r"\bautoreconf\b"),
         "automake": ("automake", r"\bautomake\b"),
         "pkg-config": ("pkgconfig", r"\bpkg-config\b"),
