@@ -2,8 +2,8 @@
 %global appid io.github.nolight132.sonora
 
 Name:           sonora
-Version:        0.49.1
-Release:        2%{?dist}
+Version:        0.50.0
+Release:        1%{?dist}
 Summary:        Native music streaming client
 License:        GPL-3.0-or-later AND OFL-1.1 AND ISC AND MIT AND Apache-2.0 AND CC-BY-4.0
 URL:            https://github.com/sonorahq/sonora
@@ -119,9 +119,5 @@ esac
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.49.1-2
-- Ship debuginfo: this is a source build (cargo), so the debug_package
-  override was discarding symbols the build already produces
-
-* Fri Nov 13 2026 Ackerman-00 <no-reply> - 0.49.1-1
-- Auto-update to upstream stable release v0.49.1
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.50.0-1
+- Auto-update to upstream stable release v0.50.0
