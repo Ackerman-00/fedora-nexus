@@ -1385,6 +1385,9 @@ def forge_slug_from_url(u):
     if m:
         return "%s/%s" % (m.group(1), repo(m.group(2))), \
             "https://codeberg.org/%s/%s.git" % (m.group(1), repo(m.group(2)))
+    m = re.search(r"(git\.[\w.-]+)/api/v1/repos/([^/]+)/([^/#?]+)", u)
+    if m:
+        return None, "https://%s/%s/%s.git" % (m.group(1), m.group(2), repo(m.group(3)))
     m = re.search(r"(?:gitlab\.[\w.-]+|git\.[\w.-]+)/([^/]+/[^/#?]+)", u)
     if m:
         host = m.group(0).split("/")[0]
