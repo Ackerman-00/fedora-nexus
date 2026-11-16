@@ -1564,9 +1564,13 @@ HUNTS = (hunt_builds, hunt_network_build, hunt_chroots, hunt_copr_config, hunt_u
 
 
 def main():
+    try:
+        sys.stdout.reconfigure(line_buffering=True)
+    except AttributeError:
+        pass
     if "--upstream-rows" in sys.argv:
         for row in upstream_rows():
-            print(row)
+            print(row, flush=True)
         return
     only = [a.replace("_", "-") for a in sys.argv[1:]] or None
     alias = {"upstream": "upstream-versions"}
