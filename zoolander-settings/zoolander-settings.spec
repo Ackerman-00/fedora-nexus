@@ -14,7 +14,7 @@
 
 Name:           zoolander-settings-git
 Version:        %{zsver}
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Graphical settings app for the Zoolander compositor
 
 License:        MIT
@@ -98,6 +98,12 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-6
+- Vendor the Otter project's MIT license text (identical to the LICENSE files
+  shipped by otter-utils and otter-render): zoolander-settings ships no LICENSE
+  file upstream, and the %license declaration crashed the build with
+  "File not found" (COPR build 11337071)
+
 * Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-5
 - Install the LICENSE file: the %license macro expands to a path that must be
   created by %install or %files fails ("File not found" - COPR build 11337009)
