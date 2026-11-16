@@ -8,7 +8,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        32.20261116gitab5aaba%{?dist}
+Release:        33.20261116gitab5aaba%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -94,6 +94,9 @@ Ladybird browser built from the git master branch (unstable).
 
 %prep
 %autosetup -n ladybird-%{commit}
+# cargo >= 1.100 nests build-script output as <crate>/<hash>/run/root-output; upstream glob still matches the old <crate>-<hash>/root-output
+sed -i 's|${CRATE_NAME}-\*/root-output")|${CRATE_NAME}-*/root-output" "${CARGO_BUILD_SCRIPT_DIR}/${CRATE_NAME}/*/run/root-output")|' Meta/CMake/sync_rust_ffi_header.cmake
+grep -q 'run/root-output' Meta/CMake/sync_rust_ffi_header.cmake
 %if 0%{?fedora} < 45
 tar -xzf %{SOURCE7} && mv icu-release-78.3 icu
 %endif
@@ -174,6 +177,11 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.0.0-33.20261116gitab5aaba
+- Fix cargo 1.100 build layout: widen sync_rust_ffi_header.cmake glob to
+  <crate>/*/run/root-output (COPR rawhide builds 11331679 and 11332377 failed with
+  "Failed to find RustFFI.h in Cargo build output for libtextcodec_rust")
+
 * Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.0.0-32.20261116gitab5aaba
 - Refresh snapshot eb909f8 -> ab5aaba (upstream commit dated 2026-11-16T01:14:06Z); build-system
   files reviewed before the bump, COPR build verified after it
