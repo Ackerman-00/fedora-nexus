@@ -467,6 +467,9 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
   `repo-improvement` requires a probed brainstorm and a landed improvement
   each run (`why:` with a cited source, then `improve: <N >= 5> - <top pick> -
   landed: <commit or issue #>`).
+  For every changed package the gate also requires a `deps:` line written
+  before the edit that names the official spec or the full upstream build
+  system file and the BuildRequires comparison.
 
 - `python3 tools/hunt.py` - machine-checked hunt categories against live
   sources: builds (COPR), chroots, upstream-versions (GitHub, Codeberg,

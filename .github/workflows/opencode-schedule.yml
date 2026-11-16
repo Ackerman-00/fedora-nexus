@@ -239,6 +239,11 @@ jobs:
             for plan_pkg in $changed_pkgs; do
               grep -qE "^[[:space:]]*plan: $plan_pkg " <<< "$content" || return 1
             done
+            local deps_pkg
+            for deps_pkg in $changed_pkgs; do
+              grep -qE "^[[:space:]]*deps: $deps_pkg " <<< "$content" || return 1
+            done
+            grep -qE '^[[:space:]]*deps: .*(Cargo\.toml|meson\.build|CMakeLists\.txt|go\.mod|pyproject\.toml|https?://|\.spec)' <<< "$content" || return 1
             local improve_line improve_n
             improve_line=$(grep -m1 -E '^[[:space:]]*improve: [0-9]+ ' <<< "$content" || true)
             [ -n "$improve_line" ] || return 1

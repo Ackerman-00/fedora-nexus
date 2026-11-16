@@ -831,15 +831,30 @@ why: <subject> - source: <commit | AGENTS.md#section | issue #N | relay run_id> 
 improve: <N candidates, >= 5> - <top pick> - landed: <commit or issue #>
 plan: <pkg> - <competing hypotheses and the probes run before changing it>
   (one line per package you changed)
+deps: <pkg> - source: <official spec URL or FULL build-system file> - <BuildRequires comparison>
+  (one line per package you changed, written before the spec edit)
 hunt: <slug> - <command and result> - at least these eight slugs: builds,
   chroots, upstream-versions, cves, pins, sources, probes, published-nvr
 
 THINK BEFORE DOING ANYTHING: load the skills, websearch the live sources,
 write the plan with competing hypotheses and the commands that falsify them,
-run those probes, and only then edit or push. Before touching any spec, tear
-the artifact apart: read its INTERNAL version and checksum, derive its
-upstream dependency list from the whole build system, and compare it with
-BuildRequires. A plausible story without a probe is not evidence.
+run those probes, and only then edit or push.
+
+DEPENDENCY FIRST, THEN PACKAGING (MANDATORY for every package you change):
+1. Check the official Fedora dist-git spec first (a0 above); if it exists,
+   use its BuildRequires/Requires as the reference while keeping our flags.
+2. If there is no official spec, open the artifact and read the FULL upstream
+   build system files (Cargo.toml/Cargo.lock, meson.build, CMakeLists.txt,
+   go.mod, pyproject.toml, all subdirs) - never a grep-filtered scan.
+3. Derive the true dependency list and compare it with the spec's
+   BuildRequires/Requires; record the result in a `deps:` line BEFORE editing.
+4. Only then fix the spec to top quality: pinned checksum, correct Version/
+   Release/changelog, license text, minimal proven Requires/BuildRequires,
+   %meson/%cmake macros, correct %files paths, private-payload guards,
+   chrome-sandbox attr, and an in-app-updater strip where applicable.
+5. Prove the result with rpmspec -P, rpmlint, dnf builddep and a clean
+   container build/install/smoke. A plausible story without a probe is not
+   evidence, and a spec edit without a `deps:` line fails the gate.
 
 KNOWN PACKAGE-SPECIFIC NOTES - THE RIGOR BELOW APPLIES TO EVERY
 PACKAGE, NOT JUST THE EXAMPLE NAMED. For EVERY package, establish

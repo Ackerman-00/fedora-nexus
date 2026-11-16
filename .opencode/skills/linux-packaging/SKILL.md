@@ -17,6 +17,19 @@ workflows before editing. Preserve the project's current packaging style
 unless the owner asks for a new target. DEB and PKGBUILD targets are out of
 scope here.
 
+## Dependency first, then packaging
+
+Order matters: establish what upstream actually needs before changing the
+spec, so the fix is driven by evidence rather than by the symptom. Check the
+official Fedora dist-git spec first; if none exists, read the FULL upstream
+build-system files (Cargo.toml/Cargo.lock, meson.build, CMakeLists.txt,
+go.mod, pyproject.toml, including subdirs), derive the dependency list, and
+compare it with BuildRequires/Requires. Record that comparison before the
+edit. Only then make the spec excellent: pinned checksum, correct NVR and
+changelog, license text, minimal proven dependencies, native build macros,
+correct %files paths, private-payload guards, and the updater strip. Prove it
+with rpmspec -P, rpmlint, dnf builddep, and a clean container install/smoke.
+
 ## Dependency mapping
 
 Do not assume dependency names match across distros. Fedora names to expect:

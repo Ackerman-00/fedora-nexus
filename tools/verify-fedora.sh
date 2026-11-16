@@ -323,6 +323,16 @@ for plan_pkg in $changed_pkgs; do
     FAIL=1
   fi
 done
+for deps_pkg in $changed_pkgs; do
+  if ! grep -qE "^[[:space:]]*deps: $deps_pkg " <<< "$scope"; then
+    echo "FAIL: NOT COMPLETE -- changed package '$deps_pkg' has no upstream dependency check (deps:) before the fix"
+    FAIL=1
+  fi
+done
+if ! grep -qE '^[[:space:]]*deps: .*(Cargo\.toml|meson\.build|CMakeLists\.txt|go\.mod|pyproject\.toml|https?://|\.spec)' <<< "$scope"; then
+  echo "FAIL: NOT COMPLETE -- deps: line has no official spec URL or full build-system source"
+  FAIL=1
+fi
 improve_line=$(grep -m1 -E '^[[:space:]]*improve: [0-9]+ ' <<< "$scope" || true)
 if [[ -z "$improve_line" ]]; then
   echo "FAIL: NOT COMPLETE -- no 'improve: <N candidates> - <top pick> - landed: ...' line"

@@ -44,6 +44,13 @@ check 'why fake source token' '[0-9a-f]{7,40}|AGENTS\.md#|issue[[:space:]]*#[0-9
 check 'plan per changed pkg' '^[[:space:]]*plan: otr ' 'plan: otr - hypothesis A and B - repoquery probe' hit
 check 'plan missing pkg' '^[[:space:]]*plan: otr ' 'plan: other - hypothesis - probe' miss
 
+check 'deps per changed pkg' '^[[:space:]]*deps: otr ' 'deps: otr - source: meson.build - 3 missing BR' hit
+check 'deps missing pkg' '^[[:space:]]*deps: otr ' 'deps: other - source: meson.build - none' miss
+DEPS_SRC='^[[:space:]]*deps: .*(Cargo\.toml|meson\.build|CMakeLists\.txt|go\.mod|pyproject\.toml|https?://|\.spec)'
+check 'deps with real source' "$DEPS_SRC" 'deps: otr - source: Cargo.toml - compared' hit
+check 'deps with spec URL' "$DEPS_SRC" 'deps: otr - source: https://src.fedoraproject.org/rpms/otr/raw/main/f/otr.spec - compared' hit
+check 'deps with fake source' "$DEPS_SRC" 'deps: otr - source: my memory - none' miss
+
 check 'hunt category' '^[[:space:]]*hunt: builds ' 'hunt: builds - 73 newest builds - 0 failed' hit
 check 'hunt missing category' '^[[:space:]]*hunt: published-nvr ' 'hunt: builds - 73 newest builds - 0 failed' miss
 
