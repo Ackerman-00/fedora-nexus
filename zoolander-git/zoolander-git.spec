@@ -17,7 +17,7 @@ Source1:        https://git.pika-os.com/api/v1/repos/otter-shell/zooland/archive
 
 ExclusiveArch:  x86_64
 
-BuildRequires:  otr-git
+BuildRequires:  otr
 BuildRequires:  pkgconfig(libpipewire-0.3)
 BuildRequires:  git
 BuildRequires:  gcc

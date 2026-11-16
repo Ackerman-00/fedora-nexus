@@ -3,7 +3,7 @@
 %global gitdate         20261030124748
 %global base_version    0.2.6
 
-Name:           otr-git
+Name:           otr
 Version:        %{base_version}+git%{gitdate}.%{shortcommit}
 Release:        1%{?dist}
 Summary:        The Otr programming language toolchain

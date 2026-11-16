@@ -3,7 +3,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 REPO="general-packages/otr"
 API="https://git.pika-os.com/api/v1/repos/$REPO"
-SPEC_FILE="otr-git.spec"
+SPEC_FILE="otr.spec"
 PACKAGER="Ackerman-00 <no-reply>"
 LATEST_COMMIT=$(curl -sL "$API/commits/main" | jq -r '.sha')
 LATEST_DATE_RAW=$(curl -sL "$API/commits/main" | jq -r '.commit.committer.date')
@@ -49,4 +49,4 @@ sed -i '/^%changelog/,$d' "$SPEC_FILE"
     echo "* $DEB_DATE $PACKAGER - ${BASE_VER}+git${LATEST_DATE}.${SHORT_COMMIT}-1"
     echo "- Nightly sync with upstream main branch (Commit: $SHORT_COMMIT)"
 } >> "$SPEC_FILE"
-echo "Updated otr-git to $LATEST_COMMIT"
+echo "Updated otr to $LATEST_COMMIT"
