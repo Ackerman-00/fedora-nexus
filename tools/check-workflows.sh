@@ -153,6 +153,9 @@ except Exception as exc:
 sys.exit(bad)
 PY
 
+echo "== evidence contract self-test =="
+bash tools/test-verifier.sh || FAIL=1
+
 if [ "$FAIL" -ne 0 ]; then
   echo "WORKFLOW VALIDATION FAILED - do not push"
   exit 1

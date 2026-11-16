@@ -22,6 +22,14 @@ battle-tested gate.
 - Check that the toolchain evidence (`rpmspec -P`, `dnf builddep`, `rpmlint`)
   is from this run's fresh container, not memory.
 
+## Prove the verifier can still fail
+
+- When you change the gate or `tools/verify-fedora.sh`, run
+  `bash tools/test-verifier.sh`: it breaks each evidence rule deliberately and
+  checks the contract still rejects it. A check that keeps passing after the
+  rule changed is a stale proof, not a green run.
+- Fix the detector, never weaken a property to make a failing check pass.
+
 ## Explain every number
 
 - Any count, speedup, regression, or eval result you report must carry its
