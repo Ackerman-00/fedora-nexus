@@ -51,6 +51,15 @@ check 'deps with real source' "$DEPS_SRC" 'deps: otr - source: Cargo.toml - comp
 check 'deps with spec URL' "$DEPS_SRC" 'deps: otr - source: https://src.fedoraproject.org/rpms/otr/raw/main/f/otr.spec - compared' hit
 check 'deps with fake source' "$DEPS_SRC" 'deps: otr - source: my memory - none' miss
 
+check 'artifact per changed pkg' '^[[:space:]]*artifact: otr ' 'artifact: otr - upstream: https://example.org/x.deb - format: deb' hit
+check 'artifact missing pkg' '^[[:space:]]*artifact: otr ' 'artifact: other - upstream: https://example.org - format: deb' miss
+for art_field in 'https?://' 'format:' 'fedora-deps:' 'improvements:'; do
+  good="artifact: otr - upstream: https://example.org/a.deb - format: deb - torn: control+ELF - fedora-deps: repoquery - improvements: 7"
+  bad='artifact: otr - guessed from the filename'
+  check "artifact field $art_field present" "^[[:space:]]*artifact: .*$art_field" "$good" hit
+  check "artifact field $art_field missing" "^[[:space:]]*artifact: .*$art_field" "$bad" miss
+done
+
 check 'hunt category' '^[[:space:]]*hunt: builds ' 'hunt: builds - 73 newest builds - 0 failed' hit
 check 'hunt missing category' '^[[:space:]]*hunt: published-nvr ' 'hunt: builds - 73 newest builds - 0 failed' miss
 

@@ -244,6 +244,13 @@ jobs:
               grep -qE "^[[:space:]]*deps: $deps_pkg " <<< "$content" || return 1
             done
             grep -qE '^[[:space:]]*deps: .*(Cargo\.toml|meson\.build|CMakeLists\.txt|go\.mod|pyproject\.toml|https?://|\.spec)' <<< "$content" || return 1
+            local art_pkg
+            for art_pkg in $changed_pkgs; do
+              grep -qE "^[[:space:]]*artifact: $art_pkg " <<< "$content" || return 1
+            done
+            for art_field in 'https?://' 'format:' 'fedora-deps:' 'improvements:'; do
+              grep -qE "^[[:space:]]*artifact: .*$art_field" <<< "$content" || return 1
+            done
             local improve_line improve_n
             improve_line=$(grep -m1 -E '^[[:space:]]*improve: [0-9]+ ' <<< "$content" || true)
             [ -n "$improve_line" ] || return 1

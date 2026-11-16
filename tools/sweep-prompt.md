@@ -833,6 +833,8 @@ plan: <pkg> - <competing hypotheses and the probes run before changing it>
   (one line per package you changed)
 deps: <pkg> - source: <official spec URL or FULL build-system file> - <BuildRequires comparison>
   (one line per package you changed, written before the spec edit)
+artifact: <pkg> - upstream: <live URL> - format: <deb|appimage|rpm|tar|gnu|git> - torn: <files/version/ELF NEEDED read> - fedora-deps: <dnf repoquery mapping> - improvements: <N>
+  (one line per package you changed, written before the edit)
 hunt: <slug> - <command and result> - at least these eight slugs: builds,
   chroots, upstream-versions, cves, pins, sources, probes, published-nvr
 
@@ -840,21 +842,37 @@ THINK BEFORE DOING ANYTHING: load the skills, websearch the live sources,
 write the plan with competing hypotheses and the commands that falsify them,
 run those probes, and only then edit or push.
 
-DEPENDENCY FIRST, THEN PACKAGING (MANDATORY for every package you change):
-1. Check the official Fedora dist-git spec first (a0 above); if it exists,
-   use its BuildRequires/Requires as the reference while keeping our flags.
-2. If there is no official spec, open the artifact and read the FULL upstream
-   build system files (Cargo.toml/Cargo.lock, meson.build, CMakeLists.txt,
-   go.mod, pyproject.toml, all subdirs) - never a grep-filtered scan.
-3. Derive the true dependency list and compare it with the spec's
-   BuildRequires/Requires; record the result in a `deps:` line BEFORE editing.
-4. Only then fix the spec to top quality: pinned checksum, correct Version/
-   Release/changelog, license text, minimal proven Requires/BuildRequires,
-   %meson/%cmake macros, correct %files paths, private-payload guards,
-   chrome-sandbox attr, and an in-app-updater strip where applicable.
-5. Prove the result with rpmspec -P, rpmlint, dnf builddep and a clean
-   container build/install/smoke. A plausible story without a probe is not
-   evidence, and a spec edit without a `deps:` line fails the gate.
+UPSTREAM -> TEAR APART -> FEDORA DEPS -> DEEP IMPROVEMENT -> FIX (MANDATORY FOR EVERY PACKAGE):
+ 1. Check upstream live, then the official Fedora dist-git spec first (a0
+    above); if it exists, use its BuildRequires/Requires as the reference
+    while keeping our flags.
+ 2. Identify the artifact format and tear it apart - never trust the
+    filename: .deb (`dpkg-deb -x` + `control`), .rpm (`rpm2cpio | cpio -idm`
+    + header tags), AppImage (`--appimage-extract` -> `squashfs-root`, or
+    `unsquashfs -l` with the offset), .tar/.tar.gz/.zip (full listing),
+    GNU/source trees (read the whole build system: Cargo.toml/Cargo.lock,
+    meson.build, CMakeLists.txt, go.mod, pyproject.toml, all subdirs), git
+    snapshots (commit + tree). Read the INTERNAL version, ELF `NEEDED` entries
+    (`ldd`/`readelf`), bundled files, and what the program actually does.
+    Never a grep-filtered scan.
+ 3. Map every dependency to Fedora: `dnf repoquery --whatprovides <soname or
+    binary or pkgconfig>`, check the real Fedora package name and version,
+    note missing/mismatched/candidate providers, and keep bundled private
+    libraries out of global Provides. Record the result in `deps:` and the
+    teardown evidence in `artifact:` BEFORE editing.
+ 4. Think deeply about further improvements (repo-improvement skill): at
+    least 5 candidate changes across correctness, security, metadata,
+    dependency provenance, freshness, and CI; stress-test the riskiest
+    assumption with a probe; record them in `improve:` and `plan:`.
+ 5. Only then fix or add: pinned checksum, correct Version/Release/changelog,
+    license text, minimal proven Requires/BuildRequires, native build macros,
+    correct %files paths, private-payload guards, chrome-sandbox attr, updater
+    strip where applicable. If bundled libraries must remain, declare
+    `Provides: bundled(<lib>) = <version>` per Fedora's Bundled Software
+    policy. A fix without the artifact/deps tokens fails.
+ 6. Prove the result with rpmspec -P, rpmlint, dnf builddep and a clean
+    container build/install/smoke. A plausible story without a probe is not
+    evidence.
 
 KNOWN PACKAGE-SPECIFIC NOTES - THE RIGOR BELOW APPLIES TO EVERY
 PACKAGE, NOT JUST THE EXAMPLE NAMED. For EVERY package, establish

@@ -470,6 +470,10 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
   For every changed package the gate also requires a `deps:` line written
   before the edit that names the official spec or the full upstream build
   system file and the BuildRequires comparison.
+  It also requires an `artifact:` line per changed package proving the
+  upstream artifact was torn apart by format (deb/rpm/AppImage/tar/gnu/git),
+  its dependencies mapped to Fedora with `dnf repoquery --whatprovides`, and
+  deeper improvements considered before the fix.
 
 - `python3 tools/hunt.py` - machine-checked hunt categories against live
   sources: builds (COPR), chroots, upstream-versions (GitHub, Codeberg,

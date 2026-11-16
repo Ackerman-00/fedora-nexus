@@ -30,6 +30,29 @@ changelog, license text, minimal proven dependencies, native build macros,
 correct %files paths, private-payload guards, and the updater strip. Prove it
 with rpmspec -P, rpmlint, dnf builddep, and a clean container install/smoke.
 
+## Tear the artifact apart by format
+
+The download name is a label, not evidence. Open the artifact and read the
+version and dependencies from inside it:
+
+| Format | What to run |
+| --- | --- |
+| `.deb` | `dpkg-deb -x` plus the `control` metadata |
+| `.rpm` | `rpm2cpio \| cpio -idm` plus header tags |
+| AppImage | `--appimage-extract` (gives `squashfs-root`) or `unsquashfs -l` with the offset |
+| `.tar`/`.zip` | full listing, then read build files and internal version files |
+| GNU/source tree | the whole build system: Cargo.toml/Cargo.lock, meson.build, CMakeLists.txt, go.mod, pyproject.toml and all subdirs |
+| git snapshot | commit ID and the checked-out tree |
+
+Then read ELF `NEEDED` entries with `ldd`/`readelf` and map each one to Fedora
+with `dnf repoquery --whatprovides <capability>`. This is why a package that
+"looks fine" from its filename can still be wrong: the payload may bundle a
+library that shadows a real Fedora dependency.
+Fedora's Bundled Software policy requires a `Provides: bundled(<lib>) =
+<version>` for each bundled library that stays, and its automatic-filtering
+guidelines require private capabilities to stay out of global Provides via
+`__provides_exclude_from` / `__requires_exclude_from`. Both apply here.
+
 ## Dependency mapping
 
 Do not assume dependency names match across distros. Fedora names to expect:

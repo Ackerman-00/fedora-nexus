@@ -340,6 +340,18 @@ if ! grep -qE '^[[:space:]]*deps: .*(Cargo\.toml|meson\.build|CMakeLists\.txt|go
   echo "FAIL: NOT COMPLETE -- deps: line has no official spec URL or full build-system source"
   FAIL=1
 fi
+for art_pkg in $changed_pkgs; do
+  if ! grep -qE "^[[:space:]]*artifact: $art_pkg " <<< "$scope"; then
+    echo "FAIL: NOT COMPLETE -- changed package '$art_pkg' has no artifact teardown (artifact:) before the fix"
+    FAIL=1
+  fi
+done
+for art_field in 'https?://' 'format:' 'fedora-deps:' 'improvements:'; do
+  if ! grep -qE "^[[:space:]]*artifact: .*$art_field" <<< "$scope"; then
+    echo "FAIL: NOT COMPLETE -- artifact: line missing $art_field"
+    FAIL=1
+  fi
+done
 improve_line=$(grep -m1 -E '^[[:space:]]*improve: [0-9]+ ' <<< "$scope" || true)
 if [[ -z "$improve_line" ]]; then
   echo "FAIL: NOT COMPLETE -- no 'improve: <N candidates> - <top pick> - landed: ...' line"
