@@ -1,4 +1,4 @@
-# pkg|dnf-name|smoke  - the install-test probe for every package (see tools/install-sweep.sh)
+# pkg|dnf-name|smoke|[chroot]  - the install-test probe for every package (see tools/install-sweep.sh); optional 4th field overrides the chroot for packages the COPR project does not build on the default chroot
 app2unit|app2unit|test -x /usr/bin/app2unit && test -x /usr/bin/app2unit-open
 appmenu-glib-translator|appmenu-glib-translator|files-only
 astal|astal|files-only
@@ -70,5 +70,5 @@ hatter-icon-theme|hatter-icon-theme|files-only
 ladybird-unstable|ladybird-unstable|test -x /usr/bin/ladybird && test -x /opt/ladybird/libexec/RequestServer && QT_QPA_PLATFORM=offscreen timeout 60 /usr/bin/ladybird --version 2>/dev/null | grep -q '^Version' && { timeout 30 /opt/ladybird/libexec/RequestServer >/dev/null 2>&1; test $? -lt 128; }
 whitesur-icon-theme|whitesur-icon-theme|files-only
 hermes-agent-desktop|hermes-agent-desktop|test -x /usr/bin/hermes-agent-desktop && test -d /opt/HermesDesktop && test -x /opt/HermesDesktop/Hermes
-otr|otr|test -x /usr/bin/otr && otr version
-zoolander-git|zoolander-git|test -x /usr/bin/zoolander && test -x /usr/bin/zoolanderctl && test -f /usr/share/wayland-sessions/zoolander.desktop
+otr|otr|test -x /usr/bin/otr && otr version|45
+zoolander-git|zoolander-git|test -x /usr/bin/zoolander && test -x /usr/bin/zoolanderctl && test -f /usr/share/wayland-sessions/zoolander.desktop|45

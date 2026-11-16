@@ -9,9 +9,10 @@ mkdir -p "$OUT"
 : > "$OUT/rows.txt"
 
 one() {
-  IFS='|' read -r pkg dnf smoke <<< "$1"
+  IFS='|' read -r pkg dnf smoke tchr <<< "$1"
   case "$pkg" in ''|\#*) return 0 ;; esac
   [ "$smoke" = files-only ] && smoke=""
+  [ -n "$tchr" ] && CH="$tchr"
   local out="$OUT/$pkg.log"
   local spec ever erel
   spec=$(ls "$pkg/$pkg.spec" 2>/dev/null)
