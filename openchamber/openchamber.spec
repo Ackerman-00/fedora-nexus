@@ -6,7 +6,7 @@
 
 Name:           openchamber
 Version:        2.7.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        AI coding agent workspace (Electron)
 License:        MIT
 URL:            https://github.com/openchamber/openchamber
@@ -87,16 +87,18 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 
 %post
 if command -v update-desktop-database >/dev/null 2>&1; then update-desktop-database %{_datadir}/applications >/dev/null 2>&1 || true; fi
-if ! { [ -L /proc/self/ns/user ] && unshare --user true; }; then
-  chmod 4755 /opt/OpenChamber/chrome-sandbox || true
-else
-  chmod 0755 /opt/OpenChamber/chrome-sandbox || true
-fi
+chmod 4755 /opt/OpenChamber/chrome-sandbox || true
 
 %postun
 if command -v update-desktop-database >/dev/null 2>&1; then update-desktop-database %{_datadir}/applications >/dev/null 2>&1 || true; fi
 
 %changelog
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 2.7.2-3
+- Always set the chrome-sandbox SUID bit in %post: the userns demote to 0755
+  made rpm -V flag the file as modified in every userns/rootless environment
+  (and broke the SUID sandbox path there for no gain; userns-allowed kernels
+  ignore the bit anyway). Matches every other Electron package and Chrome.
+
 * Sun Nov 15 2026 Ackerman-00 <no-reply> - 2.7.2-2
 - Rebuild the native .rpm repack unchanged: COPR's importer aborted while
   fetching the 2.7.2-1 SRPM, so the same content was republished to clear
