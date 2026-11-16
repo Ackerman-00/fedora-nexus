@@ -21,7 +21,7 @@ BuildRequires:  meson >= 1.3
 BuildRequires:  ninja-build
 BuildRequires:  systemd-rpm-macros
 BuildRequires:  pkgconfig(libsystemd) >= 243
-BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.1
+BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.2
 BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(wayland-server) >= 1.24
 BuildRequires:  pkgconfig(wayland-client)

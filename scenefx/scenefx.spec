@@ -24,7 +24,7 @@ BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.41
 BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(wayland-server) >= 1.24.0
-BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.0
+BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.2
 BuildRequires:  pkgconfig(xkbcommon) >= 1.8.0
 BuildRequires:  pkgconfig(libglvnd)
 BuildRequires:  pkgconfig(lcms2)

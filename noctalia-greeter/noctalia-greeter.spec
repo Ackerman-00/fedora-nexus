@@ -21,7 +21,7 @@ BuildRequires:  gcc-c++
 BuildRequires:  diffutils
 BuildRequires:  stb_image_resize2-devel
 BuildRequires:  libinput-devel
-BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20
+BuildRequires:  pkgconfig(wlroots-0.20) >= 0.20.2
 BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(glesv2)
 BuildRequires:  pkgconfig(cairo)
@@ -55,7 +55,7 @@ Recommends:     polkit
 Requires:       /usr/bin/bash
 Requires:       /usr/bin/dbus-run-session
 Requires:       greetd
-Requires:       wlroots >= 0.20
+Requires:       wlroots >= 0.20.2
 
 %description
 A minimal login greeter for greetd that matches the look and feel of Noctalia
