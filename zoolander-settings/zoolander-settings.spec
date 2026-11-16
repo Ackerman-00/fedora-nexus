@@ -14,7 +14,7 @@
 
 Name:           zoolander-settings-git
 Version:        %{zsver}
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Graphical settings app for the Zoolander compositor
 
 License:        MIT
@@ -81,6 +81,7 @@ DESTDIR=%{_builddir}/staging OTR_CPU=baseline otr run otr/build.otr -- install \
 
 %install
 cp -a %{_builddir}/staging/usr %{buildroot}/
+install -D -m 0644 zoolander-settings/LICENSE %{buildroot}%{_licensedir}/zoolander-settings-git/LICENSE
 
 %files
 %license zoolander-settings/LICENSE
@@ -97,6 +98,10 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-5
+- Install the LICENSE file: the %license macro expands to a path that must be
+  created by %install or %files fails ("File not found" - COPR build 11337009)
+
 * Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-4
 - Stage the otr install into %{_builddir}/staging and copy into %{buildroot}
   from %install: rpm wipes %{buildroot} before the %install script, so the
