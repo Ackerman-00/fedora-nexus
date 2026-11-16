@@ -83,6 +83,8 @@ for pat in (r"^[[:space:]]*defects-found:[[:space:]]*[0-9]+",
              r"^[[:space:]]*skills:",
              r"^[[:space:]]*websearch: .*($today|$yest)",
              r"^[[:space:]]*plan: $plan_pkg ",
+             r"^[[:space:]]*improve: [0-9]+ ",
+             r"landed:|issue #[0-9]+",
              r"^[[:space:]]*([-*][[:space:]]*)?(needs-owner|waiting for (the )?owner|awaiting (the )?owner|pending owner|owner approval|human approval|needs approval|owner to apply|requires owner)"):
     in_gate = norm(pat) in gp
     in_ver = norm(pat) in vp

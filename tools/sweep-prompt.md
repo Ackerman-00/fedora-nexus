@@ -819,13 +819,15 @@ SKILL REGISTRY: at the start of every run load these with the skill tool
 @web-research @linux-packaging @rpm-copr @security-audit @code-review
 @systematic-debugging @verification-before-completion @github-ops
 @container-validation @python-tooling @writing-for-agents @fedora-triage
+@repo-improvement
 Never work on a package, build failure, issue, or workflow change without
 them. Load a skill again after a compacted or handed-off run.
 
 MANDATORY RUN TOKENS (the inline gate AND tools/verify-fedora.sh read these;
 a missing or stale token fails the run):
-skills: <all twelve ids from the registry above>
+skills: <all thirteen ids from the registry above>
 websearch: <N live queries, M primary-source URLs, YYYY-MM-DD>
+improve: <N candidates, >= 5> - <top pick> - landed: <commit or issue #>
 plan: <pkg> - <competing hypotheses and the probes run before changing it>
   (one line per package you changed)
 hunt: <slug> - <command and result> - at least these eight slugs: builds,

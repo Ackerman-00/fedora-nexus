@@ -229,13 +229,19 @@ jobs:
             local skills_line skills_n web_line plan_pkg
             skills_line=$(grep -m1 -E '^[[:space:]]*skills:' <<< "$content" || true)
             [ -n "$skills_line" ] || return 1
-            skills_n=$(printf '%s\n' "$skills_line" | grep -oE '\b(web-research|linux-packaging|rpm-copr|security-audit|code-review|systematic-debugging|verification-before-completion|github-ops|container-validation|python-tooling|writing-for-agents|fedora-triage)\b' | sort -u | wc -l || true)
-            [ "$skills_n" -ge 12 ] || return 1
+            skills_n=$(printf '%s\n' "$skills_line" | grep -oE '\b(web-research|linux-packaging|rpm-copr|security-audit|code-review|systematic-debugging|verification-before-completion|github-ops|container-validation|python-tooling|writing-for-agents|fedora-triage|repo-improvement)\b' | sort -u | wc -l || true)
+            [ "$skills_n" -ge 13 ] || return 1
             web_line=$(grep -m1 -E "^[[:space:]]*websearch: .*($today|$yest)" <<< "$content" || true)
             [ -n "$web_line" ] || return 1
             for plan_pkg in $changed_pkgs; do
               grep -qE "^[[:space:]]*plan: $plan_pkg " <<< "$content" || return 1
             done
+            local improve_line improve_n
+            improve_line=$(grep -m1 -E '^[[:space:]]*improve: [0-9]+ ' <<< "$content" || true)
+            [ -n "$improve_line" ] || return 1
+            improve_n=$(printf '%s\n' "$improve_line" | sed -E 's/^[[:space:]]*improve: ([0-9]+).*/\1/')
+            [ "$improve_n" -ge 5 ] || return 1
+            grep -qE 'landed:|issue #[0-9]+' <<< "$improve_line" || return 1
             local wait_line
             wait_line=$(grep -im1 -E '^[[:space:]]*([-*][[:space:]]*)?(needs-owner|waiting for (the )?owner|awaiting (the )?owner|pending owner|owner approval|human approval|needs approval|owner to apply|requires owner)' <<< "$content" || true)
             [ -z "$wait_line" ] || return 1

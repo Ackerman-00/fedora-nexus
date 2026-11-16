@@ -298,12 +298,12 @@ if [[ -z "$skills_line" ]]; then
   echo "FAIL: NOT COMPLETE -- no 'skills:' line naming the skills loaded this run"
   FAIL=1
 else
-  skills_n=$(printf '%s\n' "$skills_line" | grep -oE '\b(web-research|linux-packaging|rpm-copr|security-audit|code-review|systematic-debugging|verification-before-completion|github-ops|container-validation|python-tooling|writing-for-agents|fedora-triage)\b' | sort -u | wc -l || true)
-  if [[ "$skills_n" -lt 12 ]]; then
-    echo "FAIL: NOT COMPLETE -- skills: names $skills_n of the 12 required skills"
+  skills_n=$(printf '%s\n' "$skills_line" | grep -oE '\b(web-research|linux-packaging|rpm-copr|security-audit|code-review|systematic-debugging|verification-before-completion|github-ops|container-validation|python-tooling|writing-for-agents|fedora-triage|repo-improvement)\b' | sort -u | wc -l || true)
+  if [[ "$skills_n" -lt 13 ]]; then
+    echo "FAIL: NOT COMPLETE -- skills: names $skills_n of the 13 required skills"
     FAIL=1
   else
-    echo "PASS: all 12 skills named as loaded"
+    echo "PASS: all 13 skills named as loaded"
   fi
 fi
 today="$TODAY"; yest="$YEST"
@@ -320,6 +320,19 @@ for plan_pkg in $changed_pkgs; do
     FAIL=1
   fi
 done
+improve_line=$(grep -m1 -E '^[[:space:]]*improve: [0-9]+ ' <<< "$scope" || true)
+if [[ -z "$improve_line" ]]; then
+  echo "FAIL: NOT COMPLETE -- no 'improve: <N candidates> - <top pick> - landed: ...' line"
+  FAIL=1
+else
+  improve_n=$(printf '%s\n' "$improve_line" | sed -E 's/^[[:space:]]*improve: ([0-9]+).*/\1/')
+  if [[ "$improve_n" -lt 5 ]] || ! grep -qE 'landed:|issue #[0-9]+' <<< "$improve_line"; then
+    echo "FAIL: NOT COMPLETE -- improve: needs >= 5 candidates and a landed outcome (commit or issue #)"
+    FAIL=1
+  else
+    echo "PASS: improvement brainstorm landed"
+  fi
+fi
 wait_line=$(grep -im1 -E '^[[:space:]]*([-*][[:space:]]*)?(needs-owner|waiting for (the )?owner|awaiting (the )?owner|pending owner|owner approval|human approval|needs approval|owner to apply|requires owner)' <<< "$scope" || true)
 if [[ -n "$wait_line" ]]; then
   echo "FAIL: NOT COMPLETE -- owner-approval/needs-owner marker in this run: $wait_line"
