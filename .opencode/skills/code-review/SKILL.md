@@ -1,0 +1,30 @@
+---
+name: Code Review
+description: Evidence-backed review of specs, tools, and workflow changes before merge - findings with location and proof, never a rubber stamp. Use before any commit or PR landing.
+---
+
+# Code Review
+
+Adapted from gstack review, coderabbitai/skills, and requesting-code-review.
+
+## Review the diff, not the prose
+
+- Every finding names a file, a line, and a reproducing command or log.
+  A finding without proof is an opinion; record it and keep looking.
+- For spec changes check: pinned checksums, changelog NVR, license text,
+  `%files` paths, sandbox attrs, private-payload guards, and arch declarations.
+- For tools/workflows check: gate and verifier stay in sync
+  (`bash tools/check-workflows.sh`), permission scopes are actionlint-valid,
+  and no evidence check was weakened.
+- For update scripts check: the updater can actually track a release, no
+  broken shebang, and a real version regex.
+
+## Disposition
+
+- Fix the generator, not the instance: a recurring finding means the tool or
+  prompt is wrong, not the package.
+- Never land a package change you have not built and install-tested.
+- Comments are short `#topic` labels only; remove incident narratives,
+  dated lesson logs, restated code, and commented-out code.
+- Review your own work as strictly as someone else's; a passing gate is the
+  start of the review, not the end.

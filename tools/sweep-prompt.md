@@ -813,10 +813,13 @@ with no error when libudev-devel was absent). For EVERY package:
        extracted Source0 for the pattern to prove expiry, then
        delete it with a Release bump, never carry it.
 
-LINUX PACKAGING SKILL: at the start of every run load `@linux-packaging`
-with the skill tool (it lives in .opencode/skills/linux-packaging/SKILL.md)
-and apply it to every spec, update.sh and package change. Never work on a
-package without it.
+SKILL REGISTRY: at the start of every run load these with the skill tool
+(bodies live in .opencode/skills/<id>/SKILL.md) and follow them throughout:
+@web-research @linux-packaging @rpm-copr @security-audit @code-review
+@systematic-debugging @verification-before-completion @github-ops
+@container-validation
+Never work on a package, build failure, issue, or workflow change without
+them. Load a skill again after a compacted or handed-off run.
 
 KNOWN PACKAGE-SPECIFIC NOTES - THE RIGOR BELOW APPLIES TO EVERY
 PACKAGE, NOT JUST THE EXAMPLE NAMED. For EVERY package, establish
