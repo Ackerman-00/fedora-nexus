@@ -347,6 +347,15 @@ tracked files before touching the spec. Fix: `cp -a <pkgdir>/. SOURCES/`
 before running spectool. Hit on wlroots, ly, zen-browser 2026-10-10 (all
 three COPR builds were green the whole time).
 
+The same trap applies to submission, not just to teardown: `copr-cli build
+ackerman/nexus <file>.spec` uploads the spec ALONE, so a package whose Source1+
+is a tracked local file (cliphist's vendor tarball) dies at `rpmbuild -bs` with
+a bare `ERROR: Exception(...)` and no spec error in builder-live.log. Submit
+those through the SCM package instead - `copr-cli build-package --name <pkg>
+ackerman/nexus` - which clones the repo and carries the whole package dir. Hit
+on cliphist 11335575 2026-11-16; the SCM build 11335629 was green on all four
+chroots.
+
 One teardown per package: `tools/teardown-fresh.sh` holds a per-package flock
 and emits `TEARDOWN_<pkg>=FAIL harness-concurrent` instead of letting two
 batches share `/tmp/teardown/<pkg>` (one run's cleanup empties the other's
