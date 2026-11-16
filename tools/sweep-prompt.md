@@ -233,7 +233,7 @@ non-workflow work. Never write a needs-owner line - the gate fails it.
      `GAP: external - refresh COPR_API_TOKEN (expired) [probe: <whoami output>]`, and open ONE tracking issue
      and fall back
      to read-only COPR behavior for this run. This rotation is the
-     single recurring owner task - note the expiry date in the relay
+     single recurring external item - note the expiry date in the relay
      every run so it never surprises. Do not gate on this line -
      a missing secret must not fail the run.
   3. ALLOWED WRITE OPS (command names verified in copr-cli 2.6;
@@ -1197,9 +1197,9 @@ eventually require a COPR admin purge.
      ghost/orphan RPM in the COPR repodata) - this is a known,
      acknowledged COPR infrastructure bug, not a repo problem.
   c. If a "Stale ghost packages in COPR" issue is still open, CLOSE it as
-     "not our bug - COPR infrastructure issue; owner declined to pursue
-     admin purge". (Never hardcode per-issue numbers here; cite the
-     ghost-RPM rule above.)
+     "not our bug - COPR infrastructure issue: ghost RPMs have no
+     package or build record and cannot be purged through the API".
+     (Never hardcode per-issue numbers here; cite the ghost-RPM rule.)
   d. The install-verification sweep must test every package the
      git repo ships - never the ghost RPMs COPR leaks.
 

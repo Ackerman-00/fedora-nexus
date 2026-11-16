@@ -334,8 +334,9 @@ else
   fi
 fi
 wait_line=$(grep -im1 -E '^[[:space:]]*([-*][[:space:]]*)?(needs-owner|waiting for (the )?owner|awaiting (the )?owner|pending owner|owner approval|human approval|needs approval|owner to apply|requires owner)' <<< "$scope" || true)
-if [[ -n "$wait_line" ]]; then
-  echo "FAIL: NOT COMPLETE -- owner-approval/needs-owner marker in this run: $wait_line"
+owner_ask=$(grep -im1 -E 'needs[[:space:]]*-?[[:space:]]*owner|wait(ing)? for (the )?owner|ask(ing)? (the )?owner|owner.{0,20}(approv|decid|permission)|(approv|permission).{0,20}from (the )?owner|owner declined' <<< "$scope" || true)
+if [[ -n "$wait_line" || -n "$owner_ask" ]]; then
+  echo "FAIL: NOT COMPLETE -- owner-approval/needs-owner marker in this run: ${wait_line:-$owner_ask}"
   FAIL=1
 else
   echo "PASS: no owner-approval waiting"
