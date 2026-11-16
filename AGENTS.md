@@ -458,6 +458,9 @@ prompt; if the two ever disagree, actionlint wins and the prompt is wrong.
 
 ## Tools in this repo (what to run instead of hand-rolling it)
 
+- `tools/sweep-prompt.md` is the scheduler's instruction file and also carries
+  the adapted Linux-packaging skill (Fedora subset) applied to every spec.
+
 - `python3 tools/hunt.py` - machine-checked hunt categories against live
   sources: builds (COPR), chroots, upstream-versions (GitHub, Codeberg,
   GitLab, PyPI), cves (OSV, filtered by the advisory's own ranges), licenses
