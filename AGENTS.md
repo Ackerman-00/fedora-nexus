@@ -690,3 +690,26 @@ A `GAP: external` for a buildroot failure must first rule out this repo's own
 providers (`dnf repoquery --whatprovides <SONAME>` or chroot repodata) and carry
 a `[probe: ...]` token; the gate enforces the token (tools/check-workflows.sh
 keeps gate and verifier in sync).
+
+## Direct-to-main pushes from outside (found 2026-11-16, real hit)
+
+On 2026-11-16, three commits from an unsigned GitHub user (quietCraft,
+mdzunaid384@gmail.com, created 2024-06-09) landed straight on main while a
+run was in flight: zoolander-git -5 (d4f5859, sound RUNPATH fix, built
+11336749), noctalia-greeter -2 (d4f9ff5, install-time greetd/PAM/VT
+auto-config - aggressive but intentional, backed up and idempotent, verified
+in a clean container), and umbriel-git -3 (d4f9ff5, a Patch0 that RPM applied
+with -p0 and could not match: COPR build 11336832 failed all four chroots,
+nothing published). The author pushed a follow-up (f1e2325) that dropped the
+patch for a sed-in-%prep fix, and umbriel-git -4 (11336872) built green.
+zoolander-git -6 (11336873) also succeeded.
+
+Review rule: every run must `git fetch origin` BEFORE build decisions and
+review main commits that are not yours - reconcile silently-pushed work
+into the run (rebase, verify the builds they triggered, review the diff as
+code), never rebase over others' commits or discard them. An external
+commit that broke a build is fixed forward (here: their sed guard, verified
+in a fresh container), not reverted: reverting would have destroyed a real
+fix that solves a real defect. An install-time change outside the package's
+own files (here: %post rewriting greetd/PAM/VTs/display-manager) must be
+flagged loudly - silent acceptance or silent revert are both wrong.
