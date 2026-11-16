@@ -5,7 +5,7 @@
 
 Name:           zoolander-git
 Version:        %{base_version}+git%{gitdate}.%{shortcommit}
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Zoolander Wayland compositor, built from the git snapshot
 
 License:        MIT
@@ -48,7 +48,6 @@ BuildRequires:  libX11-devel
 Requires:       xorg-x11-server-Xwayland
 Requires:       libseat
 Requires:       netcat
-Requires:       libcap
 Recommends:     mesa-vulkan-drivers
 
 %description
@@ -94,20 +93,10 @@ install -d %{buildroot}%{_datadir}/zoolander/config
 install -m 0644 ../config/starter/*.lua %{buildroot}%{_datadir}/zoolander/config/
 
 
-%post
-if [ $1 -eq 1 ]; then
-    if command -v setcap >/dev/null 2>&1; then
-        if ! setcap cap_sys_nice+ep %{_bindir}/zoolander; then
-            echo "zoolander: setcap cap_sys_nice+ep %{_bindir}/zoolander failed; the GPU queue stays at default priority" >&2
-        fi
-    else
-        echo "zoolander: setcap not found (libcap); the GPU queue stays at default priority" >&2
-    fi
-fi
 %files
 %license zoolander/LICENSE
 %doc zoolander/README.md
-%{_bindir}/zoolander
+%caps(cap_sys_nice+ep) %{_bindir}/zoolander
 %{_bindir}/zoolanderctl
 %{_bindir}/zoolander-session
 %{_datadir}/wayland-sessions/zoolander.desktop
@@ -118,6 +107,11 @@ fi
 %{_libdir}/libVkLayer_zoolander_wsi.so
 
 %changelog
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-4
+- Ship cap_sys_nice through %caps instead of a %post setcap call: rpm records
+  the capability, so `rpm -V` stops reporting the binary as modified and the
+  install test can see real corruption again
+
 * Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-3
 - BuildRequires libX11-devel instead of the nonexistent libX11-xcb-devel
   (libX11-devel owns X11/Xlib-xcb.h and libX11-xcb.so, which the WSI layer links)
