@@ -4,13 +4,13 @@
 %global __provides_exclude_from ^%{_prefix}/lib/OpenClaw/desktop-runtime/bin/bun$
 
 Name:           openclaw-desktop
-Version:        2026.11.2
+Version:        2026.11.4
 Release:        1%{?dist}
 Summary:        OpenClaw companion app for the desktop
 License:        MIT
 URL:            https://github.com/openclaw/openclaw
 Source0:        https://github.com/openclaw/openclaw/releases/download/v%{version}/OpenClaw-%{version}-amd64.deb
-# sha256:  190d8990e78caf36ef03089a43477897f75932f53287c8cd14a8f9cdd9eda5cb
+# sha256:  fd437e135f72dc7278589bec5ff3f2fa3055b7456ae2042ccd521b67f3ecfbd1
 Source1:        openclaw-desktop-rpmlintrc
 Source2:        https://raw.githubusercontent.com/openclaw/openclaw/v%{version}/LICENSE
 ExclusiveArch:  x86_64
@@ -109,7 +109,5 @@ touch -- %{_datadir}/icons/hicolor &> /dev/null || :
 %{_datadir}/icons/hicolor/*/apps/openclaw-desktop.png
 
 %changelog
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2026.11.2-1
-- Initial package: the upstream prebuilt amd64 .deb payload repacked as-is.
-  Named openclaw-desktop because the RPM name `openclaw` belongs to Fedora's
-  own CLI package (src.fedoraproject.org/rpms/openclaw).
+* Mon Nov 16 2026 Ackerman-00 <no-reply> - 2026.11.4-1
+- Update to upstream release 2026.11.4
