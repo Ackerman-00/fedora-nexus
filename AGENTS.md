@@ -92,7 +92,7 @@ If the agent skips the dependency table, the job fails and the next run retries 
 
 ### Environment baseline (verified 2026-09-17 via web search — re-discover every run, never hardcode)
 
-- Fedora 45 = current stable (GA 2026-10-28: releases/45/Everything + Server
+- Fedora 45 = current stable (announced 2026-11-03: releases/45/Everything + Server
   trees carry fedora-release-45-13, repomd revision 1793218669; fedoraproject.org
   front page announced "Fedora Linux 45 released"). Fedora 44 maintained
   (EOL ~2027-06-02). Fedora 43 supported, EOL 2026-12-09 (fedorapeople F43
