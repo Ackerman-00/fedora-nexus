@@ -1006,42 +1006,6 @@ fix packages that do:
      bundled static archives, debug files installed into the
      tree) - it is usually an %install bug, not upstream size.
 
-NETWORK-FREE BUILDS (MANDATORY, repo-wide, issue #105 is the
-precedent not the limit. A buildroot with no network is the Fedora
-contract. Any source build whose toolchain downloads dependencies inside
-%build is broken by definition: unreproducible, unreviewable, and dead
-the moment upstream yanks a version. This is binding for every package
-in the repo, not just ones named in an issue:
-  a. ANY language toolchain that fetches in %build MUST vendor its deps.
-     - Rust (cargo): `cargo vendor vendor` in %setup sources the crates
-       from Cargo.lock; tarball the vendor tree as a pinned SourceN
-       (cargo vendor + tar + sha256sum), then `.cargo/config.toml` with
-       `source.crates-io replace-with vendored-sources` and
-       `[source.vendored-sources] directory = "vendor"`, and
-       `cargo build --release --locked --offline` in %build.
-       Audit `.cargo/config.toml` ordering: it must resolve BEFORE any
-       pre-existing .cargo config; if upstream ships a .cargo/config in
-       the tree, the vendored-sources block must override it.
-     - Go: `go mod vendor` in %build, or vendor/ in the tree; build with
-       `-mod=vendor`.
-     - Node/npm/pnpm/yarn: commit the store in %build and use the offline
-       path (pnpm install --offline --frozen-lockfile, npm ci --offline,
-       yarn install --offline); never let %build hit the registry.
-     - Python: %pyproject_wheel with the BuildRequires already in the
-       buildroot; no pip download at build time.
-  b. EVERY source-built package you touch this run gets network-fetch-free
-     verification: the gate is `python3 tools/hunt.py network-builds` AND a
-     clean grep of the build log for "Downloading crates"/"npm http fetch"/
-     "go: downloading" / any "Downloading" line - zero hits required to
-     call a package done.
-  c. Vendor-fetched artifacts that appear in the buildroot's source tree
-     (vendor/, .cargo/, .venv/) belong in the buildroot's working copy,
-     not in %files.
-  d. If a vendored bundle comes from a fetch script in the repo (git submodule,
-     git clone, curl), it counts as network traffic at build time; pin it
-     to a Source URL with a sha256 pin, or to a vendor tarball committed
-     to the repo.
-
 UPSTREAM COMPLETENESS SWEEP (MANDATORY for every package you
 touch: new, version-bumped, or dep-audited). "The build
 succeeds" says nothing about whether the package actually
