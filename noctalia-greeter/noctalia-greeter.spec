@@ -100,15 +100,14 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_datadir}/polkit-1/actions/org.noctalia.greeter.apply-appearance.policy
 
 %post
-# Auto-configure on fresh install so a COPR user does not have to run the
-# setup script by hand. Every step is idempotent and makes a backup.
+# Fresh-install auto-setup
 if [ "$1" -eq 1 ]; then
     SETUP=/usr/share/noctalia-greeter/setup_greeter_system.sh
     if [ -x "$SETUP" ] && command -v systemctl >/dev/null 2>&1; then
         "${SETUP}" >/dev/null 2>&1 || :
     fi
 
-    # Point greetd at the greeter (keep the stock config as a backup).
+    # greetd config + backup
     greeter_user=$(awk -F= '/^[[:space:]]*user[[:space:]]*=/{gsub(/["[:space:]]/,"",$2); u=$2} END{print (u?u:"greetd")}' /etc/greetd/config.toml 2>/dev/null || echo greetd)
     [ -n "$greeter_user" ] || greeter_user=greetd
     if [ -f /etc/greetd/config.toml ] &&
@@ -124,8 +123,7 @@ user = "$greeter_user"
 EOF
     fi
 
-    # Free VT1 from kmscon (F45 holds DRM master there) and make greetd the
-    # display manager. A text console stays available on VT2.
+    # VT1 kmscon -> greetd, VT2 text console
     systemctl disable kmsconvt@tty1.service >/dev/null 2>&1 || :
     systemctl enable getty@tty2.service >/dev/null 2>&1 || :
     systemctl enable greetd.service >/dev/null 2>&1 || :

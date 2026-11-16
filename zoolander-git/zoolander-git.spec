@@ -5,7 +5,7 @@
 
 Name:           zoolander-git
 Version:        %{base_version}+git%{gitdate}.%{shortcommit}
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Zoolander Wayland compositor, built from the git snapshot
 
 License:        MIT
@@ -51,6 +51,7 @@ BuildRequires:  libX11-devel
 Requires:       xorg-x11-server-Xwayland
 Requires:       libseat
 Requires:       netcat
+Requires:       kmscon
 Recommends:     mesa-vulkan-drivers
 
 %description
@@ -89,11 +90,27 @@ install -D -m 0644 libVkLayer_zoolander_wsi.so %{buildroot}%{_libdir}/libVkLayer
 install -D -m 0644 zoolander_wsi.json %{buildroot}%{_datadir}/vulkan/implicit_layer.d/zoolander_wsi.x86_64.json
 install -D -m 0755 ../zoolanderctl %{buildroot}%{_bindir}/zoolanderctl
 install -D -m 0755 ../debian/zoolander-session %{buildroot}%{_bindir}/zoolander-session
+# F45 kmscon DRM master
+cat > /tmp/zoolander-session-guard <<'ZSguard'
+if [ -z "${WAYLAND_DISPLAY:-}" ] && [ -z "${DISPLAY:-}" ] &&
+   [ -n "${XDG_VTNR:-}" ] && [ "${ZOOLANDER_KMS_GUI:-}" != 1 ] &&
+   command -v kmscon-launch-gui >/dev/null 2>&1 &&
+   systemctl is-active --quiet "kmsconvt@tty${XDG_VTNR}.service" 2>/dev/null; then
+    ZOOLANDER_KMS_GUI=1 exec kmscon-launch-gui "$0" "$@"
+fi
+ZSguard
+awk '/^\/usr\/bin\/zoolander "\$@"/ && !done {while ((getline l < "/tmp/zoolander-session-guard") > 0) print l; done=1} {print}' \
+    %{buildroot}%{_bindir}/zoolander-session > /tmp/zs.new
+install -m 0755 /tmp/zs.new %{buildroot}%{_bindir}/zoolander-session
 install -d %{buildroot}%{_datadir}/wayland-sessions
 sed -e 's|^Exec=/usr/local/bin/.*|Exec=/usr/bin/zoolander-session|' -e 's|^TryExec=/usr/local/bin/.*|TryExec=/usr/bin/zoolander-session|' ../zoolander.desktop > %{buildroot}%{_datadir}/wayland-sessions/zoolander.desktop
 install -D -m 0644 ../zoolander-portals.conf %{buildroot}%{_datadir}/xdg-desktop-portal/zoolander-portals.conf
 install -d %{buildroot}%{_datadir}/zoolander/config
 install -m 0644 ../config/starter/*.lua %{buildroot}%{_datadir}/zoolander/config/
+# Skip Otter Shell programs when absent (Lua has no os; check in /bin/sh)
+sed -i -e 's|zl.exec_command("otter-wallpaper")|zl.exec_command("command -v otter-wallpaper >/dev/null 2>\&1 \&\& otter-wallpaper")|' \
+       -e 's|zl.exec_command("otter-bar")|zl.exec_command("command -v otter-bar >/dev/null 2>\&1 \&\& otter-bar")|' \
+       %{buildroot}%{_datadir}/zoolander/config/init.lua
 
 
 %files
@@ -110,6 +127,15 @@ install -m 0644 ../config/starter/*.lua %{buildroot}%{_datadir}/zoolander/config
 %{_libdir}/libVkLayer_zoolander_wsi.so
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-6
+- Starter config: skip otter-wallpaper/otter-bar at startup when absent
+  (checked in /bin/sh via command -v; Lua has no os) so a bare zoolander run
+  stops printing "command not found" and child status 127
+- zoolander-session: re-exec via kmscon-launch-gui on an F45 kmscon VT so the
+  compositor can take the GPU; no-op under greetd/a logind seat or nested
+  session. Bare `zoolander` still needs a proper seat or kmscon-launch-gui.
+- Requires kmscon for the launcher
+
 * Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-5
 - Install the dlopen'd bell/audio-visualizer libs to %{_prefix}/lib/zoolander:
   the binary's RUNPATH is $ORIGIN/../lib/zoolander (=/usr/lib/zoolander), but
