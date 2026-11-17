@@ -10,10 +10,20 @@ SPEC_FILE="omnirush-desktop.spec"
 PACKAGER="Ackerman-00 <no-reply>"
 REPO="omnirush-ai/omnirush-gui"
 
+api() {
+  if [ -n "${GITHUB_TOKEN:-}" ]; then
+    curl -sfL -H "Authorization: token $GITHUB_TOKEN" "$@"
+  else
+    curl -sfL "$@"
+  fi
+}
+
 echo "Checking for OmniRush updates on $REPO..."
 
-LATEST=$(curl -fsSL --retry 3 --max-time 30 "https://api.github.com/repos/$REPO/releases/latest")
-LATEST_TAG=$(printf '%s' "$LATEST" | python3 -c "import json,sys; print(json.load(sys.stdin).get('tag_name',''))")
+if ! LATEST=$(api --retry 3 --max-time 30 "https://api.github.com/repos/$REPO/releases/latest"); then
+    echo "Error: cannot read the latest release of $REPO from the GitHub API."; exit 1
+fi
+LATEST_TAG=$(printf '%s' "$LATEST" | python3 -c "import json,sys; print(json.load(sys.stdin).get('tag_name',''))" 2>/dev/null || true)
 if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" = "null" ]; then echo "Error: no tag_name in latest release."; exit 1; fi
 LATEST_VERSION=$(echo "$LATEST_TAG" | sed 's/^v//;s@-@.@g')
 

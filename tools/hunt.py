@@ -1562,6 +1562,10 @@ def updater_findings(updater_txt, spec_txt):
     code = [l for l in updater_txt.splitlines() if l.strip() and not l.strip().startswith("#")]
     if len(code) <= 2 and TAG_TRACKED.search(spec_txt):
         out.append("update.sh is a %d-line stub but Source0 tracks an upstream tag/release" % len(code))
+    # 60 unauth requests/hour is shared per IP: a 403 reads as an empty answer
+    if "api.github.com" in updater_txt and not (
+            re.search(r"Authorization: token \$GITHUB_TOKEN", updater_txt) or "gh api " in updater_txt):
+        out.append("reads api.github.com with no token; a rate-limited 403 reads as an empty answer")
     return out
 
 

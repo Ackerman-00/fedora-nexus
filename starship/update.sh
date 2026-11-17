@@ -16,7 +16,7 @@ echo "Checking for upstream updates on $GITHUB_REPO..."
 
 LATEST_TAG=$(gh api "repos/$GITHUB_REPO/releases/latest" --cache 3600s --jq .tag_name 2>/dev/null)
 if [ -z "$LATEST_TAG" ]; then
-    LATEST_TAG=$(curl -sL --max-time 30 "https://api.github.com/repos/$GITHUB_REPO/releases/latest" \
+    LATEST_TAG=$(curl -sL --max-time 30 ${GITHUB_TOKEN:+-H "Authorization: token $GITHUB_TOKEN"} "https://api.github.com/repos/$GITHUB_REPO/releases/latest" \
         | python3 -c "import sys,json; print(json.load(sys.stdin).get('tag_name',''))" 2>/dev/null)
 fi
 if [ -z "$LATEST_TAG" ]; then
