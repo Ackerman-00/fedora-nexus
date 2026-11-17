@@ -423,6 +423,11 @@ def gitlab_tag_fallback(host, owner, repo):
                          capture_output=True, text=True, timeout=90).stdout
     names = [ref.rsplit("/", 1)[-1] for ref in
              (line.split("\t")[1] for line in out.splitlines() if "\t" in line)]
+    return highest_stable_tag(names)
+
+
+def highest_stable_tag(names):
+    """Highest v-prefixed numeric tag, ignoring pre-releases and dates."""
     stable = [n for n in names if re.match(r"^v?\d+(\.\d+)+$", n)]
     return max(stable, key=vkey) if stable else None
 
@@ -449,8 +454,16 @@ def latest_release(forge, owner, repo):
             pass
         return gitlab_tag_fallback(host, owner, repo)
     if forge == "gitea":
-        d = get_json("https://%s/api/v1/repos/%s/releases/latest" % (owner, repo), 30) or {}
-        return d.get("tag_name")
+        h, slug = owner, repo
+        org, _, name = slug.partition("/")
+        if not h or not name:
+            return None
+        d = get_json("https://%s/api/v1/repos/%s/releases/latest" % (h, slug), 30) or {}
+        if d.get("tag_name"):
+            return d["tag_name"]
+        tags = get_json("https://%s/api/v1/repos/%s/tags?limit=50" % (h, slug), 30) or []
+        names = [t.get("name", "") for t in tags] if isinstance(tags, list) else []
+        return highest_stable_tag(names) or gitlab_tag_fallback(h, org, name)
     if forge == "pypi":
         d = get_json("https://pypi.org/pypi/%s/json" % owner, 30) or {}
         return (d.get("info") or {}).get("version")

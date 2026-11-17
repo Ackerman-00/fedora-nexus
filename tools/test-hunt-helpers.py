@@ -163,6 +163,13 @@ check("updater: real updater is clean",
       hunt.updater_findings("#!/bin/bash\nset -u\nsed -i \"s/^Version:.*/Version: 2/\" p.spec\n"
                             "curl -sL https://api.github.com/repos/o/r/releases/latest\n", TAGGED_SPEC), [])
 
+check("gitea tag fallback: highest numeric tag wins",
+      hunt.highest_stable_tag(["v0.13.45", "v0.13.47", "v0.13.9"]), "v0.13.47")
+check("gitea tag fallback: ignores nightly and date tags",
+      hunt.highest_stable_tag(["nightly", "2026-11-17", "v0.13.46"]), "v0.13.46")
+check("gitea tag fallback: nothing stable is None",
+      hunt.highest_stable_tag(["nightly", "latest"]), None)
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)
