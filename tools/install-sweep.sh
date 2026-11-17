@@ -8,8 +8,35 @@ DATE=$(date -u +%F)
 mkdir -p "$OUT"
 : > "$OUT/rows.txt"
 
+# split on the first two pipes: a smoke command carries shell pipes
+parse_row() {
+  pkg=${1%%|*}; local rest=${1#*|}
+  dnf=${rest%%|*}; smoke=${rest#*|}
+  tchr=""
+  case "${smoke##*|}" in
+    4[3-9]|rawhide)
+      if [ "${smoke%|*}" != "$smoke" ]; then tchr=${smoke##*|}; smoke=${smoke%|*}; fi ;;
+  esac
+}
+
+selftest() {
+  local rc=0 got
+  parse_row 'a|a-smoke|test -x /usr/bin/a';             got="$pkg|$dnf|$smoke|$tchr"
+  [ "$got" = 'a|a-smoke|test -x /usr/bin/a|' ] || { echo "SELFTEST_FAIL plain: $got"; rc=1; }
+  parse_row 'b|b|b --help | grep -q ^B && test -f /x';  got="$pkg|$dnf|$smoke|$tchr"
+  [ "$got" = 'b|b|b --help | grep -q ^B && test -f /x|' ] || { echo "SELFTEST_FAIL pipe: $got"; rc=1; }
+  parse_row 'c|c|c --version | grep -q ^C|45';          got="$pkg|$dnf|$smoke|$tchr"
+  [ "$got" = 'c|c|c --version | grep -q ^C|45' ] || { echo "SELFTEST_FAIL chroot: $got"; rc=1; }
+  parse_row 'd|d|d --help | head';                      got="$pkg|$dnf|$smoke|$tchr"
+  [ "$got" = 'd|d|d --help | head|' ] || { echo "SELFTEST_FAIL head: $got"; rc=1; }
+  [ $rc -eq 0 ] && echo "SELFTEST_OK parse_row"
+  return $rc
+}
+
+[ "${1:-}" = --selftest ] && { selftest; exit $?; }
+
 one() {
-  IFS='|' read -r pkg dnf smoke tchr <<< "$1"
+  parse_row "$1"
   case "$pkg" in ''|\#*) return 0 ;; esac
   [ "$smoke" = files-only ] && smoke=""
   [ -n "$tchr" ] && CH="$tchr"
@@ -158,7 +185,7 @@ EOS
   printf '%s|%s|%s|%s|%s|%s\n' "$pkg" "$CH" "$nvr" "$smoke_col" "$verdict" "$why" >> "$OUT/rows.txt"
   echo "ROW $pkg $CH ${nvr:-?} $verdict $why"
 }
-export -f one
+export -f one parse_row
 export OUT CH
 
 tr '\n' '\0' < "$LIST" | xargs -0 -P "$JOBS" -I{} bash -c 'one "$@"' _ {}

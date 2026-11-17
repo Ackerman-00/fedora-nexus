@@ -5,7 +5,9 @@ PKG=$1
 CH=${2:-44}
 R=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 OUT=/tmp/teardown/$PKG
-SMOKE=$(awk -F'|' -v p="$PKG" '$1==p{print $3}' "$R/tools/probes.txt")
+ROW=$(awk -F'|' -v p="$PKG" '$1==p' "$R/tools/probes.txt" | head -1)
+SMOKE=${ROW#*|}; SMOKE=${SMOKE#*|}
+case "${SMOKE##*|}" in 4[3-9]|rawhide) SMOKE=${SMOKE%|*} ;; esac
 [ "$SMOKE" = "files-only" ] && SMOKE=""
 ls "$OUT"/*.rpm >/dev/null 2>&1 || { echo "SMOKE_$PKG=NO_RPM"; exit 2; }
 printf '%s\n' "$SMOKE" > "$OUT/smoke.sh"
