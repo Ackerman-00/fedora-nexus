@@ -14,7 +14,7 @@
 
 Name:           zoolander-settings-git
 Version:        %{zsver}
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Graphical settings app for the Zoolander compositor
 
 License:        MIT
@@ -55,6 +55,7 @@ BuildRequires:  zlib-devel
 BuildRequires:  wayland-devel
 
 Requires:       zoolander-git
+Requires:       rsms-inter-fonts
 
 %description
 The graphical settings app for Zoolander, built on the Otr toolchain. It edits
@@ -99,6 +100,11 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-8
+- Require rsms-inter-fonts: the app's default font family is Inter; without it
+  zoolander-settings exits with NoFontAvailable (verified in VM).
+
+
 * Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-7
 - Ship the vendored LICENSE as Source9 and install from %{SOURCE9}; the
   previous relative path did not resolve at %install time (the tarball ships
