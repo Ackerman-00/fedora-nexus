@@ -5,7 +5,7 @@
 
 Name:           zoolander-git
 Version:        %{base_version}+git%{gitdate}.%{shortcommit}
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Zoolander Wayland compositor, built from the git snapshot
 
 License:        MIT
@@ -52,6 +52,7 @@ Requires:       xorg-x11-server-Xwayland
 Requires:       libseat
 Requires:       netcat
 Requires:       kmscon
+Requires:       kitty
 Requires:       zoolander-settings-git
 Conflicts:      zoolander
 Recommends:     mesa-vulkan-drivers
@@ -109,6 +110,9 @@ sed -e 's|^Exec=/usr/local/bin/.*|Exec=/usr/bin/zoolander-session|' -e 's|^TryEx
 install -D -m 0644 ../zoolander-portals.conf %{buildroot}%{_datadir}/xdg-desktop-portal/zoolander-portals.conf
 install -d %{buildroot}%{_datadir}/zoolander/config
 install -m 0644 ../config/starter/*.lua %{buildroot}%{_datadir}/zoolander/config/
+# Working terminal keybind
+sed -i 's|zl.exec_command("otter-term")|zl.exec_command("kitty")|' \
+    %{buildroot}%{_datadir}/zoolander/config/keybinds.lua
 # Optional Otter startup
 sed -i -e 's|zl.exec_command("otter-wallpaper")|zl.exec_command("command -v otter-wallpaper >/dev/null 2>\&1 \&\& otter-wallpaper")|' \
        -e 's|zl.exec_command("otter-bar")|zl.exec_command("command -v otter-bar >/dev/null 2>\&1 \&\& otter-bar")|' \
@@ -129,6 +133,11 @@ sed -i -e 's|zl.exec_command("otter-wallpaper")|zl.exec_command("command -v otte
 %{_libdir}/libVkLayer_zoolander_wsi.so
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-8
+- Require kitty and repoint the Super+Return starter keybind from otter-term
+  (not packaged) to kitty, so a fresh COPR user has a working terminal.
+
+
 * Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-7
 - Require zoolander-settings-git and conflict with the non-git zoolander-settings
 
