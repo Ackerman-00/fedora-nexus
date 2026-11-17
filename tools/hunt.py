@@ -1157,27 +1157,40 @@ def hunt_chroot_docs():
     return ("chroot-docs", summary, "COPR chroot_repos + README supported releases", findings)
 
 
+def release_numbers(html):
+    return sorted({int(x) for x in re.findall(r'href="(\d+)/"', html or "")})
+
+
+def rawhide_release(html):
+    m = re.search(r"fedora-release-(\d+)-", html or "")
+    return int(m.group(1)) if m else None
+
+
 def hunt_fedora_releases():
     """Which Fedora is stable, and which is next - re-read, never remembered."""
-    releases = re.findall(r'href="(\d+)/"', get_text("https://mirrors.kernel.org/fedora/releases/"))
-    rel = sorted(int(x) for x in releases)
+    rel = []
+    for base in ("https://dl.fedoraproject.org/pub/fedora/linux",
+                 "https://mirrors.kernel.org/fedora"):
+        rel = release_numbers(get_text(base + "/releases/"))
+        if rel:
+            break
     if not rel:
         return ("fedora-releases", "unavailable (mirror unreachable)", "", [])
     stable = rel[-1]
     next_rel = None
-    rh = get_text("https://mirrors.kernel.org/fedora/development/rawhide/Everything/x86_64/os/Packages/f/")
-    m = re.search(r"fedora-release-(\d+)-", rh or "")
-    if m:
-        next_rel = int(m.group(1))
-    else:
-        development = re.findall(r'href="(\d+)/"', get_text("https://mirrors.kernel.org/fedora/development/"))
-        dev = sorted(int(x) for x in development)
+    for base in ("https://dl.fedoraproject.org/pub/fedora/linux/development/rawhide",
+                 "https://mirrors.kernel.org/fedora/development/rawhide"):
+        next_rel = rawhide_release(get_text(base + "/Everything/x86_64/os/Packages/f/"))
+        if next_rel:
+            break
+    if not next_rel:
+        dev = release_numbers(get_text("https://mirrors.kernel.org/fedora/development/"))
         next_rel = dev[-1] if dev else None
     findings = []
     if next_rel and next_rel <= stable:
         findings.append(("fedora", "rawhide carries %d, not newer than stable %d" % (next_rel, stable)))
     return ("fedora-releases", "stable F%d, next F%s" % (stable, next_rel if next_rel else "?"),
-            "mirrors.kernel.org/fedora", findings)
+            "dl.fedoraproject.org + mirrors.kernel.org", findings)
 
 
 def official_req_set(spec_text):

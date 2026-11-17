@@ -170,6 +170,13 @@ check("gitea tag fallback: ignores nightly and date tags",
 check("gitea tag fallback: nothing stable is None",
       hunt.highest_stable_tag(["nightly", "latest"]), None)
 
+check("fedora releases: numbers from a mirror listing",
+      hunt.release_numbers('<a href="43/">x</a><a href="45/">y</a><a href="45/">z</a>'), [43, 45])
+check("fedora releases: rawhide from the fedora-release rpm name",
+      hunt.rawhide_release('fedora-release-46-0.1.noarch.rpm'), 46)
+check("fedora releases: a package that only starts with fedora-release is not one",
+      hunt.rawhide_release('fedora-release-notes-46.noarch.rpm'), None)
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)
