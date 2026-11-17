@@ -1,18 +1,18 @@
-%global commit          7472d7d6c7c65cb9baff820029582d0fcc4c5079
+%global commit          e196990127ce222cc7f9382a4f6893a07815970d
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261116104421
+%global gitdate         20261117172957
 
 %global _vpath_srcdir subprojects/appmenu-glib-translator
 
 Name:           appmenu-glib-translator
 Version:        25.04^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        appmenu-glib-translator
 
 License:        LGPL-3.0-or-later
 URL:            https://github.com/rilian-la-te/vala-panel-appmenu/blob/master/subprojects/appmenu-glib-translator
 Source:         https://github.com/rilian-la-te/vala-panel-appmenu/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
-# sha256: e1683322257c93a7dff2d6e383c610c3800a954b5715d87255e41998e8aa7809
+# sha256: 6a5dbf88dc49089ab657781b92e694555b1116d714a3fb415f37db8dbebbdcaa
 
 BuildRequires:  meson >= 0.61.0
 BuildRequires:  gcc
@@ -62,9 +62,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
-* Mon Nov 16 2026 Ackerman-00 <no-reply> - 25.04^20261116104421git7472d7d-2
-- BuildRequires gio-unix-2.0 floor 2.52 -> 2.56, the version the subproject's
-  own meson.build demands; pin the Source sha256 in update.sh output
-
-* Mon Nov 16 2026 Ackerman-00 <no-reply> - 25.04^20261116104421git7472d7d-1
-- Nightly sync with upstream main branch (Commit: 7472d7d)
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 25.04^20261117172957gite196990-1
+- Nightly sync with upstream main branch (Commit: e196990)
