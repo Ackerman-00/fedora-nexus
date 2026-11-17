@@ -5,7 +5,7 @@
 
 Name:           zoolander-git
 Version:        %{base_version}+git%{gitdate}.%{shortcommit}
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Zoolander Wayland compositor, built from the git snapshot
 
 License:        MIT
@@ -110,8 +110,9 @@ sed -e 's|^Exec=/usr/local/bin/.*|Exec=/usr/bin/zoolander-session|' -e 's|^TryEx
 install -D -m 0644 ../zoolander-portals.conf %{buildroot}%{_datadir}/xdg-desktop-portal/zoolander-portals.conf
 install -d %{buildroot}%{_datadir}/zoolander/config
 install -m 0644 ../config/starter/*.lua %{buildroot}%{_datadir}/zoolander/config/
-# Working terminal keybind
-sed -i 's|zl.exec_command("otter-term")|zl.exec_command("kitty")|' \
+# Working terminal keybind, raw XKB keysym for Return
+sed -i -e 's|zl.exec_command("otter-term")|zl.exec_command("kitty")|' \
+       -e 's|zl.KEY_RETURN|0xff0d|' \
     %{buildroot}%{_datadir}/zoolander/config/keybinds.lua
 # Optional Otter startup
 sed -i -e 's|zl.exec_command("otter-wallpaper")|zl.exec_command("command -v otter-wallpaper >/dev/null 2>\&1 \&\& otter-wallpaper")|' \
@@ -132,7 +133,20 @@ sed -i -e 's|zl.exec_command("otter-wallpaper")|zl.exec_command("command -v otte
 %{_prefix}/lib/zoolander/
 %{_libdir}/libVkLayer_zoolander_wsi.so
 
+%post
+if [ "$1" -eq 1 ]; then
+    echo
+    echo "  Zoolander installed."
+    echo "  Documentation: https://docs.otter-shell.org/zoolander/overview"
+    echo
+fi
+
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-9
+- Use raw XKB keysym 0xff0d for the Super+Return terminal bind (the named
+  constant may not match the physical key under some layouts)
+- Print the Zoolander docs URL on fresh install
+
 * Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-8
 - Require kitty and repoint the Super+Return starter keybind from otter-term
   (not packaged) to kitty, so a fresh COPR user has a working terminal.
