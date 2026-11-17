@@ -26,7 +26,7 @@ sed -i -E "s/^Version: .*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
 sed -i -E "s/^Source0: .*/Source0:        %{url}\/archive\/v$LATEST_VERSION.tar.gz#\/otr-v$LATEST_VERSION.tar.gz/" "$SPEC_FILE"
 sed -i -E "s/^# sha256: .*/# sha256: $SHA256/" "$SPEC_FILE"
 sed -i -E "s/^Release: .*/Release:        1%{?dist}/" "$SPEC_FILE"
-DEB_DATE=$(date -u +"%a %b %d UTC %Y")
+DEB_DATE=$(date -u "+%a %b %d %Y")
 sed -i '/^%changelog/,$d' "$SPEC_FILE"
 {
     echo "%changelog"

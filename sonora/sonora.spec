@@ -4,7 +4,7 @@
 
 Name:           sonora
 Version:        0.50.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Native music streaming client
 
 License:        GPL-3.0-or-later AND OFL-1.1 AND ISC AND MIT AND Apache-2.0 AND CC-BY-4.0
@@ -97,5 +97,8 @@ esac
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
-* Tue Nov 17 UTC 2026 Ackerman-00 <no-reply> - 0.50.1-1
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.50.1-2
+- Correct the changelog date: update.sh wrote a non-RPM date ("UTC" in the
+  day/month/year field), so no tool could parse this spec's newest NVR
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.50.1-1
 - Repackage the upstream prebuilt x86_64 binary

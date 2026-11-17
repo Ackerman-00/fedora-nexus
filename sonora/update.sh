@@ -44,7 +44,7 @@ for i, line in enumerate(lines):
             lines[i] = f"# sha256: {sha}\n"
 open(path, "w").write("".join(lines))
 PYEOF
-DEB_DATE=$(date -u +"%a %b %d UTC %Y")
+DEB_DATE=$(date -u "+%a %b %d %Y")
 sed -i '/^%changelog/,$d' "$SPEC_FILE"
 {
     echo "%changelog"

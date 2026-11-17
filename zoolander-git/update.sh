@@ -66,7 +66,7 @@ for i, line in enumerate(lines):
 open(path, "w").write("".join(lines))
 PYEOF
 sed -i -E "s/^Release: .*/Release:        1%{?dist}/" "$SPEC_FILE"
-DEB_DATE=$(date -u +"%a %b %d UTC %Y")
+DEB_DATE=$(date -u "+%a %b %d %Y")
 sed -i '/^%changelog/,$d' "$SPEC_FILE"
 {
     echo "%changelog"
