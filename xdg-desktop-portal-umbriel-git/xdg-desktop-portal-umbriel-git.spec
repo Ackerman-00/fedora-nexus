@@ -4,7 +4,7 @@
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        XDG Desktop Portal backend for Umbriel
 
 License:        MIT
@@ -14,6 +14,8 @@ Source0:        %{url}/archive/%{commit}/xdg-desktop-portal-umbriel-%{shortcommi
 ExclusiveArch:  x86_64 aarch64
 
 BuildRequires:  gcc-c++
+# dbus-run-session wraps two of the upstream tests
+BuildRequires:  dbus-daemon
 BuildRequires:  meson >= 1.3
 BuildRequires:  ninja-build
 BuildRequires:  systemd-rpm-macros
@@ -21,6 +23,7 @@ BuildRequires:  pkgconfig(sdbus-c++) >= 2.0.0
 BuildRequires:  pkgconfig(libpipewire-0.3)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols) >= 1.39
+BuildRequires:  pkgconfig(wayland-server)
 BuildRequires:  pkgconfig(wayland-scanner)
 BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  pkgconfig(gbm)
@@ -71,5 +74,11 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %config(noreplace) %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.0^20261117013244gitbaa83d0-2
+- Build require dbus-daemon: the upstream test suite now runs two of its
+  tests under dbus-run-session, which meson find_program() resolves while
+  configuring, so builds failed without the program present
+- Build require pkgconfig(wayland-server), which upstream declares for the
+  protocol generation and three of its targets
 * Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.0^20261117013244gitbaa83d0-1
 - Nightly sync with upstream main branch (Commit: baa83d0)
