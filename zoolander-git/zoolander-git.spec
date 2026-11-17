@@ -5,7 +5,7 @@
 
 Name:           zoolander-git
 Version:        %{base_version}+git%{gitdate}.%{shortcommit}
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Zoolander Wayland compositor, built from the git snapshot
 
 License:        MIT
@@ -95,6 +95,9 @@ install -D -m 0755 ../zoolanderctl %{buildroot}%{_bindir}/zoolanderctl
 install -D -m 0755 ../debian/zoolander-session %{buildroot}%{_bindir}/zoolander-session
 # F45 kmscon DRM master
 cat > /tmp/zoolander-session-guard <<'ZSguard'
+# Zoolander session identity (settings app checks this)
+export XDG_CURRENT_DESKTOP=Zoolander
+export XDG_SESSION_DESKTOP=Zoolander
 if [ -z "${WAYLAND_DISPLAY:-}" ] && [ -z "${DISPLAY:-}" ] &&
    [ -n "${XDG_VTNR:-}" ] && [ "${ZOOLANDER_KMS_GUI:-}" != 1 ] &&
    command -v kmscon-launch-gui >/dev/null 2>&1 &&
@@ -142,6 +145,12 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-10
+- Export XDG_CURRENT_DESKTOP=Zoolander and XDG_SESSION_DESKTOP=Zoolander in
+  zoolander-session. zoolander-settings detects the compositor solely by the
+  XDG_CURRENT_DESKTOP value; without it, Apply showed "compositor not reachable"
+  even though the control socket worked.
+
 * Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-9
 - Use raw XKB keysym 0xff0d for the Super+Return terminal bind (the named
   constant may not match the physical key under some layouts)
