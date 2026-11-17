@@ -19,9 +19,17 @@ mkdir -p "$OUT"
 : > "$OUT/tokens.txt"
 
 one() {
-  local pkg smoke rpmn _rpmn
+  local pkg smoke rpmn _rpmn pch row rest
+  pch=$CH
   if [ "$FORMAT" = probes ]; then
-    IFS='|' read -r pkg _rpmn smoke <<< "$1"
+    # split on the first two pipes only: a smoke command carries shell pipes
+    row=$1
+    pkg=${row%%|*}; rest=${row#*|}
+    _rpmn=${rest%%|*}; smoke=${rest#*|}
+    case "${smoke##*|}" in
+      4[3-9]|rawhide)
+        if [ "${smoke%|*}" != "$smoke" ]; then pch=${smoke##*|}; smoke=${smoke%|*}; fi ;;
+    esac
     rpmn=$_rpmn
     if [ -z "$_rpmn" ] || [ -z "$smoke" ]; then
       echo "docker-teardown: $pkg HARNESS_ERROR list-not-probes-format (need pkg|dnf-name|smoke)"
@@ -38,7 +46,7 @@ one() {
     return 6
   fi
   [ -n "$pkg" ] || return 0
-  bash "$R/tools/teardown-fresh.sh" "$pkg" "$CH" "$smoke" "${rpmn:-$pkg}" > "$OUT/$pkg.log" 2>&1
+  bash "$R/tools/teardown-fresh.sh" "$pkg" "$pch" "$smoke" "${rpmn:-$pkg}" > "$OUT/$pkg.log" 2>&1
   local rc=$?
   local line fields
   line=$(grep -hF "TEARDOWN_$pkg=" "$OUT/$pkg.log" | tail -1)
