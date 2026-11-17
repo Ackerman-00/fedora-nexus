@@ -1,10 +1,10 @@
-%global commit          baa83d0d8ce77187712fa4bf6912b8df75b0c724
+%global commit          ed91d04331b03257d5bd58a075b9cd6743d3efb2
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261117013244
+%global gitdate         20261117160213
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        XDG Desktop Portal backend for Umbriel
 
 License:        MIT
@@ -74,11 +74,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %config(noreplace) %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.0^20261117013244gitbaa83d0-2
-- Build require dbus-daemon: the upstream test suite now runs two of its
-  tests under dbus-run-session, which meson find_program() resolves while
-  configuring, so builds failed without the program present
-- Build require pkgconfig(wayland-server), which upstream declares for the
-  protocol generation and three of its targets
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.0^20261117013244gitbaa83d0-1
-- Nightly sync with upstream main branch (Commit: baa83d0)
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.0^20261117160213gited91d04-1
+- Nightly sync with upstream main branch (Commit: ed91d04)

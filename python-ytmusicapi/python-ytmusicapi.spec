@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name:           python-ytmusicapi
-Version:        1.12.3
-Release:        3%{?dist}
+Version:        1.12.4
+Release:        1%{?dist}
 Summary:        Unofficial API for YouTube Music
 
 License:        MIT
@@ -39,6 +39,9 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_bindir}/ytmusicapi
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 1.12.4-1
+- Auto-update to upstream PyPI release 1.12.4
+
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.12.3-3
 - Move the in-app updater strip into %install
 
