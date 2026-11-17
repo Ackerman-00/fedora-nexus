@@ -5,7 +5,7 @@
 
 Name:           zoolander-git
 Version:        %{base_version}+git%{gitdate}.%{shortcommit}
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Zoolander Wayland compositor, built from the git snapshot
 
 License:        MIT
@@ -117,10 +117,8 @@ install -m 0644 ../config/starter/*.lua %{buildroot}%{_datadir}/zoolander/config
 sed -i -e 's|zl.exec_command("otter-term")|zl.exec_command("kitty")|' \
        -e 's|zl.KEY_RETURN|0xff0d|' \
     %{buildroot}%{_datadir}/zoolander/config/keybinds.lua
-# Optional Otter startup
-sed -i -e 's|zl.exec_command("otter-wallpaper")|zl.exec_command("command -v otter-wallpaper >/dev/null 2>\&1 \&\& otter-wallpaper")|' \
-       -e 's|zl.exec_command("otter-bar")|zl.exec_command("command -v otter-bar >/dev/null 2>\&1 \&\& otter-bar")|' \
-       %{buildroot}%{_datadir}/zoolander/config/init.lua
+# Drop Otter autostart block (otter-shell not packaged here)
+sed -i '/-- Without a shell profile/,/^end$/d' %{buildroot}%{_datadir}/zoolander/config/init.lua
 
 
 %files
@@ -145,6 +143,11 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-11
+- Remove the Otter wallpaper/bar autostart block from the starter config
+  entirely (otter-shell is not packaged here); it no longer shows as phantom
+  autostart entries in zoolander-settings.
+
 * Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-10
 - Export XDG_CURRENT_DESKTOP=Zoolander and XDG_SESSION_DESKTOP=Zoolander in
   zoolander-session. zoolander-settings detects the compositor solely by the
