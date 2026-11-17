@@ -382,6 +382,15 @@ comparison) must run in a Fedora container with `rpm-build rpmdevtools
 forge-srpm-macros go-srpm-macros` installed. On the host, treat an empty
 or `.tar.gz`-less expansion as "check in container", not as a finding.
 
+## A macro name inside a `#` comment still expands (found 2026-11-17, real hit)
+
+RPM expands macros on every spec line before it decides the line is a comment,
+so `# %meson_test wraps two tests` becomes the meson test command and rpmbuild
+dies with `Unknown tag: /usr/bin/meson test ...` on a line that reads as a
+comment. Name the constraint, not the macro: `# dbus-run-session wraps two of
+the upstream tests`. Hit while adding a BuildRequires to
+xdg-desktop-portal-umbriel-git -2, which failed the local teardown, not COPR.
+
 ## Harness smoke probes must match what the harness installed (added 2026-10-11, real hit)
 
 A smoke that asserts a compression-specific path (`.../man1/mpvpaper.1.gz`)
