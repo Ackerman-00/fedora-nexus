@@ -3,16 +3,16 @@
 %global debug_package %{nil}
 
 Name:           sonora
-Version:        0.50.0
-Release:        3%{?dist}
+Version:        0.50.1
+Release:        1%{?dist}
 Summary:        Native music streaming client
 
 License:        GPL-3.0-or-later AND OFL-1.1 AND ISC AND MIT AND Apache-2.0 AND CC-BY-4.0
 URL:            https://github.com/sonorahq/sonora
 Source0:        %{url}/releases/download/v%{version}/sonora-v%{version}-x86_64-unknown-linux-gnu
-# sha256: 9d237f02071db3184b7fcee0e08f16c9369df93cc8190af2518e33400941286c
+# sha256: 1ab011a1b8b84b68fb8df039462da4700805629500b8f1181a2c8d6a6c6cba19
 Source1:        %{url}/archive/refs/tags/v%{version}.tar.gz
-# sha256: 149a059f27df649e81476ab6f69455c43e9d701d0da8995f6ddfbbf72fe48daa
+# sha256: 43a5e36942b32d88e8e712ef2829d9e5db3a89a85fa32b2d9378f506c50c675e
 
 ExclusiveArch:  x86_64
 
@@ -97,9 +97,5 @@ esac
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
-* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.50.0-3
-- Fix the repackage: %setup extracts the source tree, so %install and the
-  %files license/doc paths resolve (the old chdir was not a shell builtin)
-
-* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.50.0-2
-- Repackage the upstream prebuilt x86_64 binary instead of building from source with cargo
+* Tue Nov 17 UTC 2026 Ackerman-00 <no-reply> - 0.50.1-1
+- Repackage the upstream prebuilt x86_64 binary

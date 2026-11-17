@@ -1,12 +1,12 @@
-%global commit          1bbbf155d25b2a338c7b6d52863d9f6efaf346ac
+%global commit          d1329334efd85adbb8990ee8af0fd805f34951a4
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261115223140
+%global gitdate         20261117013840
 
 %global _lto_cflags %{nil}
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        4%{?dist}
+Release:        1%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -129,18 +129,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.0^20261115223140git1bbbf15-4
-- Apply the kmscon guard via sed in %prep; -3 used a Patch0 that autosetup
-  never applied in COPR ("No file to patch"), leaving the launcher unchanged.
-
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.0^20261115223140git1bbbf15-3
-- Patch start-umbriel for Fedora 45: when launched from a kmscon VT with no
-  display, re-exec through kmscon-launch-gui so kmscon releases DRM master and
-  the compositor can take the GPU. Guarded so it is a no-op under greetd/a
-  logind seat or a nested session. Requires kmscon for its launcher.
-
-* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.1.0^20261115223140git1bbbf15-2
-- BuildRequires wlroots-0.20 >= 0.20.2 (build against the 0.20.2 wlroots in this repo)
-
-* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.1.0^20261115223140git1bbbf15-1
-- Nightly sync with upstream main branch (Commit: 1bbbf15)
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.0^20261117013840gitd132933-1
+- Nightly sync with upstream main branch (Commit: d132933)

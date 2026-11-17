@@ -1,6 +1,6 @@
-%global commit          116e9485b39552a39e4e6088ff7cbe50e7504829
+%global commit          baa83d0d8ce77187712fa4bf6912b8df75b0c724
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261115220706
+%global gitdate         20261117013244
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
@@ -71,5 +71,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %config(noreplace) %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
-* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.1.0^20261115220706git116e948-1
-- Nightly sync with upstream main branch (Commit: 116e948)
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.0^20261117013244gitbaa83d0-1
+- Nightly sync with upstream main branch (Commit: baa83d0)

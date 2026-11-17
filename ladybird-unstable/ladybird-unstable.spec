@@ -4,11 +4,11 @@
 %global __requires_exclude_from ^/opt/ladybird/.*$
 %global __provides_exclude_from ^/opt/ladybird/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/ladybird/.*$
-%global commit         ab5aaba1e6ff68a38fa41a98104320be3469f5ff
+%global commit         d9d53a0836dcbca4bf31f5d2c88e69e1a5e174d6
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        33.20261116gitab5aaba%{?dist}
+Release:        34.20261117gitd9d53a0%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -177,6 +177,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.0.0-34.20261117gitd9d53a0
+- Refresh snapshot ab5aaba -> d9d53a0 (upstream commit dated 2026-11-17T03:55:20Z)
+
 * Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.0.0-33.20261116gitab5aaba
 - Fix cargo 1.100 build layout: widen sync_rust_ffi_header.cmake glob to
   <crate>/*/run/root-output (COPR rawhide builds 11331679 and 11332377 failed with
