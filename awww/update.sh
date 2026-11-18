@@ -7,6 +7,7 @@ if [ "$(pwd)" != "$_update_sh_dir" ]; then
 fi
 
 SPEC_FILE="awww.spec"
+NAME="awww"
 PACKAGER="Ackerman-00 <no-reply>"
 UPSTREAM_URL="https://codeberg.org/LGFae/awww"
 
@@ -15,8 +16,8 @@ echo "Checking for upstream updates on codeberg.org/LGFae/awww..."
 LATEST_TAG=$(curl -sL --max-time 30 "https://codeberg.org/api/v1/repos/LGFae/awww/releases/latest" | python3 -c "import sys,json; print(json.load(sys.stdin).get('tag_name',''))" 2>/dev/null)
 
 if [ -z "$LATEST_TAG" ]; then
-    echo "Error: Failed to fetch latest release tag."
-    exit 1
+    echo "  -> [SKIP] Release feed unreachable (host down or DNS). Keeping $(grep -E '^Version:' "$SPEC_FILE" | awk '{print $2}')."
+    exit 0
 fi
 
 VERSION=$(echo "$LATEST_TAG" | sed 's/^v//')
@@ -33,24 +34,28 @@ fi
 echo "Updating: $CURRENT_VERSION -> $VERSION"
 
 ARCHIVE_URL="$UPSTREAM_URL/archive/$LATEST_TAG.tar.gz"
-TMP_ARCHIVE=$(mktemp)
-if ! curl -sL --max-time 120 --fail -o "$TMP_ARCHIVE" "$ARCHIVE_URL"; then
+ARCHIVE_FILE="$NAME-$VERSION.tar.gz"
+if ! curl -sL --max-time 300 --fail -o "$ARCHIVE_FILE" "$ARCHIVE_URL"; then
+    rm -f "$ARCHIVE_FILE"
     echo "Error: $ARCHIVE_URL did not download."
-    rm -f "$TMP_ARCHIVE"
     exit 1
 fi
-if ! tar tzf "$TMP_ARCHIVE" >/dev/null 2>&1; then
+if ! tar tzf "$ARCHIVE_FILE" >/dev/null 2>&1; then
+    rm -f "$ARCHIVE_FILE"
     echo "Error: $ARCHIVE_URL is not a valid tarball."
-    rm -f "$TMP_ARCHIVE"
     exit 1
 fi
 
-SHA256=$(sha256sum "$TMP_ARCHIVE" | awk '{print $1}')
-rm -f "$TMP_ARCHIVE"
+SHA256=$(sha256sum "$ARCHIVE_FILE" | awk '{print $1}')
+for old in "$NAME"-*.tar.gz; do
+    [ -e "$old" ] || continue
+    [ "$old" = "$ARCHIVE_FILE" ] && continue
+    rm -f "$old"
+done
 
 sed -i "s/^Version:.*/Version:        $VERSION/" "$SPEC_FILE"
 sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
-sed -i "s|^Source0:.*|Source0:        %{url}/archive/v%{version}.tar.gz|" "$SPEC_FILE"
+sed -i "s|^Source0:.*|Source0:        %{name}-%{version}.tar.gz|" "$SPEC_FILE"
 if grep -q '^# sha256:' "$SPEC_FILE"; then
     sed -i -E "s|^# sha256:.*|# sha256: $SHA256|" "$SPEC_FILE"
 else
