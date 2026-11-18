@@ -253,6 +253,9 @@ run cannot escape the contract by using the old wording. A bare heading
 ending in `:` and prose that merely mentions the word gap are not
 declarations.
 
+Since 2026-11-18 the verifier also fails an external gap whose line carries
+no UTC date from this run, so a gap that was already fixed cannot be carried
+forward on a stale probe.
 CLASSIFYING IS NOT ESCAPING: `external` is a claim you must PROVE with a
 command run this run - paste the 403, the 404, the missing asset, the
 chroot that has not synced. If you cannot show the probe, it is

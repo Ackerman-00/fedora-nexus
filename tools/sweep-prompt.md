@@ -1999,6 +1999,13 @@ with a command you ran THIS run: paste the 403, the 404, the
 missing asset, the chroot that has not synced, the header that
 proves the version is not published. If you cannot show the probe
 that proves it, it is `actionable` and you fix it now.
+The probe token must also carry this run's UTC date
+(`[probe: <command> -> <result> 2026-11-18]`): `tools/verify-fedora.sh`
+fails an external gap whose line has no date from today or yesterday, so a
+gap that was already fixed cannot be carried forward on a stale probe. Before
+you repeat a gap from an earlier run, re-check that the repo still has the
+defect: read the spec's newest changelog entry and the shipped artifact, not
+just the old relay line.
 A COPR chroot failure is NOT automatically an external outage: a missing
 library can be an older package THIS repo published advertising that
 library's SONAME. Before calling a buildroot broken, query what provides

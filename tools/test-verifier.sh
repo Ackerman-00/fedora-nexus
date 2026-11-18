@@ -75,5 +75,15 @@ check 'owner ask anchored' '^[[:space:]]*([-*][[:space:]]*)?(needs-owner|waiting
 check 'owner ask mid-line' "$OWNER" 'closing note: owner declined to pursue' hit
 check 'clean relay line' "$OWNER" 'all 73 packages verified, published NVR matches' miss
 
+TODAY_STAMP=$(date -u +%F)
+YEST_STAMP=$(date -u -d yesterday +%F 2>/dev/null || date -u -v-1d +%F)
+FRESH_GAP="GAP: external - ladybird-unstable not published yet [probe: curl api_3/build/chroot/list -> running $TODAY_STAMP]"
+STALE_GAP="GAP: external - starship gix 0.89 [probe: curl api.osv.dev -> gix 0.89 ships]"
+unproven_gap=$(printf '%s\n' "$STALE_GAP" | grep -cE "($TODAY_STAMP|$YEST_STAMP)" || true)
+proven_gap=$(printf '%s\n' "$FRESH_GAP" | grep -cE "($TODAY_STAMP|$YEST_STAMP)" || true)
+check 'dated gap probe accepted' "($TODAY_STAMP|$YEST_STAMP)" "$FRESH_GAP" hit
+[ "$proven_gap" -ge 1 ] && PASS=$((PASS+1)) || { echo 'FAIL dated gap probe must pass'; FAIL=$((FAIL+1)); }
+[ "$unproven_gap" -eq 0 ] && PASS=$((PASS+1)) || { echo 'FAIL carried gap with a stale probe must be rejected'; FAIL=$((FAIL+1)); }
+
 echo "verifier self-test: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ] || exit 1

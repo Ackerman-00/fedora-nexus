@@ -247,6 +247,17 @@ if [[ -f "$RELAY" ]]; then
     echo "FAIL: NOT COMPLETE -- $g_ext external gap(s) but $g_probe [probe:] token(s); every external gap must name the command and result that prove it"
     FAIL=1
   fi
+  g_stale=0
+  while IFS= read -r gap_line; do
+    [ -n "$gap_line" ] || continue
+    if ! grep -qE "($TODAY|$YEST)" <<< "$gap_line"; then
+      g_stale=$((g_stale + 1))
+    fi
+  done < <(printf '%s' "$scope" | grep -iE "^[[:space:]]*([-*][[:space:]]*)?(GAP|HOLD): external" || true)
+  if [[ "$g_stale" -gt 0 ]]; then
+    echo "FAIL: NOT COMPLETE -- $g_stale external gap(s) carry no date from this run; a carried-over gap must be re-probed now and the probe token must name the UTC date"
+    FAIL=1
+  fi
   if ! grep -qiE "docker-teardown:.*PASS.*($TODAY|$YEST)" <<< "$scope"; then
     echo "FAIL: NOT COMPLETE -- no docker teardown evidence in THIS run's block"
     FAIL=1
