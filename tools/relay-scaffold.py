@@ -9,6 +9,7 @@ import argparse
 import os
 import re
 import sys
+import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import hunt as H  # noqa: E402
@@ -39,7 +40,7 @@ def version_table():
         pkg = os.path.basename(os.path.dirname(sp))
         ver = changelog_version(sp) or H.strip_packaging(
             H.resolve_version(sp, H.spec_field(sp, "Version")).lstrip("v"))
-        _p, ref, ok, _cmd, err = H.probe_upstream(sp)
+        _p, ref, ok, _cmd, err = H.probe_safe(sp)
         if ok is None:
             rows.append("| %s | %s | unprobed (%s) | needs-build |" % (pkg, ver, err))
         elif ok is True:
@@ -50,6 +51,26 @@ def version_table():
             rows.append("| %s | %s | %s | held (updater cadence) |" % (pkg, ver, ref))
         else:
             rows.append("| %s | %s | %s | needs-build |" % (pkg, ver, ref))
+    return "\n".join(rows)
+
+
+def upstream_rows():
+    """Relay-ready live-check row per package: what was probed and when."""
+    today = time.strftime("%Y-%m-%d", time.gmtime())
+    rows = []
+    for sp in H.specs():
+        pkg, ref, ok, cmd, err = H.probe_safe(sp)
+        if ok is True:
+            state = "%s == spec" % ref
+        elif ok is False:
+            state = "%s != spec (behind)" % ref
+        elif ok == "held":
+            state = "%s held (live_hold_reason)" % ref
+        elif ok == "cadence":
+            state = "%s held (updater cadence)" % ref
+        else:
+            state = "unprobed (%s)" % (err or "no feed")
+        rows.append("upstream: %s %s | %s | %s" % (pkg, state, cmd or "no probe", today))
     return "\n".join(rows)
 
 
@@ -111,7 +132,8 @@ def main():
     ap.add_argument("--dep-rows", default="", help="file of hand-written dep rows (pkg|row lines)")
     ap.add_argument("--install-rows", action="append", default=[],
                     help="install-sweep rows.txt to render (repeat for one sweep per chroot)")
-    ap.add_argument("--only", choices=["versions", "deps", "both", "install"], default="both")
+    ap.add_argument("--only", choices=["versions", "deps", "both", "install", "upstream"],
+                    default="both")
     a = ap.parse_args()
     notes = {}
     if a.dep_rows:
@@ -128,6 +150,8 @@ def main():
         out.append(dep_table(set(a.verified.split()), set(a.fixed.split()), notes))
     if a.only == "install":
         out.append(install_table(a.install_rows))
+    if a.only == "upstream":
+        out.append(upstream_rows())
     print("\n\n".join(out))
 
 
