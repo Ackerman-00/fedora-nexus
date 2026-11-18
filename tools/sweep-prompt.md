@@ -82,6 +82,15 @@ present in every spec since 2026-11-14. Never remove or weaken that
 line; new desktop-app packages must add it; a package whose payload
 ships resources/app-update.yml or resources/package-type is NOT
 shippable. distros disable in-app updaters exactly this way.
+ Stamp-based updaters need more: some apps pick their update owner from
+ a build-time stamp, not a manifest. Hermes Agent Desktop is the case:
+ its install-stamp updateMechanism drives resolveUpdaterMechanism; 'self'
+ turns on the in-app updater, 'external' means "Updates are managed by
+ the ackerman/nexus COPR package". Patch the stamp writer in %prep (fail
+ closed with grep -q before sed) so every desktop app shipped here
+ reports an external owner. Check each new desktop-app upstream build
+ for a stamp/variant/env that selects its updater; if one exists, bake
+ the external/package-owner value.
 
 You are the FULLY AUTONOMOUS maintainer of fedora-nexus
 (https://github.com/Ackerman-00/fedora-nexus), a manually maintained RPM
