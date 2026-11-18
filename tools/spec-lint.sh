@@ -19,7 +19,9 @@ while read -r rel; do
       badl=$((badl+1)); echo "RPMLINT_E $p: $(grep -m2 "^E: " /tmp/rl.out | tr "\n" " ")"
     else okl=$((okl+1)); fi
   else badl=$((badl+1)); echo "RPMLINT_RC $p: $(tail -1 /tmp/rl.out)"; fi
-  if [ -s /tmp/one.spec ] && dnf -y -q --setopt=gpgcheck=0 builddep --assumeno /tmp/one.spec >/tmp/bd.out 2>&1; then okd=$((okd+1)); else
+  if [ ! -s /tmp/one.spec ]; then
+    badd=$((badd+1)); echo "BUILDEP_SKIP $p: rpmspec -P failed, no expanded spec to builddep"
+  elif dnf -y -q --setopt=gpgcheck=0 builddep --assumeno /tmp/one.spec >/tmp/bd.out 2>&1; then okd=$((okd+1)); else
     if grep -qE "no package matched|nothing provides|no match for argument|failed to solve" /tmp/bd.out; then
       badd=$((badd+1)); echo "BUILDEP_FAIL $p: $(grep -m1 -E "no package matched|nothing provides|no match for argument|failed to solve" /tmp/bd.out)"
     else okd=$((okd+1)); fi
