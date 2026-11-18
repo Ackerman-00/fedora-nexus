@@ -39,7 +39,7 @@ Source7:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-ui/archiv
 # sha256: 8595b2b2aebbae055c012fce60fd9299bd41e2de05c55d00e8790254ce585e70
 Source8:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-desktop/archive/v%{desktop}.tar.gz#/otter-desktop-v%{desktop}.tar.gz
 Source9:        LICENSE
-# sha256: 47dd5b0ecaaea92bcaa40902304fb23cea312abb440fc9aea675a93b1a905be5
+# sha256: f115a091c7a4554849e153c0afa5c4ecf74de59ae017645263b76c1fe74df1c7
 
 ExclusiveArch:  x86_64 aarch64
 

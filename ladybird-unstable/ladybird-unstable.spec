@@ -21,7 +21,7 @@ Source5:        harfbuzz-overlay-usage
 Source6:        check-bundled-libs.py
 # F43/F44 carry libicu 77 only; a matched 78 build is bundled there (F45+ uses the distro one)
 %if 0%{?fedora} < 45
-# sha256: f06bcab72736ee9d55689033b8198a178562354128cf38edb2afc2e67e3fd931
+# sha256: f9b6f4a419a91f6f9933718ea20dc0f146472bf521f3b090f885a06564846ee3
 Source7:        https://github.com/unicode-org/icu/archive/refs/tags/release-78.3.tar.gz
 %endif
 
