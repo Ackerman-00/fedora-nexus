@@ -2,14 +2,13 @@
 
 Name:           python-yt-dlp-get-pot-rustypipe
 Version:        0.2.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        PO token provider plugin for yt-dlp using rustypipe-botguard
 
 License:        MIT
 URL:            https://pypi.org/project/yt-dlp-get-pot-rustypipe/
 Source0:        https://files.pythonhosted.org/packages/source/y/yt-dlp-get-pot-rustypipe/yt_dlp_get_pot_rustypipe-%{version}.tar.gz
-Source1:        https://codeberg.org/ThetaDev/rustypipe-botguard/raw/tag/yt-dlp-get-pot-rustypipe/v%{version}/LICENSE
-# sha256: fc3908dc021285b75d2fb91464dcb03545d966b9011cc009f8a230f4ce468701
+Source1:        LICENSE
 
 Provides:       python3-yt-dlp-get-pot-rustypipe
 
@@ -42,6 +41,10 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %license LICENSE
 
 %changelog
+* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.2.0-7
+- Vendor the MIT LICENSE as a local Source (build-time fetch from codeberg
+  broke when the host did not resolve); same bytes, sha256 fc3908dc.
+
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.2.0-6
 - Move the in-app updater strip into %install
 
