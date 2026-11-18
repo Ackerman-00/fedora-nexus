@@ -56,6 +56,28 @@ def get_json(url, timeout=45, attempts=3):
                 time.sleep(5 * (attempt + 1))
                 continue
             raise
+        except (urllib.error.URLError, OSError):
+            # a host that does not resolve is an answer, not a transient fault
+            return None
+
+
+def repology_newest(pkg):
+    """Newest version any repo reports, for a package whose own host is gone."""
+    rows = get_json("https://repology.org/api/v1/project/%s" % quote(pkg), 45) or []
+    if not isinstance(rows, list):
+        return None
+    for row in rows:
+        if row.get("status") == "newest" and row.get("version"):
+            return str(row["version"])
+    return None
+
+
+def crates_newest(pkg):
+    """Newest published crate, for a Rust project whose host is gone."""
+    d = get_json("https://crates.io/api/v1/crates/%s" % quote(pkg), 45) or {}
+    ver = (d.get("crate") or {}).get("default_version") if isinstance(d, dict) else None
+    return str(ver) if ver else None
+
 
 
 def _range_total(header):
@@ -645,6 +667,15 @@ def probe_upstream(sp):
             return pkg, aref, ok, acmd, ""
     tag = latest_release(forge, owner, repo)
     if not tag:
+        # the project's own host is the thing that fails: ask the aggregates
+        for find, src in ((repology_newest, "repology.org/api/v1/project/%s" % pkg),
+                          (crates_newest, "crates.io/api/v1/crates/%s" % pkg)):
+            ref = find(pkg)
+            if not ref:
+                continue
+            rv = strip_packaging(ref.lstrip("v"))
+            ok = not (re.search(r"\d", ver) and re.search(r"\d", rv) and not vge(ver, rv))
+            return pkg, rv, ok, src, ""
         return pkg, "", None, "latest_release %s/%s" % (owner, repo), "no release seen"
     tag = strip_packaging(str(tag).lstrip("v"))
     ok = not (re.search(r"\d", ver) and re.search(r"\d", tag) and not vge(ver, tag))

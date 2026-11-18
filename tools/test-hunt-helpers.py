@@ -194,6 +194,27 @@ check("local pin: absent source is reported, never silently clean",
 check("local pin: an oversized vendored source is skipped, not hashed",
       hunt.local_pin_digest("p-1.tar.gz", _spec, cap=1)[1], "over 0MB")
 
+
+def _fake_json(payload):
+    def _g(url, timeout=45, attempts=3):
+        return payload
+    return _g
+
+
+_real_get_json = hunt.get_json
+hunt.get_json = _fake_json([{"status": "outdated", "version": "0.9.5"},
+                            {"status": "newest", "version": "0.12.1"}])
+check("repology: newest row wins, never the first", hunt.repology_newest("awww"), "0.12.1")
+hunt.get_json = _fake_json({"error": "404"})
+check("repology: a non-list answer is no answer", hunt.repology_newest("nope"), None)
+hunt.get_json = _fake_json([])
+check("repology: empty project file is no answer", hunt.repology_newest("nope"), None)
+hunt.get_json = _fake_json({"crate": {"default_version": "0.1.2"}})
+check("crates: default_version is the published version", hunt.crates_newest("rustypipe-botguard"), "0.1.2")
+hunt.get_json = _fake_json({"errors": [{"detail": "Not Found"}]})
+check("crates: an unknown crate is no answer", hunt.crates_newest("nope"), None)
+hunt.get_json = _real_get_json
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)
