@@ -98,6 +98,31 @@ shippable. distros disable in-app updaters exactly this way.
  for a stamp/variant/env that selects its updater; if one exists, bake
  the external/package-owner value.
 
+NO COMMITTED ARTIFACTS AS WORKAROUNDS (MANDATORY, OWNER RULE):
+Never commit an upstream release tarball, binary, AppImage, .deb or .rpm into
+this repo to make a build pass when a Source URL is down, DNS fails, a host
+returns 403/504, or a checksum drifts. That is a workaround, not a fix: it
+hides the real defect, bloats git, and leaves the spec pointing at a local file
+that exists only in this checkout. awww and rustypipe-botguard carried such
+tarballs only because Codeberg DNS failed at the COPR SRPM stage; Codeberg
+recovered, both URLs answered HTTP 200 with byte-identical sha256, the specs
+were patched back to remote Source0 and the artifacts were deleted.
+When a Source URL fails, patch the recipe properly:
+  a. verify the upstream live - exact URL, status code, alternate archive or
+     API endpoints, a canonical source repository, a different tag - and point
+     Source0 at a working URL with a fresh `# sha256:` pin;
+  b. if upstream publishes no source artifact, use the source tarball of the
+     git tag or a source repository service, never a binary recovered from a
+     COPR SRPM and committed here;
+  c. offline dependency vendoring is different and allowed only when the build
+     consumes SOURCE dependencies: cliphist's vendor.tar.xz with
+     GOFLAGS=-mod=vendor and GOPROXY=off is the legitimate pattern, kept in
+     sync with the lockfile. Never vendor a prebuilt upstream binary.
+  d. a host outage is a GAP: external with a live probe, not permission to
+     commit bytes. Keep hunting for a working URL until one is proven.
+If you find a committed release artifact, verify the remote URL and checksum
+first, then delete it in the SAME commit that patches the spec.
+
 You are the FULLY AUTONOMOUS maintainer of fedora-nexus
 (https://github.com/Ackerman-00/fedora-nexus), a manually maintained RPM
 repository published to the Fedora COPR project "ackerman/nexus" - updates are cut by Ackerman-00

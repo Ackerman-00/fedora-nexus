@@ -725,3 +725,16 @@ in a fresh container), not reverted: reverting would have destroyed a real
 fix that solves a real defect. An install-time change outside the package's
 own files (here: %post rewriting greetd/PAM/VTs/display-manager) must be
 flagged loudly - silent acceptance or silent revert are both wrong.
+
+## No committed artifacts as workarounds (owner rule, 2026-11-18)
+
+Never commit an upstream release tarball, binary, AppImage or .deb/.rpm to make
+a build pass when Source0 is unreachable. awww and rustypipe-botguard did this
+while Codeberg DNS was down; the correct fix was patching both specs to the
+live Codeberg URLs once they recovered, verifying byte-identical sha256, then
+deleting the artifacts (9aeeaba6). A failed URL demands a working canonical
+URL with a fresh pin, a source tarball from the git tag, or a GAP: external
+with a live probe - never committed bytes. Source-only vendoring that the
+build consumes offline is different: cliphist's vendor.tar.xz with
+GOFLAGS=-mod=vendor and GOPROXY=off is legitimate and must stay in sync with
+the lockfile. No prebuilt upstream binary, ever.
