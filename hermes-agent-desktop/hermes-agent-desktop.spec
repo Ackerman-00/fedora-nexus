@@ -9,7 +9,7 @@
 
 Name:           hermes-agent-desktop
 Version:        0.23.2^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
@@ -67,6 +67,11 @@ This package is built from the current upstream git snapshot.
 
 %prep
 %autosetup -n hermes-agent-%{commit}
+# Nexus-owned updates
+grep -q "updateMechanism: commitBuild ? 'external' : updateMechanism" apps/desktop/scripts/write-build-stamp.mjs
+sed -i "s|updateMechanism: commitBuild ? 'external' : updateMechanism,|updateMechanism: 'external',|" apps/desktop/scripts/write-build-stamp.mjs
+grep -q "Updates are managed by the package owner outside this app" apps/desktop/electron/updater/external.ts
+sed -i "s|Updates are managed by the package owner outside this app|Updates are managed by the ackerman/nexus COPR package|" apps/desktop/electron/updater/external.ts
 mkdir -p .tools/node .tools/pnpm
 tar -xJf %{SOURCE1} -C .tools/node --strip-components=1
 tar -xzf %{SOURCE2} -C .tools/pnpm
@@ -137,5 +142,9 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
+* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.23.2^20261118044130gitf7e2898-2
+- Bake the install stamp's updateMechanism as 'external' so the in-app updater
+  is disabled; updates come from the Nexus COPR package owner, not the app.
+
 * Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.23.2^20261118044130gitf7e2898-1
 - Nightly sync with upstream main branch (Commit: f7e2898)
