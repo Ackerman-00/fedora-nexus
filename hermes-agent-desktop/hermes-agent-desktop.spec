@@ -3,18 +3,18 @@
 %global __requires_exclude_from ^/opt/HermesDesktop/.*$
 %global __provides_exclude_from ^/opt/HermesDesktop/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/HermesDesktop/.*$
-%global commit          f7e2898aaefc8f967dbf7345e3999a65672fe60e
+%global commit          05348a3094a2356b9a271a2f22cdd6711c9952b8
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261118044130
+%global gitdate         20261118145255
 
 Name:           hermes-agent-desktop
 Version:        0.23.2^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
 Source0:        https://github.com/NousResearch/hermes-agent/archive/%{commit}.tar.gz
-# sha256:  a2ce2fd3ecbf3bc059d77036ac8dd3eaef2837b75b569cc0dd5f0f32be067120
+# sha256:  1ff3b8c25ef10d5f7b2e23a43a5b145fe27ea8ec9c4157136db3c48ea4af4a20
 Source1:        https://nodejs.org/download/release/v26.12.1/node-v26.12.1-linux-x64.tar.xz
 # sha256: 6170b2d474e1c626f43cff3adc118df9fe3b573258a4fc3d850c8dbc6b079bbd
 Source2:        https://registry.npmjs.org/@pnpm/exe.linux-x64/-/exe.linux-x64-12.15.0.tgz
@@ -142,9 +142,5 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
-* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.23.2^20261118044130gitf7e2898-2
-- Bake the install stamp's updateMechanism as 'external' so the in-app updater
-  is disabled; updates come from the Nexus COPR package owner, not the app.
-
-* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.23.2^20261118044130gitf7e2898-1
-- Nightly sync with upstream main branch (Commit: f7e2898)
+* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.23.2^20261118145255git05348a3-1
+- Nightly sync with upstream main branch (Commit: 05348a3)
