@@ -5,14 +5,14 @@
 %global __requires_exclude_from ^%{helium_base}/libqt[56]_shim[.]so.*$
 
 Name:               helium-browser
-Version:        0.21.3.1
-Release:        2%{?dist}
+Version:        0.22.1.1
+Release:        1%{?dist}
 Summary:            Private, fast, and honest web browser
 
 License:            GPL-3.0-only AND BSD-3-Clause
 URL:                https://github.com/imputnet/helium-linux
 Source0:            https://github.com/imputnet/helium-linux/releases/download/%{version}/helium-%{version}-x86_64_linux.tar.xz
-# sha256: 88f3c53a237182e872ac3061cc8c129e75aecbce84aead834225d8103096c254
+# sha256: e415898b51bf1c41d6bd7d44027776c99bf36d9e0ee7416c1d8bf0de53b6ea0c
 Source1:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/package/net.imput.helium.metainfo.xml
 Source2:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/LICENSE
 Source3:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/LICENSE.ungoogled_chromium
@@ -96,6 +96,10 @@ esac
 %{_datadir}/icons/hicolor/256x256/apps/helium.png
 
 %changelog
+* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.22.1.1-1
+- Update to upstream release 0.22.1.1 (Chromium 158.0.8127.36, read from the
+  shipped binary; tarball sha256 verified)
+
 * Sun Nov 15 2026 Ackerman-00 <no-reply> - 0.21.3.1-2
 - Recommend xdg-desktop-portal and its GTK backend: Wayland screen sharing,
   file dialogs and notifications go through the portal, and a minimal
