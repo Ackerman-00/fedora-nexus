@@ -3,16 +3,16 @@
 %global debug_package %{nil}
 
 Name:           sonora
-Version:        0.50.1
-Release:        2%{?dist}
+Version:        0.50.2
+Release:        1%{?dist}
 Summary:        Native music streaming client
 
 License:        GPL-3.0-or-later AND OFL-1.1 AND ISC AND MIT AND Apache-2.0 AND CC-BY-4.0
 URL:            https://github.com/sonorahq/sonora
 Source0:        %{url}/releases/download/v%{version}/sonora-v%{version}-x86_64-unknown-linux-gnu
-# sha256: 1ab011a1b8b84b68fb8df039462da4700805629500b8f1181a2c8d6a6c6cba19
+# sha256: 5899c09fce4c7a6e11d3c2812bef545d2a6e54cef8ea2dffe3548871bcc7ff0d
 Source1:        %{url}/archive/refs/tags/v%{version}.tar.gz
-# sha256: 43a5e36942b32d88e8e712ef2829d9e5db3a89a85fa32b2d9378f506c50c675e
+# sha256: b0cd5d5b93f475c08212ec0ff276926a4a6b105d9ce8461c03085c03bf307a75
 
 ExclusiveArch:  x86_64
 
@@ -97,8 +97,5 @@ esac
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.50.1-2
-- Correct the changelog date: update.sh wrote a non-RPM date ("UTC" in the
-  day/month/year field), so no tool could parse this spec's newest NVR
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.50.1-1
+* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.50.2-1
 - Repackage the upstream prebuilt x86_64 binary
