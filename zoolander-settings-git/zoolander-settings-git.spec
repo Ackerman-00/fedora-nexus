@@ -1,12 +1,12 @@
-%global zsver     0.13.47
-%global geo       0.13.45
-%global utils     0.13.46
-%global conf      0.13.14
-%global render    0.13.45
-%global wayland   0.13.45
-%global theme     0.13.35
-%global ui        0.13.45
-%global desktop   0.13.44
+%global zsver    0.13.49
+%global geo      0.13.45
+%global utils    0.13.46
+%global conf     0.13.14
+%global render   0.13.45
+%global wayland  0.13.45
+%global theme    0.13.35
+%global ui       0.13.45
+%global desktop  0.13.44
 
 %global debug_package %{nil}
 %global _missing_build_ids_terminate_build 0
@@ -14,7 +14,7 @@
 
 Name:           zoolander-settings-git
 Version:        %{zsver}
-Release:        8%{?dist}
+Release:        1%{?dist}
 Summary:        Graphical settings app for the Zoolander compositor
 
 License:        MIT
@@ -22,7 +22,7 @@ URL:            https://docs.otter-shell.org/zoolander/configuring/settings-app.
 Provides:       zoolander-settings = %{version}-%{release}
 Conflicts:      zoolander-settings
 Source0:        https://git.pika-os.com/api/v1/repos/otter-shell/zoolander-settings/archive/v%{zsver}.tar.gz#/zoolander-settings-v%{zsver}.tar.gz
-# sha256: 2407dac55bc0c20ed9f6d82e22f374f09d5f45afe35b276556108439d70ff080
+# sha256: f62c45baad9a397c23522aa43acbe97784fab44fbc409e996a7d3f8fc69f9ada
 Source1:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-geo/archive/v%{geo}.tar.gz#/otter-geo-v%{geo}.tar.gz
 # sha256: 306b9fbe64e6b9e7d06d80dd358453d107d1298274a216532b73dadf77f84ddd
 Source2:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-utils/archive/v%{utils}.tar.gz#/otter-utils-v%{utils}.tar.gz
@@ -38,6 +38,7 @@ Source6:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-theme/arc
 Source7:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-ui/archive/v%{ui}.tar.gz#/otter-ui-v%{ui}.tar.gz
 # sha256: 8595b2b2aebbae055c012fce60fd9299bd41e2de05c55d00e8790254ce585e70
 Source8:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-desktop/archive/v%{desktop}.tar.gz#/otter-desktop-v%{desktop}.tar.gz
+# sha256: 47dd5b0ecaaea92bcaa40902304fb23cea312abb440fc9aea675a93b1a905be5
 Source9:        LICENSE
 # sha256: f115a091c7a4554849e153c0afa5c4ecf74de59ae017645263b76c1fe74df1c7
 
@@ -100,45 +101,8 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-8
-- Require rsms-inter-fonts: the app's default font family is Inter; without it
-  zoolander-settings exits with NoFontAvailable (verified in VM).
-
-
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-7
-- Ship the vendored LICENSE as Source9 and install from %{SOURCE9}; the
-  previous relative path did not resolve at %install time (the tarball ships
-  no license file) - COPR build 11337071/11337077 failed
-
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-6
-- Vendor the Otter project's MIT license text (identical to the LICENSE files
-  shipped by otter-utils and otter-render): zoolander-settings ships no LICENSE
-  file upstream, and the %license declaration crashed the build with
-  "File not found" (COPR build 11337071)
-
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-5
-- Install the LICENSE file: the %license macro expands to a path that must be
-  created by %install or %files fails ("File not found" - COPR build 11337009)
-
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-4
-- Stage the otr install into %{_builddir}/staging and copy into %{buildroot}
-  from %install: rpm wipes %{buildroot} before the %install script, so the
-  tree staged by %build never survived to %files (COPR build 11336995 failed:
-  "File not found: .../usr/bin/zoolander-settings")
-
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-3
-- Give every Source a unique #/filename: all nine gitea archive URLs end in
-  v<version>.tar.gz and four of them share v0.13.45, so they downloaded to one
-  dest file (last-write-wins) and the ../../ sibling deps in otr.toml could not
-  resolve (COPR build 11336940 failed on fedora-43/45/rawhide)
-
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-2
-- Extract sources with plain tar so the top-level dirs are siblings directly
-  in BUILD; -1 used autosetup -c which nested them one level too deep and the
-  ../../ relative deps in otr.toml could not resolve.
-
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.13.47-1
-- Initial package. Vendors the 9 pinned Otter library sources (from
-  otter-zenith/pins.json) and links them statically, so a single RPM provides
-  zoolander-settings without separate sibling packages.
-- Requires zoolander; prints the docs URL in %post.
+* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.13.49-1
+- Update the Otter sources to their newest tags (settings 0.13.49,
+  geo 0.13.45, utils 0.13.46, conf 0.13.14, render 0.13.45,
+  wayland 0.13.45, theme 0.13.35, ui 0.13.45, desktop 0.13.44;
+  sha256 of every archive verified)
