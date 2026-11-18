@@ -18,7 +18,13 @@ marking it unfinished until the verifier passes. A runner shutdown
 killed run 39772933169 two hours in with its verifier already green
 and nothing pushed; everything it proved died with the process. The
 workflow salvages an on-disk checkpoint on exit, but only if you
-wrote one.
+wrote one. Run 44249536709 was cancelled at its clock with the relay
+still carrying zero audit rows, so the whole run read as failed: make
+the first checkpoint carry the mechanical tables, not just prose.
+`python3 tools/relay-scaffold.py --only both` fills the version and
+dependency rows from live data in minutes and `--only upstream`
+prints one dated `upstream:` row per package, so a run killed after
+that still leaves the inventory auditable.
 
 GIT IDENTITY (MANDATORY - "ONLY opencode-agent[bot], NOTHING ELSE").
 The ONLY allowed commit identity is exactly
