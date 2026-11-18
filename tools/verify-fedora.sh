@@ -7,6 +7,7 @@ fi
 RUN_ID="${RUN_ID:-}"
 RELAY=".opencode-relay.md"
 FAIL=0
+changed_pkgs=""
 MAINS="$(bash "${BASH_SOURCE[0]}" --print-mains)"
 
 echo "----- VERIFICATION REPORT -----"
