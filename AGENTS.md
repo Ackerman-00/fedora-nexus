@@ -101,6 +101,12 @@ If the agent skips the dependency table, the job fails and the next run retries 
   F45 wave: GNOME 51, GCC 16.2, RPM 6.1, Python 3.15, OpenSSL 4.0. COPR
   chroots fedora-43/44/45-x86_64 + fedora-rawhide-x86_64 match this —
   query the COPR project API every run. (Re-verified 2026-11-07.)
+- Where the Fedora dates can be read from (2026-11-18): fedorapeople.org and
+  docs.fedoraproject.org both answer the Anubis bot challenge to automated
+  clients, so the readable source is `https://endoflife.date/api/fedora.json`.
+  It puts F43 EOL at 2026-12-01 where this file says 2026-12-09; keep the
+  later date, because a chroot disabled a week early costs builds and either
+  date leaves F43 valid today.
 - RPM 6.0 (F43+, multi-key signing) / 6.1 (F45 beta); rpmlint 2.9–2.10
   current. The Layer 2 toolchain above remains the excellence floor.
 - Repology API: bulk clients must send a User-Agent and stay ≤1 req/s.
