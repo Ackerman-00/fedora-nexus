@@ -703,7 +703,7 @@ keeps gate and verifier in sync).
 ## Direct-to-main pushes from outside (found 2026-11-16, real hit)
 
 On 2026-11-16, three commits from an unsigned GitHub user (quietCraft,
-mdzunaid384@gmail.com, created 2024-06-09) landed straight on main while a
+address redacted, account created 2024-06-09) landed straight on main while a
 run was in flight: zoolander-git -5 (d4f5859, sound RUNPATH fix, built
 11336749), noctalia-greeter -2 (d4f9ff5, install-time greetd/PAM/VT
 auto-config - aggressive but intentional, backed up and idempotent, verified
