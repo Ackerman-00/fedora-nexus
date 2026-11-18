@@ -1398,6 +1398,27 @@ def hunt_files_syntax():
             note, bad)
 
 
+PIN_SIZE_CAP = 150 * 1024 * 1024
+
+
+def local_pin_digest(url, spec_path, cap=PIN_SIZE_CAP):
+    """sha256 of a source vendored next to the spec, or (None, why not).
+
+    A local Source0 carries a `# sha256:` pin exactly like a URL one, and it
+    is the case where nothing else can catch drift: no server to re-fetch.
+    """
+    local = os.path.join(os.path.dirname(spec_path), os.path.basename(url))
+    if not os.path.isfile(local):
+        return None, "local source absent from the package dir"
+    if os.path.getsize(local) > cap:
+        return None, "over %dMB" % (cap // (1024 * 1024))
+    h = hashlib.sha256()
+    with open(local, "rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest(), None
+
+
 def hunt_pins():
     """Every pinned `# sha256:` comment must match the artifact it names.
 
@@ -1407,7 +1428,6 @@ def hunt_pins():
     clock and a 500 MB AppImage is not what this check is for.
     """
     ts = sweep_module()
-    PIN_SIZE_CAP = 150 * 1024 * 1024
     checked, skipped, findings = 0, [], []
     for sp in specs():
         txt = open(sp, encoding="utf-8", errors="replace").read()
@@ -1417,7 +1437,14 @@ def hunt_pins():
             if not sha:
                 continue
             if not url.startswith("http"):
-                skipped.append("%s:%s(unexpanded)" % (pkg, name))
+                digest, why = local_pin_digest(url, sp)
+                if why:
+                    skipped.append("%s:%s(%s)" % (pkg, name, why))
+                    continue
+                checked += 1
+                if digest != sha:
+                    findings.append((pkg, "pin mismatch on %s: pinned %s got %s"
+                                     % (name, sha[:16], digest[:16])))
                 continue
             try:
                 req = urllib.request.Request(url, headers=UA, method="HEAD")

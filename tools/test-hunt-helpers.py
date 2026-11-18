@@ -3,9 +3,11 @@
 
 Run: python3 tools/test-hunt-helpers.py
 """
+import hashlib
 import importlib.util
 import os
 import sys
+import tempfile
 
 here = os.path.dirname(os.path.abspath(__file__))
 spec = importlib.util.spec_from_file_location("hunt", os.path.join(here, "hunt.py"))
@@ -177,6 +179,20 @@ check("fedora releases: rawhide from the fedora-release rpm name",
       hunt.rawhide_release('fedora-release-46-0.1.noarch.rpm'), 46)
 check("fedora releases: a package that only starts with fedora-release is not one",
       hunt.rawhide_release('fedora-release-notes-46.noarch.rpm'), None)
+
+_scratch = tempfile.mkdtemp()
+_spec = os.path.join(_scratch, "p.spec")
+open(_spec, "w").close()
+_vend = os.path.join(_scratch, "p-1.tar.gz")
+with open(_vend, "wb") as _fh:
+    _fh.write(b"vendored\n")
+_want = hashlib.sha256(b"vendored\n").hexdigest()
+check("local pin: vendored source hashes from the package dir",
+      hunt.local_pin_digest("p-1.tar.gz", _spec), (_want, None))
+check("local pin: absent source is reported, never silently clean",
+      hunt.local_pin_digest("p-2.tar.gz", _spec)[1], "local source absent from the package dir")
+check("local pin: an oversized vendored source is skipped, not hashed",
+      hunt.local_pin_digest("p-1.tar.gz", _spec, cap=1)[1], "over 0MB")
 
 if FAILS:
     for f in FAILS:
