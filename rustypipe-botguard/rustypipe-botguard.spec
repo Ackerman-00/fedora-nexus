@@ -2,7 +2,7 @@
 
 Name:           rustypipe-botguard
 Version:        0.1.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        YouTube Botguard challenge solver for PO token generation
 
 License:        MIT
@@ -10,7 +10,8 @@ URL:            https://codeberg.org/ThetaDev/rustypipe-botguard
 
 # sha256: 4f2ec561e8f9fadece7deadc6ce0624fbdedd852222c3eb194c22153b1323129
 Source0:        https://codeberg.org/ThetaDev/rustypipe-botguard/releases/download/v%{version}/rustypipe-botguard-v%{version}-x86_64-unknown-linux-gnu.tar.xz
-Source1:        %{url}/raw/tag/v%{version}/LICENSE
+Source1:        LICENSE
+# sha256: fc3908dc021285b75d2fb91464dcb03545d966b9011cc009f8a230f4ce468701
 
 ExclusiveArch:  x86_64
 
@@ -37,6 +38,10 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_bindir}/rustypipe-botguard
 
 %changelog
+* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.1.2-4
+- Vendor the MIT LICENSE as a local Source (build-time fetch from codeberg
+  broke when the host did not resolve); same bytes, sha256 fc3908dc.
+
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.1.2-3
 - Move the in-app updater strip into %install
 
