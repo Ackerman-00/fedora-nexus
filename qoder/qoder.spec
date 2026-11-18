@@ -3,15 +3,15 @@
 %global __provides_exclude_from ^/opt/Qoder/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/Qoder/.*$
 Name:           qoder
-Version:        0.5.12
-# sha256: cc52011e5f9da78c8f7ac58e5fd4e41f4c08b99994e58d18424ccb1706a7d48c
+Version:        0.5.14
+# sha256: 3e7d20e6f70b1361ef675add301b0089a201dbe4c4f2d45f3c1c53ac48640d02
 Release:        1%{?dist}
 Epoch:          1
 Summary:        Agent workbench for human and AI software teams
 License:        SUSE-Freeware
 Group:          Development/Tools/IDE
 URL:            https://qoder.com
-Source0:        https://download.qoder.com.cn/qoder-app/releases/0.5.12/Qoder-linux-amd64.deb
+Source0:        https://download.qoder.com.cn/qoder-app/releases/0.5.14/Qoder-linux-amd64.deb
 Source1:        qoder-rpmlintrc
 BuildRequires:  binutils
 BuildRequires:  desktop-file-utils
@@ -151,7 +151,5 @@ fi
 %attr(4755, root, root) /opt/Qoder/chrome-sandbox
 
 %changelog
-* Sun Nov 15 2026 Ackerman-00 <no-reply> - 0.5.12-1
-- Update to upstream release 0.5.12
-- Ship chrome-sandbox setuid so Chromium can use its SUID sandbox
-- Refresh the hicolor icon cache in %post/%postun
+* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.5.14-1
+- Update to upstream release 0.5.14

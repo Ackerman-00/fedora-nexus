@@ -3,14 +3,14 @@
 %global __provides_exclude_from ^/opt/Freebuff/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/Freebuff/.*$
 Name:           freebuff-desktop
-Version:        0.0.203
+Version:        0.0.204
 Release:        1%{?dist}
 Summary:        Freebuff Desktop (Electron)
 License:        SUSE-Freeware
 Group:          Development/Tools/IDE
 URL:            https://freebuff.com
-Source0:        https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-desktop-v0.0.203/Freebuff-0.0.203-linux-amd64.deb
-# sha256: e05aa66d21aee18c0b27dd623565c875cbf01a5abd2f627776d696f04235c36c
+Source0:        https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-desktop-v0.0.204/Freebuff-0.0.204-linux-amd64.deb
+# sha256: 234fcf3b2a274833596100318b3f28cdbe5bc68e6a6b2dee7d862c2511a9d24a
 Source1:        freebuff-desktop-rpmlintrc
 BuildRequires:  binutils
 BuildRequires:  tar
@@ -114,5 +114,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/freebuff.desktop
 %{_datadir}/icons/hicolor/*/apps/freebuff.png
 
 %changelog
-* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.0.203-1
-- Update to upstream release 0.0.203
+* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.0.204-1
+- Update to upstream release 0.0.204

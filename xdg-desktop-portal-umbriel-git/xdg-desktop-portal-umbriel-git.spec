@@ -1,10 +1,10 @@
-%global commit          ed91d04331b03257d5bd58a075b9cd6743d3efb2
+%global commit          6b5e084779706096a8da5161f946b982bac2abeb
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261117160213
+%global gitdate         20261118005044
 
 Name:           xdg-desktop-portal-umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        XDG Desktop Portal backend for Umbriel
 
 License:        MIT
@@ -85,9 +85,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %config(noreplace) %{_datadir}/xdg-desktop-portal/umbriel-portals.conf
 
 %changelog
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.0^20261117160213gited91d04-2
-- The picker is a noctalia-ui client now: pin -Dpicker=true, declare its
-  freetype/fontconfig/pango/harfbuzz/egl/glesv2/stb dependencies, ship the
-  picker font assets, drop the unused gtk4 and gio-2.0 devel requires
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.0^20261117160213gited91d04-1
-- Nightly sync with upstream main branch (Commit: ed91d04)
+* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.1.0^20261118005044git6b5e084-1
+- Nightly sync with upstream main branch (Commit: 6b5e084)
