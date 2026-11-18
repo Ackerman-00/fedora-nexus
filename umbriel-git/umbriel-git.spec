@@ -6,7 +6,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -99,7 +99,7 @@ sed -i "s/dependency('libdisplay-info', version: '>=0.3.0')/dependency('libdispl
 
 %build
 %meson -Db_lto=true -Dtests=disabled -Dharness=disabled -Dlocaled=enabled \
-    -Dtracy=disabled
+    -Dtracy=disabled -Djemalloc=enabled -Dlcms2=enabled
 %meson_build
 
 %install
@@ -129,5 +129,9 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
+* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.1.0^20261118005122gite59dbe3-2
+- Pin jemalloc and lcms2 to enabled so a dropped BuildRequires fails the
+  build instead of silently shipping the degraded paths.
+
 * Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.1.0^20261118005122gite59dbe3-1
 - Nightly sync with upstream main branch (Commit: e59dbe3)
