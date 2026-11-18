@@ -45,27 +45,10 @@ if [ -z "$NEW_SHA" ]; then
     exit 0
 fi
 
-ASSET_FILE="rustypipe-botguard-${LATEST_VERSION}-x86_64-unknown-linux-gnu.tar.xz"
-echo "  -> [FETCH] $ASSET_FILE"
-if ! curl -fsSL --retry 3 --max-time 600 -o "$ASSET_FILE" "$ASSET_URL"; then
-    rm -f "$ASSET_FILE"
-    echo "  -> [SKIP] Could not download $ASSET_URL. Keeping $CURRENT_VERSION."
-    exit 0
-fi
-GOT_SHA=$(sha256sum "$ASSET_FILE" | awk '{print $1}')
-if [ "$GOT_SHA" != "$NEW_SHA" ]; then
-    rm -f "$ASSET_FILE"
-    echo "  -> [SKIP] Downloaded asset sha256 $GOT_SHA != $NEW_SHA. Keeping $CURRENT_VERSION."
-    exit 0
-fi
-for old in rustypipe-botguard-v*-x86_64-unknown-linux-gnu.tar.xz; do
-    [ -e "$old" ] || continue
-    [ "$old" = "$ASSET_FILE" ] && continue
-    rm -f "$old"
-done
 
 sed -i -E "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
 sed -i -E "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
+sed -i -E "s|^Source0:.*|Source0:        $ASSET_URL|" "$SPEC_FILE"
 sed -i -E "s/^# sha256:.*/# sha256: $NEW_SHA/" "$SPEC_FILE"
 
 DATE=$(LC_ALL=C date +"%a %b %d %Y")

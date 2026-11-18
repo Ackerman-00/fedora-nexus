@@ -34,28 +34,14 @@ fi
 echo "Updating: $CURRENT_VERSION -> $VERSION"
 
 ARCHIVE_URL="$UPSTREAM_URL/archive/$LATEST_TAG.tar.gz"
-ARCHIVE_FILE="$NAME-$VERSION.tar.gz"
-if ! curl -sL --max-time 300 --fail -o "$ARCHIVE_FILE" "$ARCHIVE_URL"; then
-    rm -f "$ARCHIVE_FILE"
-    echo "Error: $ARCHIVE_URL did not download."
+if ! SHA256=$(bash "$_update_sh_dir/../tools/fetch-sha256.sh" "$ARCHIVE_URL"); then
+    echo "Error: $ARCHIVE_URL has no readable sha256; refusing to bump."
     exit 1
 fi
-if ! tar tzf "$ARCHIVE_FILE" >/dev/null 2>&1; then
-    rm -f "$ARCHIVE_FILE"
-    echo "Error: $ARCHIVE_URL is not a valid tarball."
-    exit 1
-fi
-
-SHA256=$(sha256sum "$ARCHIVE_FILE" | awk '{print $1}')
-for old in "$NAME"-*.tar.gz; do
-    [ -e "$old" ] || continue
-    [ "$old" = "$ARCHIVE_FILE" ] && continue
-    rm -f "$old"
-done
 
 sed -i "s/^Version:.*/Version:        $VERSION/" "$SPEC_FILE"
 sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
-sed -i "s|^Source0:.*|Source0:        %{name}-%{version}.tar.gz|" "$SPEC_FILE"
+sed -i "s|^Source0:.*|Source0:        $UPSTREAM_URL/archive/v%{version}.tar.gz|" "$SPEC_FILE"
 if grep -q '^# sha256:' "$SPEC_FILE"; then
     sed -i -E "s|^# sha256:.*|# sha256: $SHA256|" "$SPEC_FILE"
 else
