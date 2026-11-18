@@ -1,19 +1,19 @@
-%global zooland_commit   bca0d3ce591d37ca3d670f20e4fd62ce25207148
-%global shortcommit     4d6702e
-%global gitdate         20261115145914
-%global base_version    0.1.49
+%global zooland_commit   ba2a510340093c447840567e51c882fd63af4056
+%global shortcommit     bc37a79
+%global gitdate         20261118171156
+%global base_version    0.1.50
 
 Name:           zoolander-git
 Version:        %{base_version}+git%{gitdate}.%{shortcommit}
-Release:        11%{?dist}
+Release:        1%{?dist}
 Summary:        Zoolander Wayland compositor, built from the git snapshot
 
 License:        MIT
 URL:            https://git.pika-os.com/otter-shell/zoolander
-Source0:        https://git.pika-os.com/api/v1/repos/otter-shell/zoolander/archive/4d6702edcfccdb7b27650e2e994afd0c1099b478.tar.gz#/zoolander-4d6702edcfccdb7b27650e2e994afd0c1099b478.tar.gz
-# sha256: 1b12da52728cbcc4d08a05d7ffb5ef641540edb8b3ac00c8deb89888c4ba00ef
-Source1:        https://git.pika-os.com/api/v1/repos/otter-shell/zooland/archive/%{zooland_commit}.tar.gz#/zooland-%{zooland_commit}.tar.gz
-# sha256: 875ffcfb34940e767b8e21445376ce1afecd1073e88aa09c54e6dfdd9222a4a9
+Source0:        https://git.pika-os.com/api/v1/repos/otter-shell/zoolander/archive/bc37a797f9e67d5350d41b72dab12126eeddaee6.tar.gz#/zoolander-bc37a797f9e67d5350d41b72dab12126eeddaee6.tar.gz
+# sha256: c8c5cf843bb46155b9912f33c71303a66cce5c5548e4940397be90f1447f9270
+Source1:        https://git.pika-os.com/api/v1/repos/otter-shell/zooland/archive/ba2a510340093c447840567e51c882fd63af4056.tar.gz#/zooland-ba2a510340093c447840567e51c882fd63af4056.tar.gz
+# sha256: 380c85eb25f7e2df989f71bc5bc0c9d4df4c688016c622a602fdc09cd0727825
 
 # built by the otr toolchain over mold: no build-id note to link
 %global debug_package %{nil}
@@ -143,70 +143,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-11
-- Remove the Otter wallpaper/bar autostart block from the starter config
-  entirely (otter-shell is not packaged here); it no longer shows as phantom
-  autostart entries in zoolander-settings.
-
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-10
-- Export XDG_CURRENT_DESKTOP=Zoolander and XDG_SESSION_DESKTOP=Zoolander in
-  zoolander-session. zoolander-settings detects the compositor solely by the
-  XDG_CURRENT_DESKTOP value; without it, Apply showed "compositor not reachable"
-  even though the control socket worked.
-
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-9
-- Use raw XKB keysym 0xff0d for the Super+Return terminal bind (the named
-  constant may not match the physical key under some layouts)
-- Print the Zoolander docs URL on fresh install
-
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-8
-- Require kitty and repoint the Super+Return starter keybind from otter-term
-  (not packaged) to kitty, so a fresh COPR user has a working terminal.
-
-
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-7
-- Require zoolander-settings-git and conflict with the non-git zoolander-settings
-
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-6
-- Starter config: skip otter-wallpaper/otter-bar at startup when absent
-  (checked in /bin/sh via command -v; Lua has no os) so a bare zoolander run
-  stops printing "command not found" and child status 127
-- zoolander-session: re-exec via kmscon-launch-gui on an F45 kmscon VT so the
-  compositor can take the GPU; no-op under greetd/a logind seat or nested
-  session. Bare `zoolander` still needs a proper seat or kmscon-launch-gui.
-- Requires kmscon for the launcher
-
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-5
-- Install the dlopen'd bell/audio-visualizer libs to %{_prefix}/lib/zoolander:
-  the binary's RUNPATH is $ORIGIN/../lib/zoolander (=/usr/lib/zoolander), but
-  they were shipped to %{_libdir}/zoolander (=/usr/lib64/zoolander). On Fedora
-  those are different dirs, so zoolander could not load either library
-- Add __provides_exclude_from for that private dir so the bundled .so sonames
-  stop leaking as global Provides; keep their pipewire Requires intact
-
-* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-4
-- Ship cap_sys_nice through %caps instead of a %post setcap call: rpm records
-  the capability, so `rpm -V` stops reporting the binary as modified and the
-  install test can see real corruption again
-
-* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-3
-- BuildRequires libX11-devel instead of the nonexistent libX11-xcb-devel
-  (libX11-devel owns X11/Xlib-xcb.h and libX11-xcb.so, which the WSI layer links)
-- Install from zoolander/otr-out: %build cd's into the source tree, so the otr
-  output lands there, not in the top-level build dir %install starts in
-- Create the wayland-sessions dir before the desktop file sed writes into it
-  (%install died: "usr/share/wayland-sessions/zoolander.desktop: No such file or
-  directory")
-- Point debian/zoolander-session at the source tree; it lives next to zoolander.desktop
-- The %files cwd is the top-level build dir (no %setup), so %license and %doc
-  need the zoolander/ prefix; the bare names made rpmbuild fail with
-  "File not found: .../BUILDROOT/usr/share/licenses/zoolander-git/LICENSE"
-
-* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-2
-- Do not require a build-id note: the otr/mold link path does not add one and
-  brp-strip terminates the build without it
-- First build: the package had none (11332603 canceled - BuildRequires: otr was
-  unpublished until otr 0.2.6-4 shipped)
-
-* Mon Nov 16 2026 Ackerman-00 <no-reply> - 0.1.49+git20261115145914.4d6702e-1
-- Initial package, built from git snapshot
+* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.1.50+git20261118171156.bc37a79-1
+- Nightly sync with upstream main branch (Commit: bc37a79)
