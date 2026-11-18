@@ -161,7 +161,8 @@ check("updater: stub on a commit-pinned spec is legal",
       hunt.updater_findings("#!/bin/bash\necho manual\n", GIT_SPEC), [])
 check("updater: real updater is clean",
       hunt.updater_findings("#!/bin/bash\nset -u\nsed -i \"s/^Version:.*/Version: 2/\" p.spec\n"
-                            "curl -sL https://api.github.com/repos/o/r/releases/latest\n", TAGGED_SPEC), [])
+                            "curl -sL -H \"Authorization: token $GITHUB_TOKEN\" "
+                            "https://api.github.com/repos/o/r/releases/latest\n", TAGGED_SPEC), [])
 
 check("gitea tag fallback: highest numeric tag wins",
       hunt.highest_stable_tag(["v0.13.45", "v0.13.47", "v0.13.9"]), "v0.13.47")
