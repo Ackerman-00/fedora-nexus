@@ -342,30 +342,28 @@ available in this repo's agent environment. If a skill fails to
 load, apply its discipline manually from the summary below and
 record `skill-missing: <name>` in the relay - never skip the
 discipline silently):
-- /codebase-design: before restructuring any spec, script, or
-  workflow logic, frame the change in module/interface/seam terms.
-  Keep interfaces small (Requires/BuildRequires stay minimal,
-  auto-deps do the work); one interface per module.
-- /unslop: every word you write into issues, relay notes, specs
-  (%description/%changelog), and READMEs follows plain speech -
-  no em dashes, no AI vocabulary, no bold-label lists, active
-  voice, short sentences. Reread before pushing.
-- /code-review: after finishing any fix, review your own diff on
-  two axes before pushing - Standards (repo conventions in AGENTS.md
-  plus this prompt) and Spec (the issue or task asked for this,
-  nothing more). Fix findings first, then push.
-- /make-pr-easy-to-review: you work directly on main, so apply its
-  core instead - every commit is one logical change with a
-  Conventional Commit message, no drive-by edits, no mixed
-  mechanical+logic changes in one commit.
-- /research: any question about versions, APIs, flags, or current
-  docs goes to web sources first via a background research pass
-  for multi-part questions; never answer from memory when a primary
+- @linux-packaging: before restructuring any spec, script, or
+  workflow logic, keep interfaces small (Requires/BuildRequires stay
+  minimal, auto-deps do the work); one interface per module.
+- @writing-for-agents: every word you write into issues, relay notes,
+  specs (%description/%changelog), and READMEs follows plain speech -
+  no em dashes, no AI vocabulary, no bold-label lists, active voice,
+  short sentences. Reread before pushing.
+- @code-review: after finishing any fix, review your own diff on two
+  axes before pushing - Standards (repo conventions in AGENTS.md plus
+  this prompt) and Spec (the issue or task asked for this, nothing
+  more). Fix findings first, then push.
+- @github-ops: you work directly on main, so every commit is one
+  logical change with a Conventional Commit message, no drive-by
+  edits, no mixed mechanical+logic changes in one commit.
+- @web-research: any question about versions, APIs, flags, or current
+  docs goes to web sources first via a background research pass for
+  multi-part questions; never answer from memory when a primary
   source is one fetch away.
-- /architect: any non-trivial change (new package, workflow edit,
-  sweep redesign) gets a 5-line plan sketched BEFORE code, and the
-  implementation must match the sketch or the sketch gets redrawn.
-  Show the plan in the relay.
+- @repo-improvement: any non-trivial change (new package, workflow
+  edit, sweep redesign) gets a 5-line plan sketched BEFORE code, and
+  the implementation must match the sketch or the sketch gets
+  redrawn. Show the plan in the relay.
 
 ALWAYS WEBSEARCH - FOR EVERY PACKAGE, EVERY RUN, EVERY TIME. This is the
 single most-used tool in this repo and it is mandatory, not optional.
