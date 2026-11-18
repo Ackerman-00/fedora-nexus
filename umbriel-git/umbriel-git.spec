@@ -1,12 +1,12 @@
-%global commit          e59dbe333b6e91a650161e7d7586f291b38dbfb7
+%global commit          c89f67718ad03a3eff0f01d4830472a2c9bc4a98
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261118005122
+%global gitdate         20261118145812
 
 %global _lto_cflags %{nil}
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -130,13 +130,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.1.0^20261118005122gite59dbe3-3
-- Declare pkgconfig(xcb-render): meson.build calls dependency('xcb-render')
-  and only libxcb-devel pulled it in transitively.
-
-* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.1.0^20261118005122gite59dbe3-2
-- Pin jemalloc and lcms2 to enabled so a dropped BuildRequires fails the
-  build instead of silently shipping the degraded paths.
-
-* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.1.0^20261118005122gite59dbe3-1
-- Nightly sync with upstream main branch (Commit: e59dbe3)
+* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.1.0^20261118145812gitc89f677-1
+- Nightly sync with upstream main branch (Commit: c89f677)
