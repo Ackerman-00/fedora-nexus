@@ -1,6 +1,7 @@
 #!/bin/bash
 set -u
 PKG=$1; PAT=$2; SMOKE=$3; CHROOT=${4:-44}
+SMOKE=${SMOKE:-true}
 docker run --rm registry.fedoraproject.org/fedora:$CHROOT bash -lc "
 dnf -y -q --setopt=gpgcheck=0 install dnf-plugins-core >/dev/null 2>&1
 dnf -y -q --setopt=gpgcheck=0 copr enable ackerman/nexus >/dev/null 2>&1
