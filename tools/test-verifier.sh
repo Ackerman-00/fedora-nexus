@@ -92,5 +92,12 @@ else
   FAIL=$((FAIL+1))
 fi
 
+if bash tools/verify-fedora.sh --selftest-scope >/tmp/vf-scope.log 2>&1; then
+  PASS=$((PASS+1))
+else
+  echo "FAIL scope selftest: $(tail -1 /tmp/vf-scope.log)"
+  FAIL=$((FAIL+1))
+fi
+
 echo "verifier self-test: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ] || exit 1

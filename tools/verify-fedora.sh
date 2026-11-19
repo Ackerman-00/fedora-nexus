@@ -10,6 +10,8 @@ FAIL=0
 changed_pkgs=""
 MAINS="$(bash "${BASH_SOURCE[0]}" --print-mains)"
 
+scope_of() { awk -v id="run_id: $2" 'f && /^run_id: /{exit} $0==id{f=1;next} f' "$1"; }
+
 missing_changed_tokens() {
   local scope=$1 pkg=$2 tok
   for tok in plan deps artifact; do
@@ -25,6 +27,19 @@ if [[ "${1:-}" == "--selftest-changed" ]]; then
   [ "$(missing_changed_tokens "$miss" otr | tr '\n' ' ')" = "deps artifact " ] || { echo "FAIL selftest: incomplete scope not reported"; rc=1; }
   [ "$(missing_changed_tokens "$good" other | tr '\n' ' ')" = "plan deps artifact " ] || { echo "FAIL selftest: other package not reported"; rc=1; }
   [ $rc -eq 0 ] && echo "changed-token selftest PASS"
+  exit $rc
+fi
+
+if [[ "${1:-}" == "--selftest-scope" ]]; then
+  tmp=$(mktemp)
+  printf 'run_id: 1\nstatus: complete\nrun_id: 1\nstatus: unfinished\nrun_id: 2\nstatus: complete\n' > "$tmp"
+  rc=0
+  first=$(scope_of "$tmp" 1)
+  [ "$first" = "status: complete" ] || { echo "FAIL scope selftest: a duplicate run_id line did not end the block ($first)"; rc=1; }
+  second=$(scope_of "$tmp" 2)
+  [ "$second" = "status: complete" ] || { echo "FAIL scope selftest: the later block was not reached ($second)"; rc=1; }
+  rm -f "$tmp"
+  [ $rc -eq 0 ] && echo "scope selftest PASS"
   exit $rc
 fi
 
@@ -46,7 +61,7 @@ if [[ -f "$RELAY" ]]; then
     FAIL=1
   fi
 
-  scope=$(awk -v id="run_id: $RUN_ID" '$0==id{f=1;next} f&&/^run_id: /{exit} f' "$RELAY")
+  scope=$(scope_of "$RELAY" "$RUN_ID")
 
   if ! grep -qix "status: complete" <<< "$scope"; then
     echo "FAIL: NOT COMPLETE -- this run's block does not carry status: complete"

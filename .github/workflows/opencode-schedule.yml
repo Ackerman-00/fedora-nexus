@@ -109,7 +109,7 @@ jobs:
               content="$(gh api "repos/${GITHUB_REPOSITORY}/contents/.opencode-relay.md?ref=main" --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || true)"
             fi
             grep -qx "run_id: $RUN_ID" <<< "$content" || return 1
-            content=$(printf '%s\n' "$content" | awk -v id="run_id: $RUN_ID" '$0==id{f=1;next} f&&/^run_id: /{exit} f')
+            content=$(printf '%s\n' "$content" | awk -v id="run_id: $RUN_ID" 'f && /^run_id: /{exit} $0==id{f=1;next} f')
             grep -qix "status: complete" <<< "$content" || return 1
             grep -q "| package | upstream deps found |" <<< "$content" || return 1
             local expected dep_rows unproven_rows tool today yest pkg
