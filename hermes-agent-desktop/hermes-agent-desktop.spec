@@ -3,9 +3,9 @@
 %global __requires_exclude_from ^/opt/HermesDesktop/.*$
 %global __provides_exclude_from ^/opt/HermesDesktop/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/HermesDesktop/.*$
-%global commit          95a1d228c54e3a088892b38503c5c7796a98455e
+%global commit          152fe18976002e9a987422b7c6102c805d61264b
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261119043607
+%global gitdate         20261119164754
 
 Name:           hermes-agent-desktop
 Version:        0.23.2^%{gitdate}git%{shortcommit}
@@ -14,7 +14,7 @@ Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
 Source0:        https://github.com/NousResearch/hermes-agent/archive/%{commit}.tar.gz
-# sha256:  625170e68512e5cc8d98e84bc5933909c049ec86442e87c2d938b3b3713cabd2
+# sha256:  e2c4d842d80c2c9c8c36e486947d98a2256af79cc197cd6e8320837047363adc
 Source1:        https://nodejs.org/download/release/v26.12.1/node-v26.12.1-linux-x64.tar.xz
 # sha256: 6170b2d474e1c626f43cff3adc118df9fe3b573258a4fc3d850c8dbc6b079bbd
 Source2:        https://registry.npmjs.org/@pnpm/exe.linux-x64/-/exe.linux-x64-12.15.0.tgz
@@ -142,5 +142,5 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
-* Thu Nov 19 2026 Ackerman-00 <no-reply> - 0.23.2^20261119043607git95a1d22-1
-- Nightly sync with upstream main branch (Commit: 95a1d22)
+* Thu Nov 19 2026 Ackerman-00 <no-reply> - 0.23.2^20261119164754git152fe18-1
+- Nightly sync with upstream main branch (Commit: 152fe18)

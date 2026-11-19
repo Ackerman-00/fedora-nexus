@@ -1,12 +1,12 @@
-%global zsver    0.13.49
+%global zsver    0.13.50
 %global geo      0.13.45
 %global utils    0.13.46
 %global conf     0.13.14
 %global render   0.13.45
-%global wayland  0.13.45
-%global theme    0.13.35
-%global ui       0.13.45
-%global desktop  0.13.44
+%global wayland  0.13.51
+%global theme    0.13.50
+%global ui       0.13.50
+%global desktop  0.13.51
 
 %global debug_package %{nil}
 %global _missing_build_ids_terminate_build 0
@@ -22,7 +22,7 @@ URL:            https://docs.otter-shell.org/zoolander/configuring/settings-app.
 Provides:       zoolander-settings = %{version}-%{release}
 Conflicts:      zoolander-settings
 Source0:        https://git.pika-os.com/api/v1/repos/otter-shell/zoolander-settings/archive/v%{zsver}.tar.gz#/zoolander-settings-v%{zsver}.tar.gz
-# sha256: f62c45baad9a397c23522aa43acbe97784fab44fbc409e996a7d3f8fc69f9ada
+# sha256: 74d4ea08a9b5a99310a60dc8fb5ab46be5f1506ca8a137456fdff57c09ed9f17
 Source1:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-geo/archive/v%{geo}.tar.gz#/otter-geo-v%{geo}.tar.gz
 # sha256: 306b9fbe64e6b9e7d06d80dd358453d107d1298274a216532b73dadf77f84ddd
 Source2:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-utils/archive/v%{utils}.tar.gz#/otter-utils-v%{utils}.tar.gz
@@ -32,13 +32,13 @@ Source3:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-conf/arch
 Source4:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-render/archive/v%{render}.tar.gz#/otter-render-v%{render}.tar.gz
 # sha256: 3c8cd8afc059e05a640b46ecff0ff8c49e80370f6997e8e49422e74e977ce36e
 Source5:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-wayland/archive/v%{wayland}.tar.gz#/otter-wayland-v%{wayland}.tar.gz
-# sha256: 16129c52704191335fee19fcf3f54430930e7376ec8e34f81e4c4585ca5d4f66
+# sha256: 2d427cb10d3b76f947a7f9af8fe16ecf522c8fb016227c866fe301bcfd458b3b
 Source6:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-theme/archive/v%{theme}.tar.gz#/otter-theme-v%{theme}.tar.gz
-# sha256: fd28e9012c0c417f522bbf7654acf76d735dc8884148d0dd509205858eff26cf
+# sha256: 02f9244c7d6ba25ac3ee495e96c705166f7e5c2355b28244d228992a2423c6d7
 Source7:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-ui/archive/v%{ui}.tar.gz#/otter-ui-v%{ui}.tar.gz
-# sha256: 8595b2b2aebbae055c012fce60fd9299bd41e2de05c55d00e8790254ce585e70
+# sha256: 96d040e1c3562488994ae70b99b6524fcf56330e4ea3439bc840bc7cb8f74383
 Source8:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-desktop/archive/v%{desktop}.tar.gz#/otter-desktop-v%{desktop}.tar.gz
-# sha256: 47dd5b0ecaaea92bcaa40902304fb23cea312abb440fc9aea675a93b1a905be5
+# sha256: f9ac5b1ca4baba16fcb19fdcaa113574bee38155dcc82245b7f05faff4f8512b
 Source9:        LICENSE
 # sha256: f115a091c7a4554849e153c0afa5c4ecf74de59ae017645263b76c1fe74df1c7
 
@@ -101,8 +101,8 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.13.49-1
-- Update the Otter sources to their newest tags (settings 0.13.49,
+* Thu Nov 19 2026 Ackerman-00 <no-reply> - 0.13.50-1
+- Update the Otter sources to their newest tags (settings 0.13.50,
   geo 0.13.45, utils 0.13.46, conf 0.13.14, render 0.13.45,
-  wayland 0.13.45, theme 0.13.35, ui 0.13.45, desktop 0.13.44;
+  wayland 0.13.51, theme 0.13.50, ui 0.13.50, desktop 0.13.51;
   sha256 of every archive verified)
