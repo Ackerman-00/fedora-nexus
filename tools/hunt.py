@@ -1643,8 +1643,38 @@ def hunt_updaters():
     return ("updaters", "%d updaters, %d cannot track a release" % (n, len(findings)), "", findings)
 
 
+def dep_floor_findings(text):
+    """(scanned count, findings) from dep-floor-scan.py output."""
+    findings = []
+    for line in text.splitlines():
+        m = re.match(r"^(\S+)\s+(MISSING|FLOOR|NOFLOOR)\s+(\S+)\s+upstream=(\S+)\s+spec=(\S+)", line)
+        if m:
+            findings.append((m.group(1), "%s %s upstream=%s spec=%s"
+                             % (m.group(2), m.group(3), m.group(4), m.group(5))))
+    scanned = re.search(r"scanned (\d+) packages", text)
+    return (scanned.group(1) if scanned else "0"), findings
+
+
+def hunt_dep_floors():
+    """Reconcile every dependency floor the pinned source tree declares.
+
+    dep-floor-scan.py downloads each Source0 that expands, reads the whole
+    meson build system, and reports a floor we omit or pin lower. Optional,
+    tests-only and consumer-variable-gated dependencies are reported as
+    EXCLUDED with the reason instead of as findings.
+    """
+    tool = os.path.join(HERE, "dep-floor-scan.py")
+    try:
+        r = subprocess.run([sys.executable, tool], capture_output=True, text=True, timeout=900)
+    except subprocess.TimeoutExpired:
+        return ("dep-floors", "scan timed out after 900s", "", [])
+    scanned, findings = dep_floor_findings(r.stdout)
+    return ("dep-floors", "%s packages with a build manifest, %d finding(s)"
+            % (scanned, len(findings)), "", findings)
+
+
 HUNTS = (hunt_builds, hunt_network_build, hunt_chroots, hunt_copr_config, hunt_upstream, hunt_cves,
-         hunt_official,
+         hunt_official, hunt_dep_floors,
          hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_sources,
          hunt_pins, hunt_readme, hunt_published_nvr, hunt_probes, hunt_probe_paths, hunt_sandbox,
          hunt_macros, hunt_fedora_releases, hunt_chroot_docs, hunt_slice, hunt_files_syntax,

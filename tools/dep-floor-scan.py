@@ -70,6 +70,10 @@ def macros(txt):
     return m
 
 
+SHORT_MACRO = re.compile(r"^%\(c=%\{([A-Za-z0-9_]+)\};\s*echo \$\{c:0:([0-9]+)\}\)$")
+TILDE_MACRO = re.compile(r"^%\(v='%\{([A-Za-z0-9_]+)\}'; echo \"\$\{v//'~'/-'?}\"\)$")
+
+
 def expand(url, m):
     for _ in range(6):
         new = re.sub(r"%\{([A-Za-z0-9_]+)\}", lambda g: m.get(g.group(1), g.group(0)), url)
@@ -79,6 +83,34 @@ def expand(url, m):
             break
         url = new
     return url
+
+
+def shell_values(m):
+    """Resolve the bash-only macro shapes the specs here use, without a shell.
+
+    `%(c=%{commit}; echo ${c:0:7})` and `%(v='%{version}'; echo "${v//'~'/-}")`
+    are bash substring and substitution forms; /bin/sh on the runner is dash,
+    which leaves them empty, so they are evaluated in Python instead.
+    """
+    for _ in range(6):
+        changed = False
+        for key, val in list(m.items()):
+            s = SHORT_MACRO.match(val.strip())
+            if s:
+                base = expand(m.get(s.group(1), ""), m)
+                if "%" not in base:
+                    m[key] = base[: int(s.group(2))]
+                    changed = True
+                continue
+            t = TILDE_MACRO.match(val.strip())
+            if t:
+                base = expand(m.get(t.group(1), ""), m)
+                if "%" not in base:
+                    m[key] = base.replace("~", "-")
+                    changed = True
+        if not changed:
+            break
+    return m
 
 
 def fetch(url, dest):
@@ -138,6 +170,7 @@ def balanced_calls(txt, head):
 
 
 TESTS_GUARD = re.compile(r"^\s*if\b.*\b(build_tests|tests_option|test_ipc)\b")
+VAR_GUARD = re.compile(r"^\s*if\s+(?:not\s+)?(?:get_variable|is_variable)\(\s*['\"]([A-Za-z0-9_]+)['\"]")
 
 
 def meson_projects(x, skip=()):
@@ -189,17 +222,22 @@ def meson_deps(x, skip=()):
                     stack.pop()
             m = re.match(r"(\s*)if not (\w+)\.found\(\)\s*:?\s*$", line)
             if m:
-                stack.append((len(m.group(1)), "fallback"))
+                stack.append((len(m.group(1)), "fallback", None))
                 continue
             if TESTS_GUARD.match(line):
-                stack.append((len(line) - len(line.lstrip()), "tests"))
+                stack.append((len(line) - len(line.lstrip()), "tests", None))
+                continue
+            vg = VAR_GUARD.match(line)
+            if vg:
+                stack.append((len(line) - len(line.lstrip()), "variable", vg.group(1)))
                 continue
             if "dependency(" not in line:
                 continue
             calls = list(balanced_calls(line, "dependency("))
             if not calls:
                 continue
-            kind = "tests" if in_tests or any(k == "tests" for _i, k in stack) else (
+            var = next((n for _i, k, n in reversed(stack) if k == "variable"), None)
+            kind = "tests" if in_tests or any(k == "tests" for _i, k, _n in stack) else (
                 "fallback" if stack else "declared")
             for args in calls:
                 nm = re.search(r"['\"]([^'\"]+)['\"]", args)
@@ -214,8 +252,11 @@ def meson_deps(x, skip=()):
                     vv = re.search(r"(>=\s*|==\s*)([0-9][0-9A-Za-z.\-]*)", v.group(1))
                     if vv:
                         floor = vv.group(2)
+                if var and not in_tests and not any(k == "tests" for _i, k, _n in stack):
+                    gated.setdefault(name, (floor, "variable:" + var))
+                    continue
                 opt = re.search(r"required\s*:\s*get_option\(\s*['\"]([^'\"]+)['\"]", args)
-                if opt and not in_tests and not any(k == "tests" for _i, k in stack):
+                if opt and not in_tests and not any(k == "tests" for _i, k, _n in stack):
                     gated.setdefault(name, (floor, opt.group(1)))
                     continue
                 dest = {"declared": found, "fallback": fallback, "tests": testonly}[kind]
@@ -224,20 +265,31 @@ def meson_deps(x, skip=()):
 
 
 def spec_floors(txt):
-    """pkgconfig name -> floor pinned in the spec (None when no floor)."""
+    """pkgconfig name -> the highest floor the spec pins for it.
+
+    A spec may carry alternative floors behind %if branches; the highest one is
+    the floor the current chroots use, so it is the one to reconcile.
+    """
     out = {}
+
+    def put(name, floor):
+        prev = out.get(name)
+        if prev is None or (floor and cmp_ver(floor, prev) > 0):
+            out[name] = floor
+
     for m in re.finditer(r"^(?:BuildRequires|Requires)\s*:\s*(.+)$", txt, re.M):
         for tok in m.group(1).split(","):
             tok = tok.strip()
             pm = re.match(r"pkgconfig\(([^)]+)\)\s*(?:>=\s*([0-9][0-9A-Za-z.\-]*))?", tok)
             if pm:
-                out[pm.group(1).lower()] = pm.group(2)
+                put(pm.group(1).lower(), pm.group(2))
                 continue
             gm = re.match(r"([A-Za-z0-9][A-Za-z0-9._+-]*)\s*(?:>=|==|>)\s*([0-9][0-9A-Za-z.\-_]*)", tok)
             if gm:
-                out[gm.group(1).lower()] = gm.group(2)
+                put(gm.group(1).lower(), gm.group(2))
                 continue
-            out.setdefault(tok.split()[0].lower() if tok else "", None)
+            if tok:
+                out.setdefault(tok.split()[0].lower(), None)
     return out
 
 
@@ -321,6 +373,14 @@ def selftest():
     ok = ok and floor_finding("1.8.alpha", "1.8", True) is None
     ok = ok and floor_finding("1.9", "1.8", True) == "FLOOR"
     ok = ok and floor_finding(None, None, True) is None
+    sm = shell_values({"commit": "13332d406563a1bd9b58026c0483a6dc47244daf",
+                       "shortcommit": "%(c=%{commit}; echo ${c:0:7})",
+                       "version": "0.20.2~rc1",
+                       "tag": "%(v='%{version}'; echo \"${v//'~'/-}\")",
+                       "name": "umbriel"})
+    ok = ok and sm["shortcommit"] == "13332d4" and sm["tag"] == "0.20.2-rc1"
+    ok = ok and expand("%{name}-%{shortcommit}", sm) == "umbriel-13332d4"
+    ok = ok and "%" in expand("%(c=%{commit}; echo ${c:0:7})", {"commit": "abcdef1"})
     os.makedirs(os.path.join(d, "src", "tests"), exist_ok=True)
     with open(os.path.join(d, "src", "tests", "meson.build"), "w") as fh:
         fh.write("xt = dependency('xcb-xtest')\n")
@@ -331,9 +391,17 @@ def selftest():
     ok = ok and "xcb-xtest" not in deps and "xcb-render" not in deps
     ok = ok and "libinput" in deps
     with open(os.path.join(d, "src", "meson.build"), "a") as fh:
-        fh.write("tr = dependency('tracy', required: get_option('tracy'))\n")
+        fh.write("tr = dependency('tracy', required: get_option('tracy'))\n"
+                 "if get_variable('codecs', false)\n"
+                 "  w = dependency('libwebp', version: '>=1.0')\n"
+                 "endif\n")
     deps2, _fb2, _to2, g = meson_deps(d)
     ok = ok and g.get("tracy") == (None, "tracy") and "tracy" not in deps2
+    ok = ok and g.get("libwebp") == ("1.0", "variable:codecs") and "libwebp" not in deps2
+    ok = ok and spec_floors("BuildRequires: pkgconfig(libdisplay-info) >= 0.3.0\n"
+                            "%if 0%{?fedora} < 44\n"
+                            "BuildRequires: pkgconfig(libdisplay-info) >= 0.2.0\n"
+                            "%endif\n")["libdisplay-info"] == "0.3.0"
     print("selftest %s" % ("PASS" if ok else "FAIL"))
     return 0 if ok else 1
 
@@ -360,7 +428,7 @@ def main():
         if pkg in skip or (only and pkg not in only):
             continue
         txt = open(spec, errors="ignore").read()
-        m = macros(txt)
+        m = shell_values(macros(txt))
         src = re.search(r"^Source0?\s*:\s*(\S+)", txt, re.M)
         tree = trees.get(pkg)
         if not src and not tree:
@@ -385,6 +453,9 @@ def main():
                 break
         if not tree:
             continue
+        top = [e for e in os.listdir(tree) if not e.startswith(".")]
+        if len(top) == 1 and os.path.isdir(os.path.join(tree, top[0])):
+            tree = os.path.join(tree, top[0])
         vpath = re.search(r"^%(?:global|define)\s+_vpath_srcdir\s+(\S+)", txt, re.M)
         if vpath and os.path.isdir(os.path.join(tree, vpath.group(1))):
             tree = os.path.join(tree, vpath.group(1))
@@ -400,6 +471,12 @@ def main():
                 deps.setdefault(name, floor)
         sf = spec_floors(txt)
         for name, (floor, opt) in sorted(gated.items()):
+            if opt.startswith("variable:"):
+                if name in sf:
+                    continue
+                print("%-32s %-8s %-28s upstream=%-10s spec=%s (consumer variable %s never set)"
+                      % (pkg, "EXCLUDED", name, floor or "-", "-", opt.split(":", 1)[1]))
+                continue
             if re.search(r"-D%s[= ](enabled|true)" % re.escape(opt), txt):
                 deps.setdefault(name, floor)
                 continue

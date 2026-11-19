@@ -215,6 +215,19 @@ hunt.get_json = _fake_json({"errors": [{"detail": "Not Found"}]})
 check("crates: an unknown crate is no answer", hunt.crates_newest("nope"), None)
 hunt.get_json = _real_get_json
 
+_floor_out = (
+    "umbriel-git                      FLOOR    libdisplay-info              upstream=0.3.0      spec=0.2.0\n"
+    "astal                            MISSING  gtk4                         upstream=-          spec=-\n"
+    "portal                           EXCLUDED libwebp                      upstream=-          spec=- (consumer variable codecs never set)\n"
+    "greeter                          FALLBACK epoxy                        upstream=-          spec=- (only if the primary dep is absent)\n"
+    "scanned 17 packages with a build manifest; 2 finding(s)\n")
+check("dep-floors: only MISSING/FLOOR rows are findings",
+      hunt.dep_floor_findings(_floor_out),
+      ("17", [("umbriel-git", "FLOOR libdisplay-info upstream=0.3.0 spec=0.2.0"),
+              ("astal", "MISSING gtk4 upstream=- spec=-")]))
+check("dep-floors: a scan that never ran reports no count and no finding",
+      hunt.dep_floor_findings(""), ("0", []))
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)
