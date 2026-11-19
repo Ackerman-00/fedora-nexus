@@ -7,14 +7,14 @@
 
 Name:               zen-browser
 Epoch:              2
-Version:        1.24.2b
-Release:        3%{?dist}
+Version:        1.24.3b
+Release:        1%{?dist}
 Summary:            Zen Browser - A privacy-focused Firefox fork
 
 License:            MPL-2.0
 URL:                https://github.com/zen-browser/desktop
-Source0:            https://github.com/zen-browser/desktop/releases/download/1.24.2b/zen.linux-x86_64.tar.xz
-# sha256: bcf7e43160ecfe5f29953ed2a984e7a8028a58f2ec0e3114d36bb904d5f5ce80
+Source0:            https://github.com/zen-browser/desktop/releases/download/1.24.3b/zen.linux-x86_64.tar.xz
+# sha256: dde4b4e44002128c2ff3efc56074e671c24effe56fd192ab2eee3972541e1a2d
 Source1:            %{full_name}.desktop
 Source2:            policies.json
 Source3:            %{full_name}
@@ -90,14 +90,5 @@ gtk-update-icon-cache -f -t %{_datadir}/icons/hicolor || :
 /opt/%{application_name}
 
 %changelog
-* Sun Nov 15 2026 Ackerman-00 <no-reply> - 2:1.24.2b-3
-- Recommend xdg-desktop-portal and its GTK backend: Wayland screen sharing,
-  file dialogs and notifications go through the portal, and a minimal
-  compositor install ships none
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 2:1.24.2b-2
-- Strip the payload's Firefox updater (updater, updater.ini,
-  update-settings.ini, icons/updater.png) at build time: distros own the
-  update channel, an in-app updater would replace files rpm tracks.
-
-* Thu Nov 12 2026 Ackerman-00 <no-reply> - 2:1.24.2b-1
-- Auto-update to upstream release 1.24.2b
+* Thu Nov 19 2026 Ackerman-00 <no-reply> - 2:1.24.3b-1
+- Auto-update to upstream release 1.24.3b
