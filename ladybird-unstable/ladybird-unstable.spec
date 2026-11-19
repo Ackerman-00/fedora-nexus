@@ -8,7 +8,7 @@
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        36.20261119git1f052f2%{?dist}
+Release:        37.20261119git1f052f2%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -112,7 +112,11 @@ cp -p %{SOURCE5} Meta/CMake/vcpkg/overlay-ports/harfbuzz/usage
 export VCPKG_FORCE_SYSTEM_BINARIES=1
 python3 Meta/ladybird.py vcpkg --preset Release
 # x86-64-v2: upstream defaults to -march=native, which bakes the builder's AVX-512 into published code
-cmake --preset Release -S . -B Build/release -DBUILD_TESTING=OFF -DENABLE_INSTALL_FREEDESKTOP_FILES=OFF -DCMAKE_INSTALL_PREFIX=/opt/ladybird -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=OFF -DENABLE_CI_BASELINE_CPU=ON
+cmake --preset Release -S . -B Build/release -DBUILD_TESTING=OFF -DENABLE_INSTALL_FREEDESKTOP_FILES=OFF -DCMAKE_INSTALL_PREFIX=/opt/ladybird -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=OFF -DLADYBIRD_BASELINE_CPU_TARGET=ON
+grep -q -- '-march=x86-64-v2' Build/release/build.ninja || {
+  echo 'ERROR: x86-64-v2 baseline missing from the build' >&2
+  exit 1
+}
 if grep -q -- '-march=native' Build/release/build.ninja; then
   echo 'ERROR: -march=native leaked into the build' >&2
   exit 1
@@ -177,6 +181,14 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Thu Nov 19 2026 Ackerman-00 <no-reply> - 0.0.0-37.20261119git1f052f2
+- Fix CPU baseline after upstream renamed the option: ENABLE_CI_BASELINE_CPU
+  is gone at 1f052f2 (Meta/CMake/cmake_options.cmake declares
+  LADYBIRD_BASELINE_CPU_TARGET), so -march=native came back and the guard
+  failed build 11358583 on all four chroots
+- Guard now also requires -march=x86-64-v2 in build.ninja, so a silently
+  ignored option fails the build instead of shipping builder-tuned code
+
 * Thu Nov 19 2026 Ackerman-00 <no-reply> - 0.0.0-36.20261119git1f052f2
 - Refresh snapshot f2849cf -> 1f052f2 (upstream commit dated 2026-11-19T03:59:51Z)
 
