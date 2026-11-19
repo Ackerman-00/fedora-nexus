@@ -85,5 +85,12 @@ check 'dated gap probe accepted' "($TODAY_STAMP|$YEST_STAMP)" "$FRESH_GAP" hit
 [ "$proven_gap" -ge 1 ] && PASS=$((PASS+1)) || { echo 'FAIL dated gap probe must pass'; FAIL=$((FAIL+1)); }
 [ "$unproven_gap" -eq 0 ] && PASS=$((PASS+1)) || { echo 'FAIL carried gap with a stale probe must be rejected'; FAIL=$((FAIL+1)); }
 
+if bash tools/verify-fedora.sh --selftest-changed >/tmp/vf-selftest.log 2>&1; then
+  PASS=$((PASS+1))
+else
+  echo "FAIL changed-token selftest: $(tail -1 /tmp/vf-selftest.log)"
+  FAIL=$((FAIL+1))
+fi
+
 echo "verifier self-test: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ] || exit 1

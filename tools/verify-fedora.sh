@@ -10,6 +10,24 @@ FAIL=0
 changed_pkgs=""
 MAINS="$(bash "${BASH_SOURCE[0]}" --print-mains)"
 
+missing_changed_tokens() {
+  local scope=$1 pkg=$2 tok
+  for tok in plan deps artifact; do
+    grep -qE "^[[:space:]]*$tok: $pkg " <<< "$scope" || echo "$tok"
+  done
+}
+
+if [[ "${1:-}" == "--selftest-changed" ]]; then
+  rc=0
+  good=$'changed: otr\nplan: otr - a - b\ndeps: otr - source: meson.build\nartifact: otr - upstream: https://x - format: tar'
+  miss=$'changed: otr\nplan: otr - a - b'
+  [ -z "$(missing_changed_tokens "$good" otr)" ] || { echo "FAIL selftest: complete scope reported missing tokens"; rc=1; }
+  [ "$(missing_changed_tokens "$miss" otr | tr '\n' ' ')" = "deps artifact " ] || { echo "FAIL selftest: incomplete scope not reported"; rc=1; }
+  [ "$(missing_changed_tokens "$good" other | tr '\n' ' ')" = "plan deps artifact " ] || { echo "FAIL selftest: other package not reported"; rc=1; }
+  [ $rc -eq 0 ] && echo "changed-token selftest PASS"
+  exit $rc
+fi
+
 echo "----- VERIFICATION REPORT -----"
 if [[ -f "$RELAY" ]]; then
   if [[ -z "$RUN_ID" ]]; then
@@ -174,7 +192,10 @@ if [[ -f "$RELAY" ]]; then
         echo "FAIL: NOT COMPLETE -- changed package '$pkg' has no PASS install-test row"
         FAIL=1
       fi
-    done
+      for tok in $(missing_changed_tokens "$scope" "$pkg"); do
+        echo "FAIL: NOT COMPLETE -- changed package '$pkg' has no '$tok:' evidence line in this run's block"
+        FAIL=1
+      done    done
     echo "PASS: changed packages carry install evidence"
   fi
   for ext_pkg in $(awk '$2=="EXTERNAL"{print $1}' <<< "$IT"); do
