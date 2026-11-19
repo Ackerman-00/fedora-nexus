@@ -1,6 +1,6 @@
 Name:           waypaper
 Version:        2.9
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        GUI wallpaper manager for Wayland and Xorg Linux systems
 
 License:        GPL-3.0-only AND MIT AND BSD-2-Clause
@@ -30,6 +30,7 @@ Requires:       gtk3
 Requires:       procps-ng
 Requires:       psmisc
 Requires:       libdrm
+Recommends:     (swaybg or awww)
 
 %description
 Waypaper is a GUI wallpaper manager for Wayland and Xorg Linux systems. It
@@ -75,6 +76,13 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_datadir}/systemd/user/waypaperd.service
 
 %changelog
+* Thu Nov 19 2026 Ackerman-00 <no-reply> - 2.9-5
+- Recommend a wallpaper backend: waypaper is only a frontend and upstream's
+  README says to install at least one backend, but the backend dropdown was
+  empty on a fresh install and setting a wallpaper silently did nothing.
+  swaybg is the Wayland default, awww is the backend this repo ships; both are
+  weak deps so an Xorg-only or already-backended system is untouched.
+
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 2.9-4
 - Move the in-app updater strip into %install
 
