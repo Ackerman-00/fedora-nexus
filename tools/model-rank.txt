@@ -2,15 +2,13 @@
 # authority: opencode curated list > live catalog > published independent scores > vendor claims
 # order is set by the per-run web check in tools/sweep-prompt.md, not by hand
 
-# tier 1 - independently scored leaders (Artificial Analysis Intelligence Index re-read 2026-11-18)
-# AA Intelligence Index 32.6, Inference360 coding 69.3 of 100 - sources: awesome-free-ai-coding score table (AA read 2026-11-09), inference360.ai/best/coding - re-read 2026-11-18
+# tier 1 - independently scored leaders
+# AA Intelligence Index 39.5 (llmperks.com/opencode, read 2026-11-20); SiliconReport 2026-11-19 puts DeepSeek V4.1 Flash 1017 at 25% on the Terminal-Bench 4.0 / FrontierCode 2.0 average, the highest of any free id in this file; Inference360 2026-11-16 coding index 69.3
 deepseek-v4.1-flash-free
-# AA Intelligence Index 31, DeepSWE 72.1 but Terminal-Bench 4.0 only 13.1 - source: llmleaderboard.com/coding 2026-11-13; no tool-heavy lead
-inkling-2-small-free
-# AA Intelligence Index 27 - source: artificialanalysis.ai/leaderboards/models, MiMo-V2.6-Flash - 2026-11-12
+# AA Intelligence Index 27 - source: artificialanalysis.ai/leaderboards/models, MiMo-V2.6-Flash - 2026-11-12; SiliconReport 2026-11-19: 16% TB4/FrontierCode average
 mimo-v2.6-flash-free
 
-# tier 2 - scored, lower index or single-source (checked 2026-11-11)
+# tier 2 - scored, lower index or single-source
 # AA Intelligence Index 18 - source: artificialanalysis.ai/leaderboards/models, Beam 1.0 - 2026-11-12
 beam-free
 # AA Intelligence Index 14 - source: artificialanalysis.ai/leaderboards/models, Nemotron 3.5 Super VL - 2026-11-12
@@ -20,16 +18,18 @@ flint-40b-free
 # ModelComp 57.2 overall (48 agent reports, read 2026-11-15): SWE-bench Verified 68%, Terminal-Bench 49.4%; stealth id, 200K ctx, slowest median of the free roster and reported to lose track past 50-70K ctx - treat as last resort for long edits
 big-pickle
 
-# tier 3 - no independent coding score (live catalog re-verified 2026-11-16)
+# tier 3 - no independent coding score (live catalog re-verified 2026-11-20)
 # AA Intelligence Index 6 - source: artificialanalysis.ai/leaderboards/models, Nemotron 3.5 Lightning - 2026-11-12
 nemotron-3.5-lightning-free
 # no independent coding score; DeepSWE 64.6, Terminal-Bench 4.0 38.5 vendor - source: Meituan launch evals
 longcat-2.5-free
 # no independent score; stealth model - source: OpenCode Zen catalog
 iceman-free
+# released 2026-11-18 as a stealth id, tool calling + reasoning, 1.05M ctx, no AA entry; community reports wordy and unreliable - source: llmperks.com/models/tidepool-alpha + r/opencode 2026-11-19
+tidepool-alpha-free
 # Hy4 flash launch 2026-11-16 (Tencent): Terminal-Bench 4.0 19.2 vs Hy4 44.4, ProgramBench 16.0 vs 30.0 - built for daily office work, long-horizon coding regressed; placeholder until this repo's own sweep measures it
 hy4-flash-free
 
 # vetoed by owner (2026-10-22): glm-5.3-flash-free, jev-1.13-free (probabilistic classifier, not a coding model)
-# retired from the live catalog: crouton-alpha-free (2026-11-10), Pulse Alpha Free (2026-11-06)
-# leader re-read 2026-11-18 (run 44334034702): live catalog https://opencode.ai/inference/v1/models serves 87 ids, 11 of them at zero price, and this file lists exactly those 11. Dropped from opencode.json because the catalog no longer serves them: glm-5.3-flash-free (owner-vetoed anyway) and minimax-m3.1-flash-free; added hy4-flash-free. Scores read live today from the Inkling 2 Small model card (thinkingmachines.ai/news/inkling-2-small/, published 2026-11-05): DeepSeek V4.1 Flash 1017 leads every coding row the two share - AA Intelligence Index 32.6 vs 30.6, DeepSWE v1.1 77.0 vs 72.1, FrontierCode v2.0 28.5 vs 25.4, Vibe Code Bench 87.7 vs 81.6, Terminal Bench Science 12.9 vs 5.7 - and Inkling leads only vision, HLE-Diamond and finance. Order unchanged: DeepSeek V4.1 Flash leads, Inkling 2 Small second.
+# retired from the live catalog: crouton-alpha-free (2026-11-10), Pulse Alpha Free (2026-11-06), inkling-2-small-free (gone after 2026-11-04, absent from the 2026-11-20 catalog read)
+# leader re-read 2026-11-20 (run 44692486837): https://opencode.ai/inference/v1/models serves 91 ids, 12 at zero price; this file lists 11 and opencode.json resolves every one. Dropped inkling-2-small-free (catalog no longer serves it) and added tidepool-alpha-free. Order unchanged: DeepSeek V4.1 Flash leads on every independent source read today.
