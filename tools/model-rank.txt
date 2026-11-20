@@ -3,9 +3,9 @@
 # order is set by the per-run web check in tools/sweep-prompt.md, not by hand
 
 # tier 1 - independently scored leaders
-# AA Intelligence Index 39.5 (llmperks.com/opencode, read 2026-11-20); SiliconReport 2026-11-19 puts DeepSeek V4.1 Flash 1017 at 25% on the Terminal-Bench 4.0 / FrontierCode 2.0 average, the highest of any free id in this file; Inference360 2026-11-16 coding index 69.3
+# llm-stats 2026-11-19: overall 48.2, coding 38.2, agents 36.1, wins 6 of 8 shared benchmarks; opencode.ai/data/compare 2026-11-20: 59% of all OpenCode tokens, rank #1 by tokens last week; AA v5.0.1 index 33 (cheapestinference.com)
 deepseek-v4.1-flash-free
-# AA Intelligence Index 27 - source: artificialanalysis.ai/leaderboards/models, MiMo-V2.6-Flash - 2026-11-12; SiliconReport 2026-11-19: 16% TB4/FrontierCode average
+# llm-stats 2026-11-19: overall 43.4, coding 31.9, agents 30.3; ModelComp 2026-11-19 rates it 87.5 overall on 58 agent reports, so it is the fallback when the leader stalls
 mimo-v2.6-flash-free
 
 # tier 2 - scored, lower index or single-source
@@ -32,4 +32,4 @@ hy4-flash-free
 
 # vetoed by owner (2026-10-22): glm-5.3-flash-free, jev-1.13-free (probabilistic classifier, not a coding model)
 # retired from the live catalog: crouton-alpha-free (2026-11-10), Pulse Alpha Free (2026-11-06), inkling-2-small-free (gone after 2026-11-04, absent from the 2026-11-20 catalog read)
-# leader re-read 2026-11-20 (run 44692486837): https://opencode.ai/inference/v1/models serves 91 ids, 12 at zero price; this file lists 11 and opencode.json resolves every one. Dropped inkling-2-small-free (catalog no longer serves it) and added tidepool-alpha-free. Order unchanged: DeepSeek V4.1 Flash leads on every independent source read today.
+# leader re-read 2026-11-20 (run 44778234506): https://opencode.ai/inference/v1/models serves 103 ids, 11 at zero price; this file lists 11 and opencode.json resolves every one. Order unchanged: DeepSeek V4.1 Flash leads every independent coding index read today (llm-stats 48.2 vs 43.4 overall, coding 38.2 vs 31.9).
