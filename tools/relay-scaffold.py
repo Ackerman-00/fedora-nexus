@@ -125,8 +125,36 @@ def install_table(rows_paths):
     return "\n".join(out)
 
 
+def seed_block(run_id):
+    """Minimal audit anchor written before the agent starts.
+
+    A run killed in its first minutes must still leave the inventory and the
+    dependency rows on main, so the next run reads state instead of a blank.
+    """
+    today = time.strftime("%Y-%m-%d", time.gmtime())
+    pkgs = len(list(H.specs()))
+    deps = dep_table(set(), set(), {})
+    return ("run_id: %s\nstatus: unfinished\n\n### Run %s (%s) - seeded at job start\n\n"
+            "scope: %d specs; this block is written and pushed before the agent "
+            "starts, so a run killed early still leaves the inventory and its "
+            "dependency rows on main.\n\nchanged:\n\ndefects-found: 0\ndefects-fixed: 0\n\n%s\n"
+            % (run_id, today, run_id, pkgs, deps))
+
+
+def seed(run_id):
+    path = ".opencode-relay.md"
+    old = open(path, encoding="utf-8").read() if os.path.exists(path) else ""
+    if ("\nrun_id: %s\n" % run_id) in "\n" + old or old.startswith("run_id: %s\n" % run_id):
+        print("relay already carries run_id %s" % run_id)
+        return 0
+    open(path, "w", encoding="utf-8").write(seed_block(run_id) + "\n" + old)
+    print("seeded relay block for run_id %s" % run_id)
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--seed", default="", help="prepend a minimal unfinished block for RUN_ID")
     ap.add_argument("--verified", default="", help="packages torn down this run")
     ap.add_argument("--fixed", default="", help="packages whose spec this run changed")
     ap.add_argument("--dep-rows", default="", help="file of hand-written dep rows (pkg|row lines)")
@@ -135,6 +163,8 @@ def main():
     ap.add_argument("--only", choices=["versions", "deps", "both", "install", "upstream"],
                     default="both")
     a = ap.parse_args()
+    if a.seed:
+        return seed(a.seed)
     notes = {}
     if a.dep_rows:
         for line in open(a.dep_rows, encoding="utf-8"):
