@@ -4,11 +4,11 @@
 %global __requires_exclude_from ^/opt/ladybird/.*$
 %global __provides_exclude_from ^/opt/ladybird/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/ladybird/.*$
-%global commit         1f052f21fa0b04bbb355b90b51c805af1cab6733
+%global commit         9932619ccb61e49f87f571c4149dfae6a1bf9a12
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        37.20261119git1f052f2%{?dist}
+Release:        38.20261120git9932619%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -181,6 +181,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Fri Nov 20 2026 Ackerman-00 <no-reply> - 0.0.0-38.20261120git9932619
+- Refresh snapshot 1f052f2 -> 9932619 (upstream commit dated 2026-11-20T04:21:19Z)
+
 * Thu Nov 19 2026 Ackerman-00 <no-reply> - 0.0.0-37.20261119git1f052f2
 - Fix CPU baseline after upstream renamed the option: ENABLE_CI_BASELINE_CPU
   is gone at 1f052f2 (Meta/CMake/cmake_options.cmake declares

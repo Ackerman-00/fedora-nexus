@@ -4,14 +4,14 @@
 %global __requires_exclude_from ^/opt/concat/.*$
 
 Name:           concat
-Version:        0.2.11
-Release:        2%{?dist}
+Version:        0.2.12
+Release:        1%{?dist}
 Summary:        Free and open source video editor (CapCut alternative)
 
 License:        AGPL-3.0-or-later
 URL:            https://github.com/jub0t/Concat
-Source0:        %{url}/releases/download/v0.2.11/Concat-0.2.11-linux-x86_64.rpm
-# sha256: 764d3c934460dc1117529a516a63c4f8910f554f10d7550e242a01d60a39db0b
+Source0:        %{url}/releases/download/v0.2.12/Concat-0.2.12-linux-x86_64.rpm
+# sha256: 1c19f9d0c6ff17c6438652a3d2333d3dd3748503b10cacfd55326f3e8a0712a7
 
 ExclusiveArch:  x86_64
 
@@ -63,8 +63,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_datadir}/icons/hicolor/256x256/apps/concat.png
 
 %changelog
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.2.11-2
-- Move the in-app updater strip into %install
-
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.2.11-1
-- Auto-update to upstream release v0.2.11
+* Fri Nov 20 2026 Ackerman-00 <no-reply> - 0.2.12-1
+- Auto-update to upstream release v0.2.12
