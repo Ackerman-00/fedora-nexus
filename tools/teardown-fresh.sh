@@ -5,7 +5,7 @@ CH=${2:-44}
 SMOKE=${3:-}
 [ "$SMOKE" = "files-only" ] && SMOKE=""
 RPMN=${4:-$PKG}
-R=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+R=${TD_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}
 SPEC=$(basename "$(ls "$R/$PKG"/*.spec 2>/dev/null | head -1)")
 ELECTRON=0
 grep -q 'chrome-sandbox' "$R/$PKG/$SPEC" 2>/dev/null && ELECTRON=1
@@ -20,8 +20,8 @@ fi
 rm -f "$OUTDIR"/*.rpm "$OUTDIR"/build.log "$OUTDIR"/install.log
 [ -z "$SPEC" ] && { echo "TEARDOWN_$PKG=FAIL no-spec"; exit 2; }
 
-echo "BUILDING $PKG on fedora:$CH ($(date -u +%H:%M:%SZ))"
-build=$(docker run --rm -v "$R:/srv:ro" -v "$OUTDIR:/out" "registry.fedoraproject.org/fedora:$CH" bash -lc "
+echo "BUILDING $PKG on fedora:$CH ($(date -u +%H:%M:%SZ)) nproc=${TD_SMP:-auto}"
+build=$(docker run --rm -e RPM_BUILD_NCPUS="${TD_SMP:-}" -v "$R:/srv:ro" -v "$OUTDIR:/out" "registry.fedoraproject.org/fedora:$CH" bash -lc "
 dnf -y -q --setopt=gpgcheck=0 install dnf-plugins-core rpm-build rpmdevtools >/dev/null 2>&1
 dnf -y -q --setopt=gpgcheck=0 copr enable ackerman/nexus >/dev/null 2>&1
 cd /tmp && rm -rf w && cp -r /srv/$PKG ./w && cd w

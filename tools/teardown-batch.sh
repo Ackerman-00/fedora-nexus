@@ -14,6 +14,11 @@ JOBS=${2:-4}
 CH=${3:-44}
 OUT=${TD_OUTDIR:-/tmp/teardown-batch}
 DATE=$(date -u +%F)
+# split the cores across the batch: unshared -jN per container starves %check
+_SMP=$(( $(nproc 2>/dev/null || echo 1) / JOBS ))
+[ "$_SMP" -lt 1 ] && _SMP=1
+TD_SMP=${TD_SMP:-$_SMP}
+export TD_SMP
 R=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 mkdir -p "$OUT"
 : > "$OUT/tokens.txt"
@@ -59,7 +64,7 @@ one() {
   echo "$pkg rc=$rc $line" >> "$OUT/tokens.txt"
 }
 export -f one
-export R CH OUT DATE FORMAT
+export R CH OUT DATE FORMAT TD_SMP
 
 # preflight: refuse a list whose columns are not readable in the chosen format
 first=$(grep -m1 -v '^[[:space:]]*$' "$LIST" || true)
