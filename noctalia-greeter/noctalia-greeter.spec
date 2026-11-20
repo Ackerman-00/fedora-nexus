@@ -1,16 +1,16 @@
-%global commit          b8f95e0e569bf509be6588ac1534cbb22820fdab
+%global commit          2726e75375d95d5458d021f76c330ab14f6a5d03
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261116083605
+%global gitdate         20261120141153
 
 Name:           noctalia-greeter
-Version:        1.7.0^%{gitdate}git%{shortcommit}
-Release:        3%{?dist}
+Version:        1.7.1^%{gitdate}git%{shortcommit}
+Release:        1%{?dist}
 Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 
 License:        MIT AND Apache-2.0
 URL:            https://github.com/noctalia-dev/noctalia-greeter
 Source0:        %{url}/archive/%{commit}/%{name}-%{commit}.tar.gz
-# sha256: 9523f2ad9f169b4ba4e4a0931a506e696cf8781e8c70c4cecd4a838ef1c21652
+# sha256: d42775b045a373c610f1fa06ea4eded68d4096d446dfe87ab4b6ce0836c5823d
 Source1:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-APACHE
 # sha256: 0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594
 Source2:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-MIT
@@ -144,17 +144,5 @@ if [ "$1" -eq 0 ] && [ -L /etc/systemd/system/display-manager.service ]; then
 fi
 
 %changelog
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 1.7.0^20261116083605gitb8f95e0-3
-- Stage /usr/lib/pam.d/greetd to /etc before running the setup script: the
-  shipped script silently skipped the pam_systemd seat patch on Fedora because
-  greetd's PAM lives under /usr/lib, leaving greeter sessions without a seat.
-
-* Tue Nov 17 2026 Ackerman-00 <no-reply> - 1.7.0^20261116083605gitb8f95e0-2
-- Auto-configure greetd on install: apply the shipped PAM/state-dir setup,
-  point /etc/greetd/config.toml at the greeter (backup kept), disable kmscon
-  on VT1 (F45 kmscon holds DRM master and blocks the compositor), keep a
-  getty on VT2, and enable greetd + the display-manager alias. A fresh COPR
-  install now boots straight into the greeter instead of needing manual steps.
-
-* Mon Nov 16 2026 Ackerman-00 <no-reply> - 1.7.0^20261116083605gitb8f95e0-1
-- Nightly sync with upstream main branch (Commit: b8f95e0)
+* Fri Nov 20 2026 Ackerman-00 <no-reply> - 1.7.1^20261120141153git2726e75-1
+- Nightly sync with upstream main branch (Commit: 2726e75)

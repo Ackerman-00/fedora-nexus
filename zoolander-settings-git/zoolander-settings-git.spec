@@ -3,7 +3,7 @@
 %global utils    0.13.46
 %global conf     0.13.14
 %global render   0.13.45
-%global wayland  0.13.51
+%global wayland  0.13.52
 %global theme    0.13.50
 %global ui       0.13.50
 %global desktop  0.13.51
@@ -32,7 +32,7 @@ Source3:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-conf/arch
 Source4:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-render/archive/v%{render}.tar.gz#/otter-render-v%{render}.tar.gz
 # sha256: 3c8cd8afc059e05a640b46ecff0ff8c49e80370f6997e8e49422e74e977ce36e
 Source5:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-wayland/archive/v%{wayland}.tar.gz#/otter-wayland-v%{wayland}.tar.gz
-# sha256: 2d427cb10d3b76f947a7f9af8fe16ecf522c8fb016227c866fe301bcfd458b3b
+# sha256: a175c88d497ab124f501757b2b1700c792faadfb53ca9818d4a60911a0729d60
 Source6:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-theme/archive/v%{theme}.tar.gz#/otter-theme-v%{theme}.tar.gz
 # sha256: 02f9244c7d6ba25ac3ee495e96c705166f7e5c2355b28244d228992a2423c6d7
 Source7:        https://git.pika-os.com/api/v1/repos/otter-shell/otter-ui/archive/v%{ui}.tar.gz#/otter-ui-v%{ui}.tar.gz
@@ -101,8 +101,8 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Thu Nov 19 2026 Ackerman-00 <no-reply> - 0.13.50-1
+* Fri Nov 20 2026 Ackerman-00 <no-reply> - 0.13.50-1
 - Update the Otter sources to their newest tags (settings 0.13.50,
   geo 0.13.45, utils 0.13.46, conf 0.13.14, render 0.13.45,
-  wayland 0.13.51, theme 0.13.50, ui 0.13.50, desktop 0.13.51;
+  wayland 0.13.52, theme 0.13.50, ui 0.13.50, desktop 0.13.51;
   sha256 of every archive verified)
