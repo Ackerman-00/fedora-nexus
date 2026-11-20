@@ -1,6 +1,6 @@
-%global commit          5b8107b7720fd1f8ce5a7f7550a4ab163ba8ac50
+%global commit          4b14e30398e33ac339c395272c0993dbb307ed63
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261119202423
+%global gitdate         20261120061324
 
 %global _vpath_srcdir subprojects/appmenu-glib-translator
 
@@ -12,7 +12,7 @@ Summary:        appmenu-glib-translator
 License:        LGPL-3.0-or-later
 URL:            https://github.com/rilian-la-te/vala-panel-appmenu/blob/master/subprojects/appmenu-glib-translator
 Source:         https://github.com/rilian-la-te/vala-panel-appmenu/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
-# sha256: bff4ba2734c9125e254ebde484a84fcd402ffdae2fc5e333d327ce0dfebbe231
+# sha256: c8839377c4f5bdf121aec483a45e6260339af3b0e5ba6ee31caf91e52ca3577c
 
 BuildRequires:  meson >= 1.3.0
 BuildRequires:  gcc
@@ -33,6 +33,9 @@ Development files for %{name}.
 
 %prep
 %autosetup -n vala-panel-appmenu-%{commit} -p1
+# item.h uses uint16_t/uint32_t without stdint.h; F43 glib no longer pulls it in
+sed -i 's|^#include <stdbool.h>|#include <stdbool.h>\n#include <stdint.h>|' subprojects/appmenu-glib-translator/importer/item.h
+grep -q '^#include <stdint.h>' subprojects/appmenu-glib-translator/importer/item.h
 
 %build
 %meson
@@ -62,5 +65,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
-* Fri Nov 20 2026 Ackerman-00 <no-reply> - 25.04^20261119202423git5b8107b-1
-- Nightly sync with upstream main branch (Commit: 5b8107b)
+* Fri Nov 20 2026 Ackerman-00 <no-reply> - 25.04^20261120061324git4b14e30-1
+- Nightly sync with upstream main branch (Commit: 4b14e30)
