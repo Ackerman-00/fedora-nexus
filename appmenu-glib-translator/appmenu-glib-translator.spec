@@ -1,6 +1,6 @@
-%global commit          259eb821b1670202da15cdef6fbe463374898c2d
+%global commit          99ac3fc87ade70c9b9f69ceccc6ce1ae3d43dcc1
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261120215611
+%global gitdate         20261121215248
 
 %global _vpath_srcdir subprojects/appmenu-glib-translator
 
@@ -12,7 +12,7 @@ Summary:        appmenu-glib-translator
 License:        LGPL-3.0-or-later
 URL:            https://github.com/rilian-la-te/vala-panel-appmenu/blob/master/subprojects/appmenu-glib-translator
 Source:         https://github.com/rilian-la-te/vala-panel-appmenu/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
-# sha256: 2da9529b10965d37082e771ffb8afdf39b56824c5144fbcb4cd59a85fd6f368c
+# sha256: e1784910debc0c33598a566121c3b91fb214675740e6b413f29d070fcccaef59
 
 BuildRequires:  meson >= 1.3.0
 BuildRequires:  gcc
@@ -65,5 +65,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_libdir}/pkgconfig/appmenu-glib-translator.pc
 
 %changelog
-* Sat Nov 21 2026 Ackerman-00 <no-reply> - 25.04^20261120215611git259eb82-1
-- Nightly sync with upstream main branch (Commit: 259eb82)
+* Sat Nov 21 2026 Ackerman-00 <no-reply> - 25.04^20261121215248git99ac3fc-1
+- Nightly sync with upstream main branch (Commit: 99ac3fc)
