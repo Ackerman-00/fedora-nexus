@@ -3,9 +3,9 @@
 # order is set by the per-run web check in tools/sweep-prompt.md, not by hand
 
 # tier 1 - independently scored leaders
-# llm-stats 2026-11-19: overall 48.2, coding 38.2, agents 36.1, wins 6 of 8 shared benchmarks; opencode.ai/data/compare 2026-11-20: 59% of all OpenCode tokens, rank #1 by tokens last week; AA v5.0.1 index 33 (cheapestinference.com)
+# 2026-11-21: LiveBench 2.0 coding 80.4, highest open-weight model (deepinfra.com/blog/best-open-source-models-for-coding, 2026-11-17); llmbenchmark.ai 2026-11-21 coding 66.8 for the 1017 build, 56.7 for V4.1 Flash; llmperks AA index 39.5; arena.ai coding 1525, #5 open model
 deepseek-v4.1-flash-free
-# llm-stats 2026-11-19: overall 43.4, coding 31.9, agents 30.3; ModelComp 2026-11-19 rates it 87.5 overall on 58 agent reports, so it is the fallback when the leader stalls
+# 2026-11-21: llmbenchmark.ai coding 54.8; llm-stats 2026-11-19 overall 43.4; ModelComp 2026-11-19 rates it 87.5 overall on 58 agent reports, so it is the fallback when the leader stalls
 mimo-v2.6-flash-free
 
 # tier 2 - scored, lower index or single-source
