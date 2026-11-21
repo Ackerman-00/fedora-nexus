@@ -104,13 +104,13 @@ esac
 
 * Thu Oct 22 2026 Ackerman-00 <no-reply> - 1.2.1-2
 - Floor golang at 1.26, the version go.mod declares
-* Wed Oct 14 2026 Nexus Auto-Updater <bot@github.com> - 1.2.1-1
+* Wed Oct 14 2026 Nexus Auto-Updater <no-reply> - 1.2.1-1
 - Update to version 1.2.1
 
-* Mon Oct 12 2026 Nexus Auto-Updater <bot@github.com> - 1.2.0-1
+* Mon Oct 12 2026 Nexus Auto-Updater <no-reply> - 1.2.0-1
 - Update to version 1.2.0
 
-* Tue Sep 29 2026 Nexus Auto-Updater <bot@github.com> - 1.1.2-1
+* Tue Sep 29 2026 Nexus Auto-Updater <no-reply> - 1.1.2-1
 - Update to version 1.1.2
 
 * Tue Sep 01 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.1.1-3
@@ -122,5 +122,5 @@ esac
 * Sun Aug 02 2026 Ackerman-00 <no-reply> - 1.1.1-1
 - Update to version 1.1.1
 
-* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.0.6-1
+* Wed Apr 15 2026 Nexus Bot <no-reply> - 1.0.6-1
 - Initial Optimized Native Go Build

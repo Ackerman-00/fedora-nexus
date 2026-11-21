@@ -83,16 +83,16 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %attr(4755, root, root) /opt/Vesktop/chrome-sandbox
 
 %changelog
-* Fri Nov 20 2026 Nexus Auto-Updater <bot@github.com> - 1.7.0-1
+* Fri Nov 20 2026 Nexus Auto-Updater <no-reply> - 1.7.0-1
 - Update to version 1.7.0
 
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.6.9-2
 - Move the in-app updater strip into %install
 
-* Thu Nov 05 2026 Nexus Auto-Updater <bot@github.com> - 1.6.9-1
+* Thu Nov 05 2026 Nexus Auto-Updater <no-reply> - 1.6.9-1
 - Update to version 1.6.9
 
-* Thu Oct 22 2026 Nexus Auto-Updater <bot@github.com> - 1.6.8-1
+* Thu Oct 22 2026 Nexus Auto-Updater <no-reply> - 1.6.8-1
 - Update to version 1.6.8
 
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.6.7-3
@@ -112,5 +112,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 * Sun Aug 02 2026 Ackerman-00 <no-reply> - 1.6.5-2
 - Replace util-linux-core with libuuid to match upstream RPM runtime Requires
 
-* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.6.5-1
+* Wed Apr 15 2026 Nexus Bot <no-reply> - 1.6.5-1
 - Initial Repackaged Wayland-Optimized Build via Upstream RPM

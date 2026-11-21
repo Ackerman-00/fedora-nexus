@@ -9,7 +9,7 @@ if [ "$(pwd)" != "$_update_sh_dir" ]; then
 fi
 
 SPEC_FILE="zig0.17.spec"
-PACKAGER="Nexus Auto-Updater <bot@github.com>"
+PACKAGER="Nexus Auto-Updater <no-reply>"
 SERIES="0.17"
 ARCH="x86_64-linux"
 

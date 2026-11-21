@@ -44,6 +44,6 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 0.17.1-2
 - Move the in-app updater strip into %install
 
-* Tue Nov 03 2026 Nexus Auto-Updater <bot@github.com> - 0.17.1-1
+* Tue Nov 03 2026 Nexus Auto-Updater <no-reply> - 0.17.1-1
 - Update to the 0.17.1 Zig toolchain release
   (sha256: 3581863e3cbcfd0fce0efc682ce7e9e93da96668a977791d356a26d2a7e9b17a)

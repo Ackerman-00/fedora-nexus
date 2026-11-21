@@ -64,5 +64,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 * Sun Aug 02 2026 Ackerman-00 <no-reply> - 4.1.0-1
 - Update to version 4.1.0
 
-* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 2.4.1-1
+* Wed Apr 15 2026 Nexus Bot <no-reply> - 2.4.1-1
 - Initial Optimized Native Rust Build for Nexus Repository

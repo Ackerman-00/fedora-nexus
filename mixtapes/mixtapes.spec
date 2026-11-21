@@ -134,7 +134,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/com.pocoguy.Muse.desk
 * Sat Oct 03 2026 Ackerman-00 <no-reply> - 0^20261003010509git285ba7d-1
 - Nightly sync with upstream main branch (Commit: 285ba7d)
 
-* Fri Oct 02 2026 Fedora Nexus Bot <no-reply@fedoraproject.org> - 0^20261003010509git285ba7d-1
+* Fri Oct 02 2026 Fedora Nexus Bot <no-reply> - 0^20261003010509git285ba7d-1
 - New upstream release 285ba7d ("Rustification of Mixtapes" merge)
 - Rebuilt from Rust rewrite: spec converted from Python wrapper to cargo build,
   gresource now compiled by upstream build.rs, runtime deps rebased to the

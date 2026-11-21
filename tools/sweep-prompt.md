@@ -333,7 +333,7 @@ non-workflow work. Never write a needs-owner line - the gate fails it.
   env vars. Commits created by other automation are exempt and must
   not be rewritten: update-engine.yml commits as
   `github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>`
-  with changelog `Nexus Auto-Updater <bot@github.com>`. Every other name or email is FORBIDDEN, including:
+  with changelog `Nexus Auto-Updater <no-reply>`. Every other name or email is FORBIDDEN, including:
     - the display name "OpenCode", "opencode", "Opencode Bot",
       "opencode-bot", "opencode-autonomous", or ANY name containing
       "opencode" that is not exactly "opencode-agent[bot]";

@@ -95,7 +95,7 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 * Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.5.4-2
 - Ship the upstream AGPL-3.0 LICENSE (Source4, same v1.5.4 tag as the zip
   payload, which contains no license text).
-* Fri Sep 18 2026 Nexus Auto-Updater <bot@github.com> - 1.5.4-1
+* Fri Sep 18 2026 Nexus Auto-Updater <no-reply> - 1.5.4-1
 - Update to version 1.5.4
 
 * Fri Aug 21 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.5.3-3

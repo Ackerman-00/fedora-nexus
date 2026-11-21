@@ -68,11 +68,11 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 - Ship the upstream ISC LICENSE as a license file (Source1, pinned to the same
   v1.27.0 tag as the binary release, which ships no license text).
 
-* Sat Oct 17 2026 Nexus Auto-Updater <bot@github.com> - 1.27.0-1
+* Sat Oct 17 2026 Nexus Auto-Updater <no-reply> - 1.27.0-1
 - Update to version 1.27.0
 
 * Sun Aug 02 2026 Ackerman-00 <no-reply> - 1.26.0-1
 - Update to version 1.26.0
 
-* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 1.24.2-1
+* Wed Apr 15 2026 Nexus Bot <no-reply> - 1.24.2-1
 - Initial Automated Release Build utilizing native Fedora completion macros

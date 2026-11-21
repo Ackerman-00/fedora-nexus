@@ -148,5 +148,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 - Drop nonexistent umu-launcher Recommends and replace nonexistent falcond with
   gamemode in the native gaming ecosystem Recommends
 
-* Wed Apr 15 2026 Nexus Bot <bot@github.com> - 2.22.0-1
+* Wed Apr 15 2026 Nexus Bot <no-reply> - 2.22.0-1
 - Initial Repackaged Wayland-Optimized Build via Upstream RPM

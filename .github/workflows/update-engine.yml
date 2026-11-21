@@ -186,7 +186,7 @@ jobs:
                       if changed:
                           new_content = re.sub(r'(^Release:\s+)\d+.*', r'\g<1>1%{?dist}', new_content, flags=re.MULTILINE)
                           date = datetime.datetime.now(datetime.timezone.utc).strftime('%a %b %d %Y')
-                          entry = (f'* {date} Nexus Auto-Updater <bot@github.com> - {new_ver}-1\n'
+                          entry = (f'* {date} Nexus Auto-Updater <no-reply> - {new_ver}-1\n'
                                    f'- Update to version {new_ver}\n\n')
                           new_content = re.sub(r'(%changelog\n)', r'\g<1>' + entry, new_content, count=1)
                           spec.write_text(new_content, encoding='utf-8')
