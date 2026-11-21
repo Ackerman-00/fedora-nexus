@@ -1645,12 +1645,12 @@ def email_hits(grep_output, evidence=EMAIL_EVIDENCE):
             continue
         if path == evidence:
             continue
-        seen += 1
-        if EMAIL_ALLOWED.search(rest):
-            continue
-        if any(EMAIL_NOT_EMAIL.search(m) for m in EMAIL_RE.findall(rest)):
-            continue
-        findings.append((path, rest.strip()[:120]))
+        addrs = EMAIL_RE.findall(rest)
+        seen += len(addrs)
+        real = [a for a in addrs
+                if not EMAIL_ALLOWED.search(a) and not EMAIL_NOT_EMAIL.search(a)]
+        if real:
+            findings.append((path, rest.strip()[:120]))
     return seen, findings
 
 

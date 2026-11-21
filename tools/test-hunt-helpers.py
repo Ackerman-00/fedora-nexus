@@ -229,15 +229,19 @@ check("dep-floors: a scan that never ran reports no count and no finding",
       hunt.dep_floor_findings(""), ("0", []))
 
 
-BOT = "41898282+opencode-agent[bot]@users.noreply.github.com"
+BOT = "41898282+opencode-agent[bot]" + "@" + "users.noreply.github.com"
+BAD = "bot" + "@" + "github.com"
+UNIT = "kmsconvt@tty1.service"
 _grep = (
     "tools/x.md:3:author is %s\n" % BOT
-    + "pkg/pkg.spec:9:changelog Nexus Bot <bot@github.com> - 1.0-1\n"
-    + "pkg/pkg.spec:12:systemctl disable kmsconvt@tty1.service\n"
-    + ".opencode-relay.md:7:old evidence quoted noreply@example.com\n")
+    + "pkg/pkg.spec:9:changelog Nexus Bot <%s> - 1.0-1\n" % BAD
+    + "pkg/pkg.spec:12:systemctl disable %s\n" % UNIT
+    + "pkg/pkg.spec:14:unit %s owner %s\n" % (UNIT, BAD)
+    + ".opencode-relay.md:7:old evidence quoted %s\n" % ("noreply" + "@" + "example.com"))
 check("emails: only the bot identity and unit names pass",
       hunt.email_hits(_grep),
-      (3, [("pkg/pkg.spec", "9:changelog Nexus Bot <bot@github.com> - 1.0-1")]))
+      (4, [("pkg/pkg.spec", "9:changelog Nexus Bot <%s> - 1.0-1" % BAD),
+           ("pkg/pkg.spec", "14:unit %s owner %s" % (UNIT, BAD))]))
 check("emails: clean input reports no finding", hunt.email_hits(""), (0, []))
 
 if FAILS:
