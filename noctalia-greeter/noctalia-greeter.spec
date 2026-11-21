@@ -1,6 +1,6 @@
-%global commit          2726e75375d95d5458d021f76c330ab14f6a5d03
+%global commit          c8ed20878bc75a9f3b3637c254355dda9c9ab90a
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261120141153
+%global gitdate         20261120212230
 
 Name:           noctalia-greeter
 Version:        1.7.1^%{gitdate}git%{shortcommit}
@@ -10,7 +10,7 @@ Summary:        Login greeter for greetd with the Noctalia Shell look and feel
 License:        MIT AND Apache-2.0
 URL:            https://github.com/noctalia-dev/noctalia-greeter
 Source0:        %{url}/archive/%{commit}/%{name}-%{commit}.tar.gz
-# sha256: d42775b045a373c610f1fa06ea4eded68d4096d446dfe87ab4b6ce0836c5823d
+# sha256: c711602a03b9cf43a21e6b1c2c313eeeb445b4c6150098ba56ae9dd0c5fc7268
 Source1:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-APACHE
 # sha256: 0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594
 Source2:        https://raw.githubusercontent.com/google/wuffs/a14745aa458fd2b2785034efa04eab3c7b5b91e0/LICENSE-MIT
@@ -144,5 +144,5 @@ if [ "$1" -eq 0 ] && [ -L /etc/systemd/system/display-manager.service ]; then
 fi
 
 %changelog
-* Fri Nov 20 2026 Ackerman-00 <no-reply> - 1.7.1^20261120141153git2726e75-1
-- Nightly sync with upstream main branch (Commit: 2726e75)
+* Sat Nov 21 2026 Ackerman-00 <no-reply> - 1.7.1^20261120212230gitc8ed208-1
+- Nightly sync with upstream main branch (Commit: c8ed208)
