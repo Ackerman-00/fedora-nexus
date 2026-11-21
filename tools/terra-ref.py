@@ -60,12 +60,40 @@ def last_sha(path):
     return sha[:8] if r.returncode == 0 and sha else "unknown"
 
 
-def spec_pin(text):
+def spec_path(pkg):
+    """The package's own spec inside this checkout."""
+    return os.path.join(H.ROOT, pkg, pkg + ".spec")
+
+
+def version_key(v):
+    """Sort key for rpm-ish versions; a ^snapshot sorts before its base."""
+    base, caret, _ = v.partition("^")
+    key = tuple((0, int(x)) if x.isdigit() else (1, x)
+                for x in re.split(r"[._+~-]", base) if x)
+    return (key, 0 if caret else 1)
+
+
+def versions_match(a, b):
+    """True when one version is the other with a build or letter tail."""
+    def norm(v):
+        v = re.sub(r"[+~^].*$", "", v)
+        return re.sub(r"([0-9])[a-z]$", r"\1", v)
+    a, b = norm(a), norm(b)
+    return a == b or a.startswith(b + ".") or b.startswith(a + ".")
+
+
+def spec_pin(text, pkg=None):
     """(version, commit) as the spec declares them; either may be None."""
     ver = re.search(r"^Version:\s*(\S+)", text, re.M)
     com = re.search(r"^%global\s+commit\s+(\S+)", text, re.M)
-    return (ver.group(1) if ver else None,
-            com.group(1) if com else None)
+    value = ver.group(1) if ver else None
+    if value and "%{" in value and pkg:
+        value = H.resolve_version(spec_path(pkg), value)
+    if value and "%{" in value:
+        tag = re.search(r"^%global\s+tag\s+(\S+)", text, re.M)
+        if tag:
+            value = tag.group(1).lstrip("v")
+    return (value, com.group(1) if com else None)
 
 
 def brs(text):
@@ -80,22 +108,18 @@ def delta(ours, theirs):
     if ocom and tcom:
         if ocom == tcom:
             return "in-sync"
-        return "ahead" if ocom not in (tcom,) else "behind"
+        return "diverged"
     if over and tver:
         if over == tver:
             return "in-sync"
-        try:
-            if H.versions_match(over, tver):
-                return "in-sync"
-        except Exception:
-            pass
-        return "behind" if H.version_key(tver) > H.version_key(over) \
-            else "ahead"
+        if versions_match(over, tver):
+            return "in-sync"
+        return "behind" if version_key(tver) > version_key(over) else "ahead"
     return "unknown"
 
 
 def line(pkg, ours_text, terra_text, sha):
-    ours = spec_pin(ours_text)
+    ours = spec_pin(ours_text, pkg)
     pin = ours[1][:8] if ours[1] else (ours[0] or "?")
     if terra_text is None:
         return ("terra-ref: n/a (Terra spec not served for this package) | "
@@ -119,16 +143,20 @@ def main():
         if pkg == "wlroots":
             print("terra-ref: n/a (gitlab-forge) | ours: %s | delta: n/a | "
                   "kept-improvements: n/a" % spec_pin(
-                      open(H.spec_path(pkg), encoding="utf-8").read())[0])
+                      open(spec_path(pkg), encoding="utf-8").read())[0])
             continue
         path = TERRA.get(pkg)
         if not path:
             print("terra-ref: n/a (no Terra mapping) | ours: ? | "
                   "delta: n/a | kept-improvements: n/a")
             continue
-        ours_text = open(H.spec_path(pkg), encoding="utf-8").read()
+        ours_text = open(spec_path(pkg), encoding="utf-8").read()
         if a.offline:
-            print(line(pkg, ours_text, None, "offline"))
+            print("terra-ref: %s@offline | ours: %s | delta: n/a | "
+                  "kept-improvements: n/a"
+                  % (path, spec_pin(ours_text, pkg)[1][:8]
+                     if spec_pin(ours_text, pkg)[1]
+                     else spec_pin(ours_text, pkg)[0]))
             continue
         print(line(pkg, ours_text, fetch(path), last_sha(path)))
         time.sleep(1)
