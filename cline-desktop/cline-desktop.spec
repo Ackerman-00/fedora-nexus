@@ -4,16 +4,16 @@
 %global __requires_exclude_from ^%{_prefix}/lib/Cline/bin/remote-helpers/
 %global __provides_exclude_from ^%{_prefix}/lib/Cline/bin/remote-helpers/
 Name:           cline-desktop
-Version:        0.0.49
-Release:        3%{?dist}
+Version:        0.0.50
+Release:        1%{?dist}
 Summary:        The agentic coding-capable IDE desktop app (Tauri)
 License:        Apache-2.0
 Group:          Development/Tools/IDE
 URL:            https://cline.bot
-Source0:        https://github.com/cline/cline/releases/download/desktop-v0.0.49/Cline_0.0.49_amd64.deb
-# sha256: 3e2c1f824fbdceaf67a8c01404e58218f8534f952318d1689807824b9ca2e2f6
+Source0:        https://github.com/cline/cline/releases/download/desktop-v0.0.50/Cline_0.0.50_amd64.deb
+# sha256:  69a11abba98a8bde64c5a6f01b231e1dd6b1e211bbba0a7458deaaccc0ef3d32
 Source1:        cline-desktop-rpmlintrc
-Source2:        https://raw.githubusercontent.com/cline/cline/desktop-v0.0.49/LICENSE
+Source2:        https://raw.githubusercontent.com/cline/cline/desktop-v0.0.50/LICENSE
 BuildRequires:  binutils
 BuildRequires:  tar
 BuildRequires:  zstd
@@ -86,20 +86,5 @@ helper=%{buildroot}%{_prefix}/lib/Cline/bin/remote-helpers/cline-x86_64-unknown-
 %{_datadir}/metainfo/*
 
 %changelog
-* Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.0.49-3
-- Drop a personal address from the prior changelog entries; metadata only, no payload change.
-* Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.0.49-2
-- Stop stripping the prebuilt Bun executables. brp-strip ran `strip -g` on
-  cline-cli and the x86_64 remote helper, which removed their embedded
-  entrypoint: cline-cli --version went from 3.0.74 to the Bun runtime's 1.4.2
-  and `cline-cli hub ensure` failed with `Script not found "hub"`. The desktop
-  window opened but the local hub never started ("No compatible hub runtime is
-  available"), so the agent could not run. The shipped bytes are now identical
-  to the upstream DEB payload.
-- Add a %%check that fails if the staged CLI or x86_64 helper stop recognising
-  their own commands, strengthen the install probe to run `cline-cli hub`, and
-  move the sha256 pin below Source0 so the sweep binds it.
-* Sat Nov 07 2026 Ackerman-00 <no-reply> - 0.0.49-1
-- Ship the upstream Apache-2.0 LICENSE (Source2) as %license; fix the update.sh OBS/debian machinery (stray artifacts, invented email) with the repo updater pattern.
-* Sat Nov 07 2026 Ackerman-00 <no-reply> - 0.0.49-0
-- Initial package
+* Sat Nov 21 2026 Ackerman-00 <no-reply> - 0.0.50-1
+- Update to upstream release 0.0.50
