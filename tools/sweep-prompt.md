@@ -337,15 +337,17 @@ non-workflow work. Never write a needs-owner line - the gate fails it.
     - the display name "OpenCode", "opencode", "Opencode Bot",
       "opencode-bot", "opencode-autonomous", or ANY name containing
       "opencode" that is not exactly "opencode-agent[bot]";
-    - the emails noreply@opencode.ai, opencode-agent[bot]@users.noreply.github.com,
-      opencode@locals, or any invented *@users.noreply.github.com address.
+    - the opencode default noreply address, the opencode-agent bot address,
+      the opencode@locals form, or any invented address at the GitHub
+      noreply domain.
   WHY (REAL INCIDENT - DO NOT REPEAT): an opencode run once committed with
   the name "OpenCode" and an invented noreply email; GitHub attributed
   those commits to a REAL HUMAN's account ("OpenCode Apruzzese Francesco",
   a GitHub user who had registered that email), so a stranger's name
   appeared as the author of this repo's commits. The opencode default
-  `Co-Authored-By: opencode <noreply@opencode.ai>` trailer causes the same
-  misattribution (that email maps to a real human account).
+  `Co-Authored-By:` trailer naming opencode and its default noreply
+  address causes the same misattribution (that address maps to a real
+  human account).
   MANDATORY RULES:
   1. NEVER run `git config user.name` / `git config user.email`.
   2. NEVER pass --author/--committer, and NEVER add ANY trailer

@@ -1627,6 +1627,44 @@ def updater_findings(updater_txt, spec_txt):
     return out
 
 
+EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
+EMAIL_ALLOWED = re.compile(
+    r"41898282\+(?:opencode|github)-agent\[bot\]@users\.noreply\.github\.com")
+EMAIL_EVIDENCE = ".opencode-relay.md"
+EMAIL_NOT_EMAIL = re.compile(
+    r"\.(?:service|socket|target|timer|mount|path|slice|scope|device|"
+    r"automount|swap|spec|py|js|ts|json|ya?ml|toml|md|sh|conf|cfg|ini|desktop)$")
+
+
+def email_hits(grep_output, evidence=EMAIL_EVIDENCE):
+    """(seen, findings) from `git grep -nI` output; evidence file excluded."""
+    seen, findings = 0, []
+    for line in grep_output.splitlines():
+        path, sep, rest = line.partition(":")
+        if not sep:
+            continue
+        if path == evidence:
+            continue
+        seen += 1
+        if EMAIL_ALLOWED.search(rest):
+            continue
+        if any(EMAIL_NOT_EMAIL.search(m) for m in EMAIL_RE.findall(rest)):
+            continue
+        findings.append((path, rest.strip()[:120]))
+    return seen, findings
+
+
+def hunt_emails():
+    """No email-like address in a tracked file except the bot identity."""
+    r = subprocess.run(["git", "-C", ROOT, "grep", "-nIE", EMAIL_RE.pattern],
+                       capture_output=True, text=True)
+    seen, findings = email_hits(r.stdout)
+    note = ("%s is past-run evidence and is never rewritten, so it is not "
+            "scanned" % EMAIL_EVIDENCE)
+    return ("emails", "%d address-like strings, %d not allowed"
+            % (seen, len(findings)), note, findings)
+
+
 def hunt_updaters():
     """Every updater must be able to track the feed its spec pins."""
     findings = []
@@ -1678,7 +1716,7 @@ HUNTS = (hunt_builds, hunt_network_build, hunt_chroots, hunt_copr_config, hunt_u
          hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_sources,
          hunt_pins, hunt_readme, hunt_published_nvr, hunt_probes, hunt_probe_paths, hunt_sandbox,
          hunt_macros, hunt_fedora_releases, hunt_chroot_docs, hunt_slice, hunt_files_syntax,
-         hunt_updaters)
+         hunt_updaters, hunt_emails)
 
 
 def main():

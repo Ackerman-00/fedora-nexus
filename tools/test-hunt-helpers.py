@@ -228,8 +228,20 @@ check("dep-floors: only MISSING/FLOOR rows are findings",
 check("dep-floors: a scan that never ran reports no count and no finding",
       hunt.dep_floor_findings(""), ("0", []))
 
+
+BOT = "41898282+opencode-agent[bot]@users.noreply.github.com"
+_grep = (
+    "tools/x.md:3:author is %s\n" % BOT
+    + "pkg/pkg.spec:9:changelog Nexus Bot <bot@github.com> - 1.0-1\n"
+    + "pkg/pkg.spec:12:systemctl disable kmsconvt@tty1.service\n"
+    + ".opencode-relay.md:7:old evidence quoted noreply@example.com\n")
+check("emails: only the bot identity and unit names pass",
+      hunt.email_hits(_grep),
+      (3, [("pkg/pkg.spec", "9:changelog Nexus Bot <bot@github.com> - 1.0-1")]))
+check("emails: clean input reports no finding", hunt.email_hits(""), (0, []))
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)
     sys.exit(1)
-print("PASS: hunt chroot-docs helpers (%d readme cases)" % len(READMES))
+print("PASS: hunt helpers (%d readme cases)" % len(READMES))
