@@ -7,22 +7,34 @@ if [ "$(pwd)" != "$_update_sh_dir" ]; then
 fi
 
 SPEC_FILE="python-mprisify.spec"
-GITLAB_PROJECT="zehkira%2Fmprisify"
+GIT_URL="https://gitlab.com/zehkira/mprisify.git"
 PACKAGER="Ackerman-00 <no-reply>"
 
 echo "Checking GitLab tags for zehkira/mprisify..."
 
-LATEST_TAG=$(python3 -c "
-import json,urllib.request
-tags = json.load(urllib.request.urlopen('https://gitlab.com/api/v4/projects/$GITLAB_PROJECT/repository/tags?per_page=20&order_by=updated',timeout=20))
-import re
-stable = [t['name'] for t in tags if re.match(r'^v?[0-9]+\.[0-9]+\.[0-9]+$', t['name'] or '')]
-print(stable[0] if stable else '')
-" 2>/dev/null)
+fetch_tags() {
+    local i out
+    for i in 1 2 3; do
+        if out=$(git ls-remote --tags "$GIT_URL" 2>&1) && [ -n "$out" ]; then
+            printf '%s\n' "$out"
+            return 0
+        fi
+        echo "  -> tag fetch attempt $i failed, retrying" >&2
+        sleep 5
+    done
+    return 1
+}
+
+LATEST_TAG=$(fetch_tags \
+  | awk '{print $2}' \
+  | sed 's|refs/tags/||; s/\^{}//' \
+  | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' \
+  | sort -uV \
+  | tail -1)
 LATEST_VERSION=${LATEST_TAG#v}
 
 if [ -z "$LATEST_VERSION" ]; then
-    echo "  -> [ERROR] Failed to fetch latest tag."
+    echo "  -> [ERROR] Failed to fetch latest tag from $GIT_URL."
     exit 1
 fi
 
