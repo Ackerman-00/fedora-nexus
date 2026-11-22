@@ -3,7 +3,7 @@
 
 Name:           wlroots
 Version:        0.20.2
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        A modular Wayland compositor library
 
 %global tag     %(v='%{version}'; echo "${v//'~'/-}")
@@ -20,6 +20,7 @@ Patch:          Revert-layer-shell-error-on-0-dimension-without-anch.patch
 BuildRequires:  gcc
 BuildRequires:  glslang
 BuildRequires:  gnupg2
+BuildRequires:  openpgpverify
 BuildRequires:  meson >= 1.3
 
 BuildRequires:  (pkgconfig(libliftoff) >= %{liftoff_ver} with pkgconfig(libliftoff) < 0.6)
@@ -71,7 +72,7 @@ Suggests:       pkgconfig(wayland-egl)
 Development files for %{name}.
 
 %prep
-%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
+%{openpgpverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
 %autosetup -N -n %{name}-%{tag}
 %autopatch -p1 -M99
 
@@ -111,6 +112,9 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_libdir}/pkgconfig/wlroots-%{abi_ver}.pc
 
 %changelog
+* Sun Nov 22 2026 Ackerman-00 <no-reply> - 0.20.2-12
+- Align source-signature verification with Fedora dist-git: use the openpgpverify macro and declare its BuildRequires (official wlroots spec); keep x11-xcb dropped because the 0.20.2 tree has no consumer.
+
 * Fri Nov 13 2026 Ackerman-00 <no-reply> - 0.20.2-11
 - Pin the meson feature matrix (backends, renderers, allocators, session, xwayland, color-management, libliftoff, xcb-errors) so a missing BuildRequires fails the build instead of silently dropping a backend or renderer from the shipped library
 * Sun Nov 08 2026 Ackerman-00 <no-reply> - 0.20.2-10
