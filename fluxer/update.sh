@@ -15,7 +15,8 @@ echo "Checking for upstream updates..."
 
 # the served RPM filename is authoritative; X-Fluxer-Version can name a build that 404s
 FINAL_URL=$(curl -sIL --max-time 30 -A "Mozilla/5.0" -o /dev/null -w '%{url_effective}' "$API_URL")
-VERSION=$(printf '%s' "$FINAL_URL" | grep -oP 'Fluxer-\K[0-9]+(\.[0-9]+)+' | head -1)
+SERVED=$(curl -sIL --max-time 30 -A "Mozilla/5.0" "$API_URL" | grep -i '^content-disposition:' | grep -oP 'Fluxer-\K[0-9]+(\.[0-9]+)+' | head -1)
+VERSION=${SERVED:-$(printf '%s' "$FINAL_URL" | grep -oP 'Fluxer-\K[0-9]+(\.[0-9]+)+' | head -1)}
 HEADER_VERSION=$(curl -sI --max-time 15 -A "Mozilla/5.0" "$API_URL" | grep -i "^X-Fluxer-Version:" | awk '{print $2}' | tr -d '\r')
 
 if [ -z "$VERSION" ]; then
