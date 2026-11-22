@@ -4,11 +4,11 @@
 %global __requires_exclude_from ^/opt/ladybird/.*$
 %global __provides_exclude_from ^/opt/ladybird/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/ladybird/.*$
-%global commit         ae95e250cd46c122db44832242958b9cf3c2d3ff
+%global commit         2fa7d18f9e348b1d5e630723f18a8e37c6fc3227
 
 Name:           ladybird-unstable
 Version:        0.0.0
-Release:        41.20261122gitae95e25%{?dist}
+Release:        42.20261122git2fa7d18%{?dist}
 Summary:        Truly independent web browser (git master; unstable)
 License:        BSD-2-Clause
 URL:            https://ladybird.org
@@ -181,6 +181,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2>/dev/null || :
 
 %changelog
+* Sun Nov 22 2026 Ackerman-00 <no-reply> - 0.0.0-42.20261122git2fa7d18
+- Refresh snapshot ae95e25 -> 2fa7d18 (upstream commit dated 2026-11-22T21:24:08Z)
+
 * Sun Nov 22 2026 Ackerman-00 <no-reply> - 0.0.0-41.20261122gitae95e25
 - Refresh snapshot 1849944 -> ae95e25 (upstream commit dated 2026-11-22T04:27:29Z)
 
