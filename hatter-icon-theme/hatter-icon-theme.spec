@@ -1,13 +1,13 @@
 %global debug_package %{nil}
 
 Name:           hatter-icon-theme
-Version:        4.1
+Version:        4.2
 Release:        1%{?dist}
 Summary:        Icon theme from Mibea/Hatter
 License:        GPL-3.0-or-later
 URL:            https://github.com/Mibea/Hatter
-Source0:        https://github.com/Mibea/Hatter/archive/refs/tags/V4.1.tar.gz
-# sha256: 16eeea40b569a1688b3e15dd461f29c6bbc7e585fe38539f9b2a22040a4f144d
+Source0:        https://github.com/Mibea/Hatter/archive/refs/tags/V4.2.tar.gz
+# sha256: e82a1a5a8049c0778b454fbb2a746cb344d65ad2f59ad3b715106ea1b7fea095
 
 BuildRequires:  bash
 BuildRequires:  rsync
@@ -20,11 +20,11 @@ BuildRequires:  gtk-update-icon-cache
 BuildArch:      noarch
 
 %description
-Hatter icon theme (V4.1 release), built from the upstream Hatter sources.
+Hatter icon theme (V4.2 release), built from the upstream Hatter sources.
 Ships the base theme, nine colour variants and nine Yaru colour variants.
 
 %prep
-%setup -q -n Hatter-4.1
+%setup -q -n Hatter-4.2
 find . -depth -name '* *' -exec bash -c 'for f; do mv -- "$f" "${f// /-}"; done' _ {} +
 
 %build
@@ -57,12 +57,5 @@ for t in %{_datadir}/icons/Hatter*/; do
 done
 
 %changelog
-* Sun Nov 15 2026 Ackerman-00 <no-reply> - 4.1-1
-- Update to V4.1; upstream replaced the interactive Build-Hatter.sh with a
-  non-interactive build.sh --dest and dropped the Hatter-kde variants
-
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 4.0-2
-- Move the in-app updater strip into %install
-
-* Sat Nov 07 2026 Ackerman-00 <no-reply> - 4.0-1
-- Initial import
+* Sun Nov 22 2026 Ackerman-00 <no-reply> - 4.2-1
+- Update to V4.2
