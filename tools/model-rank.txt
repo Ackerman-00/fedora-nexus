@@ -3,9 +3,9 @@
 # order is set by the per-run web check in tools/sweep-prompt.md, not by hand
 
 # tier 1 - independently scored leaders
-# 2026-11-21: LiveBench 2.0 coding 80.4, highest open-weight model (deepinfra.com/blog/best-open-source-models-for-coding, 2026-11-17); llmbenchmark.ai 2026-11-21 coding 66.8 for the 1017 build, 56.7 for V4.1 Flash; llmperks AA index 39.5; arena.ai coding 1525, #5 open model
+# 2026-11-22: LiveBench 2.0 coding 80.4, highest open-weight model (deepinfra.com/blog/best-open-source-models-for-coding, 2026-11-17); llmbenchmark.ai 2026-11-22 coding 66.8 for the 1017 build, 56.7 for V4.1 Flash; llmperks AA index 39.5; arena.ai coding 1525, #5 open model
 deepseek-v4.1-flash-free
-# 2026-11-21: llmbenchmark.ai coding 54.8; llm-stats 2026-11-19 overall 43.4; ModelComp 2026-11-19 rates it 87.5 overall on 58 agent reports, so it is the fallback when the leader stalls
+# 2026-11-22: llmbenchmark.ai coding 54.8; llm-stats 2026-11-19 overall 43.4; ModelComp 2026-11-19 rates it 87.5 overall on 58 agent reports, so it is the fallback when the leader stalls
 mimo-v2.6-flash-free
 
 # tier 2 - scored, lower index or single-source
@@ -33,3 +33,5 @@ hy4-flash-free
 # vetoed by owner (2026-10-22): glm-5.3-flash-free, jev-1.13-free (probabilistic classifier, not a coding model)
 # retired from the live catalog: crouton-alpha-free (2026-11-10), Pulse Alpha Free (2026-11-06), inkling-2-small-free (gone after 2026-11-04, absent from the 2026-11-20 catalog read)
 # leader re-read 2026-11-20 (run 44778234506): https://opencode.ai/inference/v1/models serves 103 ids, 11 at zero price; this file lists 11 and opencode.json resolves every one. Order unchanged: DeepSeek V4.1 Flash leads every independent coding index read today (llm-stats 48.2 vs 43.4 overall, coding 38.2 vs 31.9).
+
+# leader re-read 2026-11-22 (run 44952496404): live catalog still serves 12 free ids; owner veto keeps glm-5.3-flash-free and jev-1.13-free out, so DeepSeek V4.1 Flash remains the leader among the selectable free roster (AA index 39.5); GLM 5.3 Flash (41.8) and Step 5 Preview (43.7) are not in the catalog.
