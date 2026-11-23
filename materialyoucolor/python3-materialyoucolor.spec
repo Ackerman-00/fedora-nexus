@@ -1,11 +1,12 @@
 Name:           python3-materialyoucolor
-Version:        3.0.4
-Release:        2%{?dist}
+Version:        3.1.0
+Release:        1%{?dist}
 Summary:        Material You color generation algorithms (pure Python + C++ quantizer)
 
 License:        MIT
 URL:            https://pypi.org/project/materialyoucolor/
-Source0:        https://files.pythonhosted.org/packages/eb/23/2e63e7bdfcc1aa7ba955386ad09e3bd8a535a1092d7af501659b63cb6282/materialyoucolor-%{version}.tar.gz
+# sha256: da40c508080460a26a591ad814692c8f862e2971c9216a1feadae73d8ca258c4
+Source0:        https://files.pythonhosted.org/packages/59/8e/9f4cba4a77c7ffb50c6af8b618fcf1a7a300e3b3c7500d9b74025ebdee48/materialyoucolor-3.1.0.tar.gz
 
 BuildRequires:  python3-devel
 BuildRequires:  pyproject-rpm-macros
@@ -42,8 +43,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %license LICENSE
 
 %changelog
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 3.0.4-2
-- Move the in-app updater strip into %install
-
-* Sat Aug 08 2026 Ackerman-00 <no-reply> - 3.0.4-1
-- Initial package (builds the C++ quantizer via pybind11)
+* Mon Nov 23 2026 Ackerman-00 <no-reply> - 3.1.0-1
+- Auto-update to upstream PyPI release 3.1.0
