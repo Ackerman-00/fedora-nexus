@@ -80,14 +80,6 @@
             "output": 32000
           }
         },
-        "longcat-2.5-free": {
-          "name": "LongCat 2.5 Free",
-          "modelID": "longcat-2.5-free",
-          "limit": {
-            "context": 1000000,
-            "output": 1000000
-          }
-        },
         "hy4-flash-free": {
           "name": "Hy4 Flash Free",
           "modelID": "hy4-flash-free",

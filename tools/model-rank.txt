@@ -21,8 +21,6 @@ big-pickle
 # tier 3 - no independent coding score (live catalog re-verified 2026-11-20)
 # AA Intelligence Index 6 - source: artificialanalysis.ai/leaderboards/models, Nemotron 3.5 Lightning - 2026-11-12
 nemotron-3.5-lightning-free
-# no independent coding score; DeepSWE 64.6, Terminal-Bench 4.0 38.5 vendor - source: Meituan launch evals
-longcat-2.5-free
 # no independent score; stealth model - source: OpenCode Zen catalog
 iceman-free
 # released 2026-11-18 as a stealth id, tool calling + reasoning, 1.05M ctx, no AA entry; community reports wordy and unreliable - source: llmperks.com/models/tidepool-alpha + r/opencode 2026-11-19
@@ -31,7 +29,9 @@ tidepool-alpha-free
 hy4-flash-free
 
 # vetoed by owner (2026-10-22): glm-5.3-flash-free, jev-1.13-free (probabilistic classifier, not a coding model)
-# retired from the live catalog: crouton-alpha-free (2026-11-10), Pulse Alpha Free (2026-11-06), inkling-2-small-free (gone after 2026-11-04, absent from the 2026-11-20 catalog read)
+# retired from the live catalog: crouton-alpha-free (2026-11-10), Pulse Alpha Free (2026-11-06), inkling-2-small-free (gone after 2026-11-04, absent from the 2026-11-20 catalog read), longcat-2.5-free (absent from the 2026-11-23 catalog read, 105 ids, 10 free chat models)
+
+# leader re-read 2026-11-23 (run 45256098532): catalog serves 105 ids, 10 free chat models; DeepSeek V4.1 Flash 1017 holds 66.8 on the llmbenchmark.ai Vibe Coding Index (rank 28, LiveBench coding 80.4), next free id is MiMo-V2.6-Flash at 54.8, so the order stands.
 # leader re-read 2026-11-20 (run 44778234506): https://opencode.ai/inference/v1/models serves 103 ids, 11 at zero price; this file lists 11 and opencode.json resolves every one. Order unchanged: DeepSeek V4.1 Flash leads every independent coding index read today (llm-stats 48.2 vs 43.4 overall, coding 38.2 vs 31.9).
 
 # leader re-read 2026-11-22 (run 44952496404): live catalog still serves 12 free ids; owner veto keeps glm-5.3-flash-free and jev-1.13-free out, so DeepSeek V4.1 Flash remains the leader among the selectable free roster (AA index 39.5); GLM 5.3 Flash (41.8) and Step 5 Preview (43.7) are not in the catalog.
