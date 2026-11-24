@@ -46,7 +46,7 @@ opencode-desktop|opencode-desktop|test -f /opt/OpenCode/resources/app.asar && te
 openclaw-desktop|openclaw-desktop|test -x /usr/bin/openclaw-desktop && test -f /usr/share/applications/OpenClaw.desktop && python3 -c "import json; json.load(open('/usr/lib/OpenClaw/desktop-runtime/manifest.json'))"
 protonplus|protonplus|test -x /usr/bin/protonplus
 python-mprisify|python-mprisify|python3 -c 'import mprisify'
-python-yt-dlp-ejs|python-yt-dlp-ejs|python3 -c "import yt_dlp_ejs"
+python-yt-dlp-ejs|python-yt-dlp-ejs|python3 -c "import os, yt_dlp_ejs as m; d=os.path.join(os.path.dirname(m.__file__), 'yt', 'solver'); s=[os.path.getsize(os.path.join(d, f)) for f in ('core.min.js', 'lib.min.js')]; assert s[0] > 1000 and s[1] > 100000"
 python-yt-dlp-get-pot|python-yt-dlp-get-pot|python3 -c 'import yt_dlp_plugins.extractor'
 python-yt-dlp-get-pot-rustypipe|python-yt-dlp-get-pot-rustypipe|python3 -c 'import yt_dlp_plugins.extractor'
 python-ytmusicapi|python-ytmusicapi|python3 -c 'import ytmusicapi'
