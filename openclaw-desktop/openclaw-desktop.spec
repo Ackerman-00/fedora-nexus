@@ -4,13 +4,13 @@
 %global __provides_exclude_from ^%{_prefix}/lib/OpenClaw/desktop-runtime/bin/bun$
 
 Name:           openclaw-desktop
-Version:        2026.11.7
+Version:        2026.11.8
 Release:        1%{?dist}
 Summary:        OpenClaw companion app for the desktop
 License:        MIT
 URL:            https://github.com/openclaw/openclaw
 Source0:        https://github.com/openclaw/openclaw/releases/download/v%{version}/OpenClaw-%{version}-amd64.deb
-# sha256:  c7d41034a0db1c2093696cc1190f36deef8d11a1e8c5fc700b6aaf020e97d088
+# sha256:  02254b422efbf31a4d5c2ea8da9ba1aa843d5026f4cc43d0e0bf1275a8178dd1
 Source1:        openclaw-desktop-rpmlintrc
 Source2:        https://raw.githubusercontent.com/openclaw/openclaw/v%{version}/LICENSE
 ExclusiveArch:  x86_64
@@ -109,5 +109,5 @@ touch -- %{_datadir}/icons/hicolor &> /dev/null || :
 %{_datadir}/icons/hicolor/*/apps/openclaw-desktop.png
 
 %changelog
-* Mon Nov 23 2026 Ackerman-00 <no-reply> - 2026.11.7-1
-- Update to upstream release 2026.11.7
+* Wed Nov 25 2026 Ackerman-00 <no-reply> - 2026.11.8-1
+- Update to upstream release 2026.11.8

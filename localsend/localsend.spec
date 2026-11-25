@@ -4,13 +4,13 @@
 %global __provides_exclude_from ^%{_libdir}/localsend_app/.*$
 
 Name:           localsend
-Version:        1.18.2
-Release:        6%{?dist}
+Version:        1.19.0
+Release:        1%{?dist}
 Summary:        An open source cross-platform alternative to AirDrop
 
 License:        Apache-2.0
 URL:            https://github.com/localsend/localsend
-Source0:        %{url}/releases/download/v1.18.2/LocalSend-1.18.2-linux-x86-64.deb
+Source0:        %{url}/releases/download/v1.19.0/LocalSend-1.19.0-linux-x86-64.deb
 Source1:        %{url}/raw/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
@@ -77,29 +77,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_libdir}/localsend_app/
 
 %changelog
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 1.18.2-6
-- Move the in-app updater strip into %install
-
-* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.18.2-5
-- Rewrite the bundled plugins' RPATH to $ORIGIN. Upstream's Flutter build
-  embeds /home/runner/work/localsend/.../ephemeral and the Debian multiarch
-  dir in 13 .so files; rpm's check-rpaths rejected them, and the spec was
-  silencing that check instead of fixing the rpaths. The check is armed again.
-
-* Tue Oct 20 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.18.2-4
-- Ship the upstream Apache-2.0 LICENSE (Source1, same v1.18.2 tag as the deb
-  payload, which contains no license text).
-* Mon Oct 19 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.18.2-3
-- Bump Release so the Apache-2.0 license correction (commit 794ee38) is
-  actually published: without a new NVR the rebuild reused 1.18.2-2 and
-  `dnf upgrade` reported "Nothing to do." on a clean fedora:44 container,
-  leaving installed users on the stale GPL-3.0 metadata.
-* Fri Oct 02 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.18.2-2
-- Declare dlopened GL runtime deps (libEGL.so.1, libGLESv2.so.2): the bundled
-  libflutter_linux_gtk.so links libepoxy, which opens both at startup. A clean
-  fedora:44 container install aborted (rc 134, "Couldn't open libEGL.so.1",
-  then libGLESv2.so.2) until libglvnd-egl and libglvnd-gles were present.
-* Fri Aug 21 2026 Ackerman-00 <no-reply> - 1.18.2-1
-- Update to upstream v1.18.2 (full desktop assets; 1.18.1 was Android-only)
-* Tue Aug 11 2026 Ackerman-00 <no-reply> - 1.18.0-2
-- Fix %%prep: upstream switched DEB data archive from data.tar.xz to data.tar.zst in v1.18.0; detect format dynamically
+* Wed Nov 25 2026 Ackerman-00 <no-reply> - 1.19.0-1
+- Auto-update to upstream release v1.19.0

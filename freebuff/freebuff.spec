@@ -2,14 +2,14 @@
 %global __strip /bin/true
 
 Name:           freebuff
-Version:        0.2.36
-Release:        3%{?dist}
+Version:        0.2.38
+Release:        1%{?dist}
 Summary:        The free coding agent for your terminal
 
 License:        MIT
 URL:            https://freebuff.com
 Source0:        https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v%{version}/freebuff-linux-x64.tar.gz
-# sha256: 672d66c3444f7469cc21b9c8a1c2c06c09676ca8f6a1771568282575a445a695
+# sha256: 0712b3653a0c06bb0bd1aa9b78dee51982a29b2edd5cff2f1c1007ce7a355e13
 Source1:        https://raw.githubusercontent.com/CodebuffAI/codebuff-community/freebuff-v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
@@ -58,6 +58,8 @@ printf '%s\n' "$smoke" | grep -q '^tree-sitter smoke ok'
 %{_libexecdir}/%{name}/tree-sitter.wasm
 
 %changelog
+* Wed Nov 25 2026 Ackerman-00 <no-reply> - 0.2.38-1
+- Auto-updated to 0.2.38 via update.sh
 * Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.2.36-3
 - Drop a personal address from the prior changelog entries; metadata only, no payload change.
 * Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.2.36-2
