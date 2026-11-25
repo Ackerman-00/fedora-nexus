@@ -200,6 +200,11 @@ def spec_field(path, key):
     return m.group(1).strip() if m else ""
 
 
+def spec_text_field(txt, key):
+    m = re.search(r"^%s:\s*(.+)$" % re.escape(key), txt, re.M)
+    return m.group(1).strip() if m else ""
+
+
 def live_hold_reason(txt):
     m = re.search(r"(?im)^%global\s+live_hold_reason[ \t]+(.+?)\s*$", txt)
     return m.group(1).strip() if m else None
@@ -1278,7 +1283,9 @@ def hunt_official():
         theirs = official_req_set(off)
         over = sorted(theirs - ours)
         if over:
-            findings.append((pkg, "official adds: " + ", ".join(over)))
+            offver = spec_text_field(off, "Version") or "unknown"
+            findings.append((pkg, "official adds: %s (official spec Version %s)"
+                             % (", ".join(over), offver)))
         time.sleep(1.0)
     return ("official", "%d with an official dist-git spec, %d absent, %d findings"
             % (present, len(absent), len(findings)),

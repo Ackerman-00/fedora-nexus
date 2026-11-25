@@ -244,6 +244,19 @@ check("emails: only the bot identity and unit names pass",
            ("pkg/pkg.spec", "14:unit %s owner %s" % (UNIT, BAD))]))
 check("emails: clean input reports no finding", hunt.email_hits(""), (0, []))
 
+OFFICIAL = ("Name:           wlroots\n"
+            "Version:        0.20.2\n"
+            "Release:        3%{?dist}\n"
+            "BuildRequires:  pkgconfig(x11-xcb)\n")
+check("official: Version is read so a same-version delta is visible",
+      hunt.spec_text_field(OFFICIAL, "Version"), "0.20.2")
+check("official: a missing field reports empty, never a stale value",
+      hunt.spec_text_field(OFFICIAL, "Epoch"), "")
+check("official: a macro Version comes back raw instead of silently expanded",
+      hunt.spec_text_field("Version: %{basever}%{snap}\n", "Version"), "%{basever}%{snap}")
+check("official: a Requires line is not mistaken for the Version field",
+      hunt.spec_text_field(OFFICIAL, "Requires"), "")
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)
