@@ -5,14 +5,14 @@
 %global __requires_exclude_from ^%{helium_base}/libqt[56]_shim[.]so.*$
 
 Name:               helium-browser
-Version:        0.22.2.1
+Version:        0.22.4.1
 Release:        1%{?dist}
 Summary:            Private, fast, and honest web browser
 
 License:            GPL-3.0-only AND BSD-3-Clause
 URL:                https://github.com/imputnet/helium-linux
 Source0:            https://github.com/imputnet/helium-linux/releases/download/%{version}/helium-%{version}-x86_64_linux.tar.xz
-# sha256: f7546bc7dd86027e924916fdeb62604dfc9b4507bc74c572cbd1c596cec4d0ca
+# sha256: 00d0fd239315549e91253cf2495b021a403ccf98977a7925742b020c0577bd2c
 Source1:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/package/net.imput.helium.metainfo.xml
 Source2:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/LICENSE
 Source3:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/LICENSE.ungoogled_chromium
@@ -96,6 +96,10 @@ esac
 %{_datadir}/icons/hicolor/256x256/apps/helium.png
 
 %changelog
+* Wed Nov 25 2026 Ackerman-00 <no-reply> - 0.22.4.1-1
+- Update to upstream release 0.22.4.1 (Chromium 158.0.8127.88, read from the
+  shipped binary with --version; tarball sha256 verified)
+
 * Sat Nov 21 2026 Ackerman-00 <no-reply> - 0.22.2.1-1
 - Update to upstream release 0.22.2.1 (Chromium 158.0.8127.36, read from the
   shipped binary; tarball sha256 verified). Upstream now ships hyphen-data
