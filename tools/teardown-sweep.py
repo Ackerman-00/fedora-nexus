@@ -3673,9 +3673,17 @@ def main():
     n_bad = sum(1 for s in pkg_worst.values() if is_bad(s))
 
     report = Path(args.report)
+    stamp_date = time.strftime("%Y-%m-%d", time.gmtime())
+    try:
+        stamp_commit = subprocess.run(["git", "-C", str(root), "rev-parse", "--short", "HEAD"],
+                                      capture_output=True, text=True, timeout=20).stdout.strip() or "unknown"
+    except Exception:
+        stamp_commit = "unknown"
     lines = ["# Teardown Sweep Report", "",
-             "Repo type: **%s**. Sweep of **%d** packages. Exit code is the "
-             "verdict; this report is the receipt." % (repo_type, len(pkgs)),
+             "Sweep date: **%s** | commit: `%s` | repo type: **%s** | packages: **%d**."
+             % (stamp_date, stamp_commit, repo_type, len(pkgs)),
+             "Exit code is the verdict; this report is the receipt.",
+             "",
              "| Package | Distfile | Pinned | Internal | Status | Note |",
              "|---|---|---|---|---|---|"]
     for pkg, dist, pinned, internal, status, note in rows:

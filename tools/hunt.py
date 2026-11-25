@@ -12,6 +12,8 @@ Output: one relay-ready line per category
 followed by the detail rows for anything that needs fixing.
 """
 import calendar
+import datetime
+import glob
 import gzip
 import hashlib
 import importlib.util
@@ -964,6 +966,44 @@ def hunt_readme():
             "", findings)
 
 
+def report_stamp(text):
+    """Date and package count stamped into teardown-report.md."""
+    m = re.search(r"Sweep date: \*\*(\d{4}-\d{2}-\d{2})\*\*.*?packages: \*\*(\d+)\*\*", text)
+    if not m:
+        return (None, None)
+    return (m.group(1), int(m.group(2)))
+
+
+def report_findings(text, today, n_pkgs, max_age_days=7):
+    """An undated or aged sweep receipt is a fossil, not evidence."""
+    stamp, covered = report_stamp(text)
+    if stamp is None:
+        return [("teardown-report.md", "no dated sweep stamp, the receipt cannot be aged")]
+    findings = []
+    age = (datetime.date.fromisoformat(today) - datetime.date.fromisoformat(stamp)).days
+    if age > max_age_days:
+        findings.append(("teardown-report.md",
+                         "sweep stamp %s is %d days old (limit %d)" % (stamp, age, max_age_days)))
+    if covered != n_pkgs:
+        findings.append(("teardown-report.md",
+                         "sweep covered %s packages, inventory is %d" % (covered, n_pkgs)))
+    return findings
+
+
+def hunt_report_freshness():
+    path = os.path.join(ROOT, "teardown-report.md")
+    try:
+        text = open(path, encoding="utf-8", errors="replace").read()
+    except OSError:
+        return ("report-freshness", "teardown-report.md missing", "", [("teardown-report.md", "missing")])
+    today = time.strftime("%Y-%m-%d", time.gmtime())
+    n_pkgs = len([p for p in glob.glob(os.path.join(ROOT, "*", "*.spec"))])
+    stamp, covered = report_stamp(text)
+    findings = report_findings(text, today, n_pkgs)
+    return ("report-freshness", "stamp %s for %s of %d packages, %d finding(s)"
+            % (stamp or "absent", covered, n_pkgs, len(findings)), "", findings)
+
+
 def nvr_norm(s):
     """Name-version-release without dist, epoch or .src.rpm wrapper."""
     s = (s or "").strip()
@@ -1723,7 +1763,7 @@ HUNTS = (hunt_builds, hunt_network_build, hunt_chroots, hunt_copr_config, hunt_u
          hunt_licenses, hunt_release_discipline, hunt_version_probe, hunt_sources,
          hunt_pins, hunt_readme, hunt_published_nvr, hunt_probes, hunt_probe_paths, hunt_sandbox,
          hunt_macros, hunt_fedora_releases, hunt_chroot_docs, hunt_slice, hunt_files_syntax,
-         hunt_updaters, hunt_emails)
+         hunt_updaters, hunt_emails, hunt_report_freshness)
 
 
 def main():

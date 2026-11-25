@@ -257,6 +257,23 @@ check("official: a macro Version comes back raw instead of silently expanded",
 check("official: a Requires line is not mistaken for the Version field",
       hunt.spec_text_field(OFFICIAL, "Requires"), "")
 
+STAMPED = "# Teardown Sweep Report\n\nSweep date: **2026-11-25** | commit: `abc1234` | packages: **74**.\n"
+check("report: dated stamp is read with its package count",
+      hunt.report_stamp(STAMPED), ("2026-11-25", 74))
+check("report: a report without a stamp reads as absent, never as today",
+      hunt.report_stamp("# Teardown Sweep Report\n\nSweep of **74** packages.\n"), (None, None))
+check("report: a fresh, complete stamp has no findings",
+      hunt.report_findings(STAMPED, "2026-11-25", 74), [])
+check("report: an aged receipt is a finding",
+      hunt.report_findings(STAMPED, "2026-12-05", 74),
+      [("teardown-report.md", "sweep stamp 2026-11-25 is 10 days old (limit 7)")])
+check("report: a receipt that skipped a new package is a finding",
+      hunt.report_findings(STAMPED, "2026-11-25", 75),
+      [("teardown-report.md", "sweep covered 74 packages, inventory is 75")])
+check("report: an undated receipt is called out instead of passing",
+      hunt.report_findings("# Teardown Sweep Report\n", "2026-11-25", 74),
+      [("teardown-report.md", "no dated sweep stamp, the receipt cannot be aged")])
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)
