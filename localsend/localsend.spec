@@ -5,7 +5,7 @@
 
 Name:           localsend
 Version:        1.19.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        An open source cross-platform alternative to AirDrop
 
 License:        Apache-2.0
@@ -19,11 +19,22 @@ BuildRequires:  binutils
 BuildRequires:  patchelf
 BuildRequires:  tar
 
-Requires:           hicolor-icon-theme
-Requires:       libayatana-appindicator-gtk3
-Requires:       libayatana-ido-gtk3
+Requires:       hicolor-icon-theme
+Requires:       libatk-1.0.so.0()(64bit)
+Requires:       libayatana-appindicator3.so.1()(64bit)
+Requires:       libayatana-ido3-0.4.so.0()(64bit)
+Requires:       libayatana-indicator3.so.7()(64bit)
+Requires:       libcairo-gobject.so.2()(64bit)
+Requires:       libcairo.so.2()(64bit)
+Requires:       libdbusmenu-glib.so.4()(64bit)
 Requires:       libEGL.so.1()(64bit)
+Requires:       libepoxy.so.0()(64bit)
+Requires:       libgdk_pixbuf-2.0.so.0()(64bit)
 Requires:       libGLESv2.so.2()(64bit)
+Requires:       libgtk-3.so.0()(64bit)
+Requires:       libharfbuzz.so.0()(64bit)
+Requires:       libpango-1.0.so.0()(64bit)
+Requires:       libpangocairo-1.0.so.0()(64bit)
 Requires:       xdg-user-dirs
 
 %description
@@ -72,10 +83,15 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %files
 %license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/localsend_app
-%{_datadir}/applications/localsend_app.desktop
+%{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/apps/localsend_app.png
 %{_libdir}/localsend_app/
 
 %changelog
+* Wed Nov 25 2026 Ackerman-00 <no-reply> - 1.19.0-2
+- Accept the upstream desktop entry rename (org.localsend.localsend_app.desktop)
+- Declare the toolkit sonames the payload links; the private tree is excluded
+  from autorequires
+
 * Wed Nov 25 2026 Ackerman-00 <no-reply> - 1.19.0-1
 - Auto-update to upstream release v1.19.0
