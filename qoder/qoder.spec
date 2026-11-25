@@ -3,15 +3,15 @@
 %global __provides_exclude_from ^/opt/Qoder/.*$
 %global __brp_mangle_shebangs_exclude_from ^/opt/Qoder/.*$
 Name:           qoder
-Version:        0.5.17
-# sha256: 04246c29959df541dbee5cf56f646b9e459d87afc48fef4dd43178887e16ff90
+Version:        0.5.18
+# sha256: 608f2e10b15685d48bb00589e1b704966e5698fd1fbd66ae489a761bcfc6eb04
 Release:        1%{?dist}
 Epoch:          1
 Summary:        Agent workbench for human and AI software teams
 License:        SUSE-Freeware
 Group:          Development/Tools/IDE
 URL:            https://qoder.com
-Source0:        https://download.qoder.com.cn/qoder-app/releases/0.5.17/Qoder-linux-amd64.deb
+Source0:        https://download.qoder.com.cn/qoder-app/releases/0.5.18/Qoder-linux-amd64.deb
 Source1:        qoder-rpmlintrc
 BuildRequires:  binutils
 BuildRequires:  desktop-file-utils
@@ -151,5 +151,5 @@ fi
 %attr(4755, root, root) /opt/Qoder/chrome-sandbox
 
 %changelog
-* Fri Nov 20 2026 Ackerman-00 <no-reply> - 0.5.17-1
-- Update to upstream release 0.5.17
+* Wed Nov 25 2026 Ackerman-00 <no-reply> - 0.5.18-1
+- Update to upstream release 0.5.18
