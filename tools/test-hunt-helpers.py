@@ -274,6 +274,51 @@ check("report: an undated receipt is called out instead of passing",
       hunt.report_findings("# Teardown Sweep Report\n", "2026-11-25", 74),
       [("teardown-report.md", "no dated sweep stamp, the receipt cannot be aged")])
 
+
+class Clock:
+    def __init__(self):
+        self.now = 1000.0
+        self.slept = []
+
+    def time(self):
+        return self.now
+
+    def sleep(self, seconds):
+        self.slept.append(seconds)
+        self.now += seconds
+
+
+clock = Clock()
+real_time = hunt.time
+hunt.time = clock
+hunt._HOST_NEXT.clear()
+hunt.throttle("https://codeberg.org/LGFae/awww")
+hunt.throttle("https://codeberg.org/ThetaDev/rustypipe-botguard")
+check("throttle: a second call to the same host waits the gap", round(clock.slept[-1], 2), 1.0)
+hunt.throttle("https://api.github.com/repos/x/y")
+check("throttle: another host is not delayed by the first", len(clock.slept), 1)
+clock.slept.clear()
+hunt._HOST_NEXT.clear()
+hunt.throttle("https://codeberg.org/LGFae/awww", gap=3)
+hunt.throttle("https://codeberg.org/LGFae/awww")
+check("throttle: the gap is per call, not fixed", round(clock.slept[-1], 2), 3.0)
+hunt.time = real_time
+hunt._HOST_NEXT.clear()
+
+
+def http_error(headers=None):
+    return hunt.urllib.error.HTTPError("u", 429, "slow", headers or {}, None)
+
+
+check("retry: Retry-After seconds are honoured",
+      hunt.retry_after(http_error({"Retry-After": "30"}), 0), 30)
+check("retry: an oversized Retry-After is capped",
+      hunt.retry_after(http_error({"Retry-After": "9999"}), 0), 120)
+check("retry: a missing Retry-After backs off per attempt",
+      hunt.retry_after(http_error(), 1), 30)
+check("retry: a garbage Retry-After still backs off",
+      hunt.retry_after(http_error({"Retry-After": "soon"}), 0), 15)
+
 if FAILS:
     for f in FAILS:
         print("FAIL " + f)

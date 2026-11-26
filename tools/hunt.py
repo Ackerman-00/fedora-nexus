@@ -45,9 +45,29 @@ def _gh_headers():
     return headers
 
 
-def get_json(url, timeout=45, attempts=3):
+_HOST_NEXT = {}
+
+
+def throttle(url, gap=1.0):
+    """One request per gap seconds per host: Codeberg answers 429 to a burst."""
+    host = urllib.parse.urlsplit(url).netloc
+    wait = _HOST_NEXT.get(host, 0) - time.time()
+    if wait > 0:
+        time.sleep(wait)
+    _HOST_NEXT[host] = time.time() + gap
+
+
+def retry_after(exc, attempt):
+    try:
+        return min(int(exc.headers.get("Retry-After") or 0), 120) or 15 * (attempt + 1)
+    except (TypeError, ValueError):
+        return 15 * (attempt + 1)
+
+
+def get_json(url, timeout=45, attempts=4):
     req = urllib.request.Request(url, headers=_gh_headers() if "api.github.com" in url else UA)
     for attempt in range(attempts):
+        throttle(url)
         try:
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 return json.loads(r.read().decode())
@@ -55,7 +75,7 @@ def get_json(url, timeout=45, attempts=3):
             if exc.code in (403, 404):
                 return None
             if exc.code in (429, 500, 502, 503, 504) and attempt + 1 < attempts:
-                time.sleep(5 * (attempt + 1))
+                time.sleep(retry_after(exc, attempt))
                 continue
             raise
         except (urllib.error.URLError, OSError):
@@ -90,7 +110,7 @@ def _range_total(header):
         return 0
 
 
-def fetch_sha256(url, attempts=3):
+def fetch_sha256(url, attempts=4):
     """sha256 of a remote file, resumed across attempts.
 
     A short read must never yield a digest, and a CDN that closes early is
@@ -107,6 +127,7 @@ def fetch_sha256(url, attempts=3):
             if got:
                 headers["Range"] = "bytes=%d-" % got
             try:
+                throttle(url)
                 req = urllib.request.Request(url, headers=headers)
                 with urllib.request.urlopen(req, timeout=600) as r:
                     if got and r.status != 206:
@@ -128,7 +149,8 @@ def fetch_sha256(url, attempts=3):
                 return h.hexdigest(), ""
             except Exception as exc:  # noqa: BLE001 - any transport error retries
                 last = "%s: %s" % (type(exc).__name__, exc)
-                time.sleep(2 * (n + 1))
+                delay = retry_after(exc, n) if isinstance(exc, urllib.error.HTTPError) else 2 * (n + 1)
+                time.sleep(delay)
         return "", last
     finally:
         try:
