@@ -1,4 +1,4 @@
-%global tag         v0.6.8
+%global tag         v0.6.9
 %global app_id      com.vysp3r.ProtonPlus
 %global forgeurl    https://github.com/vysp3r/ProtonPlus
 %forgemeta
@@ -6,7 +6,7 @@
 
 Name:           protonplus
 Version:        %{fileref}
-Release:        7%{?dist}
+Release:        1%{?dist}
 Summary:        A modern compatibility tools manager
 ExclusiveArch:  x86_64
 
@@ -66,27 +66,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
 %{_metainfodir}/%{app_id}.metainfo.xml
 
 %changelog
-* Fri Nov 13 2026 Ackerman-00 <no-reply> - 0.6.8-7
-- Drop Requires: which: its only call site is the flatpak branch of check_dependency, which an RPM install never takes
-* Thu Nov 12 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.6.8-6
-- Depend on the soname libGLESv2.so.2()(64bit) instead of the virtual
-  mesa-libGLES package name; the glvnd split serves no real mesa-libGLES
-  package on f44/f45/rawhide, libglvnd-gles provides the soname there.
-  Same upstream v0.6.8.
-
-* Sun Oct 18 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.6.8-5
-- Add Requires: mesa-libGLES (libGLESv2.so.2 is dlopened at startup; the
-  binary aborted RC=134 on a clean live install without it - launch-proven
-  fixed in fedora:44 container). Same upstream v0.6.8.
-* Fri Oct 09 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.6.8-4
-- Drop unused libappstream-glib BuildRequires (no in-spec consumer; upstream
-  meson needs only the freedesktop appstream library). Same upstream v0.6.8.
-* Sun Sep 27 2026 Ackerman-00 <no-reply> - 0.6.8-3
-- Wrap %description to fix rpmlint E: description-line-too-long
-
-* Wed Sep 23 2026 Ackerman-00 <no-reply> - 0.6.8-2
-- Add missing BuildRequires: python3 (tests/meson.build uses
-  python.find_installation for scripts_test.py run in %check)
-
-* Thu Sep 10 2026 Ackerman-00 <no-reply> - 0.6.8-1
-- Update to version 0.6.8
+* Thu Nov 26 2026 Ackerman-00 <no-reply> - 0.6.9-1
+- Update to version 0.6.9
