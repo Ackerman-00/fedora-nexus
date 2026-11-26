@@ -5,14 +5,14 @@
 %global __requires_exclude_from ^%{helium_base}/libqt[56]_shim[.]so.*$
 
 Name:               helium-browser
-Version:        0.22.4.1
+Version:        0.22.5.1
 Release:        1%{?dist}
 Summary:            Private, fast, and honest web browser
 
 License:            GPL-3.0-only AND BSD-3-Clause
 URL:                https://github.com/imputnet/helium-linux
 Source0:            https://github.com/imputnet/helium-linux/releases/download/%{version}/helium-%{version}-x86_64_linux.tar.xz
-# sha256: 00d0fd239315549e91253cf2495b021a403ccf98977a7925742b020c0577bd2c
+# sha256: 2d5ba1e03c4da061de9adf2b714b967ab55b7b017b37cd93080fdb97c0038886
 Source1:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/package/net.imput.helium.metainfo.xml
 Source2:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/LICENSE
 Source3:            https://raw.githubusercontent.com/imputnet/helium-linux/%{version}/LICENSE.ungoogled_chromium
@@ -96,48 +96,6 @@ esac
 %{_datadir}/icons/hicolor/256x256/apps/helium.png
 
 %changelog
-* Wed Nov 25 2026 Ackerman-00 <no-reply> - 0.22.4.1-1
-- Update to upstream release 0.22.4.1 (Chromium 158.0.8127.88, read from the
+* Thu Nov 26 2026 Ackerman-00 <no-reply> - 0.22.5.1-1
+- Update to upstream release 0.22.5.1 (Chromium 158.0.8127.88, read from the
   shipped binary with --version; tarball sha256 verified)
-
-* Sat Nov 21 2026 Ackerman-00 <no-reply> - 0.22.2.1-1
-- Update to upstream release 0.22.2.1 (Chromium 158.0.8127.36, read from the
-  shipped binary; tarball sha256 verified). Upstream now ships hyphen-data
-  inside the payload, which %{helium_base} already packages.
-
-* Wed Nov 18 2026 Ackerman-00 <no-reply> - 0.22.1.1-1
-- Update to upstream release 0.22.1.1 (Chromium 158.0.8127.36, read from the
-  shipped binary; tarball sha256 verified)
-
-* Sun Nov 15 2026 Ackerman-00 <no-reply> - 0.21.3.1-2
-- Recommend xdg-desktop-portal and its GTK backend: Wayland screen sharing,
-  file dialogs and notifications go through the portal, and a minimal
-  compositor install ships none
-* Fri Nov 13 2026 Ackerman-00 <no-reply> - 0.21.3.1-1
-- Update to upstream release 0.21.3.1 (Chromium 157.0.8103.78, read from the
-  shipped binary; tarball sha256 verified)
-
-* Thu Nov 12 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.21.2.1-2
-- Exclude the Qt5/Qt6 shim plugins from automatic Requires: they are
-  optional Chromium plugins and their libQt5*/libQt6* sonames pulled
-  qt5-qtbase and qt6-qtbase into every install.
-- Drop Requires: dbus-daemon. The browser needs libdbus-1.so.3 (automatic);
-  the session bus belongs to the desktop, as in Fedora's chromium and firefox.
-
-* Tue Nov 10 2026 Ackerman-00 <no-reply> - 0.21.2.1-1
-- Update to upstream release 0.21.2.1
-
-* Sat Nov 07 2026 Ackerman-00 <no-reply> - 0.21.1.1-1
-- Update to upstream release 0.21.1.1 (Chromium 157.0.8103.38)
-* Thu Oct 22 2026 Ackerman-00 <no-reply> - 0.20.1.1-1
-- Update to upstream release 0.20.1.1 (Chromium 156.0.8078.47)
-* Sat Oct 17 2026 Ackerman-00 <no-reply> - 0.19.4.1-1
-- Update to upstream release 0.19.4.1 (Chromium 155.0.8059.84)
-* Wed Oct 14 2026 Ackerman-00 <no-reply> - 0.19.3.1-1
-- Update to upstream release 0.19.3.1 (Chromium 155.0.8059.79)
-* Fri Oct 09 2026 Ackerman-00 <no-reply> - 0.19.2.1-1
-- Update to upstream release 0.19.2.1 (Chromium 155.0.8059.39 revision 2:
-  browser-level exceptions for Google services, DBSC flags restored)
-
-* Thu Oct 08 2026 Ackerman-00 <no-reply> - 0.19.1.2-1
-- Update to upstream release 0.19.1.2 (Chromium 155.0.8059.39)
