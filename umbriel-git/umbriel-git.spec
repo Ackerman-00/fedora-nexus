@@ -1,6 +1,6 @@
-%global commit          6a7ee9587c521799712e809b571b7d01b2372cdb
+%global commit          edd40d573452251c1bc1bf1d299107c08acf3887
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261125211124
+%global gitdate         20261126161805
 
 %global _lto_cflags %{nil}
 
@@ -130,5 +130,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_userunitdir}/umbriel-shutdown.target
 
 %changelog
-* Thu Nov 26 2026 Ackerman-00 <no-reply> - 0.1.0^20261125211124git6a7ee95-1
-- Nightly sync with upstream main branch (Commit: 6a7ee95)
+* Thu Nov 26 2026 Ackerman-00 <no-reply> - 0.1.0^20261126161805gitedd40d5-1
+- Nightly sync with upstream main branch (Commit: edd40d5)

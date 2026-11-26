@@ -1,7 +1,7 @@
 %global crate concord
 
 Name:           concord
-Version:        2.7.2
+Version:        2.7.3
 Release:        1%{?dist}
 Summary:        Feature-rich TUI client for Discord
 License:        GPL-3.0-only
@@ -59,5 +59,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_bindir}/concord
 
 %changelog
-* Sat Nov 21 2026 Ackerman-00 <no-reply> - 2.7.2-1
-- Auto-update to upstream stable release v2.7.2
+* Thu Nov 26 2026 Ackerman-00 <no-reply> - 2.7.3-1
+- Auto-update to upstream stable release v2.7.3

@@ -1,7 +1,7 @@
-%global zooland_commit   5ab51a09b14fbd17fc0afd68a0daa16c6924eefb
-%global shortcommit     a0228a8
-%global gitdate         20261124130655
-%global base_version    0.1.51
+%global zooland_commit   5f4bf9a9309e6eab5f12246fdf0df7ef5b4044e0
+%global shortcommit     19e99c0
+%global gitdate         20261126121034
+%global base_version    0.1.52
 
 Name:           zoolander-git
 Version:        %{base_version}+git%{gitdate}.%{shortcommit}
@@ -10,10 +10,10 @@ Summary:        Zoolander Wayland compositor, built from the git snapshot
 
 License:        MIT
 URL:            https://git.pika-os.com/otter-shell/zoolander
-Source0:        https://git.pika-os.com/api/v1/repos/otter-shell/zoolander/archive/a0228a8229b07dae296274e7d62de11ac1a91f68.tar.gz#/zoolander-a0228a8229b07dae296274e7d62de11ac1a91f68.tar.gz
-# sha256: a44277fd68251211e65c803532074e5b07792efbea40c62302ae7eaebecabb31
-Source1:        https://git.pika-os.com/api/v1/repos/otter-shell/zooland/archive/5ab51a09b14fbd17fc0afd68a0daa16c6924eefb.tar.gz#/zooland-5ab51a09b14fbd17fc0afd68a0daa16c6924eefb.tar.gz
-# sha256: 9a30e893cddf623acad1493f201aab3b570733bb6767ed1942ddf19786e746a8
+Source0:        https://git.pika-os.com/api/v1/repos/otter-shell/zoolander/archive/19e99c00e2e20ac74696c2515caa2dd7d2a29374.tar.gz#/zoolander-19e99c00e2e20ac74696c2515caa2dd7d2a29374.tar.gz
+# sha256: 8e54ad30fd47005ddf96cb45d7883e2040e9fcc66362c80bff006f29e9968b71
+Source1:        https://git.pika-os.com/api/v1/repos/otter-shell/zooland/archive/5f4bf9a9309e6eab5f12246fdf0df7ef5b4044e0.tar.gz#/zooland-5f4bf9a9309e6eab5f12246fdf0df7ef5b4044e0.tar.gz
+# sha256: 47b09288c2209607b4f957742f880f137044454c226368d6e96f8041f0eb6f97
 
 # built by the otr toolchain over mold: no build-id note to link
 %global debug_package %{nil}
@@ -143,5 +143,5 @@ if [ "$1" -eq 1 ]; then
 fi
 
 %changelog
-* Wed Nov 25 2026 Ackerman-00 <no-reply> - 0.1.51+git20261124130655.a0228a8-1
-- Nightly sync with upstream main branch (Commit: a0228a8)
+* Thu Nov 26 2026 Ackerman-00 <no-reply> - 0.1.52+git20261126121034.19e99c0-1
+- Nightly sync with upstream main branch (Commit: 19e99c0)
