@@ -6,7 +6,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -60,6 +60,7 @@ Requires:       mesa-dri-drivers
 Requires:       mesa-libEGL
 Requires:       xdg-desktop-portal
 Requires:       systemd
+Recommends:     dinit
 Requires:       dbus-daemon
 Requires:       dbus-tools
 Requires:       kmscon
@@ -128,7 +129,9 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_userunitdir}/umbriel.service
 %{_userunitdir}/umbriel-session.target
 %{_userunitdir}/umbriel-shutdown.target
+%{_prefix}/lib/dinit.d/user/umbriel
+%{_prefix}/lib/dinit.d/user/umbriel-session
 
 %changelog
-* Thu Nov 26 2026 Ackerman-00 <no-reply> - 0.1.0^20261126161805gitedd40d5-1
-- Nightly sync with upstream main branch (Commit: edd40d5)
+* Thu Nov 26 2026 Ackerman-00 <no-reply> - 0.1.0^20261126161805gitedd40d5-2
+- Package the dinit user services upstream now installs
