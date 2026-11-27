@@ -5,13 +5,13 @@
 %global __requires_exclude_from ^/opt/OpenChamber/.*$
 
 Name:           openchamber
-Version:        2.8.0
+Version:        2.8.1
 Release:        1%{?dist}
 Summary:        AI coding agent workspace (Electron)
 License:        MIT
 URL:            https://github.com/openchamber/openchamber
-Source0:        https://github.com/openchamber/openchamber/releases/download/v2.8.0/OpenChamber-2.8.0-linux-x86_64.rpm
-# sha256: 772ee68f7bc364b266cc45e1ac85d9f89a98e3733327837e6904563b8aa62f53
+Source0:        https://github.com/openchamber/openchamber/releases/download/v2.8.1/OpenChamber-2.8.1-linux-x86_64.rpm
+# sha256: f9b84d344a6a5b38eade8f5f2e39578208b3cfceca93c7ed142bbe813d69a640
 Source1:        %{url}/raw/v%{version}/LICENSE
 
 ExclusiveArch:  x86_64
@@ -93,5 +93,5 @@ chmod 4755 /opt/OpenChamber/chrome-sandbox || true
 if command -v update-desktop-database >/dev/null 2>&1; then update-desktop-database %{_datadir}/applications >/dev/null 2>&1 || true; fi
 
 %changelog
-* Sun Nov 22 2026 Ackerman-00 <no-reply> - 2.8.0-1
-- Auto-update to upstream release v2.8.0
+* Fri Nov 27 2026 Ackerman-00 <no-reply> - 2.8.1-1
+- Auto-update to upstream release v2.8.1
