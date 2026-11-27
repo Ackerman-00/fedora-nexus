@@ -1,6 +1,6 @@
 # Teardown Sweep Report
 
-Sweep date: **2026-11-25** | commit: `6137c7a` | repo type: **fedora** | packages: **74**.
+Sweep date: **2026-11-27** | commit: `6137c7a` | repo type: **fedora** | packages: **74**.
 Exit code is the verdict; this report is the receipt.
 
 | Package | Distfile | Pinned | Internal | Status | Note |
