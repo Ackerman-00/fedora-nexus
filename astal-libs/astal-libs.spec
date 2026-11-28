@@ -1,12 +1,12 @@
-%global commit          b7aaf4ce69ebb3c5b1818d524e04b23bc755a97d
+%global commit          c1d07137bddac97ddbbfd05a3f7aadd61436c5bc
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261108102027
+%global gitdate         20261128122733
 
 %global _lto_cflags %{nil}
 
 Name:           astal-libs
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Astal libraries
 
 License:        LGPL-2.1-only
@@ -210,8 +210,5 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &>/dev/null || :
 %{_libdir}/pkgconfig/quarrel-0.1.pc
 
 %changelog
-* Sat Nov 14 2026 Ackerman-00 <no-reply> - 0^20261108102027gitb7aaf4c-2
-- Move the in-app updater strip into %install
-
-* Sun Nov 08 2026 Ackerman-00 <no-reply> - 0^20261108102027gitb7aaf4c-1
-- Nightly sync with upstream main branch (Commit: b7aaf4c)
+* Sat Nov 28 2026 Ackerman-00 <no-reply> - 0^20261128122733gitc1d0713-1
+- Nightly sync with upstream main branch (Commit: c1d0713)

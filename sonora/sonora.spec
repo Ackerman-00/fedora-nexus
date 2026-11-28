@@ -3,16 +3,16 @@
 %global debug_package %{nil}
 
 Name:           sonora
-Version:        0.50.3
+Version:        0.51.0
 Release:        1%{?dist}
 Summary:        Native music streaming client
 
 License:        GPL-3.0-or-later AND OFL-1.1 AND ISC AND MIT AND Apache-2.0 AND CC-BY-4.0
 URL:            https://github.com/sonorahq/sonora
 Source0:        %{url}/releases/download/v%{version}/sonora-v%{version}-x86_64-unknown-linux-gnu
-# sha256: ff08641f4c076e5b5b986ca10da6afa8e154a6ae6d15b6d13ae41dac8534d020
+# sha256: 5f5d19de73f6b2fcf001e5d412015bb7710fddecb54a6dc5599c4ffaaca455b1
 Source1:        %{url}/archive/refs/tags/v%{version}.tar.gz
-# sha256: 8e1a1af03675cacbea6e42538b87564f2493120fc56377ed2afbfde710092571
+# sha256: af7b15060010f966630666214a21a1b7004c39d8c9a9c3e02e8510425960f5fa
 
 ExclusiveArch:  x86_64
 
@@ -97,5 +97,5 @@ esac
 %{_metainfodir}/%{appid}.metainfo.xml
 
 %changelog
-* Fri Nov 20 2026 Ackerman-00 <no-reply> - 0.50.3-1
+* Sat Nov 28 2026 Ackerman-00 <no-reply> - 0.51.0-1
 - Repackage the upstream prebuilt x86_64 binary

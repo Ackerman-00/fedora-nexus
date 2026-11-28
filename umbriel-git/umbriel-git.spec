@@ -1,12 +1,12 @@
-%global commit          9300aa9d844087253e18c41ccbd883fc3d6ae61f
+%global commit          fb94dc1f137ea0bc37d7a484ab9860c28c7b7462
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261128010659
+%global gitdate         20261128155532
 
 %global _lto_cflags %{nil}
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -133,5 +133,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_prefix}/lib/dinit.d/user/umbriel-session
 
 %changelog
-* Sat Nov 28 2026 Ackerman-00 <no-reply> - 0.1.0^20261128010659git9300aa9-2
-- Repair the changelog receipt for the shipped snapshot (commit 9300aa9)
+* Sat Nov 28 2026 Ackerman-00 <no-reply> - 0.1.0^20261128155532gitfb94dc1-1
+- Nightly sync with upstream main branch (Commit: fb94dc1)
