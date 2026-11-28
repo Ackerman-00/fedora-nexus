@@ -75,6 +75,18 @@ check 'owner ask anchored' '^[[:space:]]*([-*][[:space:]]*)?(needs-owner|waiting
 check 'owner ask mid-line' "$OWNER" 'closing note: owner declined to pursue' hit
 check 'clean relay line' "$OWNER" 'all 73 packages verified, published NVR matches' miss
 
+claims_of() {
+  awk '/^----- VERIFICATION REPORT -----$/ { report = 1; next }
+       report && /^$/ { report = 0; next }
+       report { next }
+       { print }' <<< "$1"
+}
+claims_sample=$(claims_of $'PASS: agent claim before report\n----- VERIFICATION REPORT -----\nCorrectness-contract rows: 74 (need 74)\nPASS: machine output line\n\nneeds-owner: after report')
+check 'report row excluded from claims' 'Correctness-contract rows' "$claims_sample" miss
+check 'report PASS line excluded from claims' 'machine output line' "$claims_sample" miss
+check 'claim before report kept' 'agent claim before report' "$claims_sample" hit
+check 'marker after report still checked' 'needs-owner' "$claims_sample" hit
+
 TODAY_STAMP=$(date -u +%F)
 YEST_STAMP=$(date -u -d yesterday +%F 2>/dev/null || date -u -v-1d +%F)
 FRESH_GAP="GAP: external - ladybird-unstable not published yet [probe: curl api_3/build/chroot/list -> running $TODAY_STAMP]"

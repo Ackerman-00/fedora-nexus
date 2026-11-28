@@ -62,6 +62,12 @@ if [[ -f "$RELAY" ]]; then
   fi
 
   scope=$(scope_of "$RELAY" "$RUN_ID")
+  claims_scope=$(awk '
+    /^----- VERIFICATION REPORT -----$/ { report = 1; next }
+    report && /^$/ { report = 0; next }
+    report { next }
+    { print }
+  ' <<< "$scope")
 
   if ! grep -qix "status: complete" <<< "$scope"; then
     echo "FAIL: NOT COMPLETE -- this run's block does not carry status: complete"
@@ -423,8 +429,8 @@ elif ! grep -qE '[0-9a-f]{7,40}|AGENTS\.md#|issue[[:space:]]*#[0-9]+|relay[[:spa
 else
   echo "PASS: why answered from the record"
 fi
-wait_line=$(grep -im1 -E '^[[:space:]]*([-*][[:space:]]*)?(needs-owner|waiting for (the )?owner|awaiting (the )?owner|pending owner|owner approval|human approval|needs approval|owner to apply|requires owner)' <<< "$scope" || true)
-owner_ask=$(grep -im1 -E 'needs[[:space:]]*-?[[:space:]]*owner|wait(ing)? for (the )?owner|ask(ing)? (the )?owner|owner.{0,20}(approv|decid|permission)|(approv|permission).{0,20}from (the )?owner|owner declined' <<< "$scope" || true)
+wait_line=$(grep -im1 -E '^[[:space:]]*([-*][[:space:]]*)?(needs-owner|waiting for (the )?owner|awaiting (the )?owner|pending owner|owner approval|human approval|needs approval|owner to apply|requires owner)' <<< "$claims_scope" || true)
+owner_ask=$(grep -im1 -E 'needs[[:space:]]*-?[[:space:]]*owner|wait(ing)? for (the )?owner|ask(ing)? (the )?owner|owner.{0,20}(approv|decid|permission)|(approv|permission).{0,20}from (the )?owner|owner declined' <<< "$claims_scope" || true)
 if [[ -n "$wait_line" || -n "$owner_ask" ]]; then
   echo "FAIL: NOT COMPLETE -- owner-approval/needs-owner marker in this run: ${wait_line:-$owner_ask}"
   FAIL=1
