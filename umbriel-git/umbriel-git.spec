@@ -1,6 +1,6 @@
-%global commit          13d97a28a26e3a077a032319c5183e48c55bc9cb
+%global commit          9300aa9d844087253e18c41ccbd883fc3d6ae61f
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261127225728
+%global gitdate         20261128010659
 
 %global _lto_cflags %{nil}
 

@@ -1,6 +1,6 @@
-%global commit          5c26fac21fd3896024a23f2dbc62b722f9a731db
+%global commit          04b9528f7d9a43f2250183fbb6877f9bee29fd28
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261108202129
+%global gitdate         20261128032340
 
 Name:           lazyvim-git
 Epoch:          1

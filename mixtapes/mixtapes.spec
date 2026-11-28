@@ -1,6 +1,6 @@
 
-%global commit          a50a75d4d74c3355e7398f35097da47b05df572f
-%global gitdate         20261031223600
+%global commit          04b9528f7d9a43f2250183fbb6877f9bee29fd28
+%global gitdate         20261128032340
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           mixtapes

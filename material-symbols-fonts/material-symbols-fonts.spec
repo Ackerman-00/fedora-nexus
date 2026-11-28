@@ -1,4 +1,4 @@
-%global commit          10ecc14790612ca8fd164e3f4ffe9c16fc50d5b7
+%global commit          04b9528f7d9a43f2250183fbb6877f9bee29fd28
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global snapdate         20261023021843
 
