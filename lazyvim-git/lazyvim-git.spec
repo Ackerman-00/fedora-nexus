@@ -1,6 +1,6 @@
-%global commit          04b9528f7d9a43f2250183fbb6877f9bee29fd28
+%global commit          5c26fac21fd3896024a23f2dbc62b722f9a731db
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261128032340
+%global gitdate         20261108202129
 
 Name:           lazyvim-git
 Epoch:          1
@@ -52,7 +52,5 @@ fi
 %{_datadir}/lazyvim/
 
 %changelog
-* Sun Nov 08 2026 Ackerman-00 <no-reply> - 1:0.1^20261108202129git5c26fac-1
-- Sync with upstream main branch (Commit: 5c26fac, release 16.0.2)
-* Sat Nov 07 2026 Ackerman-00 <no-reply> - 1:0.1^20261107153028gitf653596-1
-- Sync with upstream main branch (Commit: f653596)
+* Sat Nov 28 2026 Ackerman-00 <no-reply> - 1:0.1^20261108202129git5c26fac-1
+- Sync with upstream main branch (Commit: 5c26fac)

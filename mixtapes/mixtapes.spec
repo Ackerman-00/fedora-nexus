@@ -1,11 +1,11 @@
 
-%global commit          04b9528f7d9a43f2250183fbb6877f9bee29fd28
-%global gitdate         20261128032340
+%global commit          a50a75d4d74c3355e7398f35097da47b05df572f
+%global gitdate         20261031223600
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           mixtapes
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        A cross-platform GTK4/Libadwaita YouTube Music client written in Rust
 
 License:        GPL-3.0-or-later
@@ -97,6 +97,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/com.pocoguy.Muse.desk
 %{_datadir}/icons/hicolor/scalable/apps/com.pocoguy.Muse*.svg
 
 %changelog
+* Sat Nov 28 2026 Ackerman-00 <no-reply> - 0^20261031223600gita50a75d-1
+- Nightly sync with upstream main branch (Commit: a50a75d)
+
 * Sat Nov 14 2026 Ackerman-00 <no-reply> - 0^20261031223600gita50a75d-3
 - Ship debuginfo: this is a source build (cargo), so the debug_package
   override was discarding symbols the build already produces
