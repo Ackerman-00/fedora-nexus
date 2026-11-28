@@ -1,6 +1,6 @@
-%global commit          f342e5a5ad2d0c45decb6888c1cbd99d134e0ece
+%global commit          13d97a28a26e3a077a032319c5183e48c55bc9cb
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global gitdate         20261127174201
+%global gitdate         20261127225728
 
 %global _lto_cflags %{nil}
 
@@ -133,5 +133,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_prefix}/lib/dinit.d/user/umbriel-session
 
 %changelog
-* Fri Nov 27 2026 Ackerman-00 <no-reply> - 0.1.0^20261127174201gitf342e5a-1
-- Nightly sync with upstream main branch (Commit: f342e5a)
+* Sat Nov 28 2026 Ackerman-00 <no-reply> - 0.1.0^20261127225728git13d97a2-1
+- Nightly sync with upstream main branch (Commit: 13d97a2)

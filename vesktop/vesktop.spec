@@ -4,14 +4,17 @@
 %global __provides_exclude_from ^/opt/Vesktop/.*$
 
 Name:           vesktop
-Version:        1.7.1
+Version:        1.7.2
 Release:        1%{?dist}
 Summary:        Custom Discord desktop client with Vencord preinstalled (Nexus Optimized)
 
 License:        GPL-3.0-or-later
 URL:            https://github.com/Vencord/Vesktop
 Source0:        %{url}/releases/download/v%{version}/%{name}-%{version}.x86_64.rpm
+# sha256: 55bcbe2268a955b9b2f856a235d79a1b65dfa276926e1b9e6641225bef573199
 Source1:        %{url}/raw/v%{version}/LICENSE
+Source2:        %{url}/releases/download/v%{version}/dev.vencord.Vesktop.metainfo.xml
+# sha256: 8f0fcc09ff5b6ca8163b57ef2f06ce7045627575618865d253bb5ebacfc40c36
 
 ExclusiveArch:  x86_64
 
@@ -72,17 +75,25 @@ chmod 0755 %{buildroot}%{_bindir}/vesktop
 
 install -Dpm 0644 %{SOURCE1} %{buildroot}%{_licensedir}/%{name}/LICENSE
 
+install -Dpm 0644 %{SOURCE2} %{buildroot}%{_datadir}/metainfo/vesktop.metainfo.xml
+sed -i 's/dev\.vencord\.Vesktop/vesktop/g' %{buildroot}%{_datadir}/metainfo/vesktop.metainfo.xml
+
 find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/package-type' \) -delete 2>/dev/null || true
 
 %files
 %license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/vesktop
 %{_datadir}/applications/*.desktop
+%{_datadir}/metainfo/vesktop.metainfo.xml
 %{_datadir}/icons/hicolor/*/apps/*.*
 /opt/Vesktop/
 %attr(4755, root, root) /opt/Vesktop/chrome-sandbox
 
 %changelog
+* Sat Nov 28 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 1.7.2-1
+- Update to version 1.7.2
+- Pin the Source0 checksum
+
 * Fri Nov 27 2026 Nexus Auto-Updater <no-reply> - 1.7.1-1
 - Update to version 1.7.1
 

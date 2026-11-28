@@ -1,6 +1,6 @@
 Name:           mangowm
 Version:        0.19.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A modern, lightweight, high-performance Wayland compositor built on dwl
 License:        GPL-3.0-or-later AND MIT AND X11 AND CC0-1.0
 Packager:       Ackerman-00 <no-reply>
@@ -26,6 +26,7 @@ BuildRequires:  pkgconfig(libpcre2-8)
 BuildRequires:  pkgconfig(libcjson)
 BuildRequires:  pkgconfig(pangocairo)
 BuildRequires:  pkgconfig(x11)
+BuildRequires:  pkgconfig(glesv2)
 BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(pixman-1)
 BuildRequires:  pkgconfig(libdrm)
@@ -96,5 +97,8 @@ esac
 %{_userunitdir}/mango-session.target
 
 %changelog
+* Sat Nov 28 2026 opencode-agent[bot] <41898282+opencode-agent[bot]@users.noreply.github.com> - 0.19.3-2
+- Declare the glesv2 dependency the meson build requires directly
+
 * Fri Nov 27 2026 Ackerman-00 <no-reply> - 0.19.3-1
 - Auto-update to version 0.19.3
