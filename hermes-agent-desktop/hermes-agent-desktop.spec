@@ -9,12 +9,12 @@
 
 Name:           hermes-agent-desktop
 Version:        0.23.4^%{gitdate}git%{shortcommit}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
 Source0:        https://github.com/NousResearch/hermes-agent/archive/%{commit}.tar.gz
-# sha256:  8f163fe28d13827ed737da10ff8777dc0a94f2c08e896ce3d54476f700b9ad34
+# sha256:  e1ad2d825cc9a422d7ab004df89788e883aba19b09113f730e777b169fd91578
 Source1:        https://nodejs.org/download/release/v26.12.1/node-v26.12.1-linux-x64.tar.xz
 # sha256: 6170b2d474e1c626f43cff3adc118df9fe3b573258a4fc3d850c8dbc6b079bbd
 Source2:        https://registry.npmjs.org/@pnpm/exe.linux-x64/-/exe.linux-x64-12.15.0.tgz
@@ -142,5 +142,8 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
+* Sat Nov 28 2026 Ackerman-00 <no-reply> - 0.23.4^20261128025318git774a456-3
+- Refresh the stale Source0 sha256 pin (8f163fe did not match the tarball; now e1ad2d8)
+
 * Sat Nov 28 2026 Ackerman-00 <no-reply> - 0.23.4^20261128025318git774a456-2
 - Repair the changelog receipt for the shipped snapshot (commit 774a456)
