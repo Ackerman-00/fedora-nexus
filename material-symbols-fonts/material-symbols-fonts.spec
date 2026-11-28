@@ -4,7 +4,7 @@
 
 Name:           material-symbols-fonts
 Version:        4.0.0^%{snapdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Material Symbols variable icon font by Google
 License:        Apache-2.0
 URL:            https://github.com/google/material-design-icons
@@ -38,5 +38,8 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_datadir}/fonts/%{name}
 
 %changelog
+* Sat Nov 28 2026 Ackerman-00 <no-reply> - 4.0.0^20261023021843git10ecc14-2
+- Reconcile Release with the published COPR build (repodata serves -2)
+
 * Sat Nov 28 2026 Ackerman-00 <no-reply> - 4.0.0^20261023021843git10ecc14-1
 - Nightly sync with upstream master branch (Commit: 10ecc14)
