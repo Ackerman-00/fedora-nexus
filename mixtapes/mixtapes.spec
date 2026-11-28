@@ -5,7 +5,7 @@
 
 Name:           mixtapes
 Version:        0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        3%{?dist}
 Summary:        A cross-platform GTK4/Libadwaita YouTube Music client written in Rust
 
 License:        GPL-3.0-or-later
@@ -97,6 +97,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/com.pocoguy.Muse.desk
 %{_datadir}/icons/hicolor/scalable/apps/com.pocoguy.Muse*.svg
 
 %changelog
+* Sat Nov 28 2026 Ackerman-00 <no-reply> - 0^20261031223600gita50a75d-3
+- Reconcile Release with the published COPR build (repodata serves -3)
+
 * Sat Nov 28 2026 Ackerman-00 <no-reply> - 0^20261031223600gita50a75d-1
 - Nightly sync with upstream main branch (Commit: a50a75d)
 
