@@ -9,7 +9,7 @@
 
 Name:           hermes-agent-desktop
 Version:        0.23.4^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Native desktop shell for Hermes Agent (git snapshot)
 License:        MIT
 URL:            https://github.com/NousResearch/hermes-agent
@@ -142,5 +142,5 @@ esac
 %{_datadir}/icons/hicolor/512x512/apps/hermes-agent-desktop.png
 
 %changelog
-* Fri Nov 27 2026 Ackerman-00 <no-reply> - 0.23.4^20261127163338git2545c71-1
-- Nightly sync with upstream main branch (Commit: 2545c71)
+* Sat Nov 28 2026 Ackerman-00 <no-reply> - 0.23.4^20261128025318git774a456-2
+- Repair the changelog receipt for the shipped snapshot (commit 774a456)

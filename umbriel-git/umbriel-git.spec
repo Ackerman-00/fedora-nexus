@@ -6,7 +6,7 @@
 
 Name:           umbriel-git
 Version:        0.1.0^%{gitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Wayland compositor with scrolling and dwindle layouts
 
 License:        MIT
@@ -133,5 +133,5 @@ find %{buildroot} \( -path '*/resources/app-update.yml' -o -path '*/resources/pa
 %{_prefix}/lib/dinit.d/user/umbriel-session
 
 %changelog
-* Sat Nov 28 2026 Ackerman-00 <no-reply> - 0.1.0^20261127225728git13d97a2-1
-- Nightly sync with upstream main branch (Commit: 13d97a2)
+* Sat Nov 28 2026 Ackerman-00 <no-reply> - 0.1.0^20261128010659git9300aa9-2
+- Repair the changelog receipt for the shipped snapshot (commit 9300aa9)
